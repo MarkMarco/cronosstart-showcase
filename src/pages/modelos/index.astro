@@ -1,0 +1,67 @@
+---
+import "../../styles/global.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/space-grotesk";
+import ShowcaseCard from "../../components/vitrine/ShowcaseCard.astro";
+import { showcaseRegistry } from "../../config/showcases";
+
+const title = "Modelos de Sites Profissionais — CronosStart";
+const description =
+  "Vitrine de modelos demonstrativos de sites profissionais por segmento. Conheça a qualidade do trabalho da CronosStart e solicite um projeto personalizado para a sua marca.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="pt-BR" style="--font-heading: 'Space Grotesk Variable', system-ui, sans-serif; --font-body: 'Inter Variable', system-ui, sans-serif;">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="pt_BR" />
+  </head>
+  <body class="min-h-screen bg-[#0b0d12] font-[var(--font-body)] text-white antialiased">
+    <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
+      <p class="font-[var(--font-heading)] text-lg font-semibold tracking-tight">CronosStart</p>
+      <a
+        href="https://www.cronossec.com.br"
+        class="text-sm font-medium text-white/60 transition-colors hover:text-white"
+      >
+        cronossec.com.br
+      </a>
+    </header>
+
+    <main>
+      <section class="mx-auto max-w-4xl px-6 pb-14 pt-8 text-center">
+        <p class="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
+          Portfólio de modelos
+        </p>
+        <h1 class="font-[var(--font-heading)] text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+          Modelos demonstrativos de sites, por segmento
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
+          Cada modelo abaixo é uma demonstração visual completa, construída com identidade, textos e
+          seções próprias do setor — não um template genérico. Escolha um segmento para ver a
+          demonstração e, se quiser, solicite um projeto personalizado para a sua marca.
+        </p>
+      </section>
+
+      <section class="mx-auto max-w-6xl px-6 pb-24">
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {showcaseRegistry.map((item) => <ShowcaseCard item={item} />)}
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10 px-6 py-8">
+      <p class="mx-auto max-w-6xl text-center text-xs text-white/40">
+        Todos os modelos são demonstrativos. Nomes, marcas e informações apresentados são fictícios.
+      </p>
+    </footer>
+  </body>
+</html>

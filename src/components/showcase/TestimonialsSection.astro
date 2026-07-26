@@ -1,0 +1,69 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { Testimonial } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: Testimonial[];
+}
+const { eyebrow, title, description, items } = Astro.props;
+
+const initialsOf = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+---
+
+<section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-10 grid gap-5 lg:grid-cols-3">
+      {
+        items.map((item, index) => (
+          <figure
+            data-animate
+            style={`transition-delay: ${index * 70}ms`}
+            class="flex flex-col rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface-alt)] p-6"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-semibold text-white">
+                  {initialsOf(item.author)}
+                </span>
+                <div class="leading-tight">
+                  <span class="block text-sm font-semibold text-[var(--ink)]">{item.author}</span>
+                  <span class="text-xs text-[var(--ink-muted)]">{item.role}</span>
+                </div>
+              </div>
+              <Icon name="quote" class="h-5 w-5 shrink-0 text-[var(--accent)]" />
+            </div>
+
+            <blockquote class="mt-4 flex-1 text-sm leading-relaxed text-[var(--ink)]">"{item.quote}"</blockquote>
+
+            <div class="mt-5 flex flex-wrap items-center gap-2">
+              <span class="rounded-full bg-[var(--surface)] px-2.5 py-1 text-[0.65rem] font-medium text-[var(--ink-muted)]">
+                {item.segment}
+              </span>
+              <span class="inline-flex items-center gap-1 rounded-full bg-[var(--accent)]/10 px-2.5 py-1 text-[0.65rem] font-semibold text-[var(--accent)]">
+                <Icon name="trending-up" class="h-3 w-3" />
+                {item.result}
+              </span>
+            </div>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="mt-6 text-center text-xs text-[var(--ink-muted)]">
+      Depoimentos ilustrativos, criados para fins de demonstração deste modelo.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,63 @@
+---
+import type { NavItem } from "../../config/showcases/types";
+import Icon from "../ui/Icon.astro";
+import MobileMenu from "./MobileMenu.astro";
+
+interface Props {
+  nav: NavItem[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { nav, ctaLabel, ctaHref } = Astro.props;
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur"
+  style="--header-h: 72px"
+>
+  <div class="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
+    <a href="/" class="flex items-center" aria-label="Página inicial">
+      <slot name="logo" />
+    </a>
+
+    <nav class="hidden md:block" aria-label="Navegação principal">
+      <ul class="flex items-center gap-7">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="relative inline-block py-1 text-sm font-medium text-[var(--ink-muted)] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-[var(--accent)] after:transition-all after:duration-200 hover:text-[var(--ink)] hover:after:w-full"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={ctaHref}
+        class="hidden items-center rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 md:inline-flex"
+      >
+        {ctaLabel}
+      </a>
+
+      <button
+        id="menu-toggle"
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menu"
+      >
+        <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+        <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu nav={nav} ctaLabel={ctaLabel} ctaHref={ctaHref} />

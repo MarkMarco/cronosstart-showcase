@@ -1,0 +1,46 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { ProcessStep } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  steps: ProcessStep[];
+}
+const { eyebrow, title, description, steps } = Astro.props;
+---
+
+<section class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="relative mt-12 lg:mt-16">
+      <div class="absolute bottom-3 left-5 top-3 w-px bg-[var(--border)] lg:hidden" aria-hidden="true"></div>
+      <div
+        class="absolute left-[12.5%] right-[12.5%] top-5 hidden h-px bg-[var(--border)] lg:block"
+        aria-hidden="true"
+      ></div>
+
+      <ol class="relative flex flex-col gap-8 lg:grid lg:grid-cols-4 lg:gap-6">
+        {
+          steps.map((step, index) => (
+            <li
+              data-animate
+              style={`transition-delay: ${index * 70}ms`}
+              class="relative pl-14 lg:pl-0 lg:text-center"
+            >
+              <span class="relative z-10 mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-[var(--primary-ink)] ring-4 ring-[var(--surface-alt)] absolute left-0 top-0 lg:static lg:ring-0">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 class="text-base font-semibold text-[var(--ink)]">{step.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)] lg:mx-auto lg:max-w-[13rem]">
+                {step.description}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

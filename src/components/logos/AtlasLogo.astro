@@ -1,0 +1,28 @@
+---
+// Logo demonstrativo da Atlas Contabilidade. Para substituir por um logo
+// definitivo do cliente, basta trocar o conteúdo deste componente (ou
+// apontar os slots "header-logo"/"footer-logo" em modelos/contabilidade.astro
+// para um novo componente) — nenhum outro arquivo depende deste marcador.
+interface Props {
+  variant?: "full" | "mark";
+  class?: string;
+}
+const { variant = "full", class: className = "" } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-3 ${className}`}>
+  <svg viewBox="0 0 40 40" class="h-9 w-9 shrink-0" aria-hidden="true">
+    <path d="M20 5L34 33H26.5L20 19.5L13.5 33H6L20 5Z" fill="var(--primary)" />
+    <rect x="16.5" y="24" width="7" height="3.2" rx="1.6" fill="var(--accent)" />
+  </svg>
+  {variant === "full" && (
+    <span class="leading-tight">
+      <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-tight text-[var(--ink)]">
+        Atlas
+      </span>
+      <span class="block -mt-1 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[var(--ink-muted)]">
+        Contabilidade
+      </span>
+    </span>
+  )}
+</span>

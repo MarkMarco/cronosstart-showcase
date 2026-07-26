@@ -1,0 +1,74 @@
+---
+import Icon from "../../ui/Icon.astro";
+
+// Composição própria em CSS/SVG — documento organizado, resumo mensal,
+// selo de conformidade e atendimento consultivo. Evita clichês de
+// calculadora/gráfico-com-seta e evita a aparência de dashboard de software.
+---
+
+<div class="relative mx-auto h-[420px] w-full max-w-lg sm:h-[460px]" aria-hidden="true">
+  <div
+    class="absolute inset-x-4 top-4 h-[88%] rounded-[1.75rem]"
+    style="background: color-mix(in srgb, var(--primary) 5%, var(--surface-alt));"
+  ></div>
+
+  <div
+    class="absolute left-[6%] top-[6%] w-[62%] -rotate-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_16px_36px_rgba(20,33,61,0.1)]"
+  >
+    <div class="absolute right-0 top-0 h-0 w-0 border-b-[18px] border-l-[18px] border-b-transparent border-l-[var(--surface-alt)] rounded-tr-2xl"></div>
+    <div class="h-2 w-2/5 rounded-full" style="background: var(--primary);"></div>
+    <div class="mt-4 space-y-2">
+      <div class="h-1.5 w-full rounded-full bg-[var(--border)]"></div>
+      <div class="h-1.5 w-5/6 rounded-full bg-[var(--border)]"></div>
+      <div class="h-1.5 w-4/6 rounded-full bg-[var(--border)]"></div>
+    </div>
+    <div class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[var(--surface-alt)] px-2.5 py-1 text-[0.65rem] font-semibold text-[var(--accent)]">
+      <Icon name="check" class="h-3 w-3" />
+      Documento em dia
+    </div>
+  </div>
+
+  <div
+    class="absolute bottom-[8%] right-[4%] w-[68%] rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_20px_45px_rgba(20,33,61,0.14)]"
+  >
+    <p class="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[var(--ink-muted)]">
+      Resumo mensal
+    </p>
+    <div class="mt-3 flex gap-1.5">
+      <span class="h-8 flex-[1.4] rounded-lg" style="background: var(--primary);"></span>
+      <span class="h-8 flex-1 rounded-lg" style="background: color-mix(in srgb, var(--accent) 55%, transparent);"></span>
+      <span class="h-8 flex-[0.7] rounded-lg bg-[var(--border)]"></span>
+    </div>
+    <div class="mt-4 space-y-2.5">
+      <div class="flex items-center justify-between text-xs">
+        <span class="text-[var(--ink-muted)]">Impostos</span>
+        <span class="inline-flex items-center gap-1.5 font-semibold text-[var(--accent)]">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+          Em dia
+        </span>
+      </div>
+      <div class="flex items-center justify-between text-xs">
+        <span class="text-[var(--ink-muted)]">Folha de pagamento</span>
+        <span class="inline-flex items-center gap-1.5 font-semibold text-[var(--accent)]">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+          Em dia
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="absolute left-[2%] top-[46%] flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-full border-2 bg-[var(--primary)] text-center shadow-[0_14px_30px_rgba(20,33,61,0.22)]"
+    style="border-color: var(--accent);"
+  >
+    <Icon name="shield-check" class="h-6 w-6 text-white" />
+    <span class="px-2 text-[0.55rem] font-semibold leading-tight text-white/85">Conformidade em dia</span>
+  </div>
+
+  <div
+    class="absolute right-[8%] top-[2%] inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 shadow-[0_10px_25px_rgba(20,33,61,0.12)]"
+  >
+    <Icon name="message-circle" class="h-4 w-4 text-[var(--accent)]" />
+    <span class="text-xs font-semibold text-[var(--ink)]">Atendimento consultivo</span>
+  </div>
+</div>

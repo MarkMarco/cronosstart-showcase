@@ -1,0 +1,46 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { BenefitItem } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: BenefitItem[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-10 sm:py-12">
+  <div class="mx-auto max-w-6xl">
+    <div data-animate class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        {eyebrow && (
+          <p class="mb-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">{eyebrow}</p>
+        )}
+        <h2 class="text-2xl font-semibold tracking-tight text-[var(--ink)]">{title}</h2>
+      </div>
+      {description && <p class="max-w-sm text-sm leading-relaxed text-[var(--ink-muted)]">{description}</p>}
+    </div>
+
+    <div
+      data-animate
+      class="grid divide-y divide-[var(--border)] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4"
+    >
+      {
+        items.map((item) => (
+          <div class="flex items-start gap-3 px-6 py-5">
+            <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--surface-alt)] text-[var(--accent)]">
+              <Icon name={item.icon} class="h-4 w-4" />
+            </span>
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--ink)]">{item.title}</h3>
+              <p class="mt-1 text-xs leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

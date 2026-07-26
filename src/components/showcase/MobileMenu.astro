@@ -1,0 +1,74 @@
+---
+import type { NavItem } from "../../config/showcases/types";
+
+interface Props {
+  nav: NavItem[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { nav, ctaLabel, ctaHref } = Astro.props;
+---
+
+<div
+  id="mobile-menu"
+  class="fixed inset-x-0 top-[var(--header-h,64px)] z-40 hidden origin-top border-b border-[var(--border)] bg-[var(--surface)] px-6 py-6 shadow-lg md:hidden"
+  role="dialog"
+  aria-label="Menu de navegação"
+>
+  <nav>
+    <ul class="flex flex-col gap-1">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="block rounded-[var(--radius-control)] px-3 py-3 text-base font-medium text-[var(--ink)] hover:bg-[var(--surface-alt)]"
+              data-mobile-link
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <a
+    href={ctaHref}
+    class="mt-4 flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)]"
+    data-mobile-link
+  >
+    {ctaLabel}
+  </a>
+</div>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const panel = document.getElementById("mobile-menu");
+  const menuIcon = toggle?.querySelector('[data-icon="menu"]');
+  const closeIcon = toggle?.querySelector('[data-icon="close"]');
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      panel.classList.toggle("hidden", !open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+      menuIcon?.classList.toggle("hidden", open);
+      closeIcon?.classList.toggle("hidden", !open);
+    };
+
+    const closeMenu = () => setOpen(false);
+
+    toggle.addEventListener("click", () => {
+      const isOpen = !panel.classList.contains("hidden");
+      setOpen(!isOpen);
+    });
+
+    panel.querySelectorAll("[data-mobile-link]").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeMenu();
+    });
+  }
+</script>

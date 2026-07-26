@@ -1,0 +1,79 @@
+---
+import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
+import AtlasLogo from "../../components/logos/AtlasLogo.astro";
+import ShowcaseHero from "../../components/showcase/ShowcaseHero.astro";
+import AccountingHeroVisual from "../../components/showcase/visuals/AccountingHeroVisual.astro";
+import ServicesSection from "../../components/showcase/ServicesSection.astro";
+import BenefitsSection from "../../components/showcase/BenefitsSection.astro";
+import HighlightBand from "../../components/showcase/HighlightBand.astro";
+import AboutSection from "../../components/showcase/AboutSection.astro";
+import ProcessSection from "../../components/showcase/ProcessSection.astro";
+import TestimonialsSection from "../../components/showcase/TestimonialsSection.astro";
+import FAQSection from "../../components/showcase/FAQSection.astro";
+import ContactSection from "../../components/showcase/ContactSection.astro";
+import { contabilidadeConfig as config } from "../../config/showcases/contabilidade";
+---
+
+<ShowcaseLayout config={config}>
+  <AtlasLogo slot="header-logo" />
+  <AtlasLogo slot="footer-logo" />
+
+  <ShowcaseHero
+    variant={config.hero.variant}
+    eyebrow={config.hero.eyebrow}
+    headline={config.hero.headline}
+    highlight={config.hero.highlight}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="#contato"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel}
+    ctaSecondaryHref="#servicos"
+  >
+    <AccountingHeroVisual slot="visual" />
+  </ShowcaseHero>
+
+  <ServicesSection
+    id="servicos"
+    eyebrow="Serviços"
+    title="Tudo o que a sua empresa precisa em um só lugar"
+    description="Da escrituração ao planejamento tributário, uma rotina contábil completa e organizada."
+    items={config.services}
+  />
+
+  <BenefitsSection
+    id="solucoes"
+    eyebrow="Soluções"
+    title="Soluções pensadas para cada fase do seu negócio"
+    description="Menos burocracia, mais previsibilidade — em qualquer estágio da empresa."
+    items={config.benefits}
+  />
+
+  {config.sections.highlightBand && <HighlightBand content={config.highlightBand} />}
+
+  {config.sections.about && <AboutSection id="sobre" content={config.about} />}
+
+  {config.sections.process && (
+    <ProcessSection
+      eyebrow="Como funciona"
+      title="Etapas do atendimento"
+      description="Um processo claro, do diagnóstico ao acompanhamento mensal."
+      steps={config.process}
+    />
+  )}
+
+  {config.sections.testimonials && (
+    <TestimonialsSection
+      eyebrow="Depoimentos"
+      title="Quem já organizou a contabilidade com a Atlas"
+      items={config.testimonials}
+    />
+  )}
+
+  {config.sections.faq && (
+    <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
+  )}
+
+  <ContactSection id="contato" cta={config.contactCta} contact={config.contact} />
+</ShowcaseLayout>

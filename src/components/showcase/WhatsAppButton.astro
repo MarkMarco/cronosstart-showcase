@@ -1,0 +1,20 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { ShowcaseContact } from "../../config/showcases/types";
+
+interface Props {
+  contact: ShowcaseContact;
+}
+const { contact } = Astro.props;
+const href = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2"
+  aria-label={`Falar no WhatsApp (número demonstrativo ${contact.whatsappNumber})`}
+>
+  <Icon name="whatsapp" class="h-7 w-7" />
+</a>

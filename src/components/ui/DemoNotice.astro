@@ -1,0 +1,15 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<p
+  class={`flex items-center justify-center gap-1.5 border-b border-[var(--border)]/70 px-4 py-1.5 text-center text-[0.7rem] leading-relaxed text-[var(--ink-muted)] ${className}`}
+>
+  <Icon name="shield-check" class="h-3 w-3 shrink-0 opacity-70" />
+  Projeto demonstrativo — nomes, informações e empresas apresentados são fictícios.
+</p>

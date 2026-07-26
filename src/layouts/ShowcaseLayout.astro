@@ -1,0 +1,80 @@
+---
+import "../styles/global.css";
+import ShowcaseHeader from "../components/showcase/ShowcaseHeader.astro";
+import ShowcaseFooter from "../components/showcase/ShowcaseFooter.astro";
+import WhatsAppButton from "../components/showcase/WhatsAppButton.astro";
+import DemoNotice from "../components/ui/DemoNotice.astro";
+import type { ShowcaseConfig } from "../config/showcases/types";
+
+interface Props {
+  config: ShowcaseConfig;
+}
+const { config } = Astro.props;
+
+const t = config.theme;
+const cssVars = [
+  `--surface:${t.surface}`,
+  `--surface-alt:${t.surfaceAlt}`,
+  `--ink:${t.ink}`,
+  `--ink-muted:${t.inkMuted}`,
+  `--primary:${t.primary}`,
+  `--primary-ink:${t.primaryInk}`,
+  `--accent:${t.accent}`,
+  `--border:${t.border}`,
+  `--font-heading:${t.fontHeading}`,
+  `--font-body:${t.fontBody}`,
+  `--radius-card:${t.radiusCard}`,
+].join(";");
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="pt-BR" style={cssVars}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{config.seo.title}</title>
+    <meta name="description" content={config.seo.description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={config.seo.title} />
+    <meta property="og:description" content={config.seo.description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="pt_BR" />
+  </head>
+  <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
+    <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref="#contato">
+      <slot name="header-logo" slot="logo" />
+    </ShowcaseHeader>
+
+    <DemoNotice />
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <ShowcaseFooter company={config.company} nav={config.nav} contact={config.contact}>
+      <slot name="footer-logo" slot="logo" />
+    </ShowcaseFooter>
+
+    <WhatsAppButton contact={config.contact} />
+
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>
