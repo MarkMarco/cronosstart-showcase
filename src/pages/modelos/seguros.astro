@@ -37,25 +37,29 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     <HorizonteHeroVisual slot="visual" />
   </ShowcaseHero>
 
-  <PlansShowcaseSection
-    id="seguros"
-    eyebrow="Seguros"
-    title="Coberturas pensadas para cada momento"
-    description="Compare as opções abaixo e encontre a proteção certa para você, sua família ou o seu negócio."
-    items={config.services}
-  />
+  {config.services && (
+    <PlansShowcaseSection
+      id="seguros"
+      eyebrow="Seguros"
+      title="Coberturas pensadas para cada momento"
+      description="Compare as opções abaixo e encontre a proteção certa para você, sua família ou o seu negócio."
+      items={config.services}
+    />
+  )}
 
   {config.sections.protectionPicker && config.protectionPicker && (
     <ProtectionPicker content={config.protectionPicker} />
   )}
 
-  <ChecklistBenefitsSection
-    id="por-que-escolher"
-    eyebrow="Por que escolher a Horizonte"
-    title="Contratar um seguro sem complicação"
-    description="Menos burocracia e mais clareza, do primeiro contato ao momento em que você mais precisa."
-    items={config.benefits}
-  />
+  {config.benefits && (
+    <ChecklistBenefitsSection
+      id="por-que-escolher"
+      eyebrow="Por que escolher a Horizonte"
+      title="Contratar um seguro sem complicação"
+      description="Menos burocracia e mais clareza, do primeiro contato ao momento em que você mais precisa."
+      items={config.benefits}
+    />
+  )}
 
   {config.sections.process && (
     <AlternatingProcessSection
@@ -81,7 +85,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     />
   )}
 
-  {config.sections.faq && (
+  {config.sections.faq && config.faq && (
     <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
   )}
 

@@ -1,0 +1,160 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { CtaBand, ShowcaseContact, PropertyLeadFormContent } from "../../config/showcases/types";
+
+interface Props {
+  cta: CtaBand;
+  contact: ShowcaseContact;
+  form: PropertyLeadFormContent;
+  id?: string;
+}
+const { cta, contact, form, id } = Astro.props;
+const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+    <div data-animate>
+      <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{cta.title}</h2>
+      <p class="mt-3 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">{cta.description}</p>
+
+      <ul class="mt-6 space-y-3 text-sm text-[var(--ink-muted)]">
+        <li class="flex items-center gap-3">
+          <Icon name="phone" class="h-5 w-5 text-[var(--accent)]" />
+          {contact.phone}
+        </li>
+        <li class="flex items-center gap-3">
+          <Icon name="mail" class="h-5 w-5 text-[var(--accent)]" />
+          {contact.email}
+        </li>
+        <li class="flex items-center gap-3">
+          <Icon name="map-pin" class="h-5 w-5 text-[var(--accent)]" />
+          {contact.city}/{contact.state}
+        </li>
+        {contact.hours && (
+          <li class="flex items-center gap-3">
+            <Icon name="clock" class="h-5 w-5 text-[var(--accent)]" />
+            {contact.hours}
+          </li>
+        )}
+      </ul>
+
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-6 inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+      >
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Falar pelo WhatsApp
+      </a>
+      <p class="mt-2 text-xs text-[var(--ink-muted)]">
+        Número de WhatsApp fictício ({contact.whatsappNumber}), apenas para demonstração.
+      </p>
+    </div>
+
+    <form
+      data-property-lead-form
+      style="transition-delay: 80ms"
+      data-animate
+      class="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface-alt)] p-6 shadow-sm sm:p-7"
+    >
+      <p class="mb-5 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">
+        Formulário demonstrativo — não envia dados
+      </p>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+          Nome
+          <input
+            type="text"
+            name="name"
+            required
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          />
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)]">
+          WhatsApp
+          <input
+            type="tel"
+            name="whatsapp"
+            required
+            placeholder="(00) 00000-0000"
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          />
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)]">
+          E-mail
+          <input
+            type="email"
+            name="email"
+            required
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          />
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)]">
+          Operação
+          <select
+            name="operation"
+            required
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          >
+            {form.operationOptions.map((op) => (
+              <option value={op}>{op}</option>
+            ))}
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)]">
+          Tipo de imóvel
+          <select
+            name="propertyType"
+            required
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          >
+            {form.propertyTypes.map((type) => (
+              <option value={type}>{type}</option>
+            ))}
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+          Região de interesse
+          <select
+            name="region"
+            required
+            class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          >
+            {form.regions.map((region) => (
+              <option value={region}>{region}</option>
+            ))}
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+          Mensagem
+          <textarea
+            name="message"
+            rows="3"
+            class="mt-1.5 w-full resize-none rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
+          ></textarea>
+        </label>
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 sm:col-span-2"
+        >
+          {cta.buttonLabel}
+        </button>
+        <p data-property-lead-feedback role="status" class="hidden text-sm font-medium text-[var(--accent)] sm:col-span-2">
+          Mensagem de demonstração — nenhum dado foi enviado.
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("[data-property-lead-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const feedback = form.querySelector("[data-property-lead-feedback]");
+      feedback?.classList.remove("hidden");
+    });
+  });
+</script>

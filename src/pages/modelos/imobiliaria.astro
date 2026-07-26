@@ -1,0 +1,74 @@
+---
+import "@fontsource-variable/manrope";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
+import VerticeLogo from "../../components/logos/VerticeLogo.astro";
+import PropertyHero from "../../components/showcase/PropertyHero.astro";
+import PropertyListingsSection from "../../components/showcase/PropertyListingsSection.astro";
+import ExploreChipsSection from "../../components/showcase/ExploreChipsSection.astro";
+import PropertyAboutSection from "../../components/showcase/PropertyAboutSection.astro";
+import GhostNumberProcessSection from "../../components/showcase/GhostNumberProcessSection.astro";
+import TeamSection from "../../components/showcase/TeamSection.astro";
+import AsymmetricTestimonials from "../../components/showcase/AsymmetricTestimonials.astro";
+import PropertyLeadFormSection from "../../components/showcase/PropertyLeadFormSection.astro";
+import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria";
+---
+
+<ShowcaseLayout config={config}>
+  <VerticeLogo slot="header-logo" />
+  <VerticeLogo slot="footer-logo" />
+
+  {config.propertySearch && (
+    <PropertyHero
+      eyebrow={config.hero.eyebrow}
+      headline={config.hero.headline}
+      highlight={config.hero.highlight}
+      subheadline={config.hero.subheadline}
+      ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+      ctaPrimaryHref="#encontrar"
+      search={config.propertySearch}
+      searchTargetId="imoveis"
+    />
+  )}
+
+  {config.properties && (
+    <PropertyListingsSection
+      id="imoveis"
+      eyebrow="Imóveis"
+      title="Imóveis em destaque"
+      description="Uma seleção de imóveis para compra e aluguel — atualizada com curadoria, não em lote."
+      items={config.properties}
+    />
+  )}
+
+  {config.sections.explore && config.explore && <ExploreChipsSection content={config.explore} />}
+
+  {config.sections.about && config.about && <PropertyAboutSection id="sobre" content={config.about} />}
+
+  {config.sections.process && (
+    <GhostNumberProcessSection
+      id="como-funciona"
+      eyebrow="Processo"
+      title="Como funciona o atendimento"
+      description="Do primeiro contato à entrega das chaves, com acompanhamento em cada etapa."
+      steps={config.process}
+    />
+  )}
+
+  {config.sections.team && config.team && (
+    <TeamSection
+      eyebrow="Corretores"
+      title="Quem vai te acompanhar"
+      description="Corretores demonstrativos, cada um com uma especialidade dentro da carteira da Vértice."
+      items={config.team}
+    />
+  )}
+
+  {config.sections.testimonials && (
+    <AsymmetricTestimonials eyebrow="Depoimentos" title="Quem já fechou negócio com a Vértice" items={config.testimonials} />
+  )}
+
+  {config.propertyLeadForm && (
+    <PropertyLeadFormSection id="encontrar" cta={config.contactCta} contact={config.contact} form={config.propertyLeadForm} />
+  )}
+</ShowcaseLayout>

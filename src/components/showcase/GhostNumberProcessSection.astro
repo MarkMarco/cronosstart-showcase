@@ -1,0 +1,39 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { ProcessStep } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  steps: ProcessStep[];
+  id?: string;
+}
+const { eyebrow, title, description, steps, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step, index) => (
+          <div data-animate style={`transition-delay: ${index * 70}ms`} class="relative">
+            <span
+              class="pointer-events-none absolute -top-6 left-0 select-none text-7xl font-bold leading-none"
+              style="color: color-mix(in srgb, var(--primary) 12%, transparent);"
+              aria-hidden="true"
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="relative border-t-2 border-[var(--accent)] pt-5">
+              <h3 class="text-base font-semibold text-[var(--ink)]">{step.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{step.description}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

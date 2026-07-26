@@ -38,10 +38,10 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     companyName: "Vértice Imóveis",
     shortDescription:
       "Modelo comercial e elegante, com busca demonstrativa de imóveis e destaque para conversão.",
-    available: false,
-    accent: "#1f2937",
-    accentSoft: "#f4f1ea",
-    ink: "#1a1a1a",
+    available: true,
+    accent: "#b8873e",
+    accentSoft: "#f0e9dc",
+    ink: "#211d18",
   },
   {
     slug: "restaurante",

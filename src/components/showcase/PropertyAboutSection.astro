@@ -1,0 +1,39 @@
+---
+import type { AboutContent } from "../../config/showcases/types";
+
+interface Props {
+  content: AboutContent;
+  id?: string;
+}
+const { content, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+    <div data-animate>
+      {content.eyebrow && (
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{content.eyebrow}</p>
+      )}
+      <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{content.title}</h2>
+      <div class="mt-5 space-y-4">
+        {content.paragraphs.map((paragraph) => (
+          <p class="text-base leading-relaxed text-[var(--ink-muted)]">{paragraph}</p>
+        ))}
+      </div>
+    </div>
+
+    <div data-animate class="rounded-2xl p-7" style="background: var(--primary);">
+      <ul class="divide-y divide-white/10">
+        {
+          content.stats.map((stat) => (
+            <li class="flex items-center justify-between gap-4 border-l-2 border-[var(--accent)] py-4 pl-4 first:pt-0 last:pb-0">
+              <span class="text-sm text-white/70">{stat.label}</span>
+              <span class="text-2xl font-semibold tracking-tight text-white">{stat.value}</span>
+            </li>
+          ))
+        }
+      </ul>
+      {content.statsNote && <p class="mt-4 text-xs text-white/50">{content.statsNote}</p>}
+    </div>
+  </div>
+</section>

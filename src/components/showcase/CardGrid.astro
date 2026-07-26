@@ -4,19 +4,35 @@
 // cada seção precise de ajustes manuais de largura para não deixar cards
 // órfãos na última linha.
 interface Props {
-  /** Número de colunas no desktop (o tablet usa sempre 2, exceto quando cols=2). */
+  /** Número de colunas no desktop (o tablet usa, por padrão, o menor entre `cols` e 2). */
   cols?: 2 | 3 | 4;
+  /**
+   * Sobrescreve as colunas no tablet. Use quando a quantidade de itens não se
+   * divide bem em 2 colunas (ex.: 3 itens) para evitar um card órfão sozinho
+   * na última linha — nesse caso, pule direto para o número de colunas do
+   * desktop (ex.: tabletCols={3}).
+   */
+  tabletCols?: 1 | 2 | 3 | 4;
   class?: string;
 }
-const { cols = 3, class: className = "" } = Astro.props;
+const { cols = 3, tabletCols, class: className = "" } = Astro.props;
 
-const colsMap: Record<number, string> = {
+const effectiveTablet = tabletCols ?? Math.min(cols, 2);
+
+const tabletClassMap: Record<number, string> = {
+  1: "",
   2: "sm:grid-cols-2",
-  3: "sm:grid-cols-2 lg:grid-cols-3",
-  4: "sm:grid-cols-2 lg:grid-cols-4",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-4",
+};
+
+const desktopClassMap: Record<number, string> = {
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
 };
 ---
 
-<div class={`grid gap-5 ${colsMap[cols]} ${className}`}>
+<div class={`grid gap-5 ${tabletClassMap[effectiveTablet]} ${desktopClassMap[cols]} ${className}`}>
   <slot />
 </div>

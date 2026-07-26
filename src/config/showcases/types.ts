@@ -27,7 +27,10 @@ export type IconName =
   | "plane"
   | "tool"
   | "compare"
-  | "refresh";
+  | "refresh"
+  | "bed"
+  | "maximize"
+  | "search";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -173,15 +176,57 @@ export interface QuoteFormContent {
   insuranceTypes: string[];
 }
 
+export interface PropertyItem {
+  title: string;
+  location: string;
+  price: string;
+  operation: "Venda" | "Aluguel";
+  image: string;
+  imageAlt: string;
+  bedrooms?: number;
+  area?: string;
+  parking?: number;
+  note?: string;
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  avatar?: string;
+  avatarAlt?: string;
+}
+
+export interface ExploreContent {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  types: string[];
+  regions: string[];
+}
+
+export interface PropertySearchContent {
+  operationOptions: string[];
+  regions: string[];
+  propertyTypes: string[];
+}
+
+export interface PropertyLeadFormContent {
+  operationOptions: string[];
+  propertyTypes: string[];
+  regions: string[];
+}
+
 export interface SectionsEnabled {
   about?: boolean;
   process: boolean;
   testimonials: boolean;
-  faq: boolean;
+  faq?: boolean;
   highlightBand?: boolean;
   protectionPicker?: boolean;
   humanSupport?: boolean;
   partners?: boolean;
+  team?: boolean;
+  explore?: boolean;
 }
 
 export interface ShowcaseConfig {
@@ -193,13 +238,13 @@ export interface ShowcaseConfig {
   nav: NavItem[];
   seo: { title: string; description: string };
   hero: HeroContent;
-  services: ServiceItem[];
-  benefits: BenefitItem[];
+  services?: ServiceItem[];
+  benefits?: BenefitItem[];
   highlightBand?: HighlightBandContent;
   about?: AboutContent;
   process: ProcessStep[];
   testimonials: Testimonial[];
-  faq: FaqItem[];
+  faq?: FaqItem[];
   contactCta: CtaBand;
   contact: ShowcaseContact;
   sections: SectionsEnabled;
@@ -207,4 +252,9 @@ export interface ShowcaseConfig {
   humanSupport?: HumanSupportContent;
   partners?: string[];
   quoteForm?: QuoteFormContent;
+  properties?: PropertyItem[];
+  team?: TeamMember[];
+  explore?: ExploreContent;
+  propertySearch?: PropertySearchContent;
+  propertyLeadForm?: PropertyLeadFormContent;
 }

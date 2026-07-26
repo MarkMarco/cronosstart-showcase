@@ -1,0 +1,100 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import CardGrid from "./CardGrid.astro";
+import GridCard from "./GridCard.astro";
+import type { TeamMember } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: TeamMember[];
+}
+const { eyebrow, title, description, items } = Astro.props;
+
+const initialsOf = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+
+// Alterna o tom do selo de iniciais por índice, para variar sem depender de fotos.
+const badgeBg = (index: number) => (index % 2 === 0 ? "var(--primary)" : "var(--accent)");
+---
+
+<section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <CardGrid cols={3} tabletCols={3} class="mt-10">
+      {
+        items.map((member, index) => (
+          <GridCard variant="outlined" animateDelay={index * 70} class="!p-0 overflow-hidden text-center">
+            <div>
+              <div class="relative aspect-[4/5] overflow-hidden bg-[var(--surface-alt)]">
+                {member.avatar && (
+                  <img
+                    data-avatar-img
+                    src={member.avatar}
+                    alt={member.avatarAlt ?? `Retrato de ${member.name}`}
+                    loading="lazy"
+                    decoding="async"
+                    width="480"
+                    height="600"
+                    class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
+                <div
+                  data-avatar-fallback
+                  class={`absolute inset-0 ${member.avatar ? "hidden" : "flex"} items-center justify-center`}
+                  style="background: var(--surface-alt);"
+                >
+                  <Icon name="users" class="h-12 w-12 text-[var(--ink-muted)]" />
+                </div>
+                <span
+                  class="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold text-white shadow-md"
+                  style={`background: ${badgeBg(index)};`}
+                >
+                  {initialsOf(member.name)}
+                </span>
+              </div>
+
+              <div class="p-6">
+                <h3 class="text-base font-semibold text-[var(--ink)]">{member.name}</h3>
+                <p class="mt-1 text-sm text-[var(--accent)]">{member.role}</p>
+              </div>
+            </div>
+
+            <a
+              slot="cta"
+              href="#encontrar"
+              class="inline-flex items-center justify-center gap-1.5 px-6 pb-6 text-xs font-semibold text-[var(--ink-muted)] transition-colors hover:text-[var(--primary)]"
+            >
+              <Icon name="message-circle" class="h-3.5 w-3.5" />
+              Falar com este corretor
+            </a>
+          </GridCard>
+        ))
+      }
+    </CardGrid>
+
+    <p class="mt-6 text-center text-xs text-[var(--ink-muted)]">
+      Corretores demonstrativos, criados para fins de ilustração deste modelo.
+    </p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>("[data-avatar-img]").forEach((img) => {
+    img.addEventListener("error", () => {
+      img.classList.add("hidden");
+      const fallback = img.parentElement?.querySelector<HTMLElement>("[data-avatar-fallback]");
+      fallback?.classList.remove("hidden");
+      fallback?.classList.add("flex");
+    });
+  });
+</script>

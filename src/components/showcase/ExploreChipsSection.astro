@@ -1,0 +1,41 @@
+---
+import type { ExploreContent } from "../../config/showcases/types";
+
+interface Props {
+  content: ExploreContent;
+}
+const { content } = Astro.props;
+---
+
+<section class="border-y border-[var(--border)] bg-[var(--surface-alt)] px-6 py-12">
+  <div class="mx-auto max-w-6xl" data-animate>
+    {content.eyebrow && (
+      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">{content.eyebrow}</p>
+    )}
+    <h2 class="text-2xl font-semibold tracking-tight text-[var(--ink)]">{content.title}</h2>
+    {content.description && <p class="mt-2 max-w-xl text-sm text-[var(--ink-muted)]">{content.description}</p>}
+
+    <div class="mt-6 grid gap-5 sm:grid-cols-2">
+      <div>
+        <p class="mb-2.5 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Tipos de imóvel</p>
+        <div class="flex flex-wrap gap-2">
+          {content.types.map((type) => (
+            <span class="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-1.5 text-sm text-[var(--ink)]">
+              {type}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p class="mb-2.5 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Bairros e regiões</p>
+        <div class="flex flex-wrap gap-2">
+          {content.regions.map((region) => (
+            <span class="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-1.5 text-sm text-[var(--ink)]">
+              {region}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

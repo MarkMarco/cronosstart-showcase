@@ -34,21 +34,25 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     <AccountingHeroVisual slot="visual" />
   </ShowcaseHero>
 
-  <ServicesSection
-    id="servicos"
-    eyebrow="Serviços"
-    title="Tudo o que a sua empresa precisa em um só lugar"
-    description="Da escrituração ao planejamento tributário, uma rotina contábil completa e organizada."
-    items={config.services}
-  />
+  {config.services && (
+    <ServicesSection
+      id="servicos"
+      eyebrow="Serviços"
+      title="Tudo o que a sua empresa precisa em um só lugar"
+      description="Da escrituração ao planejamento tributário, uma rotina contábil completa e organizada."
+      items={config.services}
+    />
+  )}
 
-  <BenefitsSection
-    id="solucoes"
-    eyebrow="Soluções"
-    title="Soluções pensadas para cada fase do seu negócio"
-    description="Menos burocracia, mais previsibilidade — em qualquer estágio da empresa."
-    items={config.benefits}
-  />
+  {config.benefits && (
+    <BenefitsSection
+      id="solucoes"
+      eyebrow="Soluções"
+      title="Soluções pensadas para cada fase do seu negócio"
+      description="Menos burocracia, mais previsibilidade — em qualquer estágio da empresa."
+      items={config.benefits}
+    />
+  )}
 
   {config.sections.highlightBand && config.highlightBand && <HighlightBand content={config.highlightBand} />}
 
@@ -71,7 +75,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     />
   )}
 
-  {config.sections.faq && (
+  {config.sections.faq && config.faq && (
     <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
   )}
 
