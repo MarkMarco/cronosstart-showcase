@@ -1,0 +1,49 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { ProcessStep } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  steps: ProcessStep[];
+  id?: string;
+}
+const { eyebrow, title, description, steps, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-5xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="relative mt-12 md:mt-16">
+      <div
+        class="absolute bottom-4 left-1/2 top-4 hidden w-px -translate-x-1/2 bg-[var(--border)] md:block"
+        aria-hidden="true"
+      ></div>
+
+      <ol class="flex flex-col gap-8 md:gap-12">
+        {
+          steps.map((step, index) => {
+            const isEven = index % 2 === 0;
+            return (
+              <li data-animate class="relative md:grid md:grid-cols-2 md:gap-x-14">
+                <span class="relative z-10 mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-semibold text-white md:absolute md:left-1/2 md:top-1/2 md:mb-0 md:-translate-x-1/2 md:-translate-y-1/2 md:ring-4 md:ring-[var(--surface-alt)]">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div
+                  class={`rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 md:max-w-md ${
+                    isEven ? "md:col-start-1 md:mr-10 md:ml-auto md:text-right" : "md:col-start-2 md:ml-10"
+                  }`}
+                >
+                  <h3 class="text-base font-semibold text-[var(--ink)]">{step.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{step.description}</p>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+  </div>
+</section>

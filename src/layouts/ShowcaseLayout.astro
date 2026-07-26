@@ -46,7 +46,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:locale" content="pt_BR" />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
-    <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref="#contato">
+    <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref={config.primaryCtaHref ?? "#contato"}>
       <slot name="header-logo" slot="logo" />
     </ShowcaseHeader>
 

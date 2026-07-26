@@ -1,6 +1,10 @@
 ---
+import Icon from "../ui/Icon.astro";
+import type { HeroChip } from "../../config/showcases/types";
+
 interface Props {
   variant?: "split" | "centered";
+  background?: "surface" | "surface-alt";
   eyebrow?: string;
   headline: string;
   highlight?: string;
@@ -9,10 +13,12 @@ interface Props {
   ctaPrimaryHref: string;
   ctaSecondaryLabel?: string;
   ctaSecondaryHref?: string;
+  chips?: HeroChip[];
 }
 
 const {
   variant = "split",
+  background = "surface",
   eyebrow,
   headline,
   highlight,
@@ -21,10 +27,13 @@ const {
   ctaPrimaryHref,
   ctaSecondaryLabel,
   ctaSecondaryHref,
+  chips,
 } = Astro.props;
+
+const bgClass = background === "surface-alt" ? "bg-[var(--surface-alt)]" : "bg-[var(--surface)]";
 ---
 
-<section class="relative overflow-hidden bg-[var(--surface)]">
+<section class={`relative overflow-hidden ${bgClass}`}>
   <div
     class={`mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-12 sm:pt-16 ${
       variant === "split" ? "lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-8" : "text-center"
@@ -32,7 +41,7 @@ const {
   >
     <div class={variant === "centered" ? "mx-auto max-w-2xl" : ""}>
       {eyebrow && (
-        <p class="animate-hero-in mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+        <p class="animate-hero-in mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--surface)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
           <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
           {eyebrow}
         </p>
@@ -50,6 +59,18 @@ const {
       >
         {subheadline}
       </p>
+
+      {chips && chips.length > 0 && (
+        <div class="animate-hero-in mt-6 flex flex-wrap gap-2.5" style="animation-delay: 150ms">
+          {chips.map((chip) => (
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-1.5 text-xs font-medium text-[var(--ink)]">
+              <Icon name={chip.icon} class="h-3.5 w-3.5 text-[var(--accent)]" />
+              {chip.label}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div
         class={`animate-hero-in mt-8 flex flex-wrap gap-4 ${variant === "centered" ? "justify-center" : ""}`}
         style="animation-delay: 180ms"

@@ -1,0 +1,25 @@
+---
+interface Props {
+  title?: string;
+  partners: string[];
+}
+const { title = "Seguradoras parceiras", partners } = Astro.props;
+---
+
+<section class="border-y border-[var(--border)] bg-[var(--surface)] px-6 py-10">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-center text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-muted)]">{title}</p>
+    <div data-animate class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      {
+        partners.map((name) => (
+          <span class="inline-flex items-center rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] px-5 py-3 text-sm font-semibold text-[var(--ink-muted)] grayscale transition-all hover:grayscale-0 hover:text-[var(--ink)]">
+            {name}
+          </span>
+        ))
+      }
+    </div>
+    <p class="mt-4 text-center text-xs text-[var(--ink-muted)]">
+      Nomes fictícios, usados apenas para demonstração — sem relação com seguradoras reais.
+    </p>
+  </div>
+</section>

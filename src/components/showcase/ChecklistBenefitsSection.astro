@@ -1,0 +1,41 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { BenefitItem } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: BenefitItem[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+    <div data-animate>
+      {eyebrow && (
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{eyebrow}</p>
+      )}
+      <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{title}</h2>
+      {description && <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">{description}</p>}
+    </div>
+
+    <ul data-animate class="divide-y divide-[var(--border)] border-t border-[var(--border)]">
+      {
+        items.map((item) => (
+          <li class="flex items-start gap-4 py-4">
+            <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/12 text-[var(--accent)]">
+              <Icon name={item.icon} class="h-4 w-4" />
+            </span>
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--ink)]">{item.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

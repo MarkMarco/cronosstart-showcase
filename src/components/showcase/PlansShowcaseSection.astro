@@ -1,0 +1,55 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import CardGrid from "./CardGrid.astro";
+import GridCard from "./GridCard.astro";
+import type { ServiceItem } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: ServiceItem[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} />
+
+    <CardGrid cols={3} class="mt-10">
+      {
+        items.map((item, index) => {
+          const featured = index === 0;
+          return (
+            <GridCard variant={featured ? "featured" : "standard"} animateDelay={Math.min(index, 5) * 60}>
+              <div
+                class={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl ${
+                  featured ? "bg-white/15 text-white" : "bg-[var(--surface-alt)] text-[var(--primary)]"
+                }`}
+              >
+                <Icon name={item.icon} class="h-5 w-5" />
+              </div>
+              <h3 class={`text-lg font-semibold ${featured ? "text-white" : "text-[var(--ink)]"}`}>{item.title}</h3>
+              <p class={`mt-2 text-sm leading-relaxed ${featured ? "text-white/75" : "text-[var(--ink-muted)]"}`}>
+                {item.description}
+              </p>
+              <a
+                slot="cta"
+                href="#cotacao"
+                class={`inline-flex items-center gap-1.5 text-xs font-semibold ${
+                  featured ? "text-white" : "text-[var(--accent)]"
+                }`}
+              >
+                Solicitar cotação
+                <Icon name="arrow-right" class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </a>
+            </GridCard>
+          );
+        })
+      }
+    </CardGrid>
+  </div>
+</section>

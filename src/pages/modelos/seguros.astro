@@ -1,0 +1,96 @@
+---
+import "@fontsource-variable/sora";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
+import HorizonteLogo from "../../components/logos/HorizonteLogo.astro";
+import ShowcaseHero from "../../components/showcase/ShowcaseHero.astro";
+import HorizonteHeroVisual from "../../components/showcase/visuals/HorizonteHeroVisual.astro";
+import PlansShowcaseSection from "../../components/showcase/PlansShowcaseSection.astro";
+import ProtectionPicker from "../../components/showcase/ProtectionPicker.astro";
+import ChecklistBenefitsSection from "../../components/showcase/ChecklistBenefitsSection.astro";
+import AlternatingProcessSection from "../../components/showcase/AlternatingProcessSection.astro";
+import HumanSupportSection from "../../components/showcase/HumanSupportSection.astro";
+import PartnersSection from "../../components/showcase/PartnersSection.astro";
+import TestimonialHighlights from "../../components/showcase/TestimonialHighlights.astro";
+import FAQSection from "../../components/showcase/FAQSection.astro";
+import QuoteFormSection from "../../components/showcase/QuoteFormSection.astro";
+import { segurosConfig as config } from "../../config/showcases/seguros";
+---
+
+<ShowcaseLayout config={config}>
+  <HorizonteLogo slot="header-logo" />
+  <HorizonteLogo slot="footer-logo" />
+
+  <ShowcaseHero
+    variant={config.hero.variant}
+    background="surface-alt"
+    eyebrow={config.hero.eyebrow}
+    headline={config.hero.headline}
+    highlight={config.hero.highlight}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="#cotacao"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel}
+    ctaSecondaryHref="#seguros"
+    chips={config.hero.chips}
+  >
+    <HorizonteHeroVisual slot="visual" />
+  </ShowcaseHero>
+
+  <PlansShowcaseSection
+    id="seguros"
+    eyebrow="Seguros"
+    title="Coberturas pensadas para cada momento"
+    description="Compare as opções abaixo e encontre a proteção certa para você, sua família ou o seu negócio."
+    items={config.services}
+  />
+
+  {config.sections.protectionPicker && config.protectionPicker && (
+    <ProtectionPicker content={config.protectionPicker} />
+  )}
+
+  <ChecklistBenefitsSection
+    id="por-que-escolher"
+    eyebrow="Por que escolher a Horizonte"
+    title="Contratar um seguro sem complicação"
+    description="Menos burocracia e mais clareza, do primeiro contato ao momento em que você mais precisa."
+    items={config.benefits}
+  />
+
+  {config.sections.process && (
+    <AlternatingProcessSection
+      id="como-funciona"
+      eyebrow="Como funciona"
+      title="Da cotação ao acompanhamento"
+      description="Um processo simples, pensado para tirar dúvidas antes de qualquer contratação."
+      steps={config.process}
+    />
+  )}
+
+  {config.sections.humanSupport && config.humanSupport && (
+    <HumanSupportSection id="sobre" content={config.humanSupport} />
+  )}
+
+  {config.sections.partners && config.partners && <PartnersSection partners={config.partners} />}
+
+  {config.sections.testimonials && (
+    <TestimonialHighlights
+      eyebrow="Depoimentos"
+      title="Quem já contou com a Horizonte"
+      items={config.testimonials}
+    />
+  )}
+
+  {config.sections.faq && (
+    <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
+  )}
+
+  {config.quoteForm && (
+    <QuoteFormSection
+      id="cotacao"
+      cta={config.contactCta}
+      contact={config.contact}
+      insuranceTypes={config.quoteForm.insuranceTypes}
+    />
+  )}
+</ShowcaseLayout>

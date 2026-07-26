@@ -1,0 +1,72 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { ProtectionPickerContent } from "../../config/showcases/types";
+
+interface Props {
+  content: ProtectionPickerContent;
+  id?: string;
+}
+const { content, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-3xl text-center" data-animate>
+    {content.eyebrow && (
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{content.eyebrow}</p>
+    )}
+    <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{content.title}</h2>
+    {content.description && (
+      <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">{content.description}</p>
+    )}
+
+    <div
+      data-protection-options
+      role="group"
+      aria-label={content.title}
+      class="mt-8 flex flex-wrap items-center justify-center gap-3"
+    >
+      {
+        content.options.map((option) => (
+          <button
+            type="button"
+            data-protection-option
+            data-label={option.label}
+            aria-pressed="false"
+            class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-medium text-[var(--ink)] transition-all hover:-translate-y-0.5 hover:border-[var(--primary)] aria-pressed:bg-[var(--primary)] aria-pressed:text-[var(--primary-ink)] aria-pressed:border-[var(--primary)]"
+          >
+            <Icon name={option.icon} class="h-4 w-4" />
+            {option.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div
+      data-protection-response
+      role="status"
+      class="mx-auto mt-6 hidden max-w-md items-center gap-3 rounded-2xl border border-[var(--accent)]/30 bg-[var(--surface)] px-5 py-4 text-left opacity-0 transition-opacity duration-300"
+    >
+      <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/15 text-[var(--accent)]">
+        <Icon name="check" class="h-4 w-4" />
+      </span>
+      <p class="text-sm text-[var(--ink)]">
+        <span data-protection-response-text>{content.responseText}</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const options = document.querySelectorAll<HTMLButtonElement>("[data-protection-option]");
+  const response = document.querySelector<HTMLElement>("[data-protection-response]");
+
+  options.forEach((button) => {
+    button.addEventListener("click", () => {
+      options.forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
+      if (response) {
+        response.classList.remove("hidden");
+        requestAnimationFrame(() => response.classList.remove("opacity-0"));
+      }
+    });
+  });
+</script>

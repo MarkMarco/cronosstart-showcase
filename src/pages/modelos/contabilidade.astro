@@ -50,9 +50,9 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     items={config.benefits}
   />
 
-  {config.sections.highlightBand && <HighlightBand content={config.highlightBand} />}
+  {config.sections.highlightBand && config.highlightBand && <HighlightBand content={config.highlightBand} />}
 
-  {config.sections.about && <AboutSection id="sobre" content={config.about} />}
+  {config.sections.about && config.about && <AboutSection id="sobre" content={config.about} />}
 
   {config.sections.process && (
     <ProcessSection

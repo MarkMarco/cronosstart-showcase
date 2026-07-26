@@ -27,10 +27,10 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     companyName: "Horizonte Seguros",
     shortDescription:
       "Modelo voltado a cotação rápida e proximidade, apresentando os principais tipos de seguro.",
-    available: false,
-    accent: "#1d4ed8",
-    accentSoft: "#eaf1ff",
-    ink: "#101828",
+    available: true,
+    accent: "#1e4dbb",
+    accentSoft: "#eef3fb",
+    ink: "#132540",
   },
   {
     slug: "imobiliaria",

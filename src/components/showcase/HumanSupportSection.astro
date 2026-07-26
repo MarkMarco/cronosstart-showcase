@@ -1,0 +1,53 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { HumanSupportContent } from "../../config/showcases/types";
+
+interface Props {
+  content: HumanSupportContent;
+  id?: string;
+}
+const { content, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--primary)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <!-- Composição ilustrativa abstrata — fácil de substituir por uma foto real da equipe -->
+    <div data-animate class="relative order-2 flex justify-center lg:order-1">
+      <div class="relative flex h-64 w-64 items-center justify-center rounded-[2rem] bg-white/[0.06] sm:h-72 sm:w-72">
+        <div class="absolute inset-6 rounded-[1.5rem] border border-white/10"></div>
+        <svg viewBox="0 0 100 100" class="h-28 w-28 text-white/70">
+          <circle cx="50" cy="36" r="16" fill="currentColor" opacity="0.9" />
+          <path d="M18 88c0-19 14.3-32 32-32s32 13 32 32" fill="currentColor" opacity="0.9" />
+        </svg>
+        <span
+          class="absolute -bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-[var(--accent)] px-4 py-2 text-xs font-semibold text-white shadow-lg"
+        >
+          <Icon name="message-circle" class="h-4 w-4" />
+          Sempre por perto
+        </span>
+      </div>
+    </div>
+
+    <div data-animate class="order-1 lg:order-2" style="transition-delay: 80ms">
+      {content.eyebrow && (
+        <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+          {content.eyebrow}
+        </p>
+      )}
+      <h2 class="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">{content.title}</h2>
+      <p class="mt-4 max-w-lg text-base leading-relaxed text-white/65">{content.description}</p>
+
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+        {
+          content.points.map((point) => (
+            <li class="flex items-start gap-2.5 text-sm text-white/80">
+              <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+              {point}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

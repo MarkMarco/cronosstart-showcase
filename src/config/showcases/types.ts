@@ -20,7 +20,14 @@ export type IconName =
   | "users"
   | "message-circle"
   | "shield-check"
-  | "layers";
+  | "layers"
+  | "car"
+  | "home"
+  | "heart"
+  | "plane"
+  | "tool"
+  | "compare"
+  | "refresh";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -73,6 +80,11 @@ export interface ShowcaseContact {
   linkedin?: string;
 }
 
+export interface HeroChip {
+  label: string;
+  icon: IconName;
+}
+
 export interface HeroContent {
   variant: "split" | "centered";
   eyebrow?: string;
@@ -81,6 +93,8 @@ export interface HeroContent {
   subheadline: string;
   ctaPrimaryLabel: string;
   ctaSecondaryLabel?: string;
+  /** Tags rápidas e apenas demonstrativas (ex.: categorias em destaque) */
+  chips?: HeroChip[];
 }
 
 export interface ServiceItem {
@@ -135,16 +149,45 @@ export interface CtaBand {
   buttonLabel: string;
 }
 
+export interface ProtectionOption {
+  label: string;
+  icon: IconName;
+}
+
+export interface ProtectionPickerContent {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  options: ProtectionOption[];
+  responseText: string;
+}
+
+export interface HumanSupportContent {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  points: string[];
+}
+
+export interface QuoteFormContent {
+  insuranceTypes: string[];
+}
+
 export interface SectionsEnabled {
-  about: boolean;
+  about?: boolean;
   process: boolean;
   testimonials: boolean;
   faq: boolean;
-  highlightBand: boolean;
+  highlightBand?: boolean;
+  protectionPicker?: boolean;
+  humanSupport?: boolean;
+  partners?: boolean;
 }
 
 export interface ShowcaseConfig {
   slug: string;
+  /** Âncora para onde o CTA do cabeçalho aponta (padrão: "#contato") */
+  primaryCtaHref?: string;
   company: ShowcaseCompany;
   theme: ShowcaseTheme;
   nav: NavItem[];
@@ -152,12 +195,16 @@ export interface ShowcaseConfig {
   hero: HeroContent;
   services: ServiceItem[];
   benefits: BenefitItem[];
-  highlightBand: HighlightBandContent;
-  about: AboutContent;
+  highlightBand?: HighlightBandContent;
+  about?: AboutContent;
   process: ProcessStep[];
   testimonials: Testimonial[];
   faq: FaqItem[];
   contactCta: CtaBand;
   contact: ShowcaseContact;
   sections: SectionsEnabled;
+  protectionPicker?: ProtectionPickerContent;
+  humanSupport?: HumanSupportContent;
+  partners?: string[];
+  quoteForm?: QuoteFormContent;
 }

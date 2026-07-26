@@ -1,0 +1,44 @@
+---
+// Card padrão para uso dentro de CardGrid. Estrutura fixa (altura uniforme,
+// conteúdo em flex-column, CTA sempre ancorado no final) — apenas a
+// aparência muda entre variantes, nunca a distribuição na grade.
+interface Props {
+  variant?: "standard" | "featured" | "outlined" | "dark";
+  animateDelay?: number;
+  class?: string;
+}
+const { variant = "standard", animateDelay = 0, class: className = "" } = Astro.props;
+
+const variantClass: Record<string, string> = {
+  standard:
+    "border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)]/40 hover:shadow-[0_10px_28px_rgba(20,33,61,0.08)]",
+  featured: "text-white shadow-[0_10px_28px_rgba(20,33,61,0.18)]",
+  outlined: "border-2 border-[var(--primary)] bg-[var(--surface)]",
+  dark: "text-white shadow-[0_10px_28px_rgba(20,33,61,0.18)]",
+};
+
+const variantBg =
+  variant === "featured" ? "background: var(--primary);" : variant === "dark" ? "background: var(--ink);" : "";
+---
+
+<div
+  data-animate
+  style={`transition-delay: ${animateDelay}ms; ${variantBg}`}
+  class={`group relative flex h-full flex-col overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-1 ${variantClass[variant]} ${className}`}
+>
+  {(variant === "featured" || variant === "dark") && (
+    <div
+      class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full"
+      style="background: color-mix(in srgb, var(--accent) 35%, transparent);"
+      aria-hidden="true"
+    />
+  )}
+
+  <div class="relative flex-1">
+    <slot />
+  </div>
+
+  <div class="relative mt-5">
+    <slot name="cta" />
+  </div>
+</div>

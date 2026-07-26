@@ -1,0 +1,22 @@
+---
+// Grade reutilizável para seções baseadas em cards. Garante 1 coluna no
+// celular, 2 no tablet e um número configurável no desktop — evitando que
+// cada seção precise de ajustes manuais de largura para não deixar cards
+// órfãos na última linha.
+interface Props {
+  /** Número de colunas no desktop (o tablet usa sempre 2, exceto quando cols=2). */
+  cols?: 2 | 3 | 4;
+  class?: string;
+}
+const { cols = 3, class: className = "" } = Astro.props;
+
+const colsMap: Record<number, string> = {
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-2 lg:grid-cols-3",
+  4: "sm:grid-cols-2 lg:grid-cols-4",
+};
+---
+
+<div class={`grid gap-5 ${colsMap[cols]} ${className}`}>
+  <slot />
+</div>

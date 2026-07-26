@@ -1,0 +1,53 @@
+---
+import Icon from "../../ui/Icon.astro";
+
+// Composição radial própria: um centro de proteção conectando pessoas,
+// patrimônio e empresa. Evita repetir o painel de documentos usado na Atlas.
+const nodes = [
+  { label: "Automóvel", icon: "car" as const, top: "10%", left: "18%" },
+  { label: "Residencial", icon: "home" as const, top: "8%", left: "78%" },
+  { label: "Empresarial", icon: "briefcase" as const, top: "78%", left: "14%" },
+  { label: "Vida", icon: "heart" as const, top: "80%", left: "76%" },
+];
+---
+
+<div class="relative mx-auto h-[420px] w-full max-w-lg sm:h-[460px]" aria-hidden="true">
+  <div
+    class="absolute inset-6 rounded-full"
+    style="background: color-mix(in srgb, var(--primary) 5%, var(--surface));"
+  ></div>
+
+  <svg class="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <line x1="50" y1="52" x2="24" y2="18" stroke="var(--primary)" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.4" vector-effect="non-scaling-stroke" />
+    <line x1="50" y1="52" x2="80" y2="16" stroke="var(--primary)" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.4" vector-effect="non-scaling-stroke" />
+    <line x1="50" y1="52" x2="20" y2="82" stroke="var(--primary)" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.4" vector-effect="non-scaling-stroke" />
+    <line x1="50" y1="52" x2="79" y2="84" stroke="var(--primary)" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.4" vector-effect="non-scaling-stroke" />
+  </svg>
+
+  <div
+    class="absolute left-1/2 top-[52%] flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full shadow-[0_20px_45px_rgba(30,77,184,0.25)]"
+    style="background: var(--primary);"
+  >
+    <svg viewBox="0 0 40 40" class="h-9 w-9">
+      <path d="M7 25.5C11 18 16 14.5 20 14.5C24 14.5 29 18 33 25.5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+      <circle cx="20" cy="26" r="3.4" fill="var(--accent)" />
+    </svg>
+    <span class="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/85">Proteção</span>
+  </div>
+
+  {
+    nodes.map((node) => (
+      <div
+        class="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5"
+        style={`top:${node.top}; left:${node.left};`}
+      >
+        <span class="flex h-14 w-14 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--primary)] shadow-[0_10px_25px_rgba(20,33,61,0.1)]">
+          <Icon name={node.icon} class="h-6 w-6" />
+        </span>
+        <span class="rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[0.65rem] font-semibold text-[var(--ink)] shadow-sm">
+          {node.label}
+        </span>
+      </div>
+    ))
+  }
+</div>
