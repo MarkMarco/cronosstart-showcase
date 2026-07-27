@@ -65,4 +65,15 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     accentSoft: "#1c1a16",
     ink: "#f2ede4",
   },
+  {
+    slug: "orion-odontologia",
+    segment: "Clínica odontológica premium",
+    companyName: "Orion Odontologia",
+    shortDescription:
+      "Modelo premium para clínicas odontológicas, com especialidades, equipe, antes e depois e agendamento.",
+    available: true,
+    accent: "#2f6b5c",
+    accentSoft: "#eef1ec",
+    ink: "#23282a",
+  },
 ];

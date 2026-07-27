@@ -1,0 +1,71 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { BeforeAfterItem } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: BeforeAfterItem[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-2">
+      {
+        items.map((item, index) => (
+          <div
+            data-animate
+            style={`transition-delay: ${index * 90}ms`}
+            class="group overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-alt)] shadow-[0_20px_45px_-24px_rgba(35,40,42,0.35)] transition-shadow hover:shadow-[0_28px_55px_-20px_rgba(35,40,42,0.4)]"
+          >
+            <div class="relative aspect-[16/11] overflow-hidden">
+              <img
+                src={item.beforeImage}
+                alt={item.beforeAlt}
+                loading="lazy"
+                decoding="async"
+                style="clip-path: inset(0 50% 0 0);"
+                class="absolute inset-0 h-full w-full object-cover grayscale"
+              />
+              <img
+                src={item.afterImage}
+                alt={item.afterAlt}
+                loading="lazy"
+                decoding="async"
+                style="clip-path: inset(0 0 0 50%);"
+                class="absolute inset-0 h-full w-full object-cover"
+              />
+
+              <div class="pointer-events-none absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-white/70"></div>
+              <div class="pointer-events-none absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
+                <Icon name="sliders" class="h-4 w-4 text-[var(--ink)]" />
+              </div>
+
+              <span class="absolute left-4 top-4 rounded-full bg-black/55 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-white">
+                Antes
+              </span>
+              <span class="absolute right-4 top-4 rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
+                Depois
+              </span>
+            </div>
+            <div class="flex items-center justify-between gap-4 px-6 py-5">
+              <p class="font-[var(--font-heading)] text-lg font-medium text-[var(--ink)]">{item.label}</p>
+              <Icon name="sparkle" class="h-4 w-4 shrink-0 text-[var(--accent)]" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-center text-xs text-[var(--ink-muted)]">
+      Ilustração de funcionalidade — imagens de banco de dados, sem paciente real ou caso clínico documentado.
+    </p>
+  </div>
+</section>

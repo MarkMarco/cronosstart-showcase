@@ -140,9 +140,9 @@ export const aurumMotorsConfig: ShowcaseConfig = {
     radiusCard: "0.75rem",
   },
   nav: [
-    { label: "Início", href: "#" },
+    { label: "Início", href: "/modelos/aurum-motors" },
     { label: "Estoque", href: "/modelos/aurum-motors/estoque" },
-    { label: "Diferenciais", href: "#diferenciais" },
+    { label: "Diferenciais", href: "/modelos/aurum-motors/#diferenciais" },
     { label: "Financiamento", href: "/modelos/aurum-motors/financiamento" },
     { label: "Contato", href: "/modelos/aurum-motors/contato" },
   ],

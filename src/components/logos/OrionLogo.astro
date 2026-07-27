@@ -1,0 +1,29 @@
+---
+// Logo demonstrativo da Orion Odontologia. Para substituir por um logo
+// definitivo do cliente, basta trocar o conteúdo deste componente (ou
+// apontar os slots "header-logo"/"footer-logo" em modelos/orion-odontologia.astro
+// para um novo componente) — nenhum outro arquivo depende deste marcador.
+interface Props {
+  variant?: "full" | "mark";
+  class?: string;
+}
+const { variant = "full", class: className = "" } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-3 ${className}`}>
+  <svg viewBox="0 0 40 40" class="h-9 w-9 shrink-0" aria-hidden="true">
+    <circle cx="20" cy="20" r="8" fill="var(--primary)" />
+    <circle cx="20" cy="20" r="14.5" fill="none" stroke="var(--accent)" stroke-width="1.4" />
+    <circle cx="31.5" cy="14" r="1.6" fill="var(--accent)" />
+  </svg>
+  {variant === "full" && (
+    <span class="leading-tight">
+      <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-tight text-[var(--ink)]">
+        Orion
+      </span>
+      <span class="block -mt-1 text-[0.65rem] font-medium uppercase tracking-[0.3em] text-[var(--ink-muted)]">
+        Odontologia
+      </span>
+    </span>
+  )}
+</span>

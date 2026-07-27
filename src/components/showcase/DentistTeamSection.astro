@@ -1,0 +1,104 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { TeamMember } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: TeamMember[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+
+const initialsOf = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((member, index) => (
+          <div
+            data-animate
+            style={`transition-delay: ${index * 70}ms`}
+            class="group overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] shadow-[0_16px_40px_-24px_rgba(35,40,42,0.35)] transition-all hover:-translate-y-1.5 hover:shadow-[0_24px_50px_-20px_rgba(35,40,42,0.4)]"
+          >
+            <div class="relative aspect-[4/5] overflow-hidden">
+              {member.avatar && (
+                <img
+                  data-avatar-img
+                  src={member.avatar}
+                  alt={member.avatarAlt ?? `Retrato de ${member.name}`}
+                  loading="lazy"
+                  decoding="async"
+                  width="480"
+                  height="600"
+                  style="filter: grayscale(1) contrast(1.05) brightness(1.04);"
+                  class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                />
+              )}
+              <div
+                class="pointer-events-none absolute inset-0"
+                style="background: var(--primary); opacity: 0.14; mix-blend-mode: multiply;"
+                aria-hidden="true"
+              ></div>
+              <div
+                data-avatar-fallback
+                class={`absolute inset-0 ${member.avatar ? "hidden" : "flex"} items-center justify-center`}
+                style="background: var(--surface-alt);"
+              >
+                <Icon name="users" class="h-12 w-12 text-[var(--ink-muted)]" />
+              </div>
+              <div
+                class="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+                style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink) 55%, transparent));"
+              ></div>
+              <span class="absolute bottom-4 left-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-semibold text-[var(--primary)] shadow-md">
+                {initialsOf(member.name)}
+              </span>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-[var(--font-heading)] text-lg font-medium text-[var(--ink)]">{member.name}</h3>
+              <p class="mt-1 text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">{member.role}</p>
+              {member.credential && (
+                <p class="mt-1.5 text-xs text-[var(--ink-muted)]">{member.credential}</p>
+              )}
+              {member.bio && (
+                <p class="mt-4 border-t border-[var(--border)] pt-4 text-sm leading-relaxed text-[var(--ink-muted)]">
+                  {member.bio}
+                </p>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-center text-xs text-[var(--ink-muted)]">
+      Equipe demonstrativa, criada para fins de ilustração deste modelo.
+    </p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>("[data-avatar-img]").forEach((img) => {
+    img.addEventListener("error", () => {
+      img.classList.add("hidden");
+      const fallback = img.parentElement?.querySelector<HTMLElement>("[data-avatar-fallback]");
+      fallback?.classList.remove("hidden");
+      fallback?.classList.add("flex");
+    });
+  });
+</script>

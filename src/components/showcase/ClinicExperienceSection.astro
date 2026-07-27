@@ -1,0 +1,59 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { AmbianceContent, GalleryImage, BenefitItem } from "../../config/showcases/types";
+
+interface Props {
+  content: AmbianceContent;
+  images: GalleryImage[];
+  benefits: BenefitItem[];
+  id?: string;
+}
+const { content, images, benefits, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <div data-animate class="grid grid-cols-2 gap-4">
+      {images[0] && (
+        <div class="mt-8 aspect-[3/4] overflow-hidden rounded-[1.5rem] shadow-[0_20px_40px_-20px_rgba(35,40,42,0.35)]">
+          <img src={images[0].src} alt={images[0].alt} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+        </div>
+      )}
+      {images[1] && (
+        <div class="aspect-[3/4] overflow-hidden rounded-[1.5rem] shadow-[0_20px_40px_-20px_rgba(35,40,42,0.35)]">
+          <img src={images[1].src} alt={images[1].alt} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+        </div>
+      )}
+    </div>
+
+    <div data-animate style="transition-delay: 80ms">
+      {content.eyebrow && (
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">{content.eyebrow}</p>
+      )}
+      <h2 class="font-[var(--font-heading)] text-3xl font-medium tracking-tight text-[var(--ink)] sm:text-4xl">
+        {content.title}
+      </h2>
+      <div class="mt-4 space-y-3">
+        {content.paragraphs.map((paragraph) => (
+          <p class="text-base leading-relaxed text-[var(--ink-muted)]">{paragraph}</p>
+        ))}
+      </div>
+
+      <div class="mt-8 grid gap-5 sm:grid-cols-2">
+        {
+          benefits.map((item) => (
+            <div class="flex items-start gap-3">
+              <span class="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--surface)] text-[var(--primary)] shadow-sm">
+                <Icon name={item.icon} class="h-4 w-4" />
+              </span>
+              <div>
+                <h3 class="text-sm font-semibold text-[var(--ink)]">{item.title}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

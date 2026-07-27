@@ -1,0 +1,115 @@
+---
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import OrionLogo from "../../../components/logos/OrionLogo.astro";
+import OrionHero from "../../../components/showcase/OrionHero.astro";
+import OrionIntroSection from "../../../components/showcase/OrionIntroSection.astro";
+import SpecialtiesSection from "../../../components/showcase/SpecialtiesSection.astro";
+import DentistTeamSection from "../../../components/showcase/DentistTeamSection.astro";
+import BeforeAfterSection from "../../../components/showcase/BeforeAfterSection.astro";
+import ClinicExperienceSection from "../../../components/showcase/ClinicExperienceSection.astro";
+import ProcessSection from "../../../components/showcase/ProcessSection.astro";
+import TestimonialsSection from "../../../components/showcase/TestimonialsSection.astro";
+import FAQSection from "../../../components/showcase/FAQSection.astro";
+import ClosingCtaSection from "../../../components/showcase/ClosingCtaSection.astro";
+import { orionOdontologiaConfig as config } from "../../../config/showcases/orion-odontologia";
+
+const featuredTeam = (config.team ?? []).slice(0, 3);
+const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value, label: stat.label }));
+---
+
+<ShowcaseLayout config={config}>
+  <OrionLogo slot="header-logo" />
+  <OrionLogo slot="footer-logo" />
+
+  <OrionHero
+    eyebrow={config.hero.eyebrow}
+    headline={config.hero.headline}
+    highlight={config.hero.highlight}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="/modelos/orion-odontologia/agendamento"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel}
+    ctaSecondaryHref="/modelos/orion-odontologia/especialidades"
+    image="/images/showcases/orion-odontologia/ambiente-2.jpg"
+    imageAlt="Sala de atendimento moderna da Orion Odontologia"
+    stats={heroStats}
+    ratingBadge="4.9/5 em avaliações de pacientes"
+  />
+
+  {config.sections.about && config.about && (
+    <OrionIntroSection
+      eyebrow={config.about.eyebrow}
+      title={config.about.title}
+      paragraphs={config.about.paragraphs}
+      quote={config.company.slogan}
+    />
+  )}
+
+  {config.sections.specialties && config.specialties && (
+    <SpecialtiesSection
+      id="especialidades"
+      eyebrow="O que tratamos"
+      title="Especialidades"
+      description="Seis frentes de atuação, coordenadas em um único plano de tratamento."
+      items={config.specialties}
+    />
+  )}
+
+  {config.sections.team && featuredTeam.length > 0 && (
+    <DentistTeamSection
+      eyebrow="Quem cuida de você"
+      title="Equipe"
+      description="Especialistas dedicados a cada etapa do seu tratamento."
+      items={featuredTeam}
+    />
+  )}
+
+  {config.sections.beforeAfter && config.beforeAfter && (
+    <BeforeAfterSection
+      eyebrow="Resultados"
+      title="Antes e depois"
+      description="Uma prévia de como apresentaríamos transformações reais de pacientes nesta seção."
+      items={config.beforeAfter}
+    />
+  )}
+
+  {config.sections.ambiance && config.ambianceContent && config.ambianceImages && config.benefits && (
+    <ClinicExperienceSection
+      id="diferenciais"
+      content={config.ambianceContent}
+      images={config.ambianceImages}
+      benefits={config.benefits}
+    />
+  )}
+
+  {config.sections.process && config.process && (
+    <ProcessSection
+      eyebrow="Como funciona"
+      title="Do primeiro contato ao pós-tratamento"
+      description="Um processo estruturado para que você saiba exatamente o que esperar."
+      steps={config.process}
+    />
+  )}
+
+  {config.sections.testimonials && config.testimonials && (
+    <TestimonialsSection
+      eyebrow="Depoimentos"
+      title="Quem já passou pela Orion"
+      description="Experiências de pacientes atendidos pela nossa equipe."
+      items={config.testimonials}
+    />
+  )}
+
+  {config.sections.faq && config.faq && (
+    <FAQSection eyebrow="Dúvidas frequentes" title="Perguntas frequentes" items={config.faq} />
+  )}
+
+  <ClosingCtaSection
+    title={config.contactCta.title}
+    description={config.contactCta.description}
+    buttonLabel={config.contactCta.buttonLabel}
+    buttonHref="/modelos/orion-odontologia/agendamento"
+  />
+</ShowcaseLayout>

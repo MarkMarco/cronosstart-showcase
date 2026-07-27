@@ -40,7 +40,9 @@ export type IconName =
   | "calendar"
   | "key"
   | "settings"
-  | "sliders";
+  | "sliders"
+  | "tooth"
+  | "sparkle";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -205,6 +207,8 @@ export interface TeamMember {
   role: string;
   avatar?: string;
   avatarAlt?: string;
+  credential?: string;
+  bio?: string;
 }
 
 export interface ExploreContent {
@@ -315,6 +319,25 @@ export interface VehicleSearchContent {
   brands: string[];
 }
 
+export interface SpecialtyItem {
+  title: string;
+  description: string;
+  icon: IconName;
+}
+
+export interface BeforeAfterItem {
+  label: string;
+  beforeImage: string;
+  afterImage: string;
+  beforeAlt: string;
+  afterAlt: string;
+}
+
+export interface ScheduleFormContent {
+  specialties: string[];
+  periods: string[];
+}
+
 export interface SectionsEnabled {
   about?: boolean;
   process?: boolean;
@@ -338,6 +361,9 @@ export interface SectionsEnabled {
   dealerHighlights?: boolean;
   tradeIn?: boolean;
   financing?: boolean;
+  specialties?: boolean;
+  beforeAfter?: boolean;
+  scheduleForm?: boolean;
 }
 
 export interface ShowcaseConfig {
@@ -380,4 +406,7 @@ export interface ShowcaseConfig {
   dealerHighlights?: DealerHighlight[];
   tradeIn?: TradeInContent;
   financing?: FinancingContent;
+  specialties?: SpecialtyItem[];
+  beforeAfter?: BeforeAfterItem[];
+  scheduleForm?: ScheduleFormContent;
 }
