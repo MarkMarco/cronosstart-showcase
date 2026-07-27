@@ -61,7 +61,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     />
   )}
 
-  {config.sections.process && (
+  {config.sections.process && config.process && (
     <AlternatingProcessSection
       id="como-funciona"
       eyebrow="Como funciona"
@@ -77,7 +77,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
 
   {config.sections.partners && config.partners && <PartnersSection partners={config.partners} />}
 
-  {config.sections.testimonials && (
+  {config.sections.testimonials && config.testimonials && (
     <TestimonialHighlights
       eyebrow="Depoimentos"
       title="Quem já contou com a Horizonte"

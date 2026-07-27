@@ -1,0 +1,74 @@
+---
+interface Props {
+  image: string;
+  imageAlt: string;
+  eyebrow?: string;
+  headline: string;
+  highlight?: string;
+  subheadline: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel?: string;
+  ctaSecondaryHref?: string;
+}
+const {
+  image,
+  imageAlt,
+  eyebrow,
+  headline,
+  highlight,
+  subheadline,
+  ctaPrimaryLabel,
+  ctaPrimaryHref,
+  ctaSecondaryLabel,
+  ctaSecondaryHref,
+} = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden">
+  <img src={image} alt={imageAlt} class="absolute inset-0 h-full w-full object-cover" loading="eager" decoding="async" />
+  <div class="absolute inset-0 bg-black/55" aria-hidden="true"></div>
+  <div
+    class="absolute inset-x-0 bottom-0 h-2/3"
+    style="background: linear-gradient(to top, var(--surface), transparent);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto flex min-h-[86svh] max-w-3xl flex-col items-center justify-center px-6 py-20 text-center sm:min-h-[92svh]">
+    {eyebrow && (
+      <p class="animate-hero-in mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)] backdrop-blur-sm">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+        {eyebrow}
+      </p>
+    )}
+    <h1
+      class="animate-hero-in font-[var(--font-heading)] text-5xl font-medium leading-[1.08] tracking-tight text-white sm:text-6xl"
+      style="animation-delay: 60ms"
+    >
+      {headline}{" "}
+      {highlight && <span class="italic text-[var(--accent)]">{highlight}</span>}
+    </h1>
+    <p
+      class="animate-hero-in mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/75"
+      style="animation-delay: 120ms"
+    >
+      {subheadline}
+    </p>
+    <div class="animate-hero-in mt-9 flex flex-wrap items-center justify-center gap-4" style="animation-delay: 180ms">
+      <a
+        href={ctaPrimaryHref}
+        class="inline-flex items-center justify-center rounded-full bg-[var(--primary)] px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
+      >
+        {ctaPrimaryLabel}
+      </a>
+      {ctaSecondaryLabel && ctaSecondaryHref && (
+        <a
+          href={ctaSecondaryHref}
+          class="inline-flex items-center justify-center rounded-full border border-white/30 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        >
+          {ctaSecondaryLabel}
+        </a>
+      )}
+    </div>
+  </div>
+</section>

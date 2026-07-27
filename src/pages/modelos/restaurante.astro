@@ -1,0 +1,92 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
+import EssenzaLogo from "../../components/logos/EssenzaLogo.astro";
+import RestaurantHero from "../../components/showcase/RestaurantHero.astro";
+import AmbianceSection from "../../components/showcase/AmbianceSection.astro";
+import FeaturedDishesSection from "../../components/showcase/FeaturedDishesSection.astro";
+import MenuPreviewSection from "../../components/showcase/MenuPreviewSection.astro";
+import GallerySection from "../../components/showcase/GallerySection.astro";
+import ReviewsSection from "../../components/showcase/ReviewsSection.astro";
+import InstagramSection from "../../components/showcase/InstagramSection.astro";
+import LocationHoursSection from "../../components/showcase/LocationHoursSection.astro";
+import ReservationSection from "../../components/showcase/ReservationSection.astro";
+import { restauranteConfig as config } from "../../config/showcases/restaurante";
+---
+
+<ShowcaseLayout config={config}>
+  <EssenzaLogo slot="header-logo" />
+  <EssenzaLogo slot="footer-logo" />
+
+  <RestaurantHero
+    image={`/images/showcases/restaurante/hero-ambiente.jpg`}
+    imageAlt="Salão do restaurante com iluminação quente ao entardecer"
+    eyebrow={config.hero.eyebrow}
+    headline={config.hero.headline}
+    highlight={config.hero.highlight}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="#reservas"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel}
+    ctaSecondaryHref="#cardapio"
+  />
+
+  {config.sections.ambiance && config.ambianceContent && config.ambianceImages && (
+    <AmbianceSection
+      id="experiencia"
+      eyebrow={config.ambianceContent.eyebrow}
+      title={config.ambianceContent.title}
+      paragraphs={config.ambianceContent.paragraphs}
+      images={config.ambianceImages}
+    />
+  )}
+
+  {config.sections.dishes && config.dishes && (
+    <FeaturedDishesSection
+      id="cardapio"
+      eyebrow="Pratos em destaque"
+      title="O que não pode faltar na sua visita"
+      description="Uma seleção dos pratos mais pedidos da casa, preparados com ingredientes selecionados."
+      items={config.dishes}
+    />
+  )}
+
+  {config.sections.menu && config.menu && (
+    <MenuPreviewSection
+      eyebrow="Cardápio"
+      title="Cardápio resumido"
+      description="Uma prévia do nosso cardápio — sugestões por categoria, direto ao ponto."
+      categories={config.menu}
+    />
+  )}
+
+  {config.sections.gallery && config.gallery && (
+    <GallerySection
+      id="galeria"
+      eyebrow="Galeria"
+      title="Um pouco do nosso ambiente"
+      description="Fotos do salão, dos bastidores e dos pratos que saem da nossa cozinha."
+      images={config.gallery}
+    />
+  )}
+
+  {config.sections.reviews && config.testimonials && (
+    <ReviewsSection
+      eyebrow="Avaliações"
+      title="Quem já esteve no Essenza"
+      description="Comentários de clientes sobre a experiência no restaurante."
+      items={config.testimonials}
+    />
+  )}
+
+  {config.sections.instagram && config.instagramHandle && config.gallery && (
+    <InstagramSection handle={config.instagramHandle} images={config.gallery} />
+  )}
+
+  {config.sections.location && config.location && (
+    <LocationHoursSection id="localizacao" content={config.location} contact={config.contact} company={config.company} />
+  )}
+
+  <ReservationSection id="reservas" cta={config.contactCta} />
+</ShowcaseLayout>

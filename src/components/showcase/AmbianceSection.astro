@@ -1,0 +1,52 @@
+---
+import type { GalleryImage } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  paragraphs: string[];
+  images: GalleryImage[];
+  id?: string;
+}
+const { eyebrow, title, paragraphs, images, id } = Astro.props;
+const [primary, secondary] = images;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2 lg:items-center">
+    <div data-animate class="order-2 lg:order-1">
+      {eyebrow && (
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{eyebrow}</p>
+      )}
+      <h2 class="font-[var(--font-heading)] text-3xl font-medium tracking-tight text-[var(--ink)] sm:text-4xl">
+        {title}
+      </h2>
+      <div class="mt-5 space-y-4">
+        {paragraphs.map((paragraph) => (
+          <p class="text-base leading-relaxed text-[var(--ink-muted)]">{paragraph}</p>
+        ))}
+      </div>
+    </div>
+
+    <div data-animate class="relative order-1 mx-auto w-full max-w-md lg:order-2 lg:max-w-none">
+      {primary && (
+        <img
+          src={primary.src}
+          alt={primary.alt}
+          loading="lazy"
+          decoding="async"
+          class="aspect-[4/5] w-full rounded-2xl object-cover shadow-2xl"
+        />
+      )}
+      {secondary && (
+        <img
+          src={secondary.src}
+          alt={secondary.alt}
+          loading="lazy"
+          decoding="async"
+          class="absolute -bottom-8 -left-6 hidden aspect-[4/3] w-2/3 rounded-2xl object-cover shadow-2xl ring-4 ring-[var(--surface)] sm:block"
+        />
+      )}
+    </div>
+  </div>
+</section>

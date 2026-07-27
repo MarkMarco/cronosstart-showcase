@@ -45,7 +45,7 @@ import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria"
 
   {config.sections.about && config.about && <PropertyAboutSection id="sobre" content={config.about} />}
 
-  {config.sections.process && (
+  {config.sections.process && config.process && (
     <GhostNumberProcessSection
       id="como-funciona"
       eyebrow="Processo"
@@ -64,7 +64,7 @@ import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria"
     />
   )}
 
-  {config.sections.testimonials && (
+  {config.sections.testimonials && config.testimonials && (
     <AsymmetricTestimonials eyebrow="Depoimentos" title="Quem já fechou negócio com a Vértice" items={config.testimonials} />
   )}
 

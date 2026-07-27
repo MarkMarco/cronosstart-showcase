@@ -20,7 +20,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <slot name="logo" />
     </a>
 
-    <nav class="hidden md:block" aria-label="Navegação principal">
+    <nav class="hidden lg:block" aria-label="Navegação principal">
       <ul class="flex items-center gap-7">
         {
           nav.map((item) => (
@@ -40,7 +40,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
     <div class="flex items-center gap-3">
       <a
         href={ctaHref}
-        class="hidden items-center rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 md:inline-flex"
+        class="hidden items-center rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 lg:inline-flex"
       >
         {ctaLabel}
       </a>
@@ -48,7 +48,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         id="menu-toggle"
         type="button"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] md:hidden"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label="Abrir menu"

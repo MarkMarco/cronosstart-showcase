@@ -49,9 +49,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     companyName: "Essenza Restaurante",
     shortDescription:
       "Modelo acolhedor e sofisticado, valorizando cardápio, ambiente e reservas.",
-    available: false,
-    accent: "#7c2d3a",
-    accentSoft: "#faf1ec",
-    ink: "#241a15",
+    available: true,
+    accent: "#cf8a4e",
+    accentSoft: "#241a16",
+    ink: "#f3e9df",
   },
 ];

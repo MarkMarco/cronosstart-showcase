@@ -1,0 +1,43 @@
+---
+import Icon from "../ui/Icon.astro";
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { GalleryImage } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  images: GalleryImage[];
+  id?: string;
+}
+const { eyebrow, title, description, images, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {
+        images.map((image, index) => (
+          <div
+            data-animate
+            style={`transition-delay: ${Math.min(index, 6) * 50}ms`}
+            class="group relative aspect-square overflow-hidden rounded-xl"
+          >
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
+              <Icon name="camera" class="h-6 w-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

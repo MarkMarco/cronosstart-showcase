@@ -58,7 +58,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
 
   {config.sections.about && config.about && <AboutSection id="sobre" content={config.about} />}
 
-  {config.sections.process && (
+  {config.sections.process && config.process && (
     <ProcessSection
       eyebrow="Como funciona"
       title="Etapas do atendimento"
@@ -67,7 +67,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     />
   )}
 
-  {config.sections.testimonials && (
+  {config.sections.testimonials && config.testimonials && (
     <TestimonialsSection
       eyebrow="Depoimentos"
       title="Quem já organizou a contabilidade com a Atlas"

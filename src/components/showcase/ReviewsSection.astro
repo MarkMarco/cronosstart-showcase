@@ -1,0 +1,49 @@
+---
+import Icon from "../ui/Icon.astro";
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { Testimonial } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: Testimonial[];
+}
+const { eyebrow, title, description, items } = Astro.props;
+---
+
+<section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-10 grid gap-5 lg:grid-cols-3">
+      {
+        items.map((item, index) => (
+          <figure
+            data-animate
+            style={`transition-delay: ${index * 70}ms`}
+            class="rounded-2xl border-t-2 border-[var(--accent)] bg-[var(--surface-alt)] p-6"
+          >
+            <div class="flex items-center gap-1" aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, starIndex) => (
+                <Icon
+                  name="star"
+                  class={`h-4 w-4 ${starIndex < (item.rating ?? 5) ? "text-[var(--accent)]" : "text-[var(--border)]"}`}
+                />
+              ))}
+            </div>
+            <blockquote class="mt-4 text-sm leading-relaxed text-[var(--ink)]">"{item.quote}"</blockquote>
+            <figcaption class="mt-5 border-t border-[var(--border)] pt-4">
+              <span class="block text-sm font-semibold text-[var(--ink)]">{item.author}</span>
+              <span class="text-xs text-[var(--ink-muted)]">{item.segment}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="mt-6 text-center text-xs text-[var(--ink-muted)]">
+      Avaliações ilustrativas, criadas para fins de demonstração deste modelo.
+    </p>
+  </div>
+</section>

@@ -30,7 +30,11 @@ export type IconName =
   | "refresh"
   | "bed"
   | "maximize"
-  | "search";
+  | "search"
+  | "flame"
+  | "leaf"
+  | "wine"
+  | "camera";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -123,6 +127,7 @@ export interface Testimonial {
   role: string;
   segment: string;
   result: string;
+  rating?: number;
 }
 
 export interface FaqItem {
@@ -216,10 +221,41 @@ export interface PropertyLeadFormContent {
   regions: string[];
 }
 
+export interface DishItem {
+  name: string;
+  description: string;
+  price: string;
+  image: string;
+  imageAlt: string;
+  tag?: string;
+}
+
+export interface MenuCategory {
+  name: string;
+  items: { name: string; description?: string; price: string }[];
+}
+
+export interface GalleryImage {
+  src: string;
+  alt: string;
+}
+
+export interface LocationContent {
+  addressLine: string;
+  mapNote?: string;
+  hoursLines: { day: string; hours: string }[];
+}
+
+export interface AmbianceContent {
+  eyebrow?: string;
+  title: string;
+  paragraphs: string[];
+}
+
 export interface SectionsEnabled {
   about?: boolean;
-  process: boolean;
-  testimonials: boolean;
+  process?: boolean;
+  testimonials?: boolean;
   faq?: boolean;
   highlightBand?: boolean;
   protectionPicker?: boolean;
@@ -227,6 +263,13 @@ export interface SectionsEnabled {
   partners?: boolean;
   team?: boolean;
   explore?: boolean;
+  dishes?: boolean;
+  menu?: boolean;
+  ambiance?: boolean;
+  gallery?: boolean;
+  reviews?: boolean;
+  instagram?: boolean;
+  location?: boolean;
 }
 
 export interface ShowcaseConfig {
@@ -242,8 +285,8 @@ export interface ShowcaseConfig {
   benefits?: BenefitItem[];
   highlightBand?: HighlightBandContent;
   about?: AboutContent;
-  process: ProcessStep[];
-  testimonials: Testimonial[];
+  process?: ProcessStep[];
+  testimonials?: Testimonial[];
   faq?: FaqItem[];
   contactCta: CtaBand;
   contact: ShowcaseContact;
@@ -257,4 +300,11 @@ export interface ShowcaseConfig {
   explore?: ExploreContent;
   propertySearch?: PropertySearchContent;
   propertyLeadForm?: PropertyLeadFormContent;
+  dishes?: DishItem[];
+  menu?: MenuCategory[];
+  ambianceContent?: AmbianceContent;
+  ambianceImages?: GalleryImage[];
+  gallery?: GalleryImage[];
+  instagramHandle?: string;
+  location?: LocationContent;
 }

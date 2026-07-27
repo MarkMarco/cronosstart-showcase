@@ -1,0 +1,46 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import type { MenuCategory } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  categories: MenuCategory[];
+}
+const { eyebrow, title, description, categories } = Astro.props;
+---
+
+<section class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-5xl">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
+
+    <div class="mt-12 grid gap-x-12 gap-y-12 sm:grid-cols-2">
+      {
+        categories.map((category, index) => (
+          <div data-animate style={`transition-delay: ${index * 70}ms`}>
+            <h3 class="border-b border-[var(--border)] pb-3 font-[var(--font-heading)] text-xl text-[var(--accent)]">
+              {category.name}
+            </h3>
+            <ul class="mt-5 space-y-4">
+              {category.items.map((item) => (
+                <li>
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-[var(--font-heading)] text-base text-[var(--ink)]">{item.name}</span>
+                    <span class="mb-1 flex-1 border-b border-dotted border-[var(--border)]" />
+                    <span class="text-sm font-semibold text-[var(--ink)]">{item.price}</span>
+                  </div>
+                  {item.description && <p class="mt-1 text-xs leading-relaxed text-[var(--ink-muted)]">{item.description}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-center text-xs text-[var(--ink-muted)]">
+      Cardápio resumido e ilustrativo — sujeito a alterações conforme a temporada.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { LocationContent, ShowcaseContact, ShowcaseCompany } from "../../config/showcases/types";
+
+interface Props {
+  content: LocationContent;
+  contact: ShowcaseContact;
+  company: ShowcaseCompany;
+  id?: string;
+}
+const { content, contact, company, id } = Astro.props;
+const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
+    <div data-animate>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Localização e horários</p>
+      <h2 class="font-[var(--font-heading)] text-3xl font-medium tracking-tight text-[var(--ink)] sm:text-4xl">
+        Venha nos visitar
+      </h2>
+      <p class="mt-4 flex items-start gap-2.5 text-base text-[var(--ink-muted)]">
+        <Icon name="map-pin" class="mt-0.5 h-5 w-5 shrink-0 text-[var(--accent)]" />
+        {content.addressLine}
+      </p>
+
+      <ul class="mt-6 space-y-2.5 border-t border-[var(--border)] pt-5">
+        {
+          content.hoursLines.map((line) => (
+            <li class="flex items-center justify-between text-sm text-[var(--ink-muted)]">
+              <span class="inline-flex items-center gap-2.5">
+                <Icon name="clock" class="h-4 w-4 text-[var(--accent)]" />
+                {line.day}
+              </span>
+              <span class="text-[var(--ink)]">{line.hours}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-7 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+      >
+        <Icon name="whatsapp" class="h-5 w-5" />
+        Falar pelo WhatsApp
+      </a>
+      <p class="mt-2 text-xs text-[var(--ink-muted)]">
+        Número de WhatsApp fictício ({contact.whatsappNumber}), apenas para demonstração.
+      </p>
+    </div>
+
+    <div
+      data-animate
+      class="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--border)]"
+      style="background-color: var(--surface); background-image: repeating-linear-gradient(0deg, color-mix(in srgb, var(--ink) 6%, transparent) 0, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px, transparent 48px), repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 6%, transparent) 0, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px, transparent 48px);"
+    >
+      {content.mapNote && (
+        <span class="absolute right-4 top-4 rounded-full border border-[var(--border)] bg-[var(--surface-alt)] px-3 py-1 text-[0.65rem] text-[var(--ink-muted)]">
+          {content.mapNote}
+        </span>
+      )}
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+        <span class="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-lg">
+          <Icon name="map-pin" class="h-6 w-6" />
+        </span>
+        <span class="font-[var(--font-heading)] text-base text-[var(--ink)]">{company.name}</span>
+        <span class="text-xs text-[var(--ink-muted)]">{contact.city}/{contact.state}</span>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { GalleryImage } from "../../config/showcases/types";
+
+interface Props {
+  handle: string;
+  images: GalleryImage[];
+}
+const { handle, images } = Astro.props;
+---
+
+<section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div data-animate class="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]/15 text-[var(--accent)]">
+          <Icon name="instagram" class="h-5 w-5" />
+        </span>
+        <div>
+          <p class="font-[var(--font-heading)] text-lg text-[var(--ink)]">{handle}</p>
+          <p class="text-xs text-[var(--ink-muted)]">Instagram demonstrativo — perfil fictício</p>
+        </div>
+      </div>
+      <span class="rounded-full border border-[var(--border)] px-4 py-2 text-xs font-semibold text-[var(--ink-muted)]">
+        Seguir
+      </span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2.5 sm:grid-cols-6">
+      {
+        images.map((image, index) => (
+          <div
+            data-animate
+            data-ig-tile
+            style={`transition-delay: ${index * 40}ms`}
+            class="group relative aspect-square overflow-hidden rounded-lg bg-[var(--surface-alt)]"
+          >
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="eager"
+              decoding="async"
+              data-ig-img
+              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div data-ig-fallback class="pointer-events-none absolute inset-0 hidden items-center justify-center bg-[var(--surface-alt)]">
+              <Icon name="camera" class="h-5 w-5 text-[var(--ink-muted)]" />
+            </div>
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
+              <Icon name="instagram" class="h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>("[data-ig-img]").forEach((img) => {
+    const showFallback = () => {
+      img.classList.add("hidden");
+      const tile = img.closest("[data-ig-tile]");
+      const fallback = tile?.querySelector<HTMLElement>("[data-ig-fallback]");
+      fallback?.classList.remove("hidden");
+      fallback?.classList.add("flex");
+    };
+    if (img.complete && img.naturalWidth === 0) {
+      showFallback();
+    } else {
+      img.addEventListener("error", showFallback);
+    }
+  });
+</script>
