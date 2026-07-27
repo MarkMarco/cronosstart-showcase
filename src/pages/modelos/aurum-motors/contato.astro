@@ -1,0 +1,25 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import AurumLogo from "../../../components/logos/AurumLogo.astro";
+import TestDriveFormSection from "../../../components/showcase/TestDriveFormSection.astro";
+import LocationHoursSection from "../../../components/showcase/LocationHoursSection.astro";
+import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
+
+const seo = {
+  title: "Contato e test-drive — Aurum Motors (modelo demonstrativo)",
+  description: "Agende um test-drive ou fale com a equipe da Aurum Motors. Modelo demonstrativo da CronosStart.",
+};
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <AurumLogo slot="header-logo" />
+  <AurumLogo slot="footer-logo" />
+
+  <TestDriveFormSection vehicles={config.vehicles ?? []} />
+
+  {config.sections.location && config.location && (
+    <LocationHoursSection content={config.location} contact={config.contact} company={config.company} />
+  )}
+</ShowcaseLayout>

@@ -1,0 +1,103 @@
+---
+import type { VehicleItem } from "../../config/showcases/types";
+
+interface Props {
+  vehicles: VehicleItem[];
+}
+const { vehicles } = Astro.props;
+
+const priceOf = (price: string) => Number(price.replace(/[^\d]/g, ""));
+const installmentOptions = [12, 24, 36, 48, 60];
+---
+
+<div
+  data-financing-simulator
+  data-vehicles={JSON.stringify(vehicles.map((v) => ({ slug: v.slug, name: v.name, price: priceOf(v.price) })))}
+  class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:p-8"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+      Veículo
+      <select
+        data-field="vehicle"
+        class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+      >
+        {vehicles.map((vehicle) => <option value={vehicle.slug}>{vehicle.name} — {vehicle.price}</option>)}
+      </select>
+    </label>
+
+    <label class="block text-sm font-medium text-[var(--ink)]">
+      Entrada
+      <div class="mt-1.5 flex items-center gap-3">
+        <input type="range" data-field="down" min="10" max="70" step="5" value="20" class="w-full accent-[var(--primary)]" />
+        <span data-field="down-value" class="w-12 shrink-0 text-right text-sm font-semibold text-[var(--ink)]">20%</span>
+      </div>
+    </label>
+
+    <label class="block text-sm font-medium text-[var(--ink)]">
+      Parcelas
+      <select
+        data-field="installments"
+        class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+      >
+        {installmentOptions.map((n) => <option value={n} selected={n === 48}>{n}x</option>)}
+      </select>
+    </label>
+  </div>
+
+  <div class="mt-6 grid gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:grid-cols-3">
+    <div>
+      <p class="text-xs text-[var(--ink-muted)]">Valor financiado</p>
+      <p data-result="financed" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--ink)]">—</p>
+    </div>
+    <div>
+      <p class="text-xs text-[var(--ink-muted)]">Parcela estimada</p>
+      <p data-result="installment" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--accent)]">—</p>
+    </div>
+    <div>
+      <p class="text-xs text-[var(--ink-muted)]">Entrada estimada</p>
+      <p data-result="down" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--ink)]">—</p>
+    </div>
+  </div>
+  <p class="mt-4 text-xs text-[var(--ink-muted)]">
+    Simulação demonstrativa com taxa ilustrativa de 1,9% a.m. — não representa uma oferta real de crédito.
+  </p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-financing-simulator]");
+  if (root) {
+    const vehicles = JSON.parse(root.dataset.vehicles ?? "[]") as { slug: string; name: string; price: number }[];
+    const vehicleSelect = root.querySelector<HTMLSelectElement>('[data-field="vehicle"]');
+    const downRange = root.querySelector<HTMLInputElement>('[data-field="down"]');
+    const downValueLabel = root.querySelector<HTMLElement>('[data-field="down-value"]');
+    const installmentsSelect = root.querySelector<HTMLSelectElement>('[data-field="installments"]');
+    const financedOut = root.querySelector<HTMLElement>('[data-result="financed"]');
+    const installmentOut = root.querySelector<HTMLElement>('[data-result="installment"]');
+    const downOut = root.querySelector<HTMLElement>('[data-result="down"]');
+
+    const brl = (value: number) =>
+      value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+
+    const monthlyRate = 0.019;
+
+    const recalc = () => {
+      const vehicle = vehicles.find((v) => v.slug === vehicleSelect?.value) ?? vehicles[0];
+      if (!vehicle) return;
+      const downPct = Number(downRange?.value ?? 20);
+      const installments = Number(installmentsSelect?.value ?? 48);
+
+      const downAmount = vehicle.price * (downPct / 100);
+      const financedAmount = vehicle.price - downAmount;
+      const payment = (financedAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -installments));
+
+      if (downValueLabel) downValueLabel.textContent = `${downPct}%`;
+      if (financedOut) financedOut.textContent = brl(financedAmount);
+      if (downOut) downOut.textContent = brl(downAmount);
+      if (installmentOut) installmentOut.textContent = `${installments}x ${brl(payment)}`;
+    };
+
+    [vehicleSelect, downRange, installmentsSelect].forEach((el) => el?.addEventListener("input", recalc));
+    recalc();
+  }
+</script>

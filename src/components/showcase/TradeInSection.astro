@@ -1,0 +1,45 @@
+---
+import type { TradeInContent } from "../../config/showcases/types";
+
+interface Props {
+  content: TradeInContent;
+  id?: string;
+}
+const { content, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div
+      data-animate
+      class="grid gap-10 rounded-3xl border border-[var(--border)] bg-[var(--surface-alt)] p-8 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:p-14"
+    >
+      <div>
+        {content.eyebrow && (
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{content.eyebrow}</p>
+        )}
+        <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{content.title}</h2>
+        <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">{content.description}</p>
+        <a
+          href="#contato"
+          class="mt-7 inline-flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-7 py-3.5 text-sm font-semibold text-[var(--primary-ink)] shadow-sm transition-transform hover:-translate-y-0.5"
+        >
+          {content.ctaLabel}
+        </a>
+      </div>
+
+      <ol class="space-y-5">
+        {
+          content.steps.map((step, index) => (
+            <li class="flex gap-4">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--accent)]/40 text-sm font-semibold text-[var(--accent)]">
+                {index + 1}
+              </span>
+              <p class="pt-1 text-sm leading-relaxed text-[var(--ink)]">{step}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import AurumLogo from "../../../components/logos/AurumLogo.astro";
+import Icon from "../../../components/ui/Icon.astro";
+import FinancingSimulator from "../../../components/showcase/FinancingSimulator.astro";
+import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
+
+const seo = {
+  title: "Financiamento — Aurum Motors (modelo demonstrativo)",
+  description: "Simule o financiamento do seu próximo veículo na Aurum Motors. Modelo demonstrativo da CronosStart.",
+};
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <AurumLogo slot="header-logo" />
+  <AurumLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-8 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Financiamento</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">
+        {config.financing?.title ?? "Financiamento sob medida"}
+      </h1>
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">{config.financing?.description}</p>
+    </div>
+  </section>
+
+  <section class="bg-[var(--surface)] px-6 pb-16 sm:pb-20">
+    <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.1fr]">
+      <div>
+        {config.financing?.plans && (
+          <div class="space-y-4">
+            {config.financing.plans.map((plan) => (
+              <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-5">
+                <h3 class="text-base font-semibold text-[var(--ink)]">{plan.label}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-[var(--ink-muted)]">{plan.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {config.financing?.bullets && (
+          <ul class="mt-6 space-y-2.5">
+            {config.financing.bullets.map((bullet) => (
+              <li class="flex items-start gap-2.5 text-sm text-[var(--ink)]">
+                <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+                {bullet}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div>
+        <FinancingSimulator vehicles={config.vehicles ?? []} />
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>

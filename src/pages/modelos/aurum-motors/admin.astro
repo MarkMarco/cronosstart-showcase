@@ -1,0 +1,727 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import AurumLogo from "../../../components/logos/AurumLogo.astro";
+import Icon from "../../../components/ui/Icon.astro";
+import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
+
+const seo = {
+  title: "Painel administrativo — Aurum Motors (modelo demonstrativo)",
+  description: "Painel administrativo demonstrativo de gestão de estoque da Aurum Motors.",
+};
+
+const priceOf = (price: string) => Number(price.replace(/[^\d]/g, ""));
+
+const seedVehicles = (config.vehicles ?? []).map((v) => ({
+  slug: v.slug,
+  name: v.name,
+  brand: v.brand,
+  category: v.category,
+  price: priceOf(v.price),
+  year: v.spec.year,
+  mileageKm: v.spec.mileageKm,
+  transmission: v.spec.transmission,
+  fuel: v.spec.fuel,
+  image: v.image,
+  imageAlt: v.imageAlt,
+  tag: v.tag ?? "",
+  featured: Boolean(v.featured),
+  status: "ativo",
+  archived: false,
+  description: v.description ?? "",
+}));
+
+const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith("Todas")) ?? [];
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <AurumLogo slot="header-logo" />
+  <AurumLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <!-- Tela de login demonstrativa -->
+      <div data-login-gate class="mx-auto max-w-sm py-16 text-center">
+        <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
+          <Icon name="key" class="h-6 w-6" />
+        </span>
+        <h1 class="text-2xl font-semibold tracking-tight text-[var(--ink)]">Acesso restrito</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Aurum Motors</p>
+        <form data-login-form class="mt-8 space-y-3 text-left">
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            E-mail
+            <input
+              type="email"
+              value="lojista@aurummotors-demo.com.br"
+              readonly
+              class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none"
+            />
+          </label>
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            Senha
+            <input
+              type="password"
+              value="demonstracao"
+              readonly
+              class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none"
+            />
+          </label>
+          <button
+            type="submit"
+            class="!mt-6 w-full rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+          >
+            Entrar no painel
+          </button>
+          <p class="text-center text-xs text-[var(--ink-muted)]">
+            Login demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.
+          </p>
+        </form>
+      </div>
+
+      <!-- Conteúdo do painel -->
+      <div data-admin-content class="hidden">
+        <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-[var(--ink)]">
+          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas
+          neste navegador (localStorage) e simulam a gestão real de estoque — elas se refletem no site público
+          (estoque, destaque na home e página do veículo) enquanto você navegar neste mesmo navegador.
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
+            <h1 class="mt-2 text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Gestão de estoque</h1>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              data-action="toggle-form"
+              class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+            >
+              <Icon name="check" class="h-4 w-4" />
+              Adicionar veículo
+            </button>
+            <button
+              type="button"
+              data-action="reset"
+              class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              <Icon name="refresh" class="h-4 w-4" />
+              Restaurar dados de demonstração
+            </button>
+          </div>
+        </div>
+
+        <!-- Contador -->
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+            <p class="text-xs text-[var(--ink-muted)]">Ativos</p>
+            <p data-stat="ativo" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+            <p class="text-xs text-[var(--ink-muted)]">Reservados</p>
+            <p data-stat="reservado" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+            <p class="text-xs text-[var(--ink-muted)]">Vendidos</p>
+            <p data-stat="vendido" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+            <p class="text-xs text-[var(--ink-muted)]">Em destaque</p>
+            <p data-stat="featured" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
+          </div>
+        </div>
+
+        <!-- Busca e filtros -->
+        <div class="mt-6 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 sm:grid-cols-[1.5fr_1fr_1fr_auto] sm:items-center">
+          <label class="block text-xs font-medium text-[var(--ink-muted)]">
+            Buscar
+            <input
+              type="text"
+              data-search
+              placeholder="Nome ou marca..."
+              class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+            />
+          </label>
+          <label class="block text-xs font-medium text-[var(--ink-muted)]">
+            Status
+            <select
+              data-filter-status
+              class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+            >
+              <option value="">Todos</option>
+              <option value="ativo">Ativo</option>
+              <option value="reservado">Reservado</option>
+              <option value="vendido">Vendido</option>
+            </select>
+          </label>
+          <label class="block text-xs font-medium text-[var(--ink-muted)]">
+            Categoria
+            <select
+              data-filter-category
+              class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+            >
+              <option value="">Todas</option>
+              {categories.map((category) => <option value={category}>{category}</option>)}
+            </select>
+          </label>
+          <label class="flex items-center gap-2 text-xs font-medium text-[var(--ink-muted)] sm:pt-4">
+            <input type="checkbox" data-show-archived class="h-4 w-4 rounded accent-[var(--primary)]" />
+            Mostrar arquivados
+          </label>
+        </div>
+
+        <!-- Formulário + prévia -->
+        <form data-vehicle-form class="mt-6 hidden grid-cols-1 gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <h2 data-form-title class="text-base font-semibold text-[var(--ink)]">Novo veículo</h2>
+            <input type="hidden" name="slug" />
+            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+              <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                Nome do veículo
+                <input
+                  type="text"
+                  name="name"
+                  data-preview-field="name"
+                  required
+                  placeholder="Ex.: Porsche Cayenne S"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Marca
+                <input
+                  type="text"
+                  name="brand"
+                  data-preview-field="brand"
+                  required
+                  placeholder="Ex.: Porsche"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Categoria
+                <select
+                  name="category"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                >
+                  {categories.map((category) => <option value={category}>{category}</option>)}
+                </select>
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Preço (R$)
+                <input
+                  type="number"
+                  name="price"
+                  data-preview-field="price"
+                  required
+                  min="0"
+                  step="100"
+                  placeholder="Ex.: 349900"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Ano
+                <input
+                  type="number"
+                  name="year"
+                  data-preview-field="year"
+                  required
+                  min="1990"
+                  max="2030"
+                  placeholder="Ex.: 2023"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Quilometragem
+                <input
+                  type="number"
+                  name="mileageKm"
+                  data-preview-field="mileageKm"
+                  required
+                  min="0"
+                  placeholder="Ex.: 18500"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Câmbio
+                <input
+                  type="text"
+                  name="transmission"
+                  required
+                  value="Automático"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Combustível
+                <input
+                  type="text"
+                  name="fuel"
+                  data-preview-field="fuel"
+                  required
+                  value="Gasolina"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Etiqueta (opcional)
+                <input
+                  type="text"
+                  name="tag"
+                  data-preview-field="tag"
+                  placeholder="Ex.: Selecionado"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+              </label>
+              <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
+                <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--primary)]" />
+                Destacar na home
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                Caminho da imagem
+                <input
+                  type="text"
+                  name="image"
+                  data-preview-field="image"
+                  placeholder="/images/showcases/aurum-motors/vehicle-bmw-m340i.jpg"
+                  class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                />
+                <span class="mt-1 block text-xs text-[var(--ink-muted)]">
+                  Use um caminho de imagem já existente em /images/showcases/aurum-motors/ — se deixar em branco, uma imagem padrão será usada.
+                </span>
+              </label>
+              <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                Descrição
+                <textarea
+                  name="description"
+                  rows="2"
+                  class="mt-1.5 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                ></textarea>
+              </label>
+            </div>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button
+                type="submit"
+                class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+              >
+                Publicar veículo
+              </button>
+              <button
+                type="button"
+                data-action="cancel-form"
+                class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+            <div class="mt-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+              <div class="relative aspect-[4/3] overflow-hidden bg-[var(--surface-alt)]">
+                <img data-preview="image" src="" alt="" class="hidden h-full w-full object-cover" />
+                <div data-preview="image-empty" class="flex h-full w-full items-center justify-center text-[var(--ink-muted)]">
+                  <Icon name="camera" class="h-8 w-8" />
+                </div>
+                <span data-preview="tag" class="absolute left-3 top-3 hidden rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]"></span>
+              </div>
+              <div class="p-5">
+                <p data-preview="brand" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Marca</p>
+                <h3 data-preview="name" class="mt-1 text-base font-semibold text-[var(--ink)]">Nome do veículo</h3>
+                <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-[var(--ink-muted)]">
+                  <span data-preview="year">—</span>
+                  <span data-preview="mileageKm">—</span>
+                  <span data-preview="fuel">—</span>
+                </div>
+                <p data-preview="price" class="mt-4 font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)]">R$ 0</p>
+              </div>
+            </div>
+            <p class="mt-2 text-xs text-[var(--ink-muted)]">Assim o card aparecerá no estoque público, antes de publicar.</p>
+          </div>
+        </form>
+
+        <div class="mt-8 overflow-x-auto rounded-2xl border border-[var(--border)]">
+          <table class="w-full min-w-[820px] border-collapse text-left text-sm">
+            <thead>
+              <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                <th class="px-4 py-3 font-medium">Veículo</th>
+                <th class="px-4 py-3 font-medium">Categoria</th>
+                <th class="px-4 py-3 font-medium">Preço</th>
+                <th class="px-4 py-3 font-medium">Status</th>
+                <th class="px-4 py-3 font-medium">Destaque</th>
+                <th class="px-4 py-3 font-medium text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody data-vehicle-table-body></tbody>
+          </table>
+        </div>
+        <p data-empty-state class="mt-6 hidden text-center text-sm text-[var(--ink-muted)]">
+          Nenhum veículo encontrado para esses filtros.
+        </p>
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>
+
+<script define:vars={{ seedVehicles }}>
+  const STORAGE_KEY = "aurum-motors-inventory-v1";
+  const AUTH_KEY = "aurum-motors-admin-authed";
+  const FALLBACK_IMAGE = "/images/showcases/aurum-motors/hero-showroom.jpg";
+
+  function slugify(text) {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+
+  function formatBRL(value) {
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  }
+
+  function loadInventory() {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    saveInventory(seedVehicles);
+    return seedVehicles;
+  }
+
+  function saveInventory(list) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch {}
+  }
+
+  let vehicles = loadInventory();
+  let pendingDeleteSlug = null;
+
+  // --- Login demonstrativo ---
+  const loginGate = document.querySelector("[data-login-gate]");
+  const adminContent = document.querySelector("[data-admin-content]");
+  const loginForm = document.querySelector("[data-login-form]");
+
+  function unlock() {
+    loginGate.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+    try {
+      window.sessionStorage.setItem(AUTH_KEY, "1");
+    } catch {}
+  }
+
+  loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    unlock();
+  });
+
+  try {
+    if (window.sessionStorage.getItem(AUTH_KEY) === "1") unlock();
+  } catch {}
+
+  // --- Referências ---
+  const tableBody = document.querySelector("[data-vehicle-table-body]");
+  const emptyState = document.querySelector("[data-empty-state]");
+  const form = document.querySelector("[data-vehicle-form]");
+  const formTitle = document.querySelector("[data-form-title]");
+  const toggleFormBtn = document.querySelector('[data-action="toggle-form"]');
+  const cancelFormBtn = document.querySelector('[data-action="cancel-form"]');
+  const resetBtn = document.querySelector('[data-action="reset"]');
+  const searchInput = document.querySelector("[data-search]");
+  const statusFilter = document.querySelector("[data-filter-status]");
+  const categoryFilter = document.querySelector("[data-filter-category]");
+  const showArchivedToggle = document.querySelector("[data-show-archived]");
+
+  const statusLabels = { ativo: "Ativo", reservado: "Reservado", vendido: "Vendido" };
+  const statusClasses = {
+    ativo: "bg-[var(--primary)]/15 text-[var(--primary)]",
+    reservado: "bg-amber-500/15 text-amber-500",
+    vendido: "bg-[var(--border)] text-[var(--ink-muted)]",
+  };
+
+  function showForm(editing) {
+    form.classList.remove("hidden");
+    form.classList.add("grid");
+    formTitle.textContent = editing ? "Editar veículo" : "Novo veículo";
+    updatePreview();
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function hideForm() {
+    form.classList.add("hidden");
+    form.classList.remove("grid");
+    form.reset();
+    form.querySelector('[name="slug"]').value = "";
+  }
+
+  function updateCounters(list) {
+    const counts = { ativo: 0, reservado: 0, vendido: 0, featured: 0 };
+    list
+      .filter((v) => !v.archived)
+      .forEach((v) => {
+        counts[v.status] = (counts[v.status] || 0) + 1;
+        if (v.featured) counts.featured += 1;
+      });
+    document.querySelector('[data-stat="ativo"]').textContent = String(counts.ativo);
+    document.querySelector('[data-stat="reservado"]').textContent = String(counts.reservado);
+    document.querySelector('[data-stat="vendido"]').textContent = String(counts.vendido);
+    document.querySelector('[data-stat="featured"]').textContent = String(counts.featured);
+  }
+
+  function updatePreview() {
+    const get = (name) => form.querySelector(`[name="${name}"]`)?.value || "";
+    const name = get("name") || "Nome do veículo";
+    const brand = get("brand") || "Marca";
+    const price = Number(get("price") || 0);
+    const year = get("year") || "—";
+    const km = get("mileageKm") ? `${Number(get("mileageKm")).toLocaleString("pt-BR")} km` : "—";
+    const fuel = get("fuel") || "—";
+    const tag = get("tag");
+    const image = get("image");
+
+    document.querySelector('[data-preview="name"]').textContent = name;
+    document.querySelector('[data-preview="brand"]').textContent = brand;
+    document.querySelector('[data-preview="price"]').textContent = formatBRL(price);
+    document.querySelector('[data-preview="year"]').textContent = year;
+    document.querySelector('[data-preview="mileageKm"]').textContent = km;
+    document.querySelector('[data-preview="fuel"]').textContent = fuel;
+
+    const tagEl = document.querySelector('[data-preview="tag"]');
+    tagEl.textContent = tag;
+    tagEl.classList.toggle("hidden", !tag);
+
+    const imgEl = document.querySelector('[data-preview="image"]');
+    const emptyEl = document.querySelector('[data-preview="image-empty"]');
+    if (image) {
+      imgEl.src = image;
+      imgEl.classList.remove("hidden");
+      emptyEl.classList.add("hidden");
+    } else {
+      imgEl.classList.add("hidden");
+      emptyEl.classList.remove("hidden");
+    }
+  }
+
+  form.querySelectorAll("[data-preview-field]").forEach((el) => {
+    el.addEventListener("input", updatePreview);
+  });
+
+  function getFilteredVehicles() {
+    const search = (searchInput.value || "").trim().toLowerCase();
+    const status = statusFilter.value;
+    const category = categoryFilter.value;
+    const showArchived = showArchivedToggle.checked;
+
+    return vehicles.filter((v) => {
+      if (!showArchived && v.archived) return false;
+      if (showArchived && !v.archived) return false;
+      if (search && !`${v.name} ${v.brand}`.toLowerCase().includes(search)) return false;
+      if (status && v.status !== status) return false;
+      if (category && v.category !== category) return false;
+      return true;
+    });
+  }
+
+  function render() {
+    updateCounters(vehicles);
+    const filtered = getFilteredVehicles();
+    tableBody.innerHTML = "";
+    emptyState.classList.toggle("hidden", filtered.length > 0);
+    pendingDeleteSlug = null;
+
+    filtered.forEach((vehicle) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+
+      const statusSelect = vehicle.archived
+        ? `<span class="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--ink-muted)]">Arquivado</span>`
+        : `<select data-status-select="${vehicle.slug}" class="rounded-full border-0 px-3 py-1 text-xs font-semibold outline-none ${statusClasses[vehicle.status]}">
+            ${Object.entries(statusLabels).map(([value, label]) => `<option value="${value}" ${vehicle.status === value ? "selected" : ""}>${label}</option>`).join("")}
+          </select>`;
+
+      const actions = vehicle.archived
+        ? `<button type="button" data-reactivate="${vehicle.slug}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Reativar</button>
+           <button type="button" data-delete="${vehicle.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>`
+        : `<button type="button" data-edit="${vehicle.slug}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Editar</button>
+           <button type="button" data-archive="${vehicle.slug}" class="mr-2 text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)]">Arquivar</button>
+           <button type="button" data-delete="${vehicle.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>`;
+
+      row.innerHTML = `
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-3">
+            <img src="${vehicle.image || FALLBACK_IMAGE}" alt="" class="h-12 w-16 rounded-lg object-cover" />
+            <div>
+              <p class="font-semibold text-[var(--ink)]">${vehicle.name}</p>
+              <p class="text-xs text-[var(--ink-muted)]">${vehicle.brand} · ${vehicle.year}</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${vehicle.category}</td>
+        <td class="px-4 py-3 font-semibold text-[var(--ink)]">${formatBRL(vehicle.price)}</td>
+        <td class="px-4 py-3">${statusSelect}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-toggle-featured="${vehicle.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${vehicle.featured ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${vehicle.featured ? "Em destaque" : "Padrão"}
+          </button>
+        </td>
+        <td class="px-4 py-3 text-right" data-actions-cell="${vehicle.slug}">${actions}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  toggleFormBtn.addEventListener("click", () => {
+    form.querySelector('[name="slug"]').value = "";
+    form.reset();
+    form.querySelector('[name="transmission"]').value = "Automático";
+    form.querySelector('[name="fuel"]').value = "Gasolina";
+    showForm(false);
+  });
+
+  cancelFormBtn.addEventListener("click", hideForm);
+
+  resetBtn.addEventListener("click", () => {
+    if (!confirm("Restaurar o estoque para os dados de demonstração originais? Isso apaga suas alterações locais.")) return;
+    vehicles = seedVehicles.map((v) => ({ ...v }));
+    saveInventory(vehicles);
+    render();
+  });
+
+  [searchInput, statusFilter, categoryFilter, showArchivedToggle].forEach((el) => {
+    el.addEventListener("input", render);
+    el.addEventListener("change", render);
+  });
+
+  tableBody.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLSelectElement)) return;
+    const slug = target.getAttribute("data-status-select");
+    if (!slug) return;
+    const vehicle = vehicles.find((v) => v.slug === slug);
+    if (vehicle) vehicle.status = target.value;
+    saveInventory(vehicles);
+    render();
+  });
+
+  tableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const featuredSlug = target.getAttribute("data-toggle-featured");
+    if (featuredSlug) {
+      const vehicle = vehicles.find((v) => v.slug === featuredSlug);
+      if (vehicle) vehicle.featured = !vehicle.featured;
+      saveInventory(vehicles);
+      render();
+      return;
+    }
+
+    const editSlug = target.getAttribute("data-edit");
+    if (editSlug) {
+      const vehicle = vehicles.find((v) => v.slug === editSlug);
+      if (!vehicle) return;
+      form.querySelector('[name="slug"]').value = vehicle.slug;
+      form.querySelector('[name="name"]').value = vehicle.name;
+      form.querySelector('[name="brand"]').value = vehicle.brand;
+      form.querySelector('[name="category"]').value = vehicle.category;
+      form.querySelector('[name="price"]').value = String(vehicle.price);
+      form.querySelector('[name="year"]').value = String(vehicle.year);
+      form.querySelector('[name="mileageKm"]').value = String(vehicle.mileageKm);
+      form.querySelector('[name="transmission"]').value = vehicle.transmission;
+      form.querySelector('[name="fuel"]').value = vehicle.fuel;
+      form.querySelector('[name="tag"]').value = vehicle.tag || "";
+      form.querySelector('[name="featured"]').checked = vehicle.featured;
+      form.querySelector('[name="image"]').value = vehicle.image || "";
+      form.querySelector('[name="description"]').value = vehicle.description || "";
+      showForm(true);
+      return;
+    }
+
+    const archiveSlug = target.getAttribute("data-archive");
+    if (archiveSlug) {
+      const vehicle = vehicles.find((v) => v.slug === archiveSlug);
+      if (vehicle) vehicle.archived = true;
+      saveInventory(vehicles);
+      render();
+      return;
+    }
+
+    const reactivateSlug = target.getAttribute("data-reactivate");
+    if (reactivateSlug) {
+      const vehicle = vehicles.find((v) => v.slug === reactivateSlug);
+      if (vehicle) vehicle.archived = false;
+      saveInventory(vehicles);
+      render();
+      return;
+    }
+
+    const deleteSlug = target.getAttribute("data-delete");
+    if (deleteSlug) {
+      if (pendingDeleteSlug !== deleteSlug) {
+        pendingDeleteSlug = deleteSlug;
+        target.textContent = "Confirmar remoção?";
+        target.classList.add("text-red-400");
+        setTimeout(() => {
+          if (pendingDeleteSlug === deleteSlug && target.isConnected) {
+            pendingDeleteSlug = null;
+            target.textContent = "Remover";
+            target.classList.remove("text-red-400");
+          }
+        }, 4000);
+        return;
+      }
+      vehicles = vehicles.filter((v) => v.slug !== deleteSlug);
+      saveInventory(vehicles);
+      render();
+    }
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const existingSlug = String(data.get("slug") || "");
+    const name = String(data.get("name") || "").trim();
+
+    const payload = {
+      name,
+      brand: String(data.get("brand") || "").trim(),
+      category: String(data.get("category") || ""),
+      price: Number(data.get("price") || 0),
+      year: Number(data.get("year") || new Date().getFullYear()),
+      mileageKm: Number(data.get("mileageKm") || 0),
+      transmission: String(data.get("transmission") || "Automático"),
+      fuel: String(data.get("fuel") || "Gasolina"),
+      tag: String(data.get("tag") || "") || undefined,
+      featured: data.get("featured") === "on",
+      image: String(data.get("image") || "") || FALLBACK_IMAGE,
+      imageAlt: name,
+      description: String(data.get("description") || "") || undefined,
+    };
+
+    if (existingSlug) {
+      const index = vehicles.findIndex((v) => v.slug === existingSlug);
+      if (index >= 0) vehicles[index] = { ...vehicles[index], ...payload, slug: existingSlug };
+    } else {
+      let slug = slugify(name);
+      let suffix = 2;
+      while (vehicles.some((v) => v.slug === slug)) {
+        slug = `${slugify(name)}-${suffix}`;
+        suffix += 1;
+      }
+      vehicles.push({ ...payload, slug, status: "ativo", archived: false });
+    }
+
+    saveInventory(vehicles);
+    render();
+    hideForm();
+  });
+
+  render();
+</script>

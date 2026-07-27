@@ -1,0 +1,28 @@
+---
+// Logo demonstrativo do Aurum Motors. Para substituir por um logo
+// definitivo do cliente, basta trocar o conteúdo deste componente (ou
+// apontar os slots "header-logo"/"footer-logo" em modelos/aurum-motors.astro
+// para um novo componente) — nenhum outro arquivo depende deste marcador.
+interface Props {
+  variant?: "full" | "mark";
+  class?: string;
+}
+const { variant = "full", class: className = "" } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-3 ${className}`}>
+  <svg viewBox="0 0 40 40" class="h-9 w-9 shrink-0" aria-hidden="true">
+    <path d="M20 5L34 33H24.5L20 23.5L15.5 33H6L20 5Z" fill="var(--primary)" />
+    <path d="M20 16.5L25.5 28H14.5L20 16.5Z" fill="var(--accent)" />
+  </svg>
+  {variant === "full" && (
+    <span class="leading-tight">
+      <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-[0.02em] text-[var(--ink)]">
+        Aurum
+      </span>
+      <span class="block -mt-1 text-[0.65rem] font-medium uppercase tracking-[0.3em] text-[var(--ink-muted)]">
+        Motors
+      </span>
+    </span>
+  )}
+</span>

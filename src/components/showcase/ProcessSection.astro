@@ -9,6 +9,8 @@ interface Props {
   steps: ProcessStep[];
 }
 const { eyebrow, title, description, steps } = Astro.props;
+
+const lineInset = 50 / steps.length;
 ---
 
 <section class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
@@ -18,11 +20,15 @@ const { eyebrow, title, description, steps } = Astro.props;
     <div class="relative mt-12 lg:mt-16">
       <div class="absolute bottom-3 left-5 top-3 w-px bg-[var(--border)] lg:hidden" aria-hidden="true"></div>
       <div
-        class="absolute left-[12.5%] right-[12.5%] top-5 hidden h-px bg-[var(--border)] lg:block"
+        class="absolute top-5 hidden h-px bg-[var(--border)] lg:block"
+        style={`left: ${lineInset}%; right: ${lineInset}%`}
         aria-hidden="true"
       ></div>
 
-      <ol class="relative flex flex-col gap-8 lg:grid lg:grid-cols-4 lg:gap-6">
+      <ol
+        class="relative flex flex-col gap-8 lg:grid lg:gap-6"
+        style={`grid-template-columns: repeat(${steps.length}, minmax(0, 1fr));`}
+      >
         {
           steps.map((step, index) => (
             <li

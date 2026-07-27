@@ -54,4 +54,15 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     accentSoft: "#241a16",
     ink: "#f3e9df",
   },
+  {
+    slug: "aurum-motors",
+    segment: "Concessionária premium",
+    companyName: "Aurum Motors",
+    shortDescription:
+      "Modelo premium para lojas de seminovos selecionados, com estoque, financiamento e painel administrativo demonstrativo.",
+    available: true,
+    accent: "#b3843c",
+    accentSoft: "#1c1a16",
+    ink: "#f2ede4",
+  },
 ];

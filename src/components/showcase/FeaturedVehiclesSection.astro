@@ -1,0 +1,42 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import CardGrid from "./CardGrid.astro";
+import GridCard from "./GridCard.astro";
+import VehicleCard from "./VehicleCard.astro";
+import Icon from "../ui/Icon.astro";
+import type { VehicleItem } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  items: VehicleItem[];
+  id?: string;
+}
+const { eyebrow, title, description, items, id } = Astro.props;
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeader eyebrow={eyebrow} title={title} description={description} />
+      <a
+        href="/modelos/aurum-motors/estoque"
+        class="inline-flex shrink-0 items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      >
+        Ver estoque completo
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+
+    <CardGrid cols={4} tabletCols={2} class="mt-10">
+      {
+        items.map((vehicle, index) => (
+          <GridCard variant="standard" animateDelay={index * 60} class="!p-0 overflow-hidden" data-vehicle-slug={vehicle.slug}>
+            <VehicleCard vehicle={vehicle} />
+          </GridCard>
+        ))
+      }
+    </CardGrid>
+  </div>
+</section>

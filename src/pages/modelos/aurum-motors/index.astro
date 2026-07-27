@@ -1,0 +1,113 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import AurumLogo from "../../../components/logos/AurumLogo.astro";
+import AurumHero from "../../../components/showcase/AurumHero.astro";
+import FeaturedVehiclesSection from "../../../components/showcase/FeaturedVehiclesSection.astro";
+import DealerHighlightsSection from "../../../components/showcase/DealerHighlightsSection.astro";
+import TradeInSection from "../../../components/showcase/TradeInSection.astro";
+import FinancingSummarySection from "../../../components/showcase/FinancingSummarySection.astro";
+import ProcessSection from "../../../components/showcase/ProcessSection.astro";
+import TestimonialsSection from "../../../components/showcase/TestimonialsSection.astro";
+import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
+
+const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
+---
+
+<ShowcaseLayout config={config}>
+  <AurumLogo slot="header-logo" />
+  <AurumLogo slot="footer-logo" />
+
+  <AurumHero
+    image="/images/showcases/aurum-motors/hero-showroom.jpg"
+    imageAlt="Showroom de carros de luxo com iluminação dramática"
+    eyebrow={config.hero.eyebrow}
+    headline={config.hero.headline}
+    highlight={config.hero.highlight}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="/modelos/aurum-motors/contato"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel}
+    ctaSecondaryHref="/modelos/aurum-motors/estoque"
+    search={config.sections.vehicleSearch ? config.vehicleSearch : undefined}
+  />
+
+  {config.sections.featuredVehicles && config.vehicles && (
+    <FeaturedVehiclesSection
+      eyebrow="Estoque selecionado"
+      title="Veículos em destaque"
+      description="Uma seleção do que há de mais procurado no estoque atual — cada unidade revisada e com procedência verificada."
+      items={featuredVehicles}
+    />
+  )}
+
+  {config.sections.dealerHighlights && config.dealerHighlights && (
+    <DealerHighlightsSection
+      id="diferenciais"
+      eyebrow="Por que a Aurum"
+      title="Curadoria que se nota em cada detalhe"
+      description="Do processo de seleção à entrega, cada etapa existe para reduzir o risco de comprar um seminovo."
+      items={config.dealerHighlights}
+    />
+  )}
+
+  {config.sections.tradeIn && config.tradeIn && <TradeInSection content={config.tradeIn} />}
+
+  {config.sections.financing && config.financing && <FinancingSummarySection content={config.financing} />}
+
+  {config.sections.process && config.process && (
+    <ProcessSection
+      eyebrow="Como funciona"
+      title="Do primeiro clique até as chaves na mão"
+      description="Um processo pensado para ser simples, transparente e sem surpresas."
+      steps={config.process}
+    />
+  )}
+
+  {config.sections.testimonials && config.testimonials && (
+    <TestimonialsSection
+      eyebrow="Depoimentos"
+      title="Quem já comprou com a Aurum"
+      description="Experiências de clientes que passaram pelo nosso processo de curadoria."
+      items={config.testimonials}
+    />
+  )}
+</ShowcaseLayout>
+
+<script>
+  const STORAGE_KEY = "aurum-motors-inventory-v1";
+
+  function formatBRL(value: number) {
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const stored = JSON.parse(raw) as any[];
+      document.querySelectorAll<HTMLElement>("[data-vehicle-slug]").forEach((card) => {
+        const slug = card.dataset.vehicleSlug;
+        const stock = stored.find((v) => v.slug === slug);
+        if (!stock || stock.archived) {
+          card.remove();
+          return;
+        }
+        if (!stock.featured) {
+          card.remove();
+          return;
+        }
+        const priceEl = card.querySelector<HTMLElement>('[data-field="price"]');
+        if (priceEl) priceEl.textContent = formatBRL(Number(stock.price) || 0);
+        const ribbon = card.querySelector<HTMLElement>('[data-field="status-ribbon"]');
+        if (ribbon && stock.status !== "ativo") {
+          ribbon.textContent = stock.status === "reservado" ? "Reservado" : "Vendido";
+          ribbon.classList.remove("hidden");
+          ribbon.classList.add("flex");
+        }
+      });
+    }
+  } catch {
+    // localStorage indisponível — mantém o conteúdo estático padrão
+  }
+</script>

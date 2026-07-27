@@ -1,0 +1,172 @@
+---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../../layouts/ShowcaseLayout.astro";
+import AurumLogo from "../../../../components/logos/AurumLogo.astro";
+import Icon from "../../../../components/ui/Icon.astro";
+import { aurumMotorsConfig as config } from "../../../../config/showcases/aurum-motors";
+import type { VehicleItem } from "../../../../config/showcases/types";
+
+export function getStaticPaths() {
+  return (config.vehicles ?? []).map((vehicle) => ({
+    params: { slug: vehicle.slug },
+    props: { vehicle },
+  }));
+}
+
+interface Props {
+  vehicle: VehicleItem;
+}
+const { vehicle } = Astro.props;
+
+const km = (n: number) => `${n.toLocaleString("pt-BR")} km`;
+
+const seo = {
+  title: `${vehicle.name} — Aurum Motors (modelo demonstrativo)`,
+  description: `${vehicle.name}, ${vehicle.spec.year} — ${vehicle.description ?? "Veículo selecionado do estoque Aurum Motors."}`,
+};
+
+const gallery = vehicle.gallery && vehicle.gallery.length > 0 ? vehicle.gallery : [{ src: vehicle.image, alt: vehicle.imageAlt }];
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <AurumLogo slot="header-logo" />
+  <AurumLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <a
+        href="/modelos/aurum-motors/estoque"
+        class="inline-flex items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--accent)]"
+      >
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+        Voltar ao estoque
+      </a>
+
+      <div class="mt-6 grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+        <div>
+          <div class="aspect-[4/3] overflow-hidden rounded-2xl">
+            <img src={gallery[0].src} alt={gallery[0].alt} class="h-full w-full object-cover" />
+          </div>
+          {gallery.length > 1 && (
+            <div class="mt-3 grid grid-cols-4 gap-3">
+              {gallery.slice(1).map((image) => (
+                <div class="aspect-square overflow-hidden rounded-xl">
+                  <img src={image.src} alt={image.alt} loading="lazy" class="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          {vehicle.tag && (
+            <span class="inline-flex items-center rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
+              {vehicle.tag}
+            </span>
+          )}
+          <p class="mt-3 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">{vehicle.brand}</p>
+          <h1 class="mt-1 text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{vehicle.name}</h1>
+          <p data-field="sold-banner" class="mt-3 hidden items-center gap-2 rounded-full bg-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Veículo vendido
+          </p>
+          <p data-field="price" class="mt-3 font-[var(--font-heading)] text-2xl font-semibold text-[var(--accent)]">{vehicle.price}</p>
+
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3.5">
+              <span class="flex items-center gap-1.5 text-xs text-[var(--ink-muted)]">
+                <Icon name="calendar" class="h-3.5 w-3.5" /> Ano
+              </span>
+              <p class="mt-1 text-sm font-semibold text-[var(--ink)]">{vehicle.spec.year}</p>
+            </div>
+            <div class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3.5">
+              <span class="flex items-center gap-1.5 text-xs text-[var(--ink-muted)]">
+                <Icon name="gauge" class="h-3.5 w-3.5" /> Quilometragem
+              </span>
+              <p class="mt-1 text-sm font-semibold text-[var(--ink)]">{km(vehicle.spec.mileageKm)}</p>
+            </div>
+            <div class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3.5">
+              <span class="flex items-center gap-1.5 text-xs text-[var(--ink-muted)]">
+                <Icon name="settings" class="h-3.5 w-3.5" /> Câmbio
+              </span>
+              <p class="mt-1 text-sm font-semibold text-[var(--ink)]">{vehicle.spec.transmission}</p>
+            </div>
+            <div class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-3.5">
+              <span class="flex items-center gap-1.5 text-xs text-[var(--ink-muted)]">
+                <Icon name="fuel" class="h-3.5 w-3.5" /> Combustível
+              </span>
+              <p class="mt-1 text-sm font-semibold text-[var(--ink)]">{vehicle.spec.fuel}</p>
+            </div>
+          </div>
+
+          {vehicle.description && (
+            <p class="mt-6 text-sm leading-relaxed text-[var(--ink-muted)]">{vehicle.description}</p>
+          )}
+
+          {vehicle.highlights && vehicle.highlights.length > 0 && (
+            <ul class="mt-6 grid gap-2.5 sm:grid-cols-2">
+              {vehicle.highlights.map((item) => (
+                <li class="flex items-center gap-2 text-sm text-[var(--ink)]">
+                  <Icon name="check" class="h-4 w-4 shrink-0 text-[var(--accent)]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <p data-field="archived-notice" class="mt-6 hidden rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 text-sm text-[var(--ink-muted)]">
+            Este veículo não está mais disponível no estoque.
+            <a href="/modelos/aurum-motors/estoque" class="font-semibold text-[var(--accent)]">Ver outros veículos</a>
+          </p>
+
+          <div data-field="cta-group" class="mt-8 flex flex-wrap gap-3">
+            <a
+              href="/modelos/aurum-motors/contato"
+              class="inline-flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-7 py-3.5 text-sm font-semibold text-[var(--primary-ink)] shadow-sm transition-transform hover:-translate-y-0.5"
+            >
+              Agendar test-drive
+            </a>
+            <a
+              href="/modelos/aurum-motors/financiamento"
+              class="inline-flex items-center justify-center rounded-[var(--radius-control)] border border-[var(--border)] px-7 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              Simular financiamento
+            </a>
+          </div>
+          <p class="mt-4 text-xs text-[var(--ink-muted)]">Veículo demonstrativo — dados e disponibilidade apenas para fins de portfólio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>
+
+<script define:vars={{ slug: vehicle.slug }}>
+  const STORAGE_KEY = "aurum-motors-inventory-v1";
+
+  function formatBRL(value) {
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const stored = JSON.parse(raw);
+      const stock = stored.find((v) => v.slug === slug);
+      if (stock && stock.archived) {
+        document.querySelector('[data-field="archived-notice"]')?.classList.remove("hidden");
+        document.querySelector('[data-field="cta-group"]')?.classList.add("hidden");
+      } else if (stock) {
+        const priceEl = document.querySelector('[data-field="price"]');
+        if (priceEl) priceEl.textContent = formatBRL(Number(stock.price) || 0);
+        if (stock.status !== "ativo") {
+          const banner = document.querySelector('[data-field="sold-banner"]');
+          if (banner) banner.textContent = stock.status === "reservado" ? "Veículo reservado" : "Veículo vendido";
+          banner?.classList.remove("hidden");
+          banner?.classList.add("inline-flex");
+        }
+      }
+    }
+  } catch {
+    // localStorage indisponível — mantém o conteúdo estático padrão
+  }
+</script>

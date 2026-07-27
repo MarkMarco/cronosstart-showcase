@@ -166,4 +166,38 @@ const { name, class: className = "h-5 w-5" } = Astro.props;
       <circle cx="12" cy="13" r="3.5" />
     </>
   )}
+  {name === "gauge" && (
+    <>
+      <path d="M4 15a8 8 0 1116 0" />
+      <path d="M12 15l3.5-4.5M4 15h1.5M18.5 15H20M6 8.5l1 1.2M18 8.5l-1 1.2" />
+    </>
+  )}
+  {name === "fuel" && (
+    <>
+      <path d="M5 20V6.5A1.5 1.5 0 016.5 5h4A1.5 1.5 0 0112 6.5V20" />
+      <path d="M4 20h9M12 10.5h2l2.3 2.3v4.7a1.5 1.5 0 01-1.5 1.5" />
+      <path d="M16.3 12.8V8.5L14.5 6.7" />
+    </>
+  )}
+  {name === "calendar" && (
+    <>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+      <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+    </>
+  )}
+  {name === "key" && (
+    <>
+      <circle cx="8" cy="15" r="4" />
+      <path d="M11 12l8.5-8.5M16.5 6.5L19 9M14 9l2 2" />
+    </>
+  )}
+  {name === "settings" && (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 3.5v2M12 18.5v2M20.5 12h-2M5.5 12h-2M17.8 6.2l-1.4 1.4M7.6 16.4l-1.4 1.4M17.8 17.8l-1.4-1.4M7.6 7.6L6.2 6.2" />
+    </>
+  )}
+  {name === "sliders" && (
+    <path d="M5 5v4M5 13v6M12 5v9M12 18v1M19 5v11M19 20v-1M3 9h4M10 14h4M17 16h4" />
+  )}
 </svg>

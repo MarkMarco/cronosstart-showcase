@@ -34,7 +34,13 @@ export type IconName =
   | "flame"
   | "leaf"
   | "wine"
-  | "camera";
+  | "camera"
+  | "gauge"
+  | "fuel"
+  | "calendar"
+  | "key"
+  | "settings"
+  | "sliders";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -252,6 +258,63 @@ export interface AmbianceContent {
   paragraphs: string[];
 }
 
+export interface VehicleSpec {
+  year: number;
+  mileageKm: number;
+  transmission: string;
+  fuel: string;
+}
+
+export interface VehicleItem {
+  slug: string;
+  name: string;
+  brand: string;
+  category: string;
+  price: string;
+  spec: VehicleSpec;
+  image: string;
+  imageAlt: string;
+  gallery?: GalleryImage[];
+  tag?: string;
+  featured?: boolean;
+  description?: string;
+  highlights?: string[];
+}
+
+export interface DealerHighlight {
+  title: string;
+  description: string;
+  icon: IconName;
+}
+
+export interface TradeInContent {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  steps: string[];
+  ctaLabel: string;
+}
+
+export interface FinancingPlan {
+  label: string;
+  description: string;
+}
+
+export interface FinancingContent {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  bullets: string[];
+  plans?: FinancingPlan[];
+  ctaLabel: string;
+}
+
+export interface VehicleSearchContent {
+  categories: string[];
+  priceRanges: string[];
+  brands: string[];
+}
+
 export interface SectionsEnabled {
   about?: boolean;
   process?: boolean;
@@ -270,6 +333,11 @@ export interface SectionsEnabled {
   reviews?: boolean;
   instagram?: boolean;
   location?: boolean;
+  vehicleSearch?: boolean;
+  featuredVehicles?: boolean;
+  dealerHighlights?: boolean;
+  tradeIn?: boolean;
+  financing?: boolean;
 }
 
 export interface ShowcaseConfig {
@@ -307,4 +375,9 @@ export interface ShowcaseConfig {
   gallery?: GalleryImage[];
   instagramHandle?: string;
   location?: LocationContent;
+  vehicles?: VehicleItem[];
+  vehicleSearch?: VehicleSearchContent;
+  dealerHighlights?: DealerHighlight[];
+  tradeIn?: TradeInContent;
+  financing?: FinancingContent;
 }

@@ -6,8 +6,9 @@ interface Props {
   variant?: "standard" | "featured" | "outlined" | "dark";
   animateDelay?: number;
   class?: string;
+  "data-vehicle-slug"?: string;
 }
-const { variant = "standard", animateDelay = 0, class: className = "" } = Astro.props;
+const { variant = "standard", animateDelay = 0, class: className = "", ...rest } = Astro.props;
 
 const variantClass: Record<string, string> = {
   standard:
@@ -25,6 +26,7 @@ const variantBg =
   data-animate
   style={`transition-delay: ${animateDelay}ms; ${variantBg}`}
   class={`group relative flex h-full flex-col overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-1 ${variantClass[variant]} ${className}`}
+  {...rest}
 >
   {(variant === "featured" || variant === "dark") && (
     <div
