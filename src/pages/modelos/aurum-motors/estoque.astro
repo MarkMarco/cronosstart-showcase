@@ -98,16 +98,23 @@ const seo = {
 </ShowcaseLayout>
 
 <script>
-  const STORAGE_KEY = "aurum-motors-inventory-v1";
+  const STORAGE_KEY = "aurum-motors-inventory-v2";
 
   function formatBRL(value: number) {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
   }
 
+  const VALID_STATUSES = ["ativo", "reservado", "vendido"];
+  function normalizeStatus(status: unknown): string {
+    return typeof status === "string" && VALID_STATUSES.includes(status) ? status : "ativo";
+  }
+
   function loadStoredInventory(): any[] | null {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed.map((v: any) => ({ ...v, status: normalizeStatus(v.status), archived: Boolean(v.archived) }));
     } catch {
       return null;
     }

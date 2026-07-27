@@ -76,10 +76,15 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
 </ShowcaseLayout>
 
 <script>
-  const STORAGE_KEY = "aurum-motors-inventory-v1";
+  const STORAGE_KEY = "aurum-motors-inventory-v2";
 
   function formatBRL(value: number) {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  }
+
+  const VALID_STATUSES = ["ativo", "reservado", "vendido"];
+  function normalizeStatus(status: unknown): string {
+    return typeof status === "string" && VALID_STATUSES.includes(status) ? status : "ativo";
   }
 
   try {
@@ -97,11 +102,12 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
           card.remove();
           return;
         }
+        const status = normalizeStatus(stock.status);
         const priceEl = card.querySelector<HTMLElement>('[data-field="price"]');
         if (priceEl) priceEl.textContent = formatBRL(Number(stock.price) || 0);
         const ribbon = card.querySelector<HTMLElement>('[data-field="status-ribbon"]');
-        if (ribbon && stock.status !== "ativo") {
-          ribbon.textContent = stock.status === "reservado" ? "Reservado" : "Vendido";
+        if (ribbon && status !== "ativo") {
+          ribbon.textContent = status === "reservado" ? "Reservado" : "Vendido";
           ribbon.classList.remove("hidden");
           ribbon.classList.add("flex");
         }

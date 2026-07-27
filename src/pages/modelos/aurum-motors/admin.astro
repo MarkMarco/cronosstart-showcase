@@ -369,7 +369,7 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
 </ShowcaseLayout>
 
 <script define:vars={{ seedVehicles }}>
-  const STORAGE_KEY = "aurum-motors-inventory-v1";
+  const STORAGE_KEY = "aurum-motors-inventory-v2";
   const AUTH_KEY = "aurum-motors-admin-authed";
   const FALLBACK_IMAGE = "/images/showcases/aurum-motors/hero-showroom.jpg";
 
@@ -386,10 +386,18 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
   }
 
+  const VALID_STATUSES = ["ativo", "reservado", "vendido"];
+  function normalizeStatus(status) {
+    return typeof status === "string" && VALID_STATUSES.includes(status) ? status : "ativo";
+  }
+
   function loadInventory() {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed.map((v) => ({ ...v, status: normalizeStatus(v.status), archived: Boolean(v.archived) }));
+      }
     } catch {}
     saveInventory(seedVehicles);
     return seedVehicles;

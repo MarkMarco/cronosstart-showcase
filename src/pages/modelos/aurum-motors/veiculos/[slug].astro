@@ -141,10 +141,15 @@ const gallery = vehicle.gallery && vehicle.gallery.length > 0 ? vehicle.gallery 
 </ShowcaseLayout>
 
 <script define:vars={{ slug: vehicle.slug }}>
-  const STORAGE_KEY = "aurum-motors-inventory-v1";
+  const STORAGE_KEY = "aurum-motors-inventory-v2";
 
   function formatBRL(value) {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  }
+
+  const VALID_STATUSES = ["ativo", "reservado", "vendido"];
+  function normalizeStatus(status) {
+    return typeof status === "string" && VALID_STATUSES.includes(status) ? status : "ativo";
   }
 
   try {
@@ -156,11 +161,12 @@ const gallery = vehicle.gallery && vehicle.gallery.length > 0 ? vehicle.gallery 
         document.querySelector('[data-field="archived-notice"]')?.classList.remove("hidden");
         document.querySelector('[data-field="cta-group"]')?.classList.add("hidden");
       } else if (stock) {
+        const status = normalizeStatus(stock.status);
         const priceEl = document.querySelector('[data-field="price"]');
         if (priceEl) priceEl.textContent = formatBRL(Number(stock.price) || 0);
-        if (stock.status !== "ativo") {
+        if (status !== "ativo") {
           const banner = document.querySelector('[data-field="sold-banner"]');
-          if (banner) banner.textContent = stock.status === "reservado" ? "Veículo reservado" : "Veículo vendido";
+          if (banner) banner.textContent = status === "reservado" ? "Veículo reservado" : "Veículo vendido";
           banner?.classList.remove("hidden");
           banner?.classList.add("inline-flex");
         }
