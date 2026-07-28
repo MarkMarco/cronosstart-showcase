@@ -36,6 +36,8 @@ export const segurosConfig: ShowcaseConfig = {
     title: "Horizonte Seguros — Proteção consultiva para você e sua empresa (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de site para corretoras de seguros, com comparação de coberturas, cotação rápida e acompanhamento humano. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/seguros.png",
+    ogImageAlt: "Horizonte Seguros — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "split",

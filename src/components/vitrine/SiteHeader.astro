@@ -1,0 +1,102 @@
+---
+import CronosStartLogo from "../brand/CronosStartLogo.astro";
+import Icon from "../ui/Icon.astro";
+
+const ctaButtonStyle =
+  "background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);";
+---
+
+<header class="sticky top-0 z-50 border-b border-white/[0.08] bg-[var(--surface)]/75 backdrop-blur-xl">
+  <div class="h-px w-full" style="background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 65%, transparent), transparent);"></div>
+  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+    <a href="/modelos" class="flex items-center" aria-label="CronosStart — página inicial do portfólio">
+      <CronosStartLogo imgClass="h-11 w-auto sm:h-12" priority />
+    </a>
+
+    <nav class="hidden items-center gap-9 lg:flex" aria-label="Navegação principal">
+      <a href="/modelos#modelos" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+        Modelos
+        <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/modelos#como-funciona" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+        Como funciona
+        <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/modelos#contato" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+        Contato
+        <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+      </a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <button
+        type="button"
+        data-open-contact-form
+        data-contact-origin="header"
+        class="hidden items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] sm:inline-flex"
+        style={ctaButtonStyle}
+      >
+        Solicitar orçamento
+      </button>
+      <button
+        id="menu-toggle"
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/5 lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menu"
+      >
+        <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+        <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden origin-top border-t border-[var(--border)] bg-[var(--surface)] px-6 py-6 lg:hidden">
+    <nav class="flex flex-col gap-1">
+      <a href="/modelos#modelos" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Modelos</a>
+      <a href="/modelos#como-funciona" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Como funciona</a>
+      <a href="/modelos#contato" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Contato</a>
+    </nav>
+    <button
+      type="button"
+      data-open-contact-form
+      data-contact-origin="header-mobile"
+      data-mobile-link
+      class="mt-4 flex w-full items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white"
+      style={ctaButtonStyle}
+    >
+      Solicitar orçamento
+    </button>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const panel = document.getElementById("mobile-menu");
+  const menuIcon = toggle?.querySelector('[data-icon="menu"]');
+  const closeIcon = toggle?.querySelector('[data-icon="close"]');
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      panel.classList.toggle("hidden", !open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+      menuIcon?.classList.toggle("hidden", open);
+      closeIcon?.classList.toggle("hidden", !open);
+    };
+
+    toggle.addEventListener("click", () => {
+      const isOpen = !panel.classList.contains("hidden");
+      setOpen(!isOpen);
+    });
+
+    panel.querySelectorAll("[data-mobile-link]").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+</script>

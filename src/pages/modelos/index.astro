@@ -5,6 +5,15 @@ import "@fontsource-variable/space-grotesk";
 import CronosStartLogo from "../../components/brand/CronosStartLogo.astro";
 import ShowcaseCard from "../../components/vitrine/ShowcaseCard.astro";
 import HeroPreviewCard from "../../components/vitrine/HeroPreviewCard.astro";
+import SiteHeader from "../../components/vitrine/SiteHeader.astro";
+import SiteFooter from "../../components/vitrine/SiteFooter.astro";
+import ManagedServiceSection from "../../components/vitrine/ManagedServiceSection.astro";
+import PricingSection from "../../components/vitrine/PricingSection.astro";
+import DeliveryTimeline from "../../components/vitrine/DeliveryTimeline.astro";
+import FAQSection from "../../components/vitrine/FAQSection.astro";
+import ContactFormModal from "../../components/vitrine/ContactFormModal.astro";
+import FloatingWhatsAppButton from "../../components/vitrine/FloatingWhatsAppButton.astro";
+import SEOHead from "../../components/seo/SEOHead.astro";
 import Icon from "../../components/ui/Icon.astro";
 import { showcaseRegistry } from "../../config/showcases";
 
@@ -56,8 +65,6 @@ const gridPatternStyle =
 
 const ctaButtonStyle =
   "background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);";
-
-const currentYear = new Date().getFullYear();
 ---
 
 <html
@@ -65,84 +72,16 @@ const currentYear = new Date().getFullYear();
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="canonical" href={canonicalURL} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="generator" content={Astro.generator} />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:locale" content="pt_BR" />
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      ogImage="/images/og/home.png"
+      ogImageAlt="CronosStart — Presença digital para pequenas empresas"
+    />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 border-b border-white/[0.08] bg-[var(--surface)]/75 backdrop-blur-xl">
-      <div class="h-px w-full" style="background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 65%, transparent), transparent);"></div>
-      <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <a href="/modelos" class="flex items-center" aria-label="CronosStart — página inicial do portfólio">
-          <CronosStartLogo imgClass="h-11 w-auto sm:h-12" priority />
-        </a>
-
-        <nav class="hidden items-center gap-9 lg:flex" aria-label="Navegação principal">
-          <a href="#modelos" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
-            Modelos
-            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
-          </a>
-          <a href="#como-funciona" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
-            Como funciona
-            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
-          </a>
-          <a href="#contato" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
-            Contato
-            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
-          </a>
-        </nav>
-
-        <div class="flex items-center gap-3">
-          <a
-            href={whatsappGeneral}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hidden items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] sm:inline-flex"
-            style={ctaButtonStyle}
-          >
-            Solicitar orçamento
-          </a>
-          <button
-            id="menu-toggle"
-            type="button"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/5 lg:hidden"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-            aria-label="Abrir menu"
-          >
-            <Icon name="menu" class="h-6 w-6" data-icon="menu" />
-            <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
-          </button>
-        </div>
-      </div>
-
-      <div id="mobile-menu" class="hidden origin-top border-t border-[var(--border)] bg-[var(--surface)] px-6 py-6 lg:hidden">
-        <nav class="flex flex-col gap-1">
-          <a href="#modelos" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Modelos</a>
-          <a href="#como-funciona" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Como funciona</a>
-          <a href="#contato" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Contato</a>
-        </nav>
-        <a
-          href={whatsappGeneral}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-mobile-link
-          class="mt-4 flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white"
-          style={ctaButtonStyle}
-        >
-          Solicitar orçamento
-        </a>
-      </div>
-    </header>
+    <SiteHeader />
 
     <main>
       <!-- Hero -->
@@ -199,14 +138,14 @@ const currentYear = new Date().getFullYear();
                   Explorar modelos
                   <Icon name="arrow-right" class="h-4 w-4" />
                 </a>
-                <a
-                  href={whatsappGeneral}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  data-open-contact-form
+                  data-contact-origin="hero"
                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
                 >
                   Falar sobre meu projeto
-                </a>
+                </button>
               </div>
 
               <div class="animate-hero-in mt-8 flex flex-wrap justify-center gap-2.5 lg:justify-start" style="animation-delay: 210ms">
@@ -304,6 +243,12 @@ const currentYear = new Date().getFullYear();
         </div>
       </section>
 
+      <!-- Serviço gerenciado -->
+      <ManagedServiceSection />
+
+      <!-- Planos e investimento -->
+      <PricingSection />
+
       <!-- Como funciona -->
       <section id="como-funciona" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
         <div
@@ -382,6 +327,33 @@ const currentYear = new Date().getFullYear();
         </div>
       </section>
 
+      <!-- Prazo estimado -->
+      <DeliveryTimeline />
+
+      <!-- Perguntas frequentes -->
+      <FAQSection />
+
+      <!-- Formulário de contato -->
+      <section id="contato-formulario" class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
+        <div class="mx-auto max-w-2xl text-center" data-animate>
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Fale com a gente</p>
+          <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Conte-nos sobre seu projeto</h2>
+          <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
+            Preencha os dados em poucos passos e entraremos em contato para entender sua necessidade.
+          </p>
+          <button
+            type="button"
+            data-open-contact-form
+            data-contact-origin="secao-formulario"
+            class="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+            style={ctaButtonStyle}
+          >
+            Solicitar contato
+            <Icon name="arrow-right" class="h-4 w-4" />
+          </button>
+        </div>
+      </section>
+
       <!-- Chamada final -->
       <section id="contato" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="relative mx-auto max-w-5xl" data-animate>
@@ -426,15 +398,15 @@ const currentYear = new Date().getFullYear();
                 Conte sua ideia e ajudamos a definir a melhor estrutura para sua empresa.
               </p>
               <div class="mt-9 flex flex-wrap justify-center gap-4">
-                <a
-                  href={whatsappGeneral}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  data-open-contact-form
+                  data-contact-origin="cta-final"
                   class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                   style={ctaButtonStyle}
                 >
                   Solicitar orçamento
-                </a>
+                </button>
                 <a
                   href={whatsappGeneral}
                   target="_blank"
@@ -451,110 +423,11 @@ const currentYear = new Date().getFullYear();
       </section>
     </main>
 
-    <!-- Rodapé -->
-    <footer class="relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-16 sm:py-20">
-      <div
-        class="pointer-events-none absolute left-1/2 top-0 h-48 w-[64rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.08] blur-[110px]"
-        style="background: var(--accent);"
-        aria-hidden="true"
-      ></div>
-
-      <div class="relative mx-auto max-w-7xl">
-        <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1px_1fr_1px_1fr] lg:gap-10">
-          <div>
-            <CronosStartLogo imgClass="h-12 w-auto" />
-            <p class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-              Presença digital para pequenas empresas
-            </p>
-            <p class="mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
-              Sites profissionais, personalizados e preparados para representar sua empresa no digital.
-            </p>
-          </div>
-
-          <div class="hidden self-stretch bg-[var(--border)] lg:block"></div>
-
-          <div>
-            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">Contato</h3>
-            <ul class="mt-5 space-y-3.5 text-sm text-[var(--ink-muted)]">
-              <li class="flex items-center gap-3">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
-                  <Icon name="mail" class="h-4 w-4" />
-                </span>
-                contato@cronossec.com.br
-              </li>
-              <li class="flex items-center gap-3">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
-                  <Icon name="arrow-right" class="h-4 w-4" />
-                </span>
-                <a href="https://www.cronossec.com.br" class="transition-colors hover:text-white">www.cronossec.com.br</a>
-              </li>
-              <li class="flex items-center gap-3">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
-                  <Icon name="map-pin" class="h-4 w-4" />
-                </span>
-                Blumenau — SC
-              </li>
-            </ul>
-          </div>
-
-          <div class="hidden self-stretch bg-[var(--border)] lg:block"></div>
-
-          <div>
-            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">Atendimento</h3>
-            <p class="mt-5 text-sm leading-relaxed text-[var(--ink-muted)]">
-              Atendimento em Blumenau, região, todo o Brasil e LATAM.
-            </p>
-            <a
-              href={whatsappGeneral}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-            >
-              <Icon name="whatsapp" class="h-4 w-4" />
-              Falar pelo WhatsApp
-            </a>
-          </div>
-        </div>
-
-        <div class="mt-14 flex flex-col items-center gap-3 border-t border-[var(--border)] pt-8 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p class="text-xs text-white/35">&copy; {currentYear} CronosStart — uma iniciativa CronosSec</p>
-          <div class="flex items-center gap-1.5 text-xs text-white/25">
-            <Icon name="shield-check" class="h-3.5 w-3.5" />
-            Cada projeto com identidade própria
-          </div>
-        </div>
-      </div>
-    </footer>
+    <SiteFooter />
+    <ContactFormModal />
+    <FloatingWhatsAppButton />
 
     <script>
-      const toggle = document.getElementById("menu-toggle");
-      const panel = document.getElementById("mobile-menu");
-      const menuIcon = toggle?.querySelector('[data-icon="menu"]');
-      const closeIcon = toggle?.querySelector('[data-icon="close"]');
-
-      if (toggle && panel) {
-        const setOpen = (open: boolean) => {
-          panel.classList.toggle("hidden", !open);
-          toggle.setAttribute("aria-expanded", String(open));
-          toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
-          menuIcon?.classList.toggle("hidden", open);
-          closeIcon?.classList.toggle("hidden", !open);
-        };
-
-        toggle.addEventListener("click", () => {
-          const isOpen = !panel.classList.contains("hidden");
-          setOpen(!isOpen);
-        });
-
-        panel.querySelectorAll("[data-mobile-link]").forEach((link) => {
-          link.addEventListener("click", () => setOpen(false));
-        });
-
-        document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") setOpen(false);
-        });
-      }
-
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {

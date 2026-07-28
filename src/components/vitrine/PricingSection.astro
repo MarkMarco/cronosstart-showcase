@@ -1,0 +1,87 @@
+---
+import Icon from "../ui/Icon.astro";
+import { pricingTiers } from "../../config/pricing";
+---
+
+<section id="planos" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
+  <div
+    class="pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.12] blur-[110px]"
+    style="background: var(--accent);"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-6xl">
+    <div class="mx-auto max-w-2xl text-center" data-animate>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Planos e investimento</p>
+      <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Um plano para cada momento do seu negócio</h2>
+      <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
+        Estrutura, personalização e recursos técnicos ajustados ao que sua empresa precisa agora.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-3">
+      {
+        pricingTiers.map((tier, index) => (
+          <div
+            data-animate
+            style={`transition-delay: ${index * 80}ms`}
+            class={`relative flex flex-col rounded-[1.5rem] border p-7 transition-all duration-300 hover:-translate-y-1 ${
+              tier.highlighted
+                ? "border-[var(--accent)]/40 bg-white/[0.04] shadow-[0_30px_70px_-35px_rgba(56,189,248,0.4)]"
+                : "border-white/10 bg-white/[0.02] hover:border-white/20"
+            }`}
+          >
+            {tier.highlighted && (
+              <span
+                class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white"
+                style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%);"
+              >
+                Mais escolhido
+              </span>
+            )}
+
+            <h3 class="text-lg font-semibold text-white">{tier.name}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{tier.description}</p>
+
+            <p class="mt-6 text-sm font-semibold text-[var(--accent)]">{tier.price ?? "Investimento conforme o projeto"}</p>
+
+            <ul class="mt-5 flex-1 space-y-2.5">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-2.5 text-sm text-white/70">
+                  <Icon name="check" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-7 flex flex-col gap-2.5">
+              <button
+                type="button"
+                data-open-contact-form
+                data-contact-plan={tier.name}
+                data-contact-origin={`planos-${tier.slug}`}
+                class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 10px 25px -8px rgba(47,95,209,0.55);"
+              >
+                Solicitar proposta
+              </button>
+              <button
+                type="button"
+                data-open-contact-form
+                data-contact-origin={`planos-${tier.slug}-projeto`}
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+              >
+                Falar sobre meu projeto
+              </button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-white/40" data-animate>
+      Os recursos, prazos e valores dependem da estrutura e das funcionalidades de cada projeto.
+    </p>
+  </div>
+</section>

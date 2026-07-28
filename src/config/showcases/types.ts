@@ -373,7 +373,7 @@ export interface ShowcaseConfig {
   company: ShowcaseCompany;
   theme: ShowcaseTheme;
   nav: NavItem[];
-  seo: { title: string; description: string };
+  seo: { title: string; description: string; ogImage?: string; ogImageAlt?: string };
   hero: HeroContent;
   services?: ServiceItem[];
   benefits?: BenefitItem[];

@@ -38,6 +38,8 @@ export const restauranteConfig: ShowcaseConfig = {
     title: "Essenza Restaurante — Cozinha autoral e reservas (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de site para restaurantes, com pratos em destaque, cardápio, galeria e reservas. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/restaurante.png",
+    ogImageAlt: "Essenza Restaurante — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "centered",

@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/space-grotesk";
+import SiteHeader from "../components/vitrine/SiteHeader.astro";
+import SiteFooter from "../components/vitrine/SiteFooter.astro";
+import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html
+  lang="pt-BR"
+  style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
+>
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      ogImage="/images/og/home.png"
+      ogImageAlt="CronosStart — Presença digital para pequenas empresas"
+    />
+  </head>
+  <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <SiteHeader />
+
+    <main class="px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-3xl">
+        <slot />
+      </div>
+    </main>
+
+    <SiteFooter />
+    <ContactFormModal />
+  </body>
+</html>

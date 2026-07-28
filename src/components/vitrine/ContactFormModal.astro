@@ -1,0 +1,557 @@
+---
+import Icon from "../ui/Icon.astro";
+import { contactSegments, contactFormLimits, countryCodes } from "../../config/contactForm";
+---
+
+<div id="contact-form-modal" class="fixed inset-0 z-[100] hidden">
+  <div
+    data-contact-form-backdrop
+    class="absolute inset-0 bg-black/70 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative flex h-full items-end justify-center sm:items-center sm:p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contact-form-title"
+      data-contact-form-panel
+      class="cfm-panel relative flex max-h-[calc(100dvh-24px)] w-full translate-y-6 flex-col overflow-hidden rounded-t-[1.75rem] border-t border-white/10 bg-[#0a0e1a] opacity-0 shadow-[0_60px_140px_-40px_rgba(0,0,0,0.8)] transition-all duration-300 sm:w-[min(680px,calc(100vw-32px))] sm:translate-y-2 sm:rounded-[1.75rem] sm:border"
+    >
+      <button
+        type="button"
+        data-contact-form-close
+        aria-label="Fechar formulário"
+        class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+      >
+        <Icon name="close" class="h-4 w-4" />
+      </button>
+
+      <div class="cfm-scroll overflow-y-auto px-6 py-6 sm:px-8 sm:py-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">CronosStart</p>
+        <h2 id="contact-form-title" class="cfm-title mt-1.5 text-2xl font-semibold tracking-tight text-white">
+          Conte-nos sobre seu projeto
+        </h2>
+        <p class="cfm-subtitle mt-1.5 text-sm leading-relaxed text-[var(--ink-muted)]">
+          Preencha os dados e entraremos em contato para conhecer sua empresa e construir uma solução
+          personalizada.
+        </p>
+
+        <p
+          data-contact-form-context
+          class="mt-3 hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white/80"
+        >
+        </p>
+
+        <div data-contact-model-panel class="mt-3 hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+          <p class="text-sm text-white/80">
+            Referência visual selecionada: <span data-contact-model-name class="font-semibold text-white"></span>
+          </p>
+          <p class="mt-1.5 text-xs leading-relaxed text-white/40">
+            Usaremos este modelo apenas como ponto de partida. Cores, estrutura e funcionalidades poderão ser
+            totalmente personalizadas.
+          </p>
+          <button
+            type="button"
+            data-contact-model-remove
+            class="mt-2 text-xs font-medium text-white/50 underline transition-colors hover:text-white"
+          >
+            Remover referência
+          </button>
+        </div>
+
+        <form data-contact-form novalidate class="cfm-form mt-4 flex flex-col gap-3">
+          <div class="absolute left-[-9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+            <label for="contact-empresa-site">Não preencha este campo</label>
+            <input type="text" id="contact-empresa-site" name="empresa_site" tabindex={-1} autocomplete="off" />
+          </div>
+
+          <fieldset data-contact-form-fieldset class="cfm-fieldset flex flex-col gap-3 border-0 p-0">
+            <div class="cfm-field">
+              <label for="contact-name" class="block text-xs font-medium text-white/60">Nome *</label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                required
+                maxlength={contactFormLimits.nameMax}
+                class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                placeholder="Seu nome"
+                aria-describedby="contact-name-error"
+              />
+              <p id="contact-name-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
+            </div>
+
+            <div class="cfm-field">
+              <label for="contact-whatsapp" class="block text-xs font-medium text-white/60">WhatsApp com DDD *</label>
+              <div class="mt-1.5 flex gap-2">
+                <select
+                  id="contact-whatsapp-country"
+                  name="whatsappCountry"
+                  aria-label="Código do país"
+                  class="cfm-control w-[6.5rem] shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-2 py-3 text-sm text-white focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                >
+                  {
+                    countryCodes.map((country) => (
+                      <option value={country.dial} style="background-color:#0a0e1a; color:#f3f6fb;">
+                        {country.dial} {country.code}
+                      </option>
+                    ))
+                  }
+                </select>
+                <input
+                  id="contact-whatsapp"
+                  name="whatsapp"
+                  type="tel"
+                  required
+                  inputmode="numeric"
+                  class="cfm-control min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  placeholder="(47) 98845-4356"
+                  aria-describedby="contact-whatsapp-error"
+                />
+              </div>
+              <p id="contact-whatsapp-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
+            </div>
+
+            <div class="cfm-field grid gap-3 sm:grid-cols-2">
+              <div>
+                <label for="contact-email" class="block text-xs font-medium text-white/60">E-mail (opcional)</label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  placeholder="voce@empresa.com.br"
+                  aria-describedby="contact-email-error"
+                />
+                <p id="contact-email-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
+              </div>
+
+              <div>
+                <label for="contact-segment" class="block text-xs font-medium text-white/60">Segmento da empresa *</label>
+                <select
+                  id="contact-segment"
+                  name="segment"
+                  required
+                  class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                  aria-describedby="contact-segment-error"
+                >
+                  <option value="" selected style="background-color:#0a0e1a; color:#f3f6fb;">Selecione um segmento</option>
+                  {
+                    contactSegments.map((segment) => (
+                      <option value={segment} style="background-color:#0a0e1a; color:#f3f6fb;">
+                        {segment}
+                      </option>
+                    ))
+                  }
+                </select>
+                <p id="contact-segment-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
+              </div>
+            </div>
+
+            <div class="cfm-field">
+              <label for="contact-description" class="block text-xs font-medium text-white/60">
+                O que você gostaria de ter no seu site? *
+              </label>
+              <textarea
+                id="contact-description"
+                name="description"
+                required
+                rows={3}
+                maxlength={contactFormLimits.descriptionMax}
+                class="cfm-control cfm-textarea mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                placeholder="Conte o que sua empresa faz, o que gostaria de apresentar no site e quais recursos considera importantes. Não precisa ter tudo definido — ajudamos você nessa etapa."
+                aria-describedby="contact-description-error"
+              ></textarea>
+              <p id="contact-description-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
+            </div>
+          </fieldset>
+
+          <input type="hidden" name="origin" data-contact-origin-field value="" />
+          <input type="hidden" name="referenceModel" data-reference-model-field value="" />
+
+          <div data-contact-form-error class="hidden rounded-xl border border-red-400/25 bg-red-500/10 px-4 py-3 text-sm text-red-300"></div>
+          <div data-contact-form-success class="hidden rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300"></div>
+
+          <button
+            type="submit"
+            data-contact-form-submit
+            class="cfm-submit flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+            style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
+          >
+            <span data-contact-form-spinner class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            <span data-contact-form-submit-label>Solicitar contato</span>
+          </button>
+
+          <p class="text-center text-xs leading-relaxed text-white/35">
+            Ao enviar, você autoriza o uso destes dados exclusivamente para retorno do seu contato.
+            <a href="/politica-de-privacidade" class="underline transition-colors hover:text-white/60">Política de Privacidade</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-height: 820px) and (min-width: 768px) {
+    .cfm-scroll {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      padding-left: 28px;
+      padding-right: 28px;
+    }
+    .cfm-title {
+      font-size: 1.375rem;
+      margin-top: 0.25rem;
+    }
+    .cfm-subtitle {
+      margin-top: 0.25rem;
+      line-height: 1.3;
+    }
+    .cfm-form {
+      margin-top: 0.75rem;
+      gap: 0.65rem;
+    }
+    .cfm-fieldset {
+      gap: 0.6rem;
+    }
+    .cfm-field.grid {
+      gap: 0.6rem;
+    }
+    .cfm-control {
+      padding-top: 0.7rem;
+      padding-bottom: 0.7rem;
+    }
+    .cfm-textarea {
+      height: 78px;
+    }
+    .cfm-submit {
+      padding-top: 0.65rem;
+      padding-bottom: 0.65rem;
+    }
+  }
+</style>
+
+<script>
+  const WHATSAPP_URL = `https://wa.me/5547988454356?text=${encodeURIComponent(
+    "Olá! Vi o site da CronosStart e gostaria de saber mais sobre um projeto para minha empresa."
+  )}`;
+  const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+
+  const modalRoot = document.getElementById("contact-form-modal")!;
+  const backdrop = modalRoot.querySelector<HTMLElement>("[data-contact-form-backdrop]")!;
+  const panel = modalRoot.querySelector<HTMLElement>("[data-contact-form-panel]")!;
+  const closeButton = modalRoot.querySelector<HTMLButtonElement>("[data-contact-form-close]")!;
+  const form = modalRoot.querySelector<HTMLFormElement>("[data-contact-form]")!;
+  const fieldset = modalRoot.querySelector<HTMLFieldSetElement>("[data-contact-form-fieldset]")!;
+  const contextEl = modalRoot.querySelector<HTMLElement>("[data-contact-form-context]")!;
+  const originField = modalRoot.querySelector<HTMLInputElement>("[data-contact-origin-field]")!;
+  const errorBox = modalRoot.querySelector<HTMLElement>("[data-contact-form-error]")!;
+  const successBox = modalRoot.querySelector<HTMLElement>("[data-contact-form-success]")!;
+  const submitButton = modalRoot.querySelector<HTMLButtonElement>("[data-contact-form-submit]")!;
+  const submitLabel = modalRoot.querySelector<HTMLElement>("[data-contact-form-submit-label]")!;
+  const spinner = modalRoot.querySelector<HTMLElement>("[data-contact-form-spinner]")!;
+  const whatsappInput = modalRoot.querySelector<HTMLInputElement>("#contact-whatsapp")!;
+  const whatsappCountrySelect = modalRoot.querySelector<HTMLSelectElement>("#contact-whatsapp-country")!;
+  const nameInput = modalRoot.querySelector<HTMLInputElement>("#contact-name")!;
+  const honeypot = modalRoot.querySelector<HTMLInputElement>("#contact-empresa-site")!;
+  const segmentSelect = modalRoot.querySelector<HTMLSelectElement>("#contact-segment")!;
+  const referenceModelField = modalRoot.querySelector<HTMLInputElement>("[data-reference-model-field]")!;
+  const modelPanel = modalRoot.querySelector<HTMLElement>("[data-contact-model-panel]")!;
+  const modelNameEl = modalRoot.querySelector<HTMLElement>("[data-contact-model-name]")!;
+  const modelRemoveButton = modalRoot.querySelector<HTMLButtonElement>("[data-contact-model-remove]")!;
+
+  const MODEL_SEGMENT: Record<string, string> = {
+    "Atlas Contabilidade": "Contabilidade",
+    "Horizonte Seguros": "Corretora de seguros",
+    "Vértice Imóveis": "Imobiliária",
+    "Essenza Restaurante": "Restaurante",
+    "Aurum Motors": "Outro",
+    "Orion Odontologia": "Odontologia",
+  };
+
+  let lastFocusedElement: HTMLElement | null = null;
+  let isSubmitting = false;
+  let isOpen = false;
+
+  const fieldErrorIds = ["name", "whatsapp", "email", "segment", "description"] as const;
+
+  function clearFieldErrors() {
+    fieldErrorIds.forEach((field) => {
+      const input = form.querySelector<HTMLElement>(`[name="${field}"]`);
+      const errorEl = document.getElementById(`contact-${field}-error`);
+      input?.removeAttribute("aria-invalid");
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
+    });
+  }
+
+  function setFieldError(field: string, message: string) {
+    const input = form.querySelector<HTMLElement>(`[name="${field}"]`);
+    const errorEl = document.getElementById(`contact-${field}-error`);
+    input?.setAttribute("aria-invalid", "true");
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+    }
+  }
+
+  function hideMessages() {
+    errorBox.classList.add("hidden");
+    successBox.classList.add("hidden");
+    errorBox.innerHTML = "";
+    successBox.innerHTML = "";
+  }
+
+  function showErrorMessage(message: string, withWhatsapp = false) {
+    errorBox.innerHTML = withWhatsapp
+      ? `<p>${message}</p><a href="${WHATSAPP_URL}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-1.5 font-semibold text-white underline">Falar no WhatsApp</a>`
+      : `<p>${message}</p>`;
+    errorBox.classList.remove("hidden");
+  }
+
+  function showSuccessMessage(message: string, continueWhatsappUrl?: string) {
+    successBox.innerHTML = continueWhatsappUrl
+      ? `<p>${message}</p><a href="${continueWhatsappUrl}" target="_blank" rel="noopener noreferrer" class="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 px-4 py-2 text-xs font-semibold text-emerald-200 transition-colors hover:bg-emerald-400/10">Continuar pelo WhatsApp</a>`
+      : `<p>${message}</p>`;
+    successBox.classList.remove("hidden");
+  }
+
+  function formatWhatsapp(digits: string) {
+    const d = digits.slice(0, 11);
+    if (d.length <= 2) return d;
+    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  }
+
+  function applyWhatsappFormatting() {
+    const digits = whatsappInput.value.replace(/\D/g, "");
+    whatsappInput.value = whatsappCountrySelect.value === "+55" ? formatWhatsapp(digits) : digits;
+  }
+
+  whatsappInput.addEventListener("input", applyWhatsappFormatting);
+  whatsappCountrySelect.addEventListener("change", () => {
+    whatsappInput.placeholder = whatsappCountrySelect.value === "+55" ? "(47) 98845-4356" : "Número com código de área";
+    applyWhatsappFormatting();
+  });
+
+  function validate(): boolean {
+    clearFieldErrors();
+    let firstInvalid: HTMLElement | null = null;
+    let valid = true;
+
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
+    const whatsappDigits = (form.elements.namedItem("whatsapp") as HTMLInputElement).value.replace(/\D/g, "");
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
+    const segment = (form.elements.namedItem("segment") as HTMLSelectElement).value;
+    const description = (form.elements.namedItem("description") as HTMLTextAreaElement).value.trim();
+
+    if (name.length < 2) {
+      setFieldError("name", "Informe seu nome completo.");
+      firstInvalid ??= nameInput;
+      valid = false;
+    }
+    if (whatsappDigits.length < 8 || whatsappDigits.length > 13) {
+      setFieldError("whatsapp", "Informe um número de WhatsApp válido.");
+      firstInvalid ??= whatsappInput;
+      valid = false;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFieldError("email", "Informe um e-mail válido ou deixe em branco.");
+      firstInvalid ??= form.querySelector<HTMLElement>('[name="email"]');
+      valid = false;
+    }
+    if (!segment) {
+      setFieldError("segment", "Selecione um segmento.");
+      firstInvalid ??= form.querySelector<HTMLElement>('[name="segment"]');
+      valid = false;
+    }
+    if (description.length < 10) {
+      setFieldError("description", "Descreva brevemente seu projeto (mínimo 10 caracteres).");
+      firstInvalid ??= form.querySelector<HTMLElement>('[name="description"]');
+      valid = false;
+    }
+
+    if (!valid) firstInvalid?.focus();
+    return valid;
+  }
+
+  function setLoading(loading: boolean) {
+    submitButton.disabled = loading;
+    fieldset.disabled = loading;
+    spinner.classList.toggle("hidden", !loading);
+    submitLabel.textContent = loading ? "Enviando..." : "Solicitar contato";
+  }
+
+  function getFocusable(): HTMLElement[] {
+    return Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => el.offsetParent !== null);
+  }
+
+  function openModal(trigger: HTMLElement) {
+    lastFocusedElement = trigger;
+
+    const model = trigger.getAttribute("data-contact-model");
+    const plan = trigger.getAttribute("data-contact-plan");
+    const origin = trigger.getAttribute("data-contact-origin") || "unknown";
+
+    originField.value = origin;
+
+    if (model) {
+      referenceModelField.value = model;
+      modelNameEl.textContent = model;
+      modelPanel.classList.remove("hidden");
+      contextEl.textContent = "";
+      contextEl.classList.add("hidden");
+      const mappedSegment = MODEL_SEGMENT[model];
+      if (mappedSegment) segmentSelect.value = mappedSegment;
+    } else if (plan) {
+      referenceModelField.value = "";
+      modelPanel.classList.add("hidden");
+      contextEl.textContent = `Plano de interesse: ${plan}`;
+      contextEl.classList.remove("hidden");
+    } else {
+      referenceModelField.value = "";
+      modelPanel.classList.add("hidden");
+      contextEl.textContent = "";
+      contextEl.classList.add("hidden");
+    }
+
+    modalRoot.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    isOpen = true;
+
+    requestAnimationFrame(() => {
+      backdrop.classList.remove("opacity-0");
+      panel.classList.remove("opacity-0", "translate-y-6", "sm:translate-y-2");
+    });
+
+    window.setTimeout(() => nameInput.focus(), 50);
+  }
+
+  function closeModal() {
+    if (!isOpen) return;
+    isOpen = false;
+    backdrop.classList.add("opacity-0");
+    panel.classList.add("opacity-0", "translate-y-6", "sm:translate-y-2");
+    document.body.style.overflow = "";
+
+    window.setTimeout(() => {
+      modalRoot.classList.add("hidden");
+      form.reset();
+      clearFieldErrors();
+      hideMessages();
+      setLoading(false);
+      fieldset.disabled = false;
+    }, 300);
+
+    lastFocusedElement?.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    const trigger = (event.target as HTMLElement)?.closest<HTMLElement>("[data-open-contact-form]");
+    if (trigger) {
+      event.preventDefault();
+      openModal(trigger);
+    }
+  });
+
+  closeButton.addEventListener("click", closeModal);
+  backdrop.addEventListener("click", closeModal);
+
+  modelRemoveButton.addEventListener("click", () => {
+    referenceModelField.value = "";
+    modelPanel.classList.add("hidden");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!isOpen) return;
+    if (event.key === "Escape") {
+      closeModal();
+      return;
+    }
+    if (event.key === "Tab") {
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+    if (honeypot.value) return;
+
+    hideMessages();
+    if (!validate()) return;
+
+    isSubmitting = true;
+    setLoading(true);
+
+    const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY as string | undefined;
+
+    if (!accessKey) {
+      console.warn(
+        "[CronosStart] PUBLIC_WEB3FORMS_ACCESS_KEY não configurado — o envio real do formulário está desativado. Configure essa variável de ambiente para receber solicitações."
+      );
+      showErrorMessage("O envio automático ainda não está configurado. Fale com a gente diretamente pelo WhatsApp.", true);
+      isSubmitting = false;
+      setLoading(false);
+      return;
+    }
+
+    const whatsappDigitsOnly = (form.elements.namedItem("whatsapp") as HTMLInputElement).value.replace(/\D/g, "");
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
+    const segment = (form.elements.namedItem("segment") as HTMLSelectElement).value;
+    const payload = {
+      access_key: accessKey,
+      subject: `Nova solicitação CronosStart — ${segment} — ${name}`,
+      from_name: "CronosStart — Site de Modelos",
+      name,
+      whatsapp: `${whatsappCountrySelect.value}${whatsappDigitsOnly}`,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
+      segment,
+      referenceModel: referenceModelField.value,
+      description: (form.elements.namedItem("description") as HTMLTextAreaElement).value.trim(),
+      contactOrigin: originField.value,
+    };
+
+    try {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.success) throw new Error(`Request failed with status ${response.status}`);
+
+      const continueWhatsappUrl = `https://wa.me/5547988454356?text=${encodeURIComponent(
+        `Olá! Acabei de enviar uma solicitação pelo site da CronosStart (${segment} — ${name}) e gostaria de continuar por aqui.`
+      )}`;
+      showSuccessMessage("Recebemos sua solicitação. A CronosStart entrará em contato em breve.", continueWhatsappUrl);
+      fieldset.disabled = true;
+      submitButton.disabled = true;
+      submitLabel.textContent = "Solicitação enviada";
+    } catch (error) {
+      showErrorMessage("Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.", true);
+    } finally {
+      isSubmitting = false;
+      spinner.classList.add("hidden");
+    }
+  });
+</script>

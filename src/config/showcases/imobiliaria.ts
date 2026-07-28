@@ -36,6 +36,8 @@ export const imobiliariaConfig: ShowcaseConfig = {
     title: "Vértice Imóveis — Compra, aluguel e atendimento acompanhado (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de site para imobiliárias, com busca de imóveis, destaques, processo de atendimento e corretores. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/imobiliaria.png",
+    ogImageAlt: "Vértice Imóveis — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "centered",

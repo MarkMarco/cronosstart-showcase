@@ -37,6 +37,8 @@ export const orionOdontologiaConfig: ShowcaseConfig = {
     title: "Orion Odontologia — Odontologia premium com precisão e cuidado (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de clínica odontológica premium, com especialidades, equipe, antes e depois e agendamento. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/orion-odontologia.png",
+    ogImageAlt: "Orion Odontologia — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "centered",

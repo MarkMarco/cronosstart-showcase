@@ -35,6 +35,8 @@ export const contabilidadeConfig: ShowcaseConfig = {
     title: "Atlas Contabilidade — Contabilidade consultiva para empresas (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de site para escritórios de contabilidade, com serviços, planejamento tributário e atendimento consultivo. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/contabilidade.png",
+    ogImageAlt: "Atlas Contabilidade — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "split",

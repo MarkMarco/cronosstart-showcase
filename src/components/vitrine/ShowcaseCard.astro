@@ -9,10 +9,6 @@ interface Props {
 }
 const { item, index = 0 } = Astro.props;
 
-const whatsappHref = `https://wa.me/5547988454356?text=${encodeURIComponent(
-  `Olá! Vi o modelo ${item.companyName} no portfólio da CronosStart e quero um site parecido para o meu negócio.`
-)}`;
-
 const ModelLogo = logoBySlug[item.slug as keyof typeof logoBySlug];
 
 const thumbnailVars = `--primary:${item.primary}; --accent:${item.accent};`;
@@ -97,14 +93,15 @@ const thumbnailBg = `background: radial-gradient(135% 150% at 18% 0%, color-mix(
       </span>
     </div>
 
-    <a
-      href={whatsappHref}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      data-open-contact-form
+      data-contact-model={item.companyName}
+      data-contact-origin={`card-${item.slug}`}
       class="mt-4 inline-flex items-center gap-1.5 border-t border-white/10 pt-3.5 text-xs font-medium text-white/45 transition-colors hover:text-[var(--accent)]"
     >
       Quero um site como este
       <Icon name="arrow-right" class="h-3 w-3" />
-    </a>
+    </button>
   </div>
 </article>

@@ -150,6 +150,8 @@ export const aurumMotorsConfig: ShowcaseConfig = {
     title: "Aurum Motors — Seminovos premium selecionados (modelo demonstrativo)",
     description:
       "Modelo demonstrativo de concessionária premium de seminovos, com estoque selecionado, financiamento e agendamento de test-drive. Projeto fictício da CronosStart.",
+    ogImage: "/images/og/aurum-motors.png",
+    ogImageAlt: "Aurum Motors — modelo demonstrativo CronosStart",
   },
   hero: {
     variant: "centered",

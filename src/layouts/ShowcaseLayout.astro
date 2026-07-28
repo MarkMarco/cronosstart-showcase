@@ -4,6 +4,7 @@ import ShowcaseHeader from "../components/showcase/ShowcaseHeader.astro";
 import ShowcaseFooter from "../components/showcase/ShowcaseFooter.astro";
 import WhatsAppButton from "../components/showcase/WhatsAppButton.astro";
 import DemoNotice from "../components/ui/DemoNotice.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
 import type { ShowcaseConfig } from "../config/showcases/types";
 
 interface Props {
@@ -31,19 +32,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 <html lang="pt-BR" style={cssVars}>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="canonical" href={canonicalURL} />
-    <title>{config.seo.title}</title>
-    <meta name="description" content={config.seo.description} />
-    <meta name="generator" content={Astro.generator} />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={config.seo.title} />
-    <meta property="og:description" content={config.seo.description} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:locale" content="pt_BR" />
+    <SEOHead
+      title={config.seo.title}
+      description={config.seo.description}
+      canonicalURL={canonicalURL}
+      ogImage={config.seo.ogImage}
+      ogImageAlt={config.seo.ogImageAlt}
+      robots="noindex, nofollow"
+    />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
     <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref={config.primaryCtaHref ?? "#contato"}>
