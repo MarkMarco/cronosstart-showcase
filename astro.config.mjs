@@ -10,7 +10,7 @@ export default defineConfig({
     '/': '/modelos',
   },
   server: {
-    port: process.env.PORT ? Number(process.env.PORT) : 4321,
+    port: process.env.PORT ? Number(process.env.PORT) : 4400,
   },
   vite: {
     plugins: [tailwindcss()],
