@@ -1,6 +1,7 @@
 ---
 import CronosStartLogo from "../brand/CronosStartLogo.astro";
 import Icon from "../ui/Icon.astro";
+import { ecosystemItems } from "../../config/ecosystem";
 
 const whatsappGeneral = `https://wa.me/5547988454356?text=${encodeURIComponent(
   "Olá! Vi o portfólio de modelos da CronosStart e gostaria de saber mais sobre um site para minha empresa."
@@ -73,7 +74,39 @@ const currentYear = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="mt-14 border-t border-[var(--border)] pt-8">
+    <div class="mt-14 border-t border-[var(--border)] pt-10">
+      <h3 class="text-center text-xs font-semibold uppercase tracking-[0.16em] text-white/50 sm:text-left">
+        Ecossistema CronosSec
+      </h3>
+      <p class="mt-2 max-w-xl text-center text-sm leading-relaxed text-[var(--ink-muted)] sm:text-left">
+        A CronosStart faz parte de um ecossistema de soluções para segurança, tecnologia, diagnóstico e proteção de
+        marca.
+      </p>
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          ecosystemItems.map((item) =>
+            item.href ? (
+              <a
+                href={item.href}
+                class="ecosystem-item ecosystem-item--link flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-5 text-center transition-colors hover:border-[var(--accent)]/40"
+              >
+                <img src={item.logo} alt={item.name} class="h-10 w-auto" loading="lazy" decoding="async" />
+                <span class="text-sm font-semibold text-white">{item.name}</span>
+                <span class="text-xs leading-snug text-[var(--ink-muted)]">{item.description}</span>
+              </a>
+            ) : (
+              <div class="ecosystem-item flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-5 text-center">
+                <img src={item.logo} alt={item.name} class="h-10 w-auto" loading="lazy" decoding="async" />
+                <span class="text-sm font-semibold text-white">{item.name}</span>
+                <span class="text-xs leading-snug text-[var(--ink-muted)]">{item.description}</span>
+              </div>
+            )
+          )
+        }
+      </div>
+    </div>
+
+    <div class="mt-10 border-t border-[var(--border)] pt-8">
       <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/40 sm:justify-start">
         <a href="/politica-de-privacidade" class="transition-colors hover:text-white">Política de Privacidade</a>
         <a href="/termos-de-uso" class="transition-colors hover:text-white">Termos de Uso</a>
