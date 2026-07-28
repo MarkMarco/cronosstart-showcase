@@ -1,0 +1,21 @@
+---
+interface Props {
+  class?: string;
+  imgClass?: string;
+  priority?: boolean;
+}
+const { class: className = "", imgClass = "h-12 w-auto sm:h-14", priority = false } = Astro.props;
+---
+
+<picture class={className}>
+  <source srcset="/images/brand/cronosstart-logo.webp" type="image/webp" />
+  <img
+    src="/images/brand/cronosstart-logo.png"
+    alt="CronosStart — Presença digital para pequenas empresas"
+    class={`${imgClass} object-contain`}
+    loading={priority ? "eager" : "lazy"}
+    decoding="async"
+    width="834"
+    height="668"
+  />
+</picture>

@@ -1,12 +1,17 @@
+import type { IconName } from "./types";
+
 export interface ShowcaseSummary {
   slug: string;
   segment: string;
   companyName: string;
   shortDescription: string;
   available: boolean;
+  /** Cor primária real do tema do modelo (usada para escopar o logo real do card) */
+  primary: string;
+  /** Cor de destaque real do tema do modelo (usada para escopar o logo real do card) */
   accent: string;
-  accentSoft: string;
-  ink: string;
+  icon: IconName;
+  premium?: boolean;
 }
 
 export const showcaseRegistry: ShowcaseSummary[] = [
@@ -17,9 +22,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Site institucional para escritórios contábeis, com foco em clareza, confiança e atendimento consultivo.",
     available: true,
-    accent: "#14213d",
-    accentSoft: "#eef1f6",
-    ink: "#14171f",
+    primary: "#14213d",
+    accent: "#2f6f4f",
+    icon: "file-check",
   },
   {
     slug: "seguros",
@@ -28,9 +33,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Modelo voltado a cotação rápida e proximidade, apresentando os principais tipos de seguro.",
     available: true,
-    accent: "#1e4dbb",
-    accentSoft: "#eef3fb",
-    ink: "#132540",
+    primary: "#1e4dbb",
+    accent: "#e2734f",
+    icon: "shield-check",
   },
   {
     slug: "imobiliaria",
@@ -39,9 +44,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Modelo comercial e elegante, com busca demonstrativa de imóveis e destaque para conversão.",
     available: true,
+    primary: "#221e19",
     accent: "#b8873e",
-    accentSoft: "#f0e9dc",
-    ink: "#211d18",
+    icon: "home",
   },
   {
     slug: "restaurante",
@@ -50,9 +55,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Modelo acolhedor e sofisticado, valorizando cardápio, ambiente e reservas.",
     available: true,
+    primary: "#7a2331",
     accent: "#cf8a4e",
-    accentSoft: "#241a16",
-    ink: "#f3e9df",
+    icon: "wine",
   },
   {
     slug: "aurum-motors",
@@ -61,9 +66,10 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Modelo premium para lojas de seminovos selecionados, com estoque, financiamento e painel administrativo demonstrativo.",
     available: true,
-    accent: "#b3843c",
-    accentSoft: "#1c1a16",
-    ink: "#f2ede4",
+    primary: "#b3843c",
+    accent: "#d9b26a",
+    icon: "car",
+    premium: true,
   },
   {
     slug: "orion-odontologia",
@@ -72,8 +78,9 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     shortDescription:
       "Modelo premium para clínicas odontológicas, com especialidades, equipe, antes e depois e agendamento.",
     available: true,
-    accent: "#2f6b5c",
-    accentSoft: "#eef1ec",
-    ink: "#23282a",
+    primary: "#2f6b5c",
+    accent: "#c48a6f",
+    icon: "sparkle",
+    premium: true,
   },
 ];

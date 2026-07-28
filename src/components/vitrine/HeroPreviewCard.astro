@@ -1,0 +1,33 @@
+---
+import { logoBySlug } from "../../config/showcases/logos";
+import type { ShowcaseSummary } from "../../config/showcases";
+
+interface Props {
+  item: ShowcaseSummary;
+  class?: string;
+  logoScale?: string;
+}
+const { item, class: className = "", logoScale = "scale-100" } = Astro.props;
+const ModelLogo = logoBySlug[item.slug as keyof typeof logoBySlug];
+
+const vars = `--primary:${item.primary}; --accent:${item.accent};`;
+const bg = `background: radial-gradient(140% 150% at 20% 0%, color-mix(in srgb, ${item.accent} 34%, transparent) 0%, transparent 55%), linear-gradient(160deg, color-mix(in srgb, ${item.primary} 48%, #0a0e1a) 0%, #05070d 130%);`;
+---
+
+<a
+  href={`/modelos/${item.slug}`}
+  aria-label={`Ver demonstração de ${item.companyName}`}
+  class={`group block overflow-hidden rounded-2xl border border-white/10 shadow-[0_30px_60px_-25px_rgba(0,0,0,0.55)] transition-all duration-500 hover:-translate-y-1 hover:border-white/25 ${className}`}
+  style={`${vars} ${bg}`}
+>
+  <div class="flex items-center gap-1.5 px-3.5 pt-3">
+    <span class="h-1.5 w-1.5 rounded-full bg-white/25"></span>
+    <span class="h-1.5 w-1.5 rounded-full bg-white/25"></span>
+    <span class="h-1.5 w-1.5 rounded-full bg-white/25"></span>
+  </div>
+  <div class="flex h-[calc(100%-1.75rem)] items-center justify-center px-5">
+    <div class={`${logoScale} origin-center transition-transform duration-500 ease-out group-hover:scale-105`}>
+      <ModelLogo />
+    </div>
+  </div>
+</a>

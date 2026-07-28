@@ -1,43 +1,78 @@
 ---
+import Icon from "../ui/Icon.astro";
+import { logoBySlug } from "../../config/showcases/logos";
 import type { ShowcaseSummary } from "../../config/showcases";
 
 interface Props {
   item: ShowcaseSummary;
+  index?: number;
 }
-const { item } = Astro.props;
-const initial = item.companyName.charAt(0);
+const { item, index = 0 } = Astro.props;
+
+const whatsappHref = `https://wa.me/5547988454356?text=${encodeURIComponent(
+  `Olá! Vi o modelo ${item.companyName} no portfólio da CronosStart e quero um site parecido para o meu negócio.`
+)}`;
+
+const ModelLogo = logoBySlug[item.slug as keyof typeof logoBySlug];
+
+const thumbnailVars = `--primary:${item.primary}; --accent:${item.accent};`;
+const thumbnailBg = `background: radial-gradient(135% 150% at 18% 0%, color-mix(in srgb, ${item.accent} 30%, transparent) 0%, transparent 55%), linear-gradient(160deg, color-mix(in srgb, ${item.primary} 42%, #0a0e1a) 0%, #05070d 130%);`;
 ---
 
-<article class="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition-transform duration-200 hover:-translate-y-1">
-  <div class="overflow-hidden rounded-t-2xl border-b border-white/10" style={`background:${item.accentSoft}`}>
-    <div class="flex items-center gap-1.5 px-4 py-2.5">
-      <span class="h-2 w-2 rounded-full" style={`background:${item.accent}55`}></span>
-      <span class="h-2 w-2 rounded-full" style={`background:${item.accent}55`}></span>
-      <span class="h-2 w-2 rounded-full" style={`background:${item.accent}55`}></span>
-    </div>
-    <div class="relative px-4 pb-6 pt-1">
-      <span
-        class="pointer-events-none absolute -bottom-3 right-2 select-none text-7xl font-bold leading-none"
-        style={`color:${item.accent}1a`}
-        aria-hidden="true"
-      >
-        {initial}
+<article
+  data-animate
+  style={`transition-delay: ${index * 60}ms`}
+  class="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.03] transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:shadow-[0_25px_60px_-25px_rgba(56,189,248,0.3)]"
+>
+  {
+    item.premium && (
+      <span class="absolute right-4 top-4 z-10 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/80 backdrop-blur">
+        <Icon name="sparkle" class="h-3 w-3 text-[var(--accent)]" />
+        Premium
       </span>
-      <div class="h-2.5 w-2/5 rounded-full" style={`background:${item.accent}`}></div>
-      <div class="mt-2.5 h-1.5 w-3/5 rounded-full" style={`background:${item.ink}22`}></div>
-      <div class="mt-4 grid grid-cols-3 gap-2">
-        <div class="h-9 rounded-lg bg-white/70"></div>
-        <div class="h-9 rounded-lg bg-white/70"></div>
-        <div class="h-9 rounded-lg bg-white/70"></div>
+    )
+  }
+
+  <div class="relative aspect-[4/3] overflow-hidden border-b border-white/10" style={`${thumbnailVars} ${thumbnailBg}`}>
+    <div
+      class="pointer-events-none absolute inset-0 opacity-[0.05]"
+      style="background-image: linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(70% 70% at 50% 40%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(70% 70% at 50% 40%, black 0%, transparent 100%);"
+      aria-hidden="true"
+    />
+    <div class="pointer-events-none absolute inset-0" style="background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 42%);" aria-hidden="true" />
+    <Icon
+      name={item.icon}
+      class="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 text-white/[0.05]"
+    />
+
+    <div class="relative flex items-center gap-1.5 px-4 pt-3.5">
+      <span class="h-2 w-2 rounded-full bg-white/20"></span>
+      <span class="h-2 w-2 rounded-full bg-white/20"></span>
+      <span class="h-2 w-2 rounded-full bg-white/20"></span>
+    </div>
+
+    <div class="relative flex h-[calc(100%-2rem)] items-center justify-center px-6">
+      <div class="scale-[1.55] transition-transform duration-500 ease-out group-hover:scale-[1.7]">
+        <ModelLogo />
       </div>
     </div>
+
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-10"
+      style="background: linear-gradient(to bottom, transparent 0%, rgba(5,7,13,0.55) 100%);"
+      aria-hidden="true"
+    />
+
+    <span
+      class="absolute bottom-3 left-4 z-10 rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em]"
+      style={`background: color-mix(in srgb, ${item.accent} 24%, transparent); color: ${item.accent}; backdrop-filter: blur(6px);`}
+    >
+      {item.segment}
+    </span>
   </div>
 
   <div class="flex flex-1 flex-col p-6">
-    <p class="text-xs font-semibold uppercase tracking-[0.16em]" style={`color:${item.accent}`}>
-      {item.segment}
-    </p>
-    <h3 class="mt-2 text-lg font-semibold text-white">{item.companyName}</h3>
+    <h3 class="text-lg font-semibold tracking-tight text-white">{item.companyName}</h3>
     <p class="mt-2.5 flex-1 text-sm leading-relaxed text-white/60">{item.shortDescription}</p>
 
     <div class="mt-6 flex items-center justify-between gap-3">
@@ -45,9 +80,10 @@ const initial = item.companyName.charAt(0);
         item.available ? (
           <a
             href={`/modelos/${item.slug}`}
-            class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:-translate-y-0.5"
+            class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0a0e1a] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_25px_-8px_rgba(255,255,255,0.35)]"
           >
             Ver demonstração
+            <Icon name="arrow-right" class="h-3.5 w-3.5" />
           </a>
         ) : (
           <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/50">
@@ -55,7 +91,20 @@ const initial = item.companyName.charAt(0);
           </span>
         )
       }
-      <span class="text-xs text-white/40">Personalizável</span>
+      <span class="inline-flex items-center gap-1 text-xs text-white/40">
+        <Icon name="check" class="h-3.5 w-3.5 text-[var(--accent)]" />
+        Personalizável
+      </span>
     </div>
+
+    <a
+      href={whatsappHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-4 inline-flex items-center gap-1.5 border-t border-white/10 pt-3.5 text-xs font-medium text-white/45 transition-colors hover:text-[var(--accent)]"
+    >
+      Quero um site como este
+      <Icon name="arrow-right" class="h-3 w-3" />
+    </a>
   </div>
 </article>

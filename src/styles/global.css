@@ -87,3 +87,17 @@
 .animate-hero-in {
   animation: hero-rise 0.7s cubic-bezier(0.16, 0.8, 0.24, 1) both;
 }
+
+@keyframes float-slow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(14px, -16px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 11s ease-in-out infinite;
+}
+
+.animate-float-slow-delay {
+  animation: float-slow 13s ease-in-out infinite;
+  animation-delay: 1.2s;
+}

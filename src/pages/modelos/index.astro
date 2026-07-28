@@ -2,16 +2,68 @@
 import "../../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
+import CronosStartLogo from "../../components/brand/CronosStartLogo.astro";
 import ShowcaseCard from "../../components/vitrine/ShowcaseCard.astro";
+import HeroPreviewCard from "../../components/vitrine/HeroPreviewCard.astro";
+import Icon from "../../components/ui/Icon.astro";
 import { showcaseRegistry } from "../../config/showcases";
 
-const title = "Modelos de Sites Profissionais — CronosStart";
+const heroBack = showcaseRegistry.find((item) => item.slug === "aurum-motors")!;
+const heroMiddle = showcaseRegistry.find((item) => item.slug === "restaurante")!;
+const heroFront = showcaseRegistry.find((item) => item.slug === "orion-odontologia")!;
+
+const trustChips = [
+  { icon: "sparkle" as const, label: "Sites personalizados" },
+  { icon: "settings" as const, label: "Domínio e hospedagem" },
+  { icon: "shield-check" as const, label: "Suporte e acompanhamento" },
+  { icon: "layers" as const, label: "Modelos por segmento" },
+];
+
+const title = "CronosStart — Modelos de sites profissionais para pequenas empresas";
 const description =
-  "Vitrine de modelos demonstrativos de sites profissionais por segmento. Conheça a qualidade do trabalho da CronosStart e solicite um projeto personalizado para a sua marca.";
+  "Portfólio oficial da CronosStart: modelos de sites demonstrativos por segmento, com identidade, textos e funcionalidades próprias. Conheça e solicite um projeto personalizado para sua empresa.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const whatsappGeneral = `https://wa.me/5547988454356?text=${encodeURIComponent(
+  "Olá! Vi o portfólio de modelos da CronosStart e gostaria de saber mais sobre um site para minha empresa."
+)}`;
+
+const steps = [
+  {
+    icon: "message-circle" as const,
+    title: "Conhecemos seu negócio",
+    description: "Entendemos seu segmento, público e objetivos.",
+  },
+  {
+    icon: "layers" as const,
+    title: "Definimos a estrutura ideal",
+    description: "Escolhemos a base mais adequada e organizamos o conteúdo.",
+  },
+  {
+    icon: "sparkle" as const,
+    title: "Personalizamos para sua marca",
+    description: "Adaptamos cores, textos, imagens e funcionalidades.",
+  },
+  {
+    icon: "shield-check" as const,
+    title: "Publicamos e acompanhamos",
+    description: "Colocamos o site no ar e permanecemos disponíveis para suporte.",
+  },
+];
+
+const gridPatternStyle =
+  "background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%);";
+
+const ctaButtonStyle =
+  "background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);";
+
+const currentYear = new Date().getFullYear();
 ---
 
-<html lang="pt-BR" style="--font-heading: 'Space Grotesk Variable', system-ui, sans-serif; --font-body: 'Inter Variable', system-ui, sans-serif;">
+<html
+  lang="pt-BR"
+  style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,43 +77,496 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:locale" content="pt_BR" />
   </head>
-  <body class="min-h-screen bg-[#0b0d12] font-[var(--font-body)] text-white antialiased">
-    <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
-      <p class="font-[var(--font-heading)] text-lg font-semibold tracking-tight">CronosStart</p>
-      <a
-        href="https://www.cronossec.com.br"
-        class="text-sm font-medium text-white/60 transition-colors hover:text-white"
-      >
-        cronossec.com.br
-      </a>
+  <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-white/[0.08] bg-[var(--surface)]/75 backdrop-blur-xl">
+      <div class="h-px w-full" style="background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 65%, transparent), transparent);"></div>
+      <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+        <a href="/modelos" class="flex items-center" aria-label="CronosStart — página inicial do portfólio">
+          <CronosStartLogo imgClass="h-11 w-auto sm:h-12" priority />
+        </a>
+
+        <nav class="hidden items-center gap-9 lg:flex" aria-label="Navegação principal">
+          <a href="#modelos" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+            Modelos
+            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#como-funciona" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+            Como funciona
+            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#contato" class="group relative text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+            Contato
+            <span class="absolute -bottom-1.5 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a
+            href={whatsappGeneral}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hidden items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] sm:inline-flex"
+            style={ctaButtonStyle}
+          >
+            Solicitar orçamento
+          </a>
+          <button
+            id="menu-toggle"
+            type="button"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/5 lg:hidden"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Abrir menu"
+          >
+            <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+            <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+          </button>
+        </div>
+      </div>
+
+      <div id="mobile-menu" class="hidden origin-top border-t border-[var(--border)] bg-[var(--surface)] px-6 py-6 lg:hidden">
+        <nav class="flex flex-col gap-1">
+          <a href="#modelos" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Modelos</a>
+          <a href="#como-funciona" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Como funciona</a>
+          <a href="#contato" data-mobile-link class="rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/5">Contato</a>
+        </nav>
+        <a
+          href={whatsappGeneral}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-mobile-link
+          class="mt-4 flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white"
+          style={ctaButtonStyle}
+        >
+          Solicitar orçamento
+        </a>
+      </div>
     </header>
 
     <main>
-      <section class="mx-auto max-w-4xl px-6 pb-14 pt-8 text-center">
-        <p class="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
-          Portfólio de modelos
-        </p>
-        <h1 class="font-[var(--font-heading)] text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
-          Modelos demonstrativos de sites, por segmento
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
-          Cada modelo abaixo é uma demonstração visual completa, construída com identidade, textos e
-          seções próprias do setor — não um template genérico. Escolha um segmento para ver a
-          demonstração e, se quiser, solicite um projeto personalizado para a sua marca.
-        </p>
+      <!-- Hero -->
+      <section class="relative overflow-hidden">
+        <div
+          class="pointer-events-none absolute -left-32 -top-40 h-[28rem] w-[28rem] rounded-full opacity-30 blur-[100px] animate-float-slow"
+          style="background: var(--primary);"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none absolute -right-24 top-24 h-96 w-96 rounded-full opacity-25 blur-[100px] animate-float-slow-delay"
+          style="background: var(--accent);"
+          aria-hidden="true"
+        ></div>
+        <div class="pointer-events-none absolute inset-0 opacity-[0.06]" style={gridPatternStyle} aria-hidden="true"></div>
+
+        <div
+          class="pointer-events-none absolute -right-16 top-1/2 hidden w-[34rem] -translate-y-1/2 opacity-[0.06] mix-blend-screen sm:block lg:w-[38rem]"
+          aria-hidden="true"
+        >
+          <CronosStartLogo imgClass="h-auto w-full" />
+        </div>
+
+        <div class="relative mx-auto max-w-7xl px-6 pb-20 pt-14 sm:pb-24 sm:pt-16">
+          <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+            <!-- Coluna de conteúdo -->
+            <div class="text-center lg:text-left">
+              <div class="animate-hero-in mx-auto mb-6 flex justify-center lg:mx-0 lg:justify-start">
+                <CronosStartLogo imgClass="h-12 w-auto sm:h-14" priority />
+              </div>
+
+              <div class="animate-hero-in mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 lg:mx-0" style="animation-delay: 30ms">
+                <span class="relative flex h-1.5 w-1.5">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style="background: var(--accent);"></span>
+                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full" style="background: var(--accent);"></span>
+                </span>
+                <span class="text-xs font-medium text-[var(--ink-muted)]">Modelos demonstrativos, prontos para personalizar</span>
+              </div>
+
+              <h1 class="animate-hero-in text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl" style="animation-delay: 60ms">
+                Sites profissionais para <span class="text-[var(--accent)]">pequenas empresas</span>
+              </h1>
+              <p class="animate-hero-in text-balance mx-auto mt-6 max-w-xl text-lg leading-relaxed text-[var(--ink-muted)] lg:mx-0" style="animation-delay: 120ms">
+                Site profissional com domínio, hospedagem e suporte — desenvolvido a partir de uma base
+                estratégica para o seu segmento e personalizado com a identidade da sua marca.
+              </p>
+
+              <div class="animate-hero-in mt-9 flex flex-wrap justify-center gap-4 lg:justify-start" style="animation-delay: 180ms">
+                <a
+                  href="#modelos"
+                  class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                  style={ctaButtonStyle}
+                >
+                  Explorar modelos
+                  <Icon name="arrow-right" class="h-4 w-4" />
+                </a>
+                <a
+                  href={whatsappGeneral}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+                >
+                  Falar sobre meu projeto
+                </a>
+              </div>
+
+              <div class="animate-hero-in mt-8 flex flex-wrap justify-center gap-2.5 lg:justify-start" style="animation-delay: 210ms">
+                {
+                  trustChips.map((chip) => (
+                    <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-xs font-medium text-[var(--ink-muted)]">
+                      <Icon name={chip.icon} class="h-3.5 w-3.5 text-[var(--accent)]" />
+                      {chip.label}
+                    </span>
+                  ))
+                }
+              </div>
+
+              <!-- Preview único e compacto, apenas em telas menores que lg -->
+              <div class="animate-hero-in mt-10 flex justify-center lg:hidden" style="animation-delay: 240ms">
+                <div class="relative w-full max-w-[220px]">
+                  <HeroPreviewCard item={heroFront} class="aspect-[4/3] w-full" logoScale="scale-100" />
+                  <span class="absolute -bottom-3 -right-3 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/50 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-white/80 backdrop-blur">
+                    <Icon name="check" class="h-3 w-3 text-[var(--accent)]" />
+                    Modelo real
+                  </span>
+                </div>
+              </div>
+
+              <p class="animate-hero-in mt-8 flex items-center justify-center gap-2 text-sm text-[var(--ink-muted)] lg:justify-start" style="animation-delay: 260ms">
+                <Icon name="map-pin" class="h-4 w-4 text-[var(--accent)]" />
+                Atendimento em Blumenau, região, todo o Brasil e LATAM
+              </p>
+            </div>
+
+            <!-- Composição visual: prévias reais dos modelos, apenas em telas lg+ -->
+            <div class="animate-hero-in relative hidden h-[26rem] items-center justify-center lg:flex" style="animation-delay: 200ms">
+              <div
+                class="pointer-events-none absolute h-72 w-72 rounded-full opacity-25 blur-[90px]"
+                style={`background: ${heroFront.accent};`}
+                aria-hidden="true"
+              ></div>
+
+              <div class="relative h-full w-full max-w-[26rem]">
+                <HeroPreviewCard
+                  item={heroBack}
+                  class="absolute right-0 top-2 aspect-[4/3] w-56 rotate-6 opacity-60 blur-[0.4px]"
+                  logoScale="scale-90"
+                />
+                <HeroPreviewCard
+                  item={heroMiddle}
+                  class="absolute left-2 top-24 aspect-[4/3] w-64 -rotate-3 opacity-90"
+                  logoScale="scale-100"
+                />
+                <HeroPreviewCard
+                  item={heroFront}
+                  class="absolute bottom-2 left-1/2 aspect-[4/3] w-72 -translate-x-1/2 rotate-2"
+                  logoScale="scale-110"
+                />
+
+                <span class="absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/15 bg-black/50 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
+                  <Icon name="check" class="h-3 w-3 text-[var(--accent)]" />
+                  Modelos profissionais &bull; Personalizáveis
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section class="mx-auto max-w-6xl px-6 pb-24">
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {showcaseRegistry.map((item) => <ShowcaseCard item={item} />)}
+      <!-- Introdução dos modelos -->
+      <section id="modelos" class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+        <div class="mx-auto max-w-6xl">
+          <div class="grid items-center gap-8 lg:grid-cols-[1fr_auto]" data-animate>
+            <div class="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-none lg:text-left">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Portfólio de modelos</p>
+              <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl lg:text-4xl">
+                Modelos criados para diferentes negócios
+              </h2>
+              <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)] lg:mx-0">
+                Cada demonstração apresenta uma proposta visual completa para o segmento. Cores, textos,
+                funcionalidades e identidade podem ser personalizados para cada empresa.
+              </p>
+            </div>
+
+            <div class="mx-auto flex shrink-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 lg:mx-0">
+              <span class="text-3xl font-bold text-[var(--accent)]">{String(showcaseRegistry.length).padStart(2, "0")}</span>
+              <span class="max-w-[8rem] text-xs leading-snug text-white/50">modelos disponíveis para demonstração</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grade dos modelos -->
+      <section class="bg-[var(--surface-alt)] px-6 pb-20 pt-6 sm:pb-28">
+        <div class="mx-auto max-w-[92rem]">
+          <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {showcaseRegistry.map((item, index) => <ShowcaseCard item={item} index={index} />)}
+          </div>
+        </div>
+      </section>
+
+      <!-- Como funciona -->
+      <section id="como-funciona" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
+        <div
+          class="pointer-events-none absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.14] blur-[110px]"
+          style="background: var(--accent);"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative mx-auto max-w-6xl">
+          <div class="mx-auto max-w-2xl text-center" data-animate>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Do primeiro contato ao site no ar</h2>
+            <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
+              Um processo simples, transparente e personalizado para colocar sua empresa no digital.
+            </p>
+          </div>
+
+          <div class="relative mt-16">
+            <div
+              class="pointer-events-none absolute left-[12.5%] right-[12.5%] top-6 hidden h-px lg:block"
+              style="background: linear-gradient(90deg, var(--primary), var(--accent));"
+              aria-hidden="true"
+            ></div>
+
+            <ol class="relative grid gap-2 lg:grid-cols-4 lg:gap-6">
+              {
+                steps.map((step, index) => (
+                  <li
+                    data-animate
+                    style={`transition-delay: ${index * 80}ms`}
+                    class="group relative flex flex-col items-center text-center"
+                  >
+                    <span
+                      class="relative z-10 mb-5 flex h-12 w-12 items-center justify-center rounded-full border text-[var(--accent)]"
+                      style={`background: var(--surface); border-color: color-mix(in srgb, var(--accent) ${30 + index * 12}%, var(--border)); box-shadow: 0 0 ${10 + index * 6}px color-mix(in srgb, var(--accent) ${15 + index * 10}%, transparent);`}
+                    >
+                      <span
+                        class="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                        style={`box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 55%, transparent);`}
+                        aria-hidden="true"
+                      />
+                      <Icon name={step.icon} class="h-5 w-5" />
+                    </span>
+
+                    <div
+                      class="relative w-full overflow-hidden rounded-2xl border border-white/10 p-6 pt-8 transition-all duration-300 group-hover:-translate-y-1 group-hover:border-white/20 group-hover:shadow-[0_20px_45px_-25px_rgba(56,189,248,0.35)]"
+                      style="background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);"
+                    >
+                      <span
+                        class="pointer-events-none absolute right-4 top-3 select-none text-4xl font-bold text-white/[0.06]"
+                        aria-hidden="true"
+                      >
+                        0{index + 1}
+                      </span>
+                      <h3 class="text-base font-semibold text-white">{step.title}</h3>
+                      <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{step.description}</p>
+                    </div>
+
+                    {index < steps.length - 1 && (
+                      <span class="relative my-2 flex h-6 w-px items-center justify-center lg:hidden" aria-hidden="true">
+                        <span
+                          class="absolute inset-0 mx-auto w-px"
+                          style="background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, transparent), transparent 85%);"
+                        />
+                        <span
+                          class="relative h-1.5 w-1.5 rounded-full"
+                          style="background: var(--accent); box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 65%, transparent);"
+                        />
+                      </span>
+                    )}
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chamada final -->
+      <section id="contato" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="relative mx-auto max-w-5xl" data-animate>
+          <div
+            class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center shadow-[0_60px_140px_-60px_rgba(0,0,0,0.75)] sm:px-16 sm:py-24"
+            style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
+          >
+            <div
+              class="pointer-events-none absolute -left-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full opacity-25 blur-[110px]"
+              style="background: var(--accent);"
+              aria-hidden="true"
+            ></div>
+            <div
+              class="pointer-events-none absolute -right-24 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full opacity-20 blur-[110px]"
+              style="background: var(--primary);"
+              aria-hidden="true"
+            ></div>
+            <div
+              class="pointer-events-none absolute inset-0 opacity-[0.05]"
+              style="background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(60% 80% at 50% 50%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(60% 80% at 50% 50%, black 0%, transparent 100%);"
+              aria-hidden="true"
+            ></div>
+
+            <div class="pointer-events-none absolute left-8 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 opacity-40 lg:flex" aria-hidden="true">
+              <span class="h-1.5 w-1.5 rounded-full" style="background: var(--accent); box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent);"></span>
+              <span class="h-12 w-px" style="background: linear-gradient(180deg, var(--accent), transparent);"></span>
+              <span class="h-1.5 w-1.5 rounded-full" style="background: var(--primary);"></span>
+            </div>
+            <div class="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 opacity-30 lg:block" aria-hidden="true">
+              <div class="h-16 w-10 rounded-lg border" style="border-color: color-mix(in srgb, var(--accent) 45%, transparent);"></div>
+            </div>
+
+            <div class="relative">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Seu projeto começa aqui</p>
+              <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Encontrou uma referência para o seu negócio?
+              </h2>
+              <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
+                Podemos adaptar qualquer modelo para sua marca, seus serviços, seu público e suas necessidades.
+              </p>
+              <p class="mx-auto mt-2 max-w-md text-sm text-white/40">
+                Conte sua ideia e ajudamos a definir a melhor estrutura para sua empresa.
+              </p>
+              <div class="mt-9 flex flex-wrap justify-center gap-4">
+                <a
+                  href={whatsappGeneral}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                  style={ctaButtonStyle}
+                >
+                  Solicitar orçamento
+                </a>
+                <a
+                  href={whatsappGeneral}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+                >
+                  <Icon name="whatsapp" class="h-4 w-4" />
+                  Falar no WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
-    <footer class="border-t border-white/10 px-6 py-8">
-      <p class="mx-auto max-w-6xl text-center text-xs text-white/40">
-        Todos os modelos são demonstrativos. Nomes, marcas e informações apresentados são fictícios.
-      </p>
+    <!-- Rodapé -->
+    <footer class="relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-16 sm:py-20">
+      <div
+        class="pointer-events-none absolute left-1/2 top-0 h-48 w-[64rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.08] blur-[110px]"
+        style="background: var(--accent);"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative mx-auto max-w-7xl">
+        <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1px_1fr_1px_1fr] lg:gap-10">
+          <div>
+            <CronosStartLogo imgClass="h-12 w-auto" />
+            <p class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+              Presença digital para pequenas empresas
+            </p>
+            <p class="mt-3 max-w-xs text-sm leading-relaxed text-[var(--ink-muted)]">
+              Sites profissionais, personalizados e preparados para representar sua empresa no digital.
+            </p>
+          </div>
+
+          <div class="hidden self-stretch bg-[var(--border)] lg:block"></div>
+
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">Contato</h3>
+            <ul class="mt-5 space-y-3.5 text-sm text-[var(--ink-muted)]">
+              <li class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
+                  <Icon name="mail" class="h-4 w-4" />
+                </span>
+                contato@cronossec.com.br
+              </li>
+              <li class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
+                  <Icon name="arrow-right" class="h-4 w-4" />
+                </span>
+                <a href="https://www.cronossec.com.br" class="transition-colors hover:text-white">www.cronossec.com.br</a>
+              </li>
+              <li class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-[var(--accent)]">
+                  <Icon name="map-pin" class="h-4 w-4" />
+                </span>
+                Blumenau — SC
+              </li>
+            </ul>
+          </div>
+
+          <div class="hidden self-stretch bg-[var(--border)] lg:block"></div>
+
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-white/50">Atendimento</h3>
+            <p class="mt-5 text-sm leading-relaxed text-[var(--ink-muted)]">
+              Atendimento em Blumenau, região, todo o Brasil e LATAM.
+            </p>
+            <a
+              href={whatsappGeneral}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+            >
+              <Icon name="whatsapp" class="h-4 w-4" />
+              Falar pelo WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-14 flex flex-col items-center gap-3 border-t border-[var(--border)] pt-8 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p class="text-xs text-white/35">&copy; {currentYear} CronosStart — uma iniciativa CronosSec</p>
+          <div class="flex items-center gap-1.5 text-xs text-white/25">
+            <Icon name="shield-check" class="h-3.5 w-3.5" />
+            Cada projeto com identidade própria
+          </div>
+        </div>
+      </div>
     </footer>
+
+    <script>
+      const toggle = document.getElementById("menu-toggle");
+      const panel = document.getElementById("mobile-menu");
+      const menuIcon = toggle?.querySelector('[data-icon="menu"]');
+      const closeIcon = toggle?.querySelector('[data-icon="close"]');
+
+      if (toggle && panel) {
+        const setOpen = (open: boolean) => {
+          panel.classList.toggle("hidden", !open);
+          toggle.setAttribute("aria-expanded", String(open));
+          toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+          menuIcon?.classList.toggle("hidden", open);
+          closeIcon?.classList.toggle("hidden", !open);
+        };
+
+        toggle.addEventListener("click", () => {
+          const isOpen = !panel.classList.contains("hidden");
+          setOpen(!isOpen);
+        });
+
+        panel.querySelectorAll("[data-mobile-link]").forEach((link) => {
+          link.addEventListener("click", () => setOpen(false));
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") setOpen(false);
+        });
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+    </script>
   </body>
 </html>
