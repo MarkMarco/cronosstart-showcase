@@ -3,19 +3,24 @@ interface Props {
   class?: string;
   imgClass?: string;
   priority?: boolean;
+  /** "sm" para usos pequenos (header, rodapé, badge do hero, até ~56px de altura); "lg" para o watermark decorativo do hero (até ~640px de largura). */
+  size?: "sm" | "lg";
 }
-const { class: className = "", imgClass = "h-12 w-auto sm:h-14", priority = false } = Astro.props;
+const { class: className = "", imgClass = "h-12 w-auto sm:h-14", priority = false, size = "sm" } = Astro.props;
+
+const dimensions = size === "lg" ? { width: 640, height: 513 } : { width: 210, height: 168 };
+const suffix = size === "lg" ? "-lg" : "-sm";
 ---
 
 <picture class={className}>
-  <source srcset="/images/brand/cronosstart-logo.webp" type="image/webp" />
+  <source srcset={`/images/brand/cronosstart-logo${suffix}.webp`} type="image/webp" />
   <img
-    src="/images/brand/cronosstart-logo.png"
+    src={`/images/brand/cronosstart-logo${suffix}.png`}
     alt="CronosStart — Presença digital para pequenas empresas"
     class={`${imgClass} object-contain`}
     loading={priority ? "eager" : "lazy"}
     decoding="async"
-    width="834"
-    height="668"
+    width={dimensions.width}
+    height={dimensions.height}
   />
 </picture>
