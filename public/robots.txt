@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /modelos/contabilidade
+Disallow: /modelos/seguros
+Disallow: /modelos/imobiliaria
+Disallow: /modelos/restaurante
+Disallow: /modelos/aurum-motors
+Disallow: /modelos/orion-odontologia
+Allow: /
+
+Sitemap: https://cronosstart.com.br/sitemap-index.xml

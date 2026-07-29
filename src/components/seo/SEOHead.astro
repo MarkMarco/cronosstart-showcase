@@ -6,15 +6,17 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   robots?: string;
+  structuredData?: Record<string, unknown>;
 }
 
-const { title, description, canonicalURL, ogImage, ogImageAlt, robots } = Astro.props;
+const { title, description, canonicalURL, ogImage, ogImageAlt, robots, structuredData } = Astro.props;
 
 const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : undefined;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="google-site-verification" content="T1N5Kl2_lV6uT4Pq3U-_2fSYZwNhT2AsWDbglzPNC_Y" />
 {robots && <meta name="robots" content={robots} />}
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -36,3 +38,5 @@ const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : unde
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 {absoluteOgImage && <meta name="twitter:image" content={absoluteOgImage} />}
+
+{structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}

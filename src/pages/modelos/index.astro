@@ -16,7 +16,7 @@ import FloatingWhatsAppButton from "../../components/vitrine/FloatingWhatsAppBut
 import SEOHead from "../../components/seo/SEOHead.astro";
 import Icon from "../../components/ui/Icon.astro";
 import { showcaseRegistry } from "../../config/showcases";
-import { buildWhatsappLink } from "../../config/company";
+import { buildWhatsappLink, localBusinessSchema } from "../../config/company";
 
 const heroBack = showcaseRegistry.find((item) => item.slug === "aurum-motors")!;
 const heroMiddle = showcaseRegistry.find((item) => item.slug === "restaurante")!;
@@ -79,6 +79,7 @@ const ctaButtonStyle =
       canonicalURL={canonicalURL}
       ogImage="/images/og/home.png"
       ogImageAlt="CronosStart — Presença digital para pequenas empresas"
+      structuredData={localBusinessSchema}
     />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">

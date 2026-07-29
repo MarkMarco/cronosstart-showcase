@@ -20,3 +20,23 @@ export const company = {
 export function buildWhatsappLink(message: string): string {
   return `https://wa.me/${company.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
+
+/** Dados estruturados (schema.org) para a home — ajuda buscadores a exibir endereço/telefone/área de atendimento. */
+export const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: company.name,
+  description: "Criação e gestão de sites profissionais para pequenas empresas, com domínio, hospedagem e suporte.",
+  url: "https://cronosstart.com.br",
+  email: company.email,
+  telephone: `+${company.whatsappNumber}`,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Água Verde",
+    addressLocality: "Blumenau",
+    addressRegion: "SC",
+    postalCode: company.cep,
+    addressCountry: "BR",
+  },
+  areaServed: ["Blumenau", "Brasil", "América Latina"],
+};
