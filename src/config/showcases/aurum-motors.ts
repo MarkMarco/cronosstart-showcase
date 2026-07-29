@@ -278,9 +278,6 @@ export const aurumMotorsConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Segunda a sábado, 9h às 19h",
-    instagram: "#",
-    facebook: "#",
-    linkedin: "#",
   },
   sections: {
     vehicleSearch: true,

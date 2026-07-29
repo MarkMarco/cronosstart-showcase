@@ -24,7 +24,7 @@ export const contabilidadeConfig: ShowcaseConfig = {
     radiusCard: "1rem",
   },
   nav: [
-    { label: "Início", href: "#" },
+    { label: "Início", href: "/modelos/contabilidade" },
     { label: "Serviços", href: "#servicos" },
     { label: "Soluções", href: "#solucoes" },
     { label: "Sobre", href: "#sobre" },
@@ -208,9 +208,6 @@ export const contabilidadeConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Seg. a sex., 9h às 18h",
-    instagram: "#",
-    facebook: "#",
-    linkedin: "#",
   },
   sections: {
     about: true,

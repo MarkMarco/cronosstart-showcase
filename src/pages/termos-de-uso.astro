@@ -1,5 +1,6 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
+import { company } from "../config/company";
 
 const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", month: "long", day: "numeric" });
 ---
@@ -37,7 +38,8 @@ const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", mo
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
         As informações sobre planos, recursos e prazos apresentadas neste site são gerais e variam conforme as
         necessidades de cada projeto. Valores comerciais, funcionalidades específicas e prazos de entrega são
-        definidos exclusivamente em proposta comercial e/ou contrato firmado entre a CronosStart e o cliente.
+        definidos exclusivamente em proposta comercial e/ou contrato firmado entre a CronosStart e o cliente. Cada
+        projeto é personalizado conforme o escopo aprovado nessa proposta ou contrato.
       </p>
     </section>
 
@@ -89,7 +91,7 @@ const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", mo
       <h2 class="text-lg font-semibold text-white">9. Dúvidas</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
         Em caso de dúvidas sobre estes Termos de Uso, entre em contato pelo e-mail
-        <a href="mailto:contato@cronossec.com.br" class="text-[var(--accent)] underline hover:text-white">contato@cronossec.com.br</a>.
+        <a href={`mailto:${company.email}`} class="text-[var(--accent)] underline hover:text-white">{company.email}</a>.
       </p>
     </section>
   </div>

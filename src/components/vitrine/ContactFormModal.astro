@@ -184,9 +184,14 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
             <span data-contact-form-submit-label>Solicitar contato</span>
           </button>
 
-          <p class="text-center text-xs leading-relaxed text-white/35">
-            Ao enviar, você autoriza o uso destes dados exclusivamente para retorno do seu contato.
-            <a href="/politica-de-privacidade" class="underline transition-colors hover:text-white/60">Política de Privacidade</a>.
+          <p class="text-center text-xs leading-relaxed text-white/40">
+            Ao enviar, você autoriza o uso destes dados exclusivamente para retorno do seu contato. Consulte nossa{" "}
+            <a
+              href="/politica-de-privacidade"
+              class="font-medium text-white/80 underline underline-offset-2 transition-colors hover:text-white"
+            >
+              Política de Privacidade
+            </a>.
           </p>
         </form>
       </div>
@@ -235,9 +240,11 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
 </style>
 
 <script>
-  const WHATSAPP_URL = `https://wa.me/5547988454356?text=${encodeURIComponent(
+  import { buildWhatsappLink } from "../../config/company";
+
+  const WHATSAPP_URL = buildWhatsappLink(
     "Olá! Vi o site da CronosStart e gostaria de saber mais sobre um projeto para minha empresa."
-  )}`;
+  );
   const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
   const modalRoot = document.getElementById("contact-form-modal")!;
@@ -262,6 +269,7 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
   const modelPanel = modalRoot.querySelector<HTMLElement>("[data-contact-model-panel]")!;
   const modelNameEl = modalRoot.querySelector<HTMLElement>("[data-contact-model-name]")!;
   const modelRemoveButton = modalRoot.querySelector<HTMLButtonElement>("[data-contact-model-remove]")!;
+  const whatsappFloatingButton = document.querySelector<HTMLElement>("[data-whatsapp-floating]");
 
   const MODEL_SEGMENT: Record<string, string> = {
     "Atlas Contabilidade": "Contabilidade",
@@ -271,6 +279,30 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     "Aurum Motors": "Outro",
     "Orion Odontologia": "Odontologia",
   };
+
+  // Traduz o valor interno de data-contact-origin para um texto legível enviado no e-mail.
+  const ORIGIN_LABELS: Record<string, string> = {
+    header: "Cabeçalho",
+    "header-mobile": "Cabeçalho (menu mobile)",
+    hero: "Apresentação principal",
+    "cta-final": "Chamada final",
+    "planos-essencial": "Plano Site Essencial",
+    "planos-essencial-projeto": "Plano Site Essencial — Falar sobre o projeto",
+    "planos-profissional": "Plano Site Profissional",
+    "planos-profissional-projeto": "Plano Site Profissional — Falar sobre o projeto",
+    "planos-sob-medida": "Projeto Sob Medida",
+    "planos-sob-medida-projeto": "Projeto Sob Medida — Falar sobre o projeto",
+  };
+
+  function translateOrigin(origin: string): string {
+    if (ORIGIN_LABELS[origin]) return ORIGIN_LABELS[origin];
+    if (origin.startsWith("card-")) return "Modelo demonstrativo";
+    if (!origin || origin === "unknown") return "Origem não identificada";
+    return origin
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
 
   let lastFocusedElement: HTMLElement | null = null;
   let isSubmitting = false;
@@ -427,6 +459,7 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     modalRoot.classList.remove("hidden");
     document.body.style.overflow = "hidden";
     isOpen = true;
+    whatsappFloatingButton?.classList.add("opacity-0", "pointer-events-none");
 
     requestAnimationFrame(() => {
       backdrop.classList.remove("opacity-0");
@@ -442,6 +475,7 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     backdrop.classList.add("opacity-0");
     panel.classList.add("opacity-0", "translate-y-6", "sm:translate-y-2");
     document.body.style.overflow = "";
+    whatsappFloatingButton?.classList.remove("opacity-0", "pointer-events-none");
 
     window.setTimeout(() => {
       modalRoot.classList.add("hidden");
@@ -503,6 +537,10 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     isSubmitting = true;
     setLoading(true);
 
+    // Chave pública do Web3Forms: configurada via variável de ambiente PUBLIC_WEB3FORMS_ACCESS_KEY
+    // (arquivo .env.local em desenvolvimento; variável de ambiente do painel da hospedagem em produção,
+    // já que o valor é embutido no bundle estático no momento do build). Para trocar a chave: gere uma
+    // nova em web3forms.com, atualize essa variável e rode o build novamente.
     const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY as string | undefined;
 
     if (!accessKey) {
@@ -516,20 +554,30 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     }
 
     const whatsappDigitsOnly = (form.elements.namedItem("whatsapp") as HTMLInputElement).value.replace(/\D/g, "");
+    const countryDial = whatsappCountrySelect.value;
+    const whatsappLink = `https://wa.me/${countryDial.replace("+", "")}${whatsappDigitsOnly}`;
     const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
     const segment = (form.elements.namedItem("segment") as HTMLSelectElement).value;
-    const payload = {
+    const emailValue = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
+    const descriptionValue = (form.elements.namedItem("description") as HTMLTextAreaElement).value.trim();
+    const sentAt = new Date().toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "medium" });
+
+    const payload: Record<string, string> = {
       access_key: accessKey,
       subject: `Nova solicitação CronosStart — ${segment} — ${name}`,
       from_name: "CronosStart — Site de Modelos",
-      name,
-      whatsapp: `${whatsappCountrySelect.value}${whatsappDigitsOnly}`,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value.trim(),
-      segment,
-      referenceModel: referenceModelField.value,
-      description: (form.elements.namedItem("description") as HTMLTextAreaElement).value.trim(),
-      contactOrigin: originField.value,
+      Nome: name,
+      WhatsApp: `${countryDial} ${(form.elements.namedItem("whatsapp") as HTMLInputElement).value}`,
+      "Abrir conversa no WhatsApp": whatsappLink,
+      "E-mail": emailValue || "Não informado",
+      Segmento: segment,
+      "Modelo de interesse": referenceModelField.value || "Não informado",
+      "Origem do contato": translateOrigin(originField.value),
+      "Página de origem": window.location.pathname || "/",
+      Descrição: descriptionValue,
+      "Data e horário do envio": sentAt,
     };
+    if (emailValue) payload.replyto = emailValue;
 
     try {
       const response = await fetch(WEB3FORMS_ENDPOINT, {
@@ -540,9 +588,9 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.success) throw new Error(`Request failed with status ${response.status}`);
 
-      const continueWhatsappUrl = `https://wa.me/5547988454356?text=${encodeURIComponent(
+      const continueWhatsappUrl = buildWhatsappLink(
         `Olá! Acabei de enviar uma solicitação pelo site da CronosStart (${segment} — ${name}) e gostaria de continuar por aqui.`
-      )}`;
+      );
       showSuccessMessage("Recebemos sua solicitação. A CronosStart entrará em contato em breve.", continueWhatsappUrl);
       fieldset.disabled = true;
       submitButton.disabled = true;

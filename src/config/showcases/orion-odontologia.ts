@@ -259,8 +259,6 @@ export const orionOdontologiaConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Segunda a sábado",
-    instagram: "#",
-    facebook: "#",
   },
   sections: {
     about: true,

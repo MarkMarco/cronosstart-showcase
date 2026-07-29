@@ -27,7 +27,7 @@ export const restauranteConfig: ShowcaseConfig = {
     radiusCard: "1rem",
   },
   nav: [
-    { label: "Início", href: "#" },
+    { label: "Início", href: "/modelos/restaurante" },
     { label: "Experiência", href: "#experiencia" },
     { label: "Cardápio", href: "#cardapio" },
     { label: "Galeria", href: "#galeria" },
@@ -201,8 +201,6 @@ export const restauranteConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Terça a domingo, 12h às 23h",
-    instagram: "#",
-    facebook: "#",
   },
   sections: {
     testimonials: true,

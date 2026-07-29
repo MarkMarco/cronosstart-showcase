@@ -25,7 +25,7 @@ export const imobiliariaConfig: ShowcaseConfig = {
     radiusCard: "1rem",
   },
   nav: [
-    { label: "Início", href: "#" },
+    { label: "Início", href: "/modelos/imobiliaria" },
     { label: "Imóveis", href: "#imoveis" },
     { label: "Comprar", href: "#imoveis" },
     { label: "Alugar", href: "#imoveis" },
@@ -211,9 +211,6 @@ export const imobiliariaConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Seg. a sáb., 9h às 18h",
-    instagram: "#",
-    facebook: "#",
-    linkedin: "#",
   },
   propertySearch: {
     operationOptions: ["Comprar", "Alugar"],

@@ -1,5 +1,6 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
+import { company } from "../config/company";
 
 const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", month: "long", day: "numeric" });
 ---
@@ -35,11 +36,10 @@ const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", mo
     <section>
       <h2 class="text-lg font-semibold text-white">3. Armazenamento e fornecedores técnicos</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Os dados enviados pelo formulário podem ficar armazenados em ferramentas e serviços técnicos utilizados
-        pela CronosStart para operar o recebimento de contatos (por exemplo, serviços de hospedagem, e-mail ou
-        processamento de formulários). Esses fornecedores têm acesso apenas ao necessário para viabilizar o envio
-        e o armazenamento das informações, e não os utilizamos para nenhuma finalidade além do retorno comercial
-        descrito acima.
+        O envio do formulário de contato é processado pelo Web3Forms, serviço técnico externo responsável por
+        encaminhar os dados preenchidos para o e-mail de atendimento da CronosStart. Esse fornecedor tem acesso
+        apenas ao necessário para viabilizar o envio da mensagem, e não utilizamos essas informações para nenhuma
+        finalidade além do retorno comercial descrito acima.
       </p>
     </section>
 
@@ -82,7 +82,7 @@ const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", mo
       <h2 class="text-lg font-semibold text-white">8. Canal de contato</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
         Para qualquer dúvida ou solicitação relacionada a esta política, entre em contato pelo e-mail
-        <a href="mailto:contato@cronossec.com.br" class="text-[var(--accent)] underline hover:text-white">contato@cronossec.com.br</a>.
+        <a href={`mailto:${company.email}`} class="text-[var(--accent)] underline hover:text-white">{company.email}</a>.
       </p>
     </section>
   </div>

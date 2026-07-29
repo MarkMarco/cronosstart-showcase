@@ -1,6 +1,7 @@
 ---
 import type { NavItem, ShowcaseCompany, ShowcaseContact } from "../../config/showcases/types";
 import Icon from "../ui/Icon.astro";
+import { company as cronosStart } from "../../config/company";
 
 interface Props {
   company: ShowcaseCompany;
@@ -88,7 +89,7 @@ const year = new Date().getFullYear();
       <p>© {year} {company.name}. Empresa fictícia usada apenas como demonstração.</p>
       <p>
         Modelo demonstrativo desenvolvido pela{" "}
-        <a href="https://www.cronossec.com.br" class="font-medium text-[var(--ink)] hover:text-[var(--accent)]">
+        <a href={cronosStart.website} target="_blank" rel="noopener noreferrer" class="font-medium text-[var(--ink)] hover:text-[var(--accent)]">
           CronosStart
         </a>
       </p>

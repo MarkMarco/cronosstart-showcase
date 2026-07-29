@@ -25,7 +25,7 @@ export const segurosConfig: ShowcaseConfig = {
     radiusCard: "1rem",
   },
   nav: [
-    { label: "Início", href: "#" },
+    { label: "Início", href: "/modelos/seguros" },
     { label: "Seguros", href: "#seguros" },
     { label: "Por que escolher", href: "#por-que-escolher" },
     { label: "Como funciona", href: "#como-funciona" },
@@ -226,9 +226,6 @@ export const segurosConfig: ShowcaseConfig = {
     city: "São Paulo",
     state: "SP",
     hours: "Seg. a sex., 8h30 às 19h",
-    instagram: "#",
-    facebook: "#",
-    linkedin: "#",
   },
   quoteForm: {
     insuranceTypes: [

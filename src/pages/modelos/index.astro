@@ -16,6 +16,7 @@ import FloatingWhatsAppButton from "../../components/vitrine/FloatingWhatsAppBut
 import SEOHead from "../../components/seo/SEOHead.astro";
 import Icon from "../../components/ui/Icon.astro";
 import { showcaseRegistry } from "../../config/showcases";
+import { buildWhatsappLink } from "../../config/company";
 
 const heroBack = showcaseRegistry.find((item) => item.slug === "aurum-motors")!;
 const heroMiddle = showcaseRegistry.find((item) => item.slug === "restaurante")!;
@@ -33,9 +34,9 @@ const description =
   "Portfólio oficial da CronosStart: modelos de sites demonstrativos por segmento, com identidade, textos e funcionalidades próprias. Conheça e solicite um projeto personalizado para sua empresa.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const whatsappGeneral = `https://wa.me/5547988454356?text=${encodeURIComponent(
+const whatsappGeneral = buildWhatsappLink(
   "Olá! Vi o portfólio de modelos da CronosStart e gostaria de saber mais sobre um site para minha empresa."
-)}`;
+);
 
 const steps = [
   {
@@ -122,11 +123,11 @@ const ctaButtonStyle =
               </div>
 
               <h1 class="animate-hero-in text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl" style="animation-delay: 60ms">
-                Sites profissionais para <span class="text-[var(--accent)]">pequenas empresas</span>
+                Sites profissionais <span class="text-[var(--accent)]">focados em resultados</span>
               </h1>
               <p class="animate-hero-in text-balance mx-auto mt-6 max-w-xl text-lg leading-relaxed text-[var(--ink-muted)] lg:mx-0" style="animation-delay: 120ms">
-                Site profissional com domínio, hospedagem e suporte — desenvolvido a partir de uma base
-                estratégica para o seu segmento e personalizado com a identidade da sua marca.
+                Desenvolvemos sites personalizados para fortalecer sua marca, gerar contatos e facilitar o
+                crescimento do seu negócio — com domínio, hospedagem e suporte.
               </p>
 
               <div class="animate-hero-in mt-9 flex flex-wrap justify-center gap-4 lg:justify-start" style="animation-delay: 180ms">
@@ -332,27 +333,6 @@ const ctaButtonStyle =
 
       <!-- Perguntas frequentes -->
       <FAQSection />
-
-      <!-- Formulário de contato -->
-      <section id="contato-formulario" class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
-        <div class="mx-auto max-w-2xl text-center" data-animate>
-          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Fale com a gente</p>
-          <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Conte-nos sobre seu projeto</h2>
-          <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-            Preencha os dados em poucos passos e entraremos em contato para entender sua necessidade.
-          </p>
-          <button
-            type="button"
-            data-open-contact-form
-            data-contact-origin="secao-formulario"
-            class="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-            style={ctaButtonStyle}
-          >
-            Solicitar contato
-            <Icon name="arrow-right" class="h-4 w-4" />
-          </button>
-        </div>
-      </section>
 
       <!-- Chamada final -->
       <section id="contato" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
