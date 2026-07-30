@@ -3,6 +3,7 @@ import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
 import CronosStartLogo from "../components/brand/CronosStartLogo.astro";
+import HeroTechBackground from "../components/vitrine/HeroTechBackground.astro";
 import ShowcaseCard from "../components/vitrine/ShowcaseCard.astro";
 import HeroPreviewCard from "../components/vitrine/HeroPreviewCard.astro";
 import SiteHeader from "../components/vitrine/SiteHeader.astro";
@@ -102,6 +103,8 @@ const ctaButtonStyle =
           aria-hidden="true"
         ></div>
         <div class="pointer-events-none absolute inset-0 opacity-[0.06]" style={gridPatternStyle} aria-hidden="true"></div>
+
+        <HeroTechBackground />
 
         <div
           class="pointer-events-none absolute -right-16 top-1/2 hidden w-[34rem] -translate-y-1/2 opacity-[0.06] mix-blend-screen sm:block lg:w-[38rem]"
