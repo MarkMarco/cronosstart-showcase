@@ -21,15 +21,25 @@ export function buildWhatsappLink(message: string): string {
   return `https://wa.me/${company.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
-/** Dados estruturados (schema.org) para a home — ajuda buscadores a exibir endereço/telefone/área de atendimento. */
-export const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
+const SITE_URL = "https://cronosstart.com.br/";
+
+/**
+ * Dados estruturados (schema.org) da homepage, como um único @graph com IDs estáveis.
+ * Organization e ProfessionalService representam a mesma entidade CronosStart (mesmo @id,
+ * @type combinado) — não duplicar como nós separados. WebSite referencia essa entidade
+ * como publisher. Não usa LocalBusiness nem inventa endereço além do já existente.
+ */
+const cronosStartEntity = {
+  "@type": ["Organization", "ProfessionalService"],
+  "@id": `${SITE_URL}#organization`,
   name: company.name,
-  description: "Criação e gestão de sites profissionais para pequenas empresas, com domínio, hospedagem e suporte.",
-  url: "https://cronosstart.com.br",
+  url: SITE_URL,
   email: company.email,
   telephone: `+${company.whatsappNumber}`,
+  brand: {
+    "@type": "Brand",
+    name: "CronosSec",
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "Água Verde",
@@ -38,5 +48,31 @@ export const localBusinessSchema = {
     postalCode: company.cep,
     addressCountry: "BR",
   },
-  areaServed: ["Blumenau", "Brasil", "América Latina"],
+  areaServed: [
+    { "@type": "Country", name: "Brasil" },
+    { "@type": "Place", name: "América Latina" },
+  ],
+  serviceType: [
+    "Criação de sites profissionais",
+    "Desenvolvimento de sites personalizados",
+    "Domínio e hospedagem",
+    "Integração com WhatsApp",
+    "Catálogos digitais",
+    "Painéis administrativos",
+    "Suporte e manutenção",
+  ],
+};
+
+const websiteEntity = {
+  "@type": "WebSite",
+  "@id": `${SITE_URL}#website`,
+  url: SITE_URL,
+  name: company.name,
+  inLanguage: "pt-BR",
+  publisher: { "@id": `${SITE_URL}#organization` },
+};
+
+export const homeStructuredData = {
+  "@context": "https://schema.org",
+  "@graph": [cronosStartEntity, websiteEntity],
 };

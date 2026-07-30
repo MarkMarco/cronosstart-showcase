@@ -1,5 +1,6 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/modelos", "permanent": true }
+    { "source": "/modelos", "destination": "/#modelos", "permanent": true },
+    { "source": "/modelos/", "destination": "/#modelos", "permanent": true }
   ]
 }

@@ -10,7 +10,7 @@ export default defineConfig({
   site: 'https://cronosstart.com.br',
 
   redirects: {
-    '/': '/modelos',
+    '/modelos': '/#modelos',
   },
 
   server: {
@@ -23,11 +23,11 @@ export default defineConfig({
 
   integrations: [
     sitemap({
-      // Exclui os 6 modelos demonstrativos (já marcados noindex,nofollow) — só as
-      // páginas reais (home e legais) devem aparecer no sitemap.
+      // Exclui /modelos (agora um redirect) e os 6 modelos demonstrativos (noindex) —
+      // só a home e as páginas legais são públicas, canônicas e indexáveis.
       filter: (page) => {
         const path = new URL(page).pathname;
-        return path === '/modelos/' || path === '/politica-de-privacidade/' || path === '/termos-de-uso/';
+        return path === '/' || path === '/politica-de-privacidade/' || path === '/termos-de-uso/';
       },
     }),
   ],

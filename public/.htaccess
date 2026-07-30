@@ -1,0 +1,5 @@
+# Contingência para hospedagem Apache (ex.: Hostinger), caso o projeto deixe de usar Vercel.
+# Não tem efeito na Vercel (que usa vercel.json). Redireciona somente a rota exata /modelos
+# (a antiga home) para a âncora de modelos na nova home — não afeta /modelos/* (demonstrações).
+RewriteEngine On
+RewriteRule ^modelos/?$ /#modelos [R=301,L]

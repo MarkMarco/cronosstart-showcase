@@ -1,22 +1,22 @@
 ---
-import "../../styles/global.css";
+import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
-import CronosStartLogo from "../../components/brand/CronosStartLogo.astro";
-import ShowcaseCard from "../../components/vitrine/ShowcaseCard.astro";
-import HeroPreviewCard from "../../components/vitrine/HeroPreviewCard.astro";
-import SiteHeader from "../../components/vitrine/SiteHeader.astro";
-import SiteFooter from "../../components/vitrine/SiteFooter.astro";
-import ManagedServiceSection from "../../components/vitrine/ManagedServiceSection.astro";
-import PricingSection from "../../components/vitrine/PricingSection.astro";
-import DeliveryTimeline from "../../components/vitrine/DeliveryTimeline.astro";
-import FAQSection from "../../components/vitrine/FAQSection.astro";
-import ContactFormModal from "../../components/vitrine/ContactFormModal.astro";
-import FloatingWhatsAppButton from "../../components/vitrine/FloatingWhatsAppButton.astro";
-import SEOHead from "../../components/seo/SEOHead.astro";
-import Icon from "../../components/ui/Icon.astro";
-import { showcaseRegistry } from "../../config/showcases";
-import { buildWhatsappLink, localBusinessSchema } from "../../config/company";
+import CronosStartLogo from "../components/brand/CronosStartLogo.astro";
+import ShowcaseCard from "../components/vitrine/ShowcaseCard.astro";
+import HeroPreviewCard from "../components/vitrine/HeroPreviewCard.astro";
+import SiteHeader from "../components/vitrine/SiteHeader.astro";
+import SiteFooter from "../components/vitrine/SiteFooter.astro";
+import ManagedServiceSection from "../components/vitrine/ManagedServiceSection.astro";
+import PricingSection from "../components/vitrine/PricingSection.astro";
+import DeliveryTimeline from "../components/vitrine/DeliveryTimeline.astro";
+import FAQSection from "../components/vitrine/FAQSection.astro";
+import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
+import FloatingWhatsAppButton from "../components/vitrine/FloatingWhatsAppButton.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
+import Icon from "../components/ui/Icon.astro";
+import { showcaseRegistry } from "../config/showcases";
+import { buildWhatsappLink, homeStructuredData } from "../config/company";
 
 const heroBack = showcaseRegistry.find((item) => item.slug === "aurum-motors")!;
 const heroMiddle = showcaseRegistry.find((item) => item.slug === "restaurante")!;
@@ -29,9 +29,9 @@ const trustChips = [
   { icon: "layers" as const, label: "Modelos por segmento" },
 ];
 
-const title = "CronosStart — Modelos de sites profissionais para pequenas empresas";
+const title = "CronosStart | Criação de Sites Profissionais";
 const description =
-  "Portfólio oficial da CronosStart: modelos de sites demonstrativos por segmento, com identidade, textos e funcionalidades próprias. Conheça e solicite um projeto personalizado para sua empresa.";
+  "Criamos sites profissionais e personalizados para empresas de todo o Brasil, com domínio, hospedagem, WhatsApp, suporte técnico e atendimento para América Latina.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const whatsappGeneral = buildWhatsappLink(
@@ -77,9 +77,12 @@ const ctaButtonStyle =
       title={title}
       description={description}
       canonicalURL={canonicalURL}
+      robots="index, follow"
       ogImage="/images/og/home.png"
       ogImageAlt="CronosStart — Presença digital para pequenas empresas"
-      structuredData={localBusinessSchema}
+      siteName="CronosStart"
+      themeColor="#070b16"
+      structuredData={homeStructuredData}
     />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">

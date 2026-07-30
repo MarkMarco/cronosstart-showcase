@@ -38,7 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       canonicalURL={canonicalURL}
       ogImage={config.seo.ogImage}
       ogImageAlt={config.seo.ogImageAlt}
-      robots="noindex, nofollow"
+      robots="noindex"
     />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
