@@ -18,20 +18,24 @@ const circuits = [
   { id: "circuit-l1", d: "M -20 160 L 110 160 L 110 70 L 260 70" },
   { id: "circuit-l2", d: "M -20 360 L 70 360 L 70 470 L 210 470 L 210 540" },
   { id: "circuit-l3", d: "M -20 640 L 130 640 L 130 560" },
-  { id: "circuit-r1", d: "M 1460 140 L 1330 140 L 1330 230 L 1190 230" },
-  { id: "circuit-r2", d: "M 1460 380 L 1370 380 L 1370 300 L 1230 300" },
+  { id: "circuit-r1", d: "M 1460 140 L 1330 140 L 1330 230 L 1190 230", soft: true },
+  { id: "circuit-r2", d: "M 1460 380 L 1370 380 L 1370 300 L 1230 300", soft: true },
   { id: "circuit-r3", d: "M 1460 660 L 1310 660 L 1310 570 L 1170 570 L 1170 500" },
   { id: "circuit-t1", d: "M 600 6 L 600 42 L 720 42" },
   { id: "circuit-b1", d: "M 780 794 L 780 750 L 900 750 L 900 715" },
+  // Pequeno detalhe adicionado no canto superior esquerdo, para equilibrar
+  // com o lado direito (mais carregado por cards, watermark e glow).
+  { id: "circuit-tl-detail", d: "M 24 14 L 24 48 L 78 48" },
 ];
 
 const nodes = [
-  { cx: 110, cy: 70 },
+  { cx: 110, cy: 70, breathe: true, breatheDelay: "0s" },
   { cx: 210, cy: 540 },
   { cx: 130, cy: 640 },
   { cx: 1330, cy: 230 },
   { cx: 1170, cy: 500 },
   { cx: 1310, cy: 660 },
+  { cx: 78, cy: 48, breathe: true, breatheDelay: "-2.4s" },
 ];
 
 const pulses = [
@@ -39,6 +43,7 @@ const pulses = [
   { pathId: "circuit-r2", dur: "9s", begin: "-3s" },
   { pathId: "circuit-l3", dur: "6.5s", begin: "-1.5s" },
   { pathId: "circuit-r1", dur: "8s", begin: "-5s" },
+  { pathId: "circuit-l2", dur: "10s", begin: "-2s", small: true },
 ];
 ---
 
@@ -53,19 +58,25 @@ const pulses = [
     <g class="tech-layer tech-layer-circuits" data-depth="10">
       {
         circuits.map((c) => (
-          <path id={c.id} d={c.d} class="circuit-path" fill="none" />
+          <path id={c.id} d={c.d} class={`circuit-path${c.soft ? " circuit-path-soft" : ""}`} fill="none" />
         ))
       }
       {
         nodes.map((n) => (
-          <circle cx={n.cx} cy={n.cy} r="2.6" class="circuit-node" />
+          <circle
+            cx={n.cx}
+            cy={n.cy}
+            r="2.6"
+            class={`circuit-node${n.breathe ? " circuit-node-breathe" : ""}`}
+            style={n.breathe ? `animation-delay: ${n.breatheDelay};` : undefined}
+          />
         ))
       }
       {
         pulses.map((p) => (
           <g class="circuit-pulse">
-            <circle r="5" class="pulse-glow" />
-            <circle r="1.7" class="pulse-core" />
+            <circle r={p.small ? 3.4 : 5} class="pulse-glow" />
+            <circle r={p.small ? 1.2 : 1.7} class="pulse-core" />
             <animateMotion dur={p.dur} begin={p.begin} repeatCount="indefinite">
               <mpath href={`#${p.pathId}`} />
             </animateMotion>
@@ -153,10 +164,27 @@ const pulses = [
     stroke-width: 1.2;
     opacity: 0.16;
   }
+  /* Lado direito levemente suavizado — reúne cards, watermark e glow;
+     estas duas linhas competiam um pouco demais por atenção. */
+  .circuit-path-soft {
+    opacity: 0.1;
+  }
 
   .circuit-node {
     fill: var(--accent);
     opacity: 0.3;
+  }
+  /* Brilho muito leve e lento em alguns nós — reforça a sensação de sistema vivo */
+  .circuit-node-breathe {
+    animation: node-breathe 5.5s ease-in-out infinite;
+  }
+  @keyframes node-breathe {
+    0%, 100% {
+      opacity: 0.24;
+    }
+    50% {
+      opacity: 0.55;
+    }
   }
 
   .pulse-glow {
@@ -263,6 +291,9 @@ const pulses = [
     .circuit-pulse {
       display: none;
     }
+    .circuit-node-breathe {
+      animation: none;
+    }
     .hero-tech-bg {
       opacity: 0.55;
     }
@@ -271,7 +302,8 @@ const pulses = [
   @media (prefers-reduced-motion: reduce) {
     .tech-symbol-code,
     .tech-symbol-node,
-    .tech-symbol-shield {
+    .tech-symbol-shield,
+    .circuit-node-breathe {
       animation: none !important;
     }
   }

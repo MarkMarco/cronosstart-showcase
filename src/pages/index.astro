@@ -4,6 +4,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
 import CronosStartLogo from "../components/brand/CronosStartLogo.astro";
 import HeroTechBackground from "../components/vitrine/HeroTechBackground.astro";
+import LaunchIntroLoader from "../components/vitrine/LaunchIntroLoader.astro";
 import ShowcaseCard from "../components/vitrine/ShowcaseCard.astro";
 import HeroPreviewCard from "../components/vitrine/HeroPreviewCard.astro";
 import SiteHeader from "../components/vitrine/SiteHeader.astro";
@@ -87,6 +88,7 @@ const ctaButtonStyle =
     />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LaunchIntroLoader />
     <SiteHeader />
 
     <main>
@@ -98,7 +100,7 @@ const ctaButtonStyle =
           aria-hidden="true"
         ></div>
         <div
-          class="pointer-events-none absolute -right-24 top-24 h-96 w-96 rounded-full opacity-25 blur-[100px] animate-float-slow-delay"
+          class="pointer-events-none absolute -right-24 top-24 h-96 w-96 rounded-full opacity-20 blur-[100px] animate-float-slow-delay"
           style="background: var(--accent);"
           aria-hidden="true"
         ></div>
@@ -107,7 +109,7 @@ const ctaButtonStyle =
         <HeroTechBackground />
 
         <div
-          class="pointer-events-none absolute -right-16 top-1/2 hidden w-[34rem] -translate-y-1/2 opacity-[0.06] mix-blend-screen sm:block lg:w-[38rem]"
+          class="pointer-events-none absolute -right-16 top-1/2 hidden w-[34rem] -translate-y-1/2 opacity-[0.045] mix-blend-screen sm:block lg:w-[38rem]"
           aria-hidden="true"
         >
           <CronosStartLogo imgClass="h-auto w-full" size="lg" />

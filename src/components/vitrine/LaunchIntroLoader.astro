@@ -1,0 +1,926 @@
+---
+// Loader de introdução — mostra o símbolo (shield.png + foguete.png, ambos intactos)
+// com uma decolagem apenas do foguete ao concluir o carregamento, uma vez por sessão.
+---
+
+<div id="launch-intro-panel" class="launch-panel fixed inset-0 z-[200] flex items-center justify-center px-6" style="--boost: 0; --arc-boost: 0.15;">
+  <script is:inline>
+    (function () {
+      try {
+        if (sessionStorage.getItem("cronosstart-intro-seen") === "true") {
+          var panel = document.currentScript.parentElement;
+          panel.style.display = "none";
+          panel.dataset.skip = "true";
+        }
+      } catch (e) {
+        // sessionStorage indisponível — mantém o comportamento padrão (mostra a introdução)
+      }
+    })();
+  </script>
+
+  <noscript>
+    <style>#launch-intro-panel { display: none !important; }</style>
+  </noscript>
+
+  <div class="launch-glass absolute inset-0" aria-hidden="true"></div>
+
+  <!-- Fundo tecnológico — mesma linguagem visual do hero (circuitos, grid, pulsos), bem mais discreto -->
+  <div class="loader-tech-bg pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="loader-grid absolute inset-0"></div>
+    <svg
+      class="loader-circuits-svg absolute inset-0 h-full w-full"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <!-- Gradientes que apagam gradualmente as espinhas ~300px antes do símbolo,
+             evitando a aparência de linha/mira atravessando o centro. -->
+        <linearGradient id="loader-spine-fade-l" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+          <stop offset="33%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+          <stop offset="100%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 0" />
+        </linearGradient>
+        <linearGradient id="loader-spine-fade-r" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 0" />
+          <stop offset="67%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+          <stop offset="100%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+        </linearGradient>
+        <!-- Fade nas pontas dos arcos — brilho preservado no meio (mais próximo do centro) -->
+        <linearGradient id="loader-arc-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 0" />
+          <stop offset="30%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+          <stop offset="70%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
+          <stop offset="100%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 0" />
+        </linearGradient>
+      </defs>
+
+      <!-- Camada 2: circuitos estruturais — espinhas convergindo em direção ao centro,
+           com ramificações em ângulo reto, mais estrutura à esquerda, linhas mais
+           longas à direita; topo discreto, base com detalhe técnico + arcos. -->
+      <g class="loader-layer-structural">
+        <!-- Espinha esquerda: linha longa apontando para o símbolo, apaga gradualmente perto do centro -->
+        <path id="loader-spine-l" class="loader-circuit-path loader-circuit-spine loader-spine-left" d="M -20 452 L 430 452" fill="none" />
+        <!-- Ramificações à esquerda -->
+        <path id="loader-circuit-l1" class="loader-circuit-path" d="M -20 180 L 210 180 L 210 300 L 350 300" fill="none" />
+        <path class="loader-circuit-path loader-circuit-minor" d="M -20 700 L 230 700 L 230 580 L 370 580" fill="none" />
+        <path class="loader-circuit-path loader-circuit-minor" d="M 70 452 L 70 530 L 150 530" fill="none" />
+
+        <!-- Espinha direita: mais longa, equilibrando o lado esquerdo, também apaga perto do centro -->
+        <path id="loader-spine-r" class="loader-circuit-path loader-circuit-spine loader-spine-right" d="M 1460 452 L 1000 452" fill="none" />
+        <path id="loader-circuit-r1" class="loader-circuit-path" d="M 1460 150 L 1250 150 L 1250 280 L 1110 280" fill="none" />
+        <path class="loader-circuit-path loader-circuit-minor" d="M 1460 730 L 1230 730 L 1230 610 L 1090 610" fill="none" />
+        <path class="loader-circuit-path loader-circuit-minor" d="M 1380 452 L 1380 370 L 1290 370" fill="none" />
+
+        <!-- Topo: poucos detalhes, bem discretos -->
+        <path class="loader-circuit-path loader-circuit-faint" d="M 630 8 L 630 55 L 745 55" fill="none" />
+
+        <!-- Base: detalhe técnico de baixa opacidade -->
+        <path class="loader-circuit-path loader-circuit-faint" d="M 705 892 L 705 825 L 830 825" fill="none" />
+
+        <!-- Pequenas ramificações discretas, sem aumentar a quantidade de linhas -->
+        <path class="loader-circuit-path loader-circuit-faint" d="M 350 300 L 390 300" fill="none" />
+        <path class="loader-circuit-path loader-circuit-faint" d="M 1110 280 L 1070 280" fill="none" />
+
+        <!-- Nós nas extremidades: maiores/mais fortes nas espinhas, discretos nos ramos -->
+        <circle cx="430" cy="452" r="3.2" class="loader-circuit-node loader-node-major" />
+        <circle cx="1000" cy="452" r="3.2" class="loader-circuit-node loader-node-major" />
+        <circle cx="350" cy="300" r="2.2" class="loader-circuit-node" />
+        <circle cx="370" cy="580" r="2.2" class="loader-circuit-node" />
+        <circle cx="1110" cy="280" r="2.2" class="loader-circuit-node" />
+        <circle cx="1090" cy="610" r="2.2" class="loader-circuit-node" />
+        <circle cx="150" cy="530" r="1.8" class="loader-circuit-node loader-node-faint" />
+        <circle cx="1290" cy="370" r="1.8" class="loader-circuit-node loader-node-faint" />
+        <circle cx="390" cy="300" r="1.4" class="loader-circuit-node loader-node-faint" />
+        <circle cx="1070" cy="280" r="1.4" class="loader-circuit-node loader-node-faint" />
+        <circle cx="230" cy="580" r="1.4" class="loader-circuit-node loader-node-faint" />
+        <circle cx="1230" cy="610" r="1.4" class="loader-circuit-node loader-node-faint" />
+
+        <!-- Arcos sutis ao redor da área central, reforçando a convergência —
+             pontas esmaecidas via gradiente, brilho preservado próximo ao meio -->
+        <path id="loader-arc-l" class="loader-arc" d="M 560 250 A 260 260 0 0 0 470 590" fill="none" />
+        <path id="loader-arc-r" class="loader-arc" d="M 880 250 A 260 260 0 0 1 970 590" fill="none" />
+        <!-- Glow dos arcos: sincronizado com o progresso (--arc-boost) -->
+        <path class="loader-arc-glow" d="M 560 250 A 260 260 0 0 0 470 590" fill="none" />
+        <path class="loader-arc-glow" d="M 880 250 A 260 260 0 0 1 970 590" fill="none" />
+      </g>
+
+      <!-- Camada 3: energia — poucos pulsos e nós com brilho -->
+      <g class="loader-layer-energy">
+        <circle cx="430" cy="452" r="7" class="loader-node-glow" />
+        <circle cx="1000" cy="452" r="7" class="loader-node-glow" />
+        <circle cx="1110" cy="280" r="5" class="loader-node-glow loader-node-glow-soft" />
+
+        <g class="loader-pulse" id="loader-pulse-1">
+          <circle r="4.5" class="loader-pulse-glow" />
+          <circle r="1.5" class="loader-pulse-core" />
+          <animateMotion id="loader-pulse-1-motion" dur="9s" begin="0s" repeatCount="indefinite">
+            <mpath href="#loader-spine-l" />
+          </animateMotion>
+        </g>
+        <g class="loader-pulse" id="loader-pulse-2">
+          <circle r="4.5" class="loader-pulse-glow" />
+          <circle r="1.5" class="loader-pulse-core" />
+          <animateMotion id="loader-pulse-2-motion" dur="10s" begin="-4s" repeatCount="indefinite">
+            <mpath href="#loader-spine-r" />
+          </animateMotion>
+        </g>
+        <g class="loader-pulse loader-pulse-tertiary" id="loader-pulse-3">
+          <circle r="3.6" class="loader-pulse-glow" />
+          <circle r="1.2" class="loader-pulse-core" />
+          <animateMotion id="loader-pulse-3-motion" dur="13s" begin="-7s" repeatCount="indefinite">
+            <mpath href="#loader-circuit-r1" />
+          </animateMotion>
+        </g>
+
+        <!-- Pulso convergente único — dispara só no instante de 100% (ignição) -->
+        <circle cx="430" cy="452" r="2" class="loader-converge-pulse loader-converge-pulse-l" />
+        <circle cx="1000" cy="452" r="2" class="loader-converge-pulse loader-converge-pulse-r" />
+      </g>
+    </svg>
+  </div>
+
+  <div id="launch-stage" class="launch-stage relative flex flex-col items-center">
+    <div class="launch-symbol relative" style="--rocket-width: 100%; --rocket-top: 0px; --rocket-left: 0px; --rocket-translate-x: 0px;">
+      <div class="launch-focus-glow absolute" aria-hidden="true"></div>
+      <img
+        src="/shield.png"
+        alt=""
+        aria-hidden="true"
+        width="1536"
+        height="1024"
+        decoding="async"
+        class="launch-shield absolute inset-0 h-full w-full object-contain"
+      />
+
+      <!-- Fumaça residual — permanece presa ao escudo depois que o foguete parte -->
+      <div class="shield-residual-smoke pointer-events-none absolute" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- Conjunto que se move como um todo na decolagem: motor (chama/rastro/glow) + vapor de espera + foguete -->
+      <div id="rocket-assembly" class="rocket-assembly absolute">
+        <div class="engine-fx pointer-events-none" aria-hidden="true">
+          <span class="flame-glow"></span>
+          <span class="exhaust-plume"></span>
+          <span class="flame-core"></span>
+          <span class="thrust-particle p1"></span>
+          <span class="thrust-particle p2"></span>
+        </div>
+
+        <div class="idle-vapor pointer-events-none absolute" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <img
+          id="launch-rocket"
+          src="/foguete.png"
+          alt=""
+          aria-hidden="true"
+          width="1536"
+          height="1024"
+          decoding="async"
+          class="launch-rocket block"
+        />
+      </div>
+    </div>
+
+    <p class="launch-wordmark mt-5 text-2xl font-bold uppercase tracking-[0.08em] text-white" style="font-family: var(--font-heading, 'Space Grotesk Variable', system-ui, sans-serif);">
+      CronosStart
+    </p>
+    <p class="launch-slogan mt-1 text-xs font-semibold uppercase tracking-[0.16em]" style="color: var(--accent, #38bdf8);">
+      Presença digital para pequenas empresas
+    </p>
+
+    <div class="mt-7 flex flex-col items-center gap-3">
+      <div class="launch-bar h-[3px] w-48 overflow-hidden rounded-full bg-white/10">
+        <div id="launch-bar-fill" class="h-full rounded-full" style="width: 0%; background: linear-gradient(90deg, var(--primary, #2f5fd1), var(--accent, #38bdf8));"></div>
+      </div>
+      <p id="launch-label" class="text-sm font-medium text-white/60">
+        <span id="launch-stage-text">Conectando ideias...</span> <span id="launch-percent">0</span>%
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .launch-panel {
+    background: var(--surface, #070b16);
+  }
+
+  .launch-glass {
+    background: linear-gradient(180deg, rgba(7, 11, 22, 0.98) 0%, rgba(7, 11, 22, 0.94) 100%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .launch-panel.is-revealing {
+    pointer-events: none;
+  }
+  .launch-panel.is-revealing .launch-glass {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  .launch-panel.is-revealing .launch-stage {
+    transition: opacity 0.6s ease;
+    opacity: 0;
+  }
+  .launch-panel.is-revealing .loader-tech-bg {
+    transition: opacity 0.6s ease;
+    opacity: 0;
+  }
+
+  /* ===== Fundo tecnológico — versão concentrada e discreta do hero, atrás do símbolo ===== */
+  .loader-tech-bg {
+    z-index: 0;
+    transition: opacity 500ms ease;
+  }
+  /* Durante a decolagem, os circuitos já começam a esmaecer suavemente
+     enquanto a home é revelada (o fade final até 0 acontece em .is-revealing acima). */
+  .loader-tech-bg.is-ascending {
+    opacity: 0.4;
+  }
+  /* Camada 1: grid técnico — muito sutil e amplo, quase invisível perto do símbolo */
+  .loader-grid {
+    opacity: 0.045;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(60% 52% at 50% 46%, transparent 0%, black 100%);
+    -webkit-mask-image: radial-gradient(60% 52% at 50% 46%, transparent 0%, black 100%);
+  }
+  .loader-circuits-svg {
+    display: block;
+    mix-blend-mode: screen;
+  }
+
+  /* Camada 2: circuitos estruturais */
+  .loader-circuit-path {
+    stroke: var(--accent, #38bdf8);
+    stroke-width: 1.1;
+    opacity: 0.15;
+    fill: none;
+  }
+  .loader-circuit-spine {
+    stroke-width: 1.3;
+    opacity: 0.24;
+  }
+  /* As espinhas apagam gradualmente ~300px antes do símbolo (gradiente no stroke),
+     evitando a aparência de linha/mira cortando o centro do loader. */
+  .loader-circuit-spine.loader-spine-left {
+    stroke: url(#loader-spine-fade-l);
+  }
+  .loader-circuit-spine.loader-spine-right {
+    stroke: url(#loader-spine-fade-r);
+  }
+  .loader-circuit-minor {
+    stroke-width: 1;
+    opacity: 0.11;
+  }
+  .loader-circuit-faint {
+    stroke-width: 0.9;
+    opacity: 0.08;
+  }
+  .loader-circuit-node {
+    fill: var(--accent, #38bdf8);
+    opacity: 0.28;
+  }
+  .loader-node-major {
+    opacity: 0.4;
+  }
+  .loader-node-faint {
+    opacity: 0.18;
+  }
+  .loader-arc {
+    stroke: url(#loader-arc-fade);
+    stroke-width: 1;
+    opacity: calc(0.1 + var(--arc-boost, 0.15) * 0.08);
+    fill: none;
+  }
+  /* Glow do arco — sincronizado com o progresso via --arc-boost (ver seção 3) */
+  .loader-arc-glow {
+    stroke: url(#loader-arc-fade);
+    stroke-width: 2.5;
+    fill: none;
+    filter: blur(4px);
+    opacity: calc(var(--arc-boost, 0.15) * 0.5);
+  }
+
+  /* Pulso convergente — dispara uma única vez no instante de 100% (ignição),
+     reforçando que o escudo é energizado antes da decolagem. */
+  .loader-converge-pulse {
+    fill: #eaf6ff;
+    opacity: 0;
+  }
+  .loader-tech-bg.is-igniting .loader-converge-pulse-l {
+    animation: loader-converge-l 260ms ease-out forwards;
+  }
+  .loader-tech-bg.is-igniting .loader-converge-pulse-r {
+    animation: loader-converge-r 260ms ease-out forwards;
+  }
+  @keyframes loader-converge-l {
+    0% { opacity: 0; transform: translateX(0) scale(0.6); }
+    30% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateX(290px) scale(1.3); }
+  }
+  @keyframes loader-converge-r {
+    0% { opacity: 0; transform: translateX(0) scale(0.6); }
+    30% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateX(-280px) scale(1.3); }
+  }
+
+  /* Camada 3: energia — pulsos e nós com brilho, poucos elementos */
+  .loader-node-glow {
+    fill: var(--accent, #38bdf8);
+    opacity: 0.22;
+    filter: blur(4px);
+  }
+  .loader-node-glow-soft {
+    opacity: 0.14;
+    filter: blur(3px);
+  }
+  .loader-pulse-glow {
+    fill: var(--accent, #38bdf8);
+    opacity: 0.42;
+    filter: blur(2px);
+  }
+  .loader-pulse-core {
+    fill: #eaf6ff;
+    opacity: 0.85;
+  }
+
+  /* Glow de foco atrás do símbolo — profundidade sem competir com o foguete */
+  .launch-focus-glow {
+    left: 50%;
+    top: 50%;
+    width: 260%;
+    height: 260%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(47, 95, 209, 0.12) 38%, transparent 72%);
+    filter: blur(4px);
+  }
+
+  .launch-symbol {
+    width: 200px;
+    aspect-ratio: 1536 / 1024;
+  }
+  @media (max-width: 640px) {
+    .launch-symbol {
+      width: 140px;
+      --rocket-width: 100%;
+      --rocket-top: 0px;
+      --rocket-left: 0px;
+      --rocket-translate-x: 0px;
+    }
+  }
+
+  .launch-shield {
+    z-index: 0;
+  }
+
+  /* Conjunto que se move como um todo na decolagem (chama + fumaça presa + foguete) —
+     o escudo (.launch-shield) nunca recebe transform, em nenhuma fase. */
+  .rocket-assembly {
+    top: var(--rocket-top);
+    left: var(--rocket-left);
+    width: var(--rocket-width);
+    z-index: 2;
+    transform: translateX(var(--rocket-translate-x));
+    transition: transform 100ms ease-out;
+  }
+
+  .launch-rocket {
+    width: 100%;
+    height: auto;
+  }
+
+  /* ===== Ignição (~260ms em 100%): foguete ainda dentro do escudo ===== */
+  .launch-stage.is-igniting .rocket-assembly {
+    animation: rocket-ignite-vibrate 260ms ease-in-out forwards;
+  }
+  @keyframes rocket-ignite-vibrate {
+    0% { transform: translateX(var(--rocket-translate-x)) translate(0, 0); }
+    18% { transform: translateX(var(--rocket-translate-x)) translate(0.6px, 0.8px); }
+    36% { transform: translateX(var(--rocket-translate-x)) translate(-0.6px, 1.4px); }
+    54% { transform: translateX(var(--rocket-translate-x)) translate(0.5px, 1.8px); }
+    72% { transform: translateX(var(--rocket-translate-x)) translate(-0.4px, 2px); }
+    100% { transform: translateX(var(--rocket-translate-x)) translate(0, 2px); }
+  }
+
+  /* ===== Fase A — vence a inércia e sai do contorno do escudo (~210ms) ===== */
+  .launch-stage.is-exiting .rocket-assembly {
+    transition: transform 210ms cubic-bezier(0.22, 0.7, 0.35, 1);
+    transform: translateX(var(--rocket-translate-x)) translateY(-35px);
+  }
+
+  /* ===== Fase B — aceleração, sai pelo topo da viewport (~500ms) ===== */
+  .launch-stage.is-ascending .rocket-assembly {
+    transition: transform 500ms cubic-bezier(0.55, 0.05, 0.8, 0.3), opacity 300ms ease-in 200ms;
+    transform: translateX(var(--rocket-translate-x)) translateY(-135vh);
+    opacity: 0;
+  }
+
+  /* ===== Motor — três camadas construídas externamente, foguete.png nunca é alterado =====
+     flame-core: chama estreita e clara junto ao motor
+     exhaust-plume: rastro ciano/azul mais comprido, acompanha a aceleração
+     flame-glow: glow externo azul, difuso
+     Em repouso (0%–79%) ficam praticamente apagadas; entre 80%–99% (--boost) crescem
+     progressivamente ("motor pressurizando"); nos estados de fase (ignição/saída/subida)
+     assumem a aparência de propulsão real. */
+  .flame-core {
+    position: absolute;
+    left: 47.6%;
+    top: 60%;
+    width: 8px;
+    height: 12px;
+    transform: translateX(-50%) scaleY(calc(0.48 + var(--boost, 0) * 0.55));
+    transform-origin: 50% 0%;
+    opacity: calc(var(--boost, 0) * 0.85);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 20%, #ffffff 0%, rgba(210, 240, 255, 0.95) 32%, rgba(120, 200, 255, 0.65) 62%, transparent 82%);
+    filter: blur(1px);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .exhaust-plume {
+    position: absolute;
+    left: 47.6%;
+    top: 60.5%;
+    width: 13px;
+    height: 19px;
+    transform: translateX(-50%) scaleY(calc(0.58 + var(--boost, 0) * 0.6));
+    transform-origin: 50% 0%;
+    opacity: calc(var(--boost, 0) * 0.7);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 15%, rgba(180, 230, 255, 0.8) 0%, rgba(56, 189, 248, 0.55) 42%, rgba(47, 95, 209, 0.3) 66%, transparent 82%);
+    filter: blur(2.5px);
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+  .flame-glow {
+    position: absolute;
+    left: 47.6%;
+    top: 61.5%;
+    width: 24px;
+    height: 24px;
+    transform: translateX(-50%) scale(calc(0.62 + var(--boost, 0) * 0.7));
+    opacity: calc(var(--boost, 0) * 0.75);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.45) 0%, rgba(47, 95, 209, 0.25) 45%, transparent 76%);
+    filter: blur(6px);
+    transition: opacity 250ms ease, transform 250ms ease;
+  }
+
+  /* Partículas discretas — reforçam a energia nas bordas do jato, só na saída/subida */
+  .thrust-particle {
+    position: absolute;
+    left: 47.6%;
+    top: 61%;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(220, 245, 255, 0.95) 0%, rgba(56, 189, 248, 0.6) 60%, transparent 85%);
+    opacity: 0;
+    transform: translateX(-50%);
+  }
+  .thrust-particle.p1 { margin-left: -7px; }
+  .thrust-particle.p2 { margin-left: 7px; }
+
+  /* Ignição — motor mais carregado, ainda dentro do escudo (~260ms) */
+  .launch-stage.is-igniting .flame-core {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1.05);
+  }
+  .launch-stage.is-igniting .exhaust-plume {
+    opacity: 0.9;
+    transform: translateX(-50%) scaleY(1.1);
+  }
+  .launch-stage.is-igniting .flame-glow {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.25);
+  }
+
+  /* Fase A — sai do contorno do escudo, o rastro já começa a formar cauda (~210ms) */
+  .launch-stage.is-exiting .flame-core {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1.3);
+    transition: opacity 180ms ease, transform 210ms cubic-bezier(0.22, 0.7, 0.35, 1);
+  }
+  .launch-stage.is-exiting .exhaust-plume {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(2.4) translateY(2px);
+    transition: opacity 180ms ease, transform 210ms cubic-bezier(0.22, 0.7, 0.35, 1);
+  }
+  .launch-stage.is-exiting .flame-glow {
+    opacity: 0.95;
+    transform: translateX(-50%) scale(1.6);
+    transition: opacity 180ms ease, transform 210ms cubic-bezier(0.22, 0.7, 0.35, 1);
+  }
+  .launch-stage.is-exiting .thrust-particle {
+    opacity: 0.7;
+    transition: opacity 180ms ease, transform 210ms cubic-bezier(0.22, 0.7, 0.35, 1);
+  }
+  .launch-stage.is-exiting .thrust-particle.p1 { transform: translateX(-50%) translate(-3px, 6px); }
+  .launch-stage.is-exiting .thrust-particle.p2 { transform: translateX(-50%) translate(3px, 8px); }
+
+  /* Fase B — aceleração: a propulsão acompanha o foguete como cauda de cometa durante
+     quase toda a subida, e só dissipa perto do topo (~500ms, com leve continuidade
+     durante a pausa do escudo vazio — decorativo, não altera o timing da revelação). */
+  .launch-stage.is-ascending .flame-core {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(1.7);
+    transition: opacity 260ms ease 420ms, transform 500ms cubic-bezier(0.55, 0.05, 0.8, 0.3);
+  }
+  .launch-stage.is-ascending .exhaust-plume {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(6.2) translateY(20px);
+    transition: opacity 340ms ease 430ms, transform 500ms cubic-bezier(0.55, 0.05, 0.8, 0.3);
+  }
+  .launch-stage.is-ascending .flame-glow {
+    opacity: 0;
+    transform: translateX(-50%) scale(3.6);
+    transition: opacity 340ms ease 400ms, transform 500ms cubic-bezier(0.55, 0.05, 0.8, 0.3);
+  }
+  .launch-stage.is-ascending .thrust-particle {
+    opacity: 0;
+    transition: opacity 380ms ease 360ms, transform 500ms cubic-bezier(0.55, 0.05, 0.8, 0.3);
+  }
+  .launch-stage.is-ascending .thrust-particle.p1 { transform: translateX(-50%) translate(-6px, 22px); }
+  .launch-stage.is-ascending .thrust-particle.p2 { transform: translateX(-50%) translate(6px, 26px); }
+
+  /* ===== Vapor de espera — sutil e contínuo enquanto o foguete está encaixado (0%–79%) ===== */
+  .idle-vapor {
+    left: 47.6%;
+    top: 61.8%;
+    width: 1px;
+    height: 1px;
+  }
+  .idle-vapor span {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200, 236, 255, 0.85) 0%, rgba(56, 189, 248, 0.5) 45%, transparent 78%);
+    filter: blur(2px);
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  .idle-vapor span:nth-child(1) {
+    width: 9px;
+    height: 12px;
+    animation: idle-vapor-drift 3.2s ease-in-out infinite;
+  }
+  .idle-vapor span:nth-child(2) {
+    width: 7px;
+    height: 10px;
+    margin-left: -6px;
+    animation: idle-vapor-drift 3.6s ease-in-out infinite 0.6s;
+  }
+  .idle-vapor span:nth-child(3) {
+    width: 7px;
+    height: 10px;
+    margin-left: 6px;
+    animation: idle-vapor-drift 4s ease-in-out infinite 1.2s;
+  }
+  @keyframes idle-vapor-drift {
+    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.7); }
+    30% { opacity: calc(0.34 + var(--boost, 0) * 0.5); }
+    70% {
+      opacity: calc(0.2 + var(--boost, 0) * 0.36);
+      transform: translateX(-50%) translateY(5px) scale(calc(1.05 + var(--boost, 0) * 0.35));
+    }
+    100% { opacity: 0; transform: translateX(-50%) translateY(9px) scale(calc(1.15 + var(--boost, 0) * 0.4)); }
+  }
+
+  /* Preparação (80%–99%, via --boost): vapor de espera surge mais forte e rápido */
+  .launch-stage.is-igniting .idle-vapor span {
+    animation: idle-vapor-surge 260ms ease-out forwards;
+  }
+  @keyframes idle-vapor-surge {
+    0% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+    100% { opacity: 0.7; transform: translateX(-50%) scale(1.4); }
+  }
+  .launch-stage.is-exiting .idle-vapor span,
+  .launch-stage.is-ascending .idle-vapor span {
+    opacity: 0;
+    animation: none;
+    transition: opacity 180ms ease;
+  }
+
+  /* ===== Fumaça residual — permanece presa ao escudo depois que o foguete parte ===== */
+  .shield-residual-smoke {
+    left: 47.6%;
+    top: 60%;
+    width: 1px;
+    height: 1px;
+    z-index: 1;
+  }
+  .shield-residual-smoke span {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(210, 240, 255, 0.8) 0%, rgba(56, 189, 248, 0.4) 50%, transparent 78%);
+    filter: blur(3.5px);
+    transform: translateX(-50%) scale(0.6);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+  .shield-residual-smoke span:nth-child(1) {
+    width: 26px;
+    height: 20px;
+    opacity: calc(0.14 + var(--boost, 0) * 0.46);
+  }
+  .shield-residual-smoke span:nth-child(2) {
+    width: 18px;
+    height: 14px;
+    margin-top: -5px;
+    opacity: calc(0.04 + var(--boost, 0) * 0.36);
+  }
+  .launch-stage.is-exiting .shield-residual-smoke span,
+  .launch-stage.is-ascending .shield-residual-smoke span {
+    opacity: 0.68;
+    transform: translateX(-50%) scale(1.4);
+  }
+  .launch-stage.is-shield-empty .shield-residual-smoke span {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.7);
+    transition: opacity 460ms ease, transform 460ms ease;
+  }
+
+  /* Fundo começa a esmaecer ainda durante a aceleração (fase B) */
+  .launch-panel.is-fading-bg .launch-glass {
+    transition: opacity 900ms ease, filter 900ms ease;
+    opacity: 0.55;
+  }
+
+  @media (max-width: 640px) {
+    .flame-core { width: 6px; height: 9px; }
+    .exhaust-plume { width: 10px; height: 14px; }
+    .flame-glow { width: 18px; height: 18px; }
+    .thrust-particle { width: 2px; height: 2px; }
+    .idle-vapor span,
+    .shield-residual-smoke span { transform: translateX(-50%) scale(0.75); }
+    .shield-residual-smoke span:nth-child(1) { width: 18px; height: 14px; }
+    .shield-residual-smoke span:nth-child(2) { width: 13px; height: 10px; }
+    .idle-vapor span:nth-child(1) { width: 7px; height: 9px; }
+    .idle-vapor span:nth-child(2),
+    .idle-vapor span:nth-child(3) { width: 5px; height: 8px; }
+    .loader-tech-bg { opacity: 0.5; }
+    /* Mantém grid, arco central e as duas espinhas; remove ramificações periféricas */
+    .loader-circuit-minor,
+    .loader-circuit-faint,
+    .loader-node-faint {
+      display: none;
+    }
+    /* Reduz para 1 pulso (em vez de 3) */
+    .loader-pulse-tertiary {
+      display: none;
+    }
+    #loader-pulse-2 {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rocket-assembly,
+    .flame-core,
+    .exhaust-plume,
+    .flame-glow,
+    .thrust-particle,
+    .idle-vapor span,
+    .shield-residual-smoke span,
+    .launch-glass,
+    .launch-stage,
+    .loader-tech-bg,
+    .loader-arc-glow,
+    .loader-converge-pulse-l,
+    .loader-converge-pulse-r {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+<script>
+  const INTRO_KEY = "cronosstart-intro-seen";
+
+  const panel = document.getElementById("launch-intro-panel");
+  if (panel && panel.dataset.skip !== "true") {
+    try {
+      runIntro(panel);
+    } catch (err) {
+      forceRemove(panel);
+    }
+  }
+
+  function forceRemove(panelEl: HTMLElement) {
+    panelEl.style.display = "none";
+    panelEl.remove();
+    document.documentElement.style.overflow = "";
+  }
+
+  function markSeen() {
+    try {
+      sessionStorage.setItem(INTRO_KEY, "true");
+    } catch (e) {
+      // ambiente sem sessionStorage — apenas segue sem persistir
+    }
+  }
+
+  function runIntro(panelEl: HTMLElement) {
+    const stage = document.getElementById("launch-stage") as HTMLElement;
+    const barFill = document.getElementById("launch-bar-fill") as HTMLElement;
+    const percentLabel = document.getElementById("launch-percent") as HTMLElement;
+    const stageTextEl = document.getElementById("launch-stage-text") as HTMLElement;
+
+    document.documentElement.style.overflow = "hidden";
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let rafId: number | null = null;
+    let safetyTimer: number | null = null;
+
+    function cleanupTimers() {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      if (safetyTimer !== null) window.clearTimeout(safetyTimer);
+    }
+
+    function reveal() {
+      cleanupTimers();
+      panelEl.classList.add("is-revealing");
+      document.documentElement.style.overflow = "";
+      window.setTimeout(() => {
+        forceRemove(panelEl);
+      }, 700);
+      markSeen();
+    }
+
+    if (prefersReducedMotion) {
+      barFill.style.width = "100%";
+      percentLabel.textContent = "100";
+      stageTextEl.textContent = "Pronto para decolar.";
+      window.setTimeout(reveal, 400);
+      return;
+    }
+
+    function stageTextFor(p: number) {
+      if (p < 35) return "Conectando ideias...";
+      if (p < 70) return "Preparando sua presença digital...";
+      if (p < 100) return "Ajustando os últimos detalhes...";
+      return "Pronto para decolar.";
+    }
+
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    const RAMP_DURATION = 1800;
+    const FINISH_DURATION = 220;
+    const SAFETY_TIMEOUT = 2500;
+
+    let loaded = document.readyState === "complete";
+    window.addEventListener(
+      "load",
+      () => {
+        loaded = true;
+      },
+      { once: true }
+    );
+
+    const startTime = performance.now();
+    let phase: "ramp" | "hold" | "finish" | "done" = "ramp";
+    let finishStart = 0;
+    let finishFrom = 0;
+
+    safetyTimer = window.setTimeout(() => {
+      if (phase !== "finish" && phase !== "done") {
+        phase = "finish";
+        finishStart = performance.now();
+        finishFrom = Number(barFill.style.width.replace("%", "")) || 88;
+      }
+    }, SAFETY_TIMEOUT);
+
+    const pulseMotions = [
+      { el: document.getElementById("loader-pulse-1-motion"), base: 9, fast: 3.6 },
+      { el: document.getElementById("loader-pulse-2-motion"), base: 10, fast: 4 },
+      { el: document.getElementById("loader-pulse-3-motion"), base: 13, fast: 5.2 },
+    ];
+
+    function updateUI(percent: number) {
+      const rounded = Math.round(percent);
+      barFill.style.width = `${rounded}%`;
+      percentLabel.textContent = String(rounded);
+      stageTextEl.textContent = stageTextFor(rounded);
+      const boost = Math.min(Math.max((rounded - 80) / (99 - 80), 0), 1);
+      panelEl.style.setProperty("--boost", boost.toFixed(3));
+
+      // Arcos: curva própria de 3 estágios — baixa e estável até 70%, crescendo
+      // gradualmente até 95%, mais intensa entre 96% e 100%.
+      let arcBoost: number;
+      if (rounded < 70) {
+        arcBoost = 0.15;
+      } else if (rounded <= 95) {
+        arcBoost = 0.15 + 0.55 * ((rounded - 70) / (95 - 70));
+      } else {
+        arcBoost = 0.7 + 0.3 * Math.min((rounded - 95) / (100 - 95), 1);
+      }
+      panelEl.style.setProperty("--arc-boost", arcBoost.toFixed(3));
+
+      // 80%–99%: os pulsos avançam mais rápido em direção ao centro ("preparação")
+      pulseMotions.forEach(({ el, base, fast }) => {
+        if (!el) return;
+        const dur = base - (base - fast) * boost;
+        el.setAttribute("dur", `${dur.toFixed(2)}s`);
+      });
+    }
+
+    const IGNITION_DURATION = 260;
+    const PHASE_A_DURATION = 210;
+    const PHASE_B_DURATION = 500;
+    const SHIELD_EMPTY_PAUSE = 200;
+
+    const techBg = document.querySelector<HTMLElement>(".loader-tech-bg");
+
+    function launchSequence() {
+      cleanupTimers();
+      updateUI(100);
+      stage.classList.add("is-igniting");
+      techBg?.classList.add("is-igniting");
+
+      window.setTimeout(() => {
+        // Fase A: vence a inércia e sai do contorno do escudo
+        stage.classList.remove("is-igniting");
+        stage.classList.add("is-exiting");
+        techBg?.classList.remove("is-igniting");
+        techBg?.classList.add("is-exiting");
+
+        window.setTimeout(() => {
+          // Fase B: aceleração — sai pelo topo da viewport
+          stage.classList.remove("is-exiting");
+          stage.classList.add("is-ascending");
+          techBg?.classList.remove("is-exiting");
+          techBg?.classList.add("is-ascending");
+
+          window.setTimeout(() => {
+            panelEl.classList.add("is-fading-bg");
+          }, PHASE_B_DURATION * 0.45);
+
+          window.setTimeout(() => {
+            // escudo vazio e visível por um instante — reforça que o foguete saiu dali
+            stage.classList.add("is-shield-empty");
+            window.setTimeout(reveal, SHIELD_EMPTY_PAUSE);
+          }, PHASE_B_DURATION);
+        }, PHASE_A_DURATION);
+      }, IGNITION_DURATION);
+    }
+
+    function frame(now: number) {
+      const elapsed = now - startTime;
+
+      if (phase === "ramp") {
+        const t = Math.min(elapsed / RAMP_DURATION, 1);
+        const eased = easeOutCubic(t);
+        updateUI(eased * 88);
+        if (t >= 1) {
+          phase = loaded ? "finish" : "hold";
+          if (phase === "finish") {
+            finishStart = now;
+            finishFrom = 88;
+          }
+        }
+      } else if (phase === "hold") {
+        updateUI(88);
+        if (loaded) {
+          phase = "finish";
+          finishStart = now;
+          finishFrom = 88;
+        }
+      } else if (phase === "finish") {
+        const t = Math.min((now - finishStart) / FINISH_DURATION, 1);
+        const eased = easeOutCubic(t);
+        updateUI(finishFrom + (100 - finishFrom) * eased);
+        if (t >= 1) {
+          phase = "done";
+          launchSequence();
+          return;
+        }
+      }
+
+      rafId = requestAnimationFrame(frame);
+    }
+
+    rafId = requestAnimationFrame(frame);
+  }
+</script>
+
+<script>
+  // Pulsos do fundo tecnológico são SMIL (animateMotion) — pausados fora do fluxo
+  // principal de progresso/decolagem, respeitando prefers-reduced-motion.
+  const techSvg = document.querySelector<SVGSVGElement>(".loader-circuits-svg");
+  if (techSvg && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    techSvg.pauseAnimations();
+  }
+</script>
