@@ -5,7 +5,7 @@ import "@fontsource-variable/space-grotesk";
 import SiteHeader from "../components/vitrine/SiteHeader.astro";
 import SiteFooter from "../components/vitrine/SiteFooter.astro";
 import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
-import FloatingWhatsAppButton from "../components/vitrine/FloatingWhatsAppButton.astro";
+import AstroAssistant from "../components/vitrine/AstroAssistant.astro";
 import SEOHead from "../components/seo/SEOHead.astro";
 
 interface Props {
@@ -40,6 +40,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <SiteFooter />
     <ContactFormModal />
-    <FloatingWhatsAppButton />
+    <AstroAssistant />
   </body>
 </html>

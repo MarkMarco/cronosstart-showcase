@@ -1,0 +1,348 @@
+---
+// Assistente visual da CronosStart — substitui o botão flutuante genérico de WhatsApp.
+// Estrutura pensada para no futuro evoluir para um chatbot/FAQ/qualificação de leads
+// com IA, sem precisar refazer o widget: hoje o painel só oferece 3 ações fixas.
+import Icon from "../ui/Icon.astro";
+import { buildWhatsappLink } from "../../config/company";
+
+const whatsappHref = buildWhatsappLink(
+  "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre a criação do meu site."
+);
+---
+
+<div
+  id="astro-assistant"
+  data-whatsapp-floating
+  class="astro-assistant fixed z-40 flex flex-col items-end gap-3 transition-opacity duration-300"
+  style="right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));"
+>
+  <!-- Balão de apresentação — some sozinho após a 1ª sessão (sessionStorage) -->
+  <div
+    id="astro-greeting"
+    class="astro-greeting astro-glass hidden max-w-[17.5rem] rounded-2xl p-4 pr-9 text-left sm:max-w-[19rem]"
+    role="status"
+  >
+    <button
+      type="button"
+      id="astro-greeting-close"
+      aria-label="Fechar mensagem"
+      class="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+    >
+      <Icon name="close" class="h-3.5 w-3.5" />
+    </button>
+    <div class="flex items-center gap-3">
+      <picture class="block h-[3.1rem] w-[3.1rem] shrink-0 overflow-hidden rounded-full border border-[var(--accent)]/35 bg-white/5">
+        <source srcset="/images/astro/astro-wave-bust.webp" type="image/webp" />
+        <img
+          src="/images/astro/astro-wave-bust.png"
+          alt=""
+          width="220"
+          height="193"
+          decoding="async"
+          class="h-full w-full object-cover object-top"
+        />
+      </picture>
+      <p class="text-sm leading-snug text-white/85">
+        Olá! Eu sou o <strong class="text-white">Astro</strong>, assistente da CronosStart. Posso ajudar com seu
+        site?
+      </p>
+    </div>
+  </div>
+
+  <!-- Painel de ações -->
+  <div
+    id="astro-panel"
+    class="astro-panel astro-glass hidden w-[16.5rem] origin-bottom-right rounded-2xl p-2 sm:w-64"
+  >
+    <p class="px-3 pb-1.5 pt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-white/70">
+      Como posso ajudar?
+    </p>
+    <div role="menu" aria-label="Ações do assistente Astro" class="flex flex-col gap-0.5">
+    <button
+      type="button"
+      role="menuitem"
+      data-open-contact-form
+      data-contact-origin="astro-assistant"
+      class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
+    >
+      <Icon name="sparkle" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
+      Quero criar meu site
+    </button>
+    <a
+      href="/#modelos"
+      role="menuitem"
+      class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
+    >
+      <Icon name="layers" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
+      Ver modelos
+    </a>
+    <a
+      href={whatsappHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      role="menuitem"
+      class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
+    >
+      <Icon name="whatsapp" class="h-4 w-4 shrink-0 text-[#25D366] transition-transform duration-200 group-hover/item:translate-x-0.5" />
+      Falar no WhatsApp
+    </a>
+    </div>
+  </div>
+
+  <!-- Botão flutuante -->
+  <button
+    type="button"
+    id="astro-trigger"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls="astro-panel"
+    aria-label="Abrir assistente Astro da CronosStart"
+    class="astro-trigger relative flex items-center justify-center rounded-full backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+  >
+    <span class="astro-glow pointer-events-none absolute inset-0 rounded-full" aria-hidden="true"></span>
+    <img
+      id="astro-avatar"
+      src="/images/astro/astro-idle-head.png"
+      alt=""
+      width="240"
+      height="265"
+      loading="eager"
+      decoding="async"
+      class="astro-avatar"
+    />
+    <span class="astro-status-dot absolute bottom-0.5 right-0.5" aria-hidden="true"></span>
+  </button>
+</div>
+
+<style>
+  /* Efeito glass compartilhado pelo balão e pelo painel — borda azul/ciano sutil,
+     gradiente interno discreto, sombra refinada, sem exagerar no blur. */
+  .astro-glass {
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    background: linear-gradient(160deg, rgba(19, 27, 46, 0.97) 0%, rgba(8, 12, 21, 0.98) 100%);
+    box-shadow:
+      0 24px 55px -25px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(56, 189, 248, 0.06) inset;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .astro-trigger {
+    height: 4.75rem;
+    width: 4.75rem;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    background: linear-gradient(160deg, rgba(19, 27, 46, 0.94) 0%, rgba(8, 12, 21, 0.96) 100%);
+    box-shadow:
+      0 14px 32px -12px rgba(56, 189, 248, 0.4),
+      0 4px 12px -4px rgba(0, 0, 0, 0.55);
+  }
+
+  .astro-glow {
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
+    opacity: 0.6;
+    animation: astro-glow-breathe 4s ease-in-out infinite;
+  }
+  @keyframes astro-glow-breathe {
+    0%, 100% { opacity: 0.35; transform: scale(0.9); }
+    50% { opacity: 0.65; transform: scale(1.05); }
+  }
+
+  /* Enquadramento fechado (capacete, rosto e ombros/tronco superior) e
+     totalmente contido no círculo do botão — sem partes para fora da borda.
+     Sem <picture>/<source>: o JS troca o src diretamente para a versão
+     animada, e um <source> concorrente sempre venceria essa troca. */
+  .astro-avatar {
+    display: block;
+    height: 4.1rem;
+    width: 4.1rem;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 32%;
+  }
+
+  .astro-status-dot {
+    height: 0.7rem;
+    width: 0.7rem;
+    border-radius: 9999px;
+    background: var(--accent, #38bdf8);
+    border: 2px solid #0a0e1a;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.7);
+  }
+
+  .astro-panel-item:hover,
+  .astro-panel-item:focus-visible {
+    background: rgba(56, 189, 248, 0.12);
+    color: #fff;
+    box-shadow: 0 0 16px -6px rgba(56, 189, 248, 0.5);
+  }
+
+  .astro-greeting,
+  .astro-panel {
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+  .astro-greeting.is-visible,
+  .astro-panel.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .astro-greeting:not(.is-visible),
+  .astro-panel:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  @media (max-width: 640px) {
+    .astro-trigger {
+      height: 4rem;
+      width: 4rem;
+    }
+    .astro-avatar {
+      height: 3.4rem;
+      width: 3.4rem;
+    }
+    .astro-greeting,
+    .astro-panel {
+      width: min(17.5rem, calc(100vw - 2.5rem));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .astro-glow {
+      animation: none;
+      opacity: 0.45;
+    }
+    .astro-greeting,
+    .astro-panel {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
+<script>
+  const GREETING_KEY = "cronosstart-astro-greeting-seen";
+  const GREETING_DELAY = 2500;
+  const GREETING_AUTO_DISMISS = 8000;
+
+  const root = document.getElementById("astro-assistant")!;
+  const trigger = document.getElementById("astro-trigger") as HTMLButtonElement;
+  const panel = document.getElementById("astro-panel")!;
+  const greeting = document.getElementById("astro-greeting")!;
+  const greetingClose = document.getElementById("astro-greeting-close") as HTMLButtonElement;
+  const avatar = document.getElementById("astro-avatar") as HTMLImageElement;
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Só troca para o WebP animado (aceno) quando o movimento é seguro — o <img>
+  // original parte sempre da versão estática (mesmo enquadramento), nunca
+  // baixa a versão animada em prefers-reduced-motion. Cria um <img> novo do
+  // zero (em vez de clonar ou reatribuir "src") porque, neste engine, um
+  // elemento que já carregou uma imagem estática não reinicia a reprodução
+  // ao trocar para uma imagem animada — só um <img> criado já com o src
+  // animado reproduz corretamente.
+  if (!prefersReducedMotion) {
+    const animatedAvatar = document.createElement("img");
+    animatedAvatar.id = "astro-avatar";
+    animatedAvatar.className = "astro-avatar";
+    animatedAvatar.alt = "";
+    animatedAvatar.loading = "eager";
+    animatedAvatar.decoding = "async";
+    animatedAvatar.src = "/images/astro/astro-idle-head-animated.webp";
+    avatar.replaceWith(animatedAvatar);
+  }
+
+  let panelOpen = false;
+
+  function openPanel() {
+    if (panelOpen) return;
+    panelOpen = true;
+    panel.classList.remove("hidden");
+    requestAnimationFrame(() => panel.classList.add("is-visible"));
+    trigger.setAttribute("aria-expanded", "true");
+    dismissGreeting();
+    const firstItem = panel.querySelector<HTMLElement>('[role="menuitem"]');
+    firstItem?.focus();
+  }
+
+  function closePanel(returnFocus = true) {
+    if (!panelOpen) return;
+    panelOpen = false;
+    panel.classList.remove("is-visible");
+    trigger.setAttribute("aria-expanded", "false");
+    window.setTimeout(() => panel.classList.add("hidden"), prefersReducedMotion ? 0 : 220);
+    if (returnFocus) trigger.focus();
+  }
+
+  trigger.addEventListener("click", () => {
+    if (panelOpen) closePanel();
+    else openPanel();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!panelOpen) return;
+    const target = event.target as Node;
+    if (!root.contains(target)) closePanel(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!panelOpen) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closePanel();
+      return;
+    }
+    if (event.key === "Tab") {
+      const items = Array.from(panel.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  // Fecha o painel se um item de navegação/WhatsApp for ativado (não bloqueia a navegação)
+  panel.querySelectorAll<HTMLElement>('[role="menuitem"]').forEach((item) => {
+    item.addEventListener("click", () => closePanel(false));
+  });
+
+  let greetingAutoDismissTimer: number | null = null;
+
+  function dismissGreeting() {
+    if (greeting.classList.contains("hidden")) return;
+    if (greetingAutoDismissTimer !== null) {
+      window.clearTimeout(greetingAutoDismissTimer);
+      greetingAutoDismissTimer = null;
+    }
+    greeting.classList.remove("is-visible");
+    window.setTimeout(() => greeting.classList.add("hidden"), prefersReducedMotion ? 0 : 220);
+  }
+
+  greetingClose.addEventListener("click", dismissGreeting);
+
+  let alreadySeen = false;
+  try {
+    alreadySeen = sessionStorage.getItem(GREETING_KEY) === "true";
+  } catch (e) {
+    // sessionStorage indisponível — trata como já visto para não insistir
+    alreadySeen = true;
+  }
+
+  if (!alreadySeen) {
+    window.setTimeout(() => {
+      if (panelOpen) return;
+      greeting.classList.remove("hidden");
+      requestAnimationFrame(() => greeting.classList.add("is-visible"));
+      try {
+        sessionStorage.setItem(GREETING_KEY, "true");
+      } catch (e) {
+        // segue sem persistir
+      }
+      greetingAutoDismissTimer = window.setTimeout(dismissGreeting, GREETING_AUTO_DISMISS);
+    }, GREETING_DELAY);
+  }
+</script>
