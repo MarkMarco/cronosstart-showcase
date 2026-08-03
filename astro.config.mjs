@@ -32,7 +32,9 @@ export default defineConfig({
           path === '/' ||
           path === '/politica-de-privacidade/' ||
           path === '/termos-de-uso/' ||
-          path === '/criacao-de-sites-blumenau/'
+          path === '/criacao-de-sites-blumenau/' ||
+          path === '/sites-para-pequenas-empresas/' ||
+          path === '/sites-com-painel-administrativo/'
         );
       },
     }),

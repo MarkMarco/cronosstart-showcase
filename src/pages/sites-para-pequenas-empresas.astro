@@ -14,108 +14,122 @@ import Icon from "../components/ui/Icon.astro";
 import { showcaseRegistry } from "../config/showcases";
 import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
 
-const title = "Criação de Sites em Blumenau | CronosStart";
+const title = "Sites para Pequenas Empresas | CronosStart";
 const description =
-  "Criação de sites profissionais em Blumenau para pequenas empresas, com domínio, hospedagem, WhatsApp, personalização e suporte técnico.";
+  "Criamos sites profissionais para pequenas empresas, com domínio, hospedagem, WhatsApp, personalização, suporte e estrutura preparada para gerar contatos.";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const whatsappBlumenau = buildWhatsappLink(
-  "Olá! Vi a página de criação de sites em Blumenau da CronosStart e gostaria de saber mais sobre um site para minha empresa."
+const whatsappSmallBiz = buildWhatsappLink(
+  "Olá! Vi a página de sites para pequenas empresas da CronosStart e gostaria de saber mais sobre um site para o meu negócio."
 );
 
-const audiences = [
+const problems = [
   {
     icon: "briefcase" as const,
-    title: "Pequenas empresas e autônomos",
-    description: "Consultórios, escritórios, prestadores de serviço e profissionais que ainda não têm um site próprio.",
+    title: "Empresa sem presença profissional",
+    description: "O negócio existe, atende bem, mas não tem um espaço próprio na internet que transmita essa credibilidade.",
+  },
+  {
+    icon: "search" as const,
+    title: "Cliente não encontra informações facilmente",
+    description: "Horário, serviços, contato e localização espalhados entre perfis diferentes, sem um lugar único e organizado.",
+  },
+  {
+    icon: "instagram" as const,
+    title: "Dependência exclusiva de redes sociais",
+    description: "Instagram e Facebook ajudam, mas o algoritmo decide quem vê — e o perfil não é um endereço que a empresa controla.",
   },
   {
     icon: "layers" as const,
-    title: "Comércio e varejo local",
-    description: "Lojas e negócios que já atendem pelo WhatsApp ou redes sociais e querem uma presença mais profissional.",
+    title: "Dificuldade para apresentar serviços",
+    description: "Sem um espaço estruturado, fica difícil mostrar tudo o que a empresa oferece de forma clara.",
   },
   {
-    icon: "trending-up" as const,
-    title: "Empresas em expansão",
-    description: "Negócios que estão crescendo e precisam de um site à altura da confiança que já conquistaram.",
+    icon: "message-circle" as const,
+    title: "Perda de contatos",
+    description: "Sem um caminho claro até o WhatsApp ou um formulário, parte do interesse se perde no caminho.",
   },
   {
-    icon: "users" as const,
-    title: "Empresas de todo o Brasil e LATAM",
-    description: "Atendimento remoto para empresas fora de Blumenau, com o mesmo processo e acompanhamento.",
+    icon: "refresh" as const,
+    title: "Site antigo ou não adaptado ao celular",
+    description: "Um site desatualizado ou que não funciona bem no celular pode afastar quem está pesquisando pela empresa.",
   },
 ];
 
 const siteTypes = [
   {
     icon: "sparkle" as const,
-    title: "Sites institucionais",
-    description: "Apresentam sua empresa, seus serviços e facilitam o contato com quem já busca por você.",
+    title: "Site institucional",
+    description: "Apresenta a empresa, os serviços e os diferenciais em um único lugar, sob seu próprio domínio.",
   },
   {
     icon: "arrow-right" as const,
-    title: "Landing pages",
-    description: "Página única e objetiva, focada em um serviço, produto ou campanha específica.",
+    title: "Landing page",
+    description: "Página única e direta, para divulgar um serviço, produto ou campanha específica.",
   },
   {
     icon: "file-check" as const,
-    title: "Catálogos digitais",
-    description: "Produtos, imóveis ou cardápios organizados e fáceis de navegar, com atualização quando necessário.",
-  },
-  {
-    icon: "settings" as const,
-    title: "Sites com painel administrativo",
-    description: "Para quem precisa atualizar conteúdo, catálogo ou agenda sem depender de terceiros a cada mudança.",
+    title: "Catálogo de produtos ou serviços",
+    description: "Organiza o que a empresa vende ou oferece, com fotos, descrições e valores quando fizer sentido.",
   },
 ];
 
 const included = [
-  { icon: "key" as const, label: "Domínio registrado em nome do cliente" },
-  { icon: "layers" as const, label: "Hospedagem configurada" },
-  { icon: "shield-check" as const, label: "Certificado SSL" },
   { icon: "whatsapp" as const, label: "Integração com WhatsApp" },
-  { icon: "arrow-right" as const, label: "Publicação do site" },
-  { icon: "message-circle" as const, label: "Suporte após o lançamento" },
-  { icon: "sliders" as const, label: "Personalização conforme a identidade da empresa" },
+  { icon: "message-circle" as const, label: "Formulário de contato" },
+  { icon: "key" as const, label: "Domínio" },
+  { icon: "layers" as const, label: "Hospedagem" },
+  { icon: "shield-check" as const, label: "Certificado SSL" },
+  { icon: "arrow-right" as const, label: "Publicação" },
+  { icon: "phone" as const, label: "Suporte" },
+  { icon: "sliders" as const, label: "Personalização de acordo com a marca" },
+  { icon: "trending-up" as const, label: "Possibilidade de expansão futura" },
+];
+
+const benefits = [
+  { title: "Mais contatos qualificados", description: "Um caminho claro até o WhatsApp e o formulário facilita quem já quer falar com a empresa." },
+  { title: "Credibilidade imediata", description: "Ter um domínio próprio e um site bem estruturado transmite mais confiança do que apenas um perfil em rede social." },
+  { title: "Facilidade para ser encontrado", description: "Um site otimizado ajuda quem está pesquisando pela empresa a encontrar as informações certas." },
+  { title: "Presença que a empresa controla", description: "Diferente de um perfil em rede social, o site é um espaço que pertence à empresa." },
 ];
 
 const steps = [
-  { title: "Conversa inicial", description: "Entendemos seu negócio, seu público e o que você precisa apresentar no site." },
-  { title: "Estrutura e proposta", description: "Definimos o tipo de site mais adequado e o escopo do projeto." },
-  { title: "Desenvolvimento e personalização", description: "Construímos o site com sua identidade — cores, textos e imagens." },
-  { title: "Publicação e suporte", description: "Colocamos o site no ar, com domínio e hospedagem configurados, e seguimos disponíveis para suporte." },
+  { title: "Entendemos seu negócio", description: "Conversamos sobre o que sua empresa faz, quem é o público e o que precisa aparecer no site." },
+  { title: "Definimos a estrutura ideal", description: "Escolhemos entre site institucional, landing page ou catálogo, conforme o objetivo." },
+  { title: "Personalizamos para sua marca", description: "Cores, textos, imagens e funcionalidades adaptados à identidade da sua empresa." },
+  { title: "Publicamos e acompanhamos", description: "Colocamos o site no ar, com domínio e hospedagem prontos, e seguimos disponíveis para suporte." },
 ];
 
 const faqItems = [
   {
-    question: "Vocês atendem presencialmente em Blumenau?",
+    question: "Minha empresa é pequena, vale a pena ter um site?",
     answer:
-      "O atendimento é majoritariamente remoto, o que permite agilidade e flexibilidade para empresas de Blumenau, região e também de outras cidades. Quando aplicável, o contato local pode ser combinado diretamente.",
+      "Sim. Mesmo empresas pequenas se beneficiam de um espaço próprio que reúne informações, facilita o contato e passa mais credibilidade do que depender só de redes sociais.",
   },
   {
-    question: "O domínio do site fica no nome da minha empresa?",
+    question: "Já tenho Instagram, preciso de site mesmo assim?",
     answer:
-      "Sim. Sempre que possível, o domínio é registrado em nome do cliente ou da empresa, e a CronosStart realiza a configuração e a gestão técnica.",
+      "O Instagram ajuda na divulgação, mas não substitui um site: o domínio é seu, o conteúdo não depende do algoritmo e as informações ficam organizadas em um só lugar.",
   },
   {
-    question: "Preciso ter conteúdo pronto (textos e fotos) para começar?",
+    question: "Posso começar com um site simples e expandir depois?",
     answer:
-      "Não é obrigatório. Ajudamos a organizar o que sua empresa já tem e orientamos sobre o que é útil incluir no site.",
+      "Sim. É comum começar com um site institucional ou uma landing page e, conforme a necessidade, evoluir para um catálogo ou um painel administrativo.",
   },
   {
-    question: "Quanto tempo leva para o site de uma empresa de Blumenau ficar pronto?",
+    question: "O site funciona bem no celular?",
     answer:
-      "O prazo depende do tamanho e das funcionalidades do projeto. Sites institucionais costumam ter prazo menor do que projetos com catálogo ou painel administrativo.",
+      "Sim. Todos os sites são responsivos, ou seja, se adaptam para funcionar bem em celular, tablet e computador.",
   },
   {
-    question: "É possível ver modelos antes de fechar o projeto?",
+    question: "O domínio fica em nome da minha empresa?",
     answer:
-      "Sim. O portfólio de modelos demonstrativos mostra propostas visuais completas para diferentes segmentos, que servem como ponto de partida e podem ser totalmente personalizadas.",
+      "Sim. Sempre que possível, o domínio é registrado em nome do cliente ou da empresa, e a CronosStart cuida da configuração técnica.",
   },
   {
-    question: "O site inclui suporte depois de publicado?",
+    question: "Quanto tempo leva para o site ficar pronto?",
     answer:
-      "Sim. O tipo de suporte e a quantidade de alterações incluídas dependem do plano contratado.",
+      "Depende do tamanho e das funcionalidades do projeto. Sites institucionais e landing pages costumam ter prazo menor do que projetos com catálogo ou painel administrativo.",
   },
 ];
 
@@ -126,12 +140,12 @@ const structuredData = {
     {
       "@type": "Service",
       "@id": `${canonicalURL}#service`,
-      name: "Criação de sites profissionais em Blumenau",
-      serviceType: "Criação de sites",
+      name: "Sites profissionais para pequenas empresas",
+      serviceType: "Criação de sites para pequenas empresas",
       provider: { "@id": ORGANIZATION_ID },
       areaServed: [
-        { "@type": "City", name: "Blumenau" },
-        { "@type": "State", name: "Santa Catarina" },
+        { "@type": "Country", name: "Brasil" },
+        { "@type": "Place", name: "América Latina" },
       ],
       description,
       url: canonicalURL.toString(),
@@ -140,7 +154,7 @@ const structuredData = {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "CronosStart", item: SITE_URL },
-        { "@type": "ListItem", position: 2, name: "Criação de Sites em Blumenau", item: canonicalURL.toString() },
+        { "@type": "ListItem", position: 2, name: "Sites para Pequenas Empresas", item: canonicalURL.toString() },
       ],
     },
     {
@@ -166,7 +180,7 @@ const structuredData = {
       canonicalURL={canonicalURL}
       robots="index, follow"
       ogImage="/images/og/home.png"
-      ogImageAlt="CronosStart — Criação de sites profissionais em Blumenau"
+      ogImageAlt="CronosStart — Sites profissionais para pequenas empresas"
       siteName="CronosStart"
       themeColor="#070b16"
       structuredData={structuredData}
@@ -180,39 +194,39 @@ const structuredData = {
       <!-- Hero -->
       <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div
-          class="pointer-events-none absolute -left-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
-          style="background: var(--primary);"
+          class="pointer-events-none absolute -right-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
+          style="background: var(--accent);"
           aria-hidden="true"
         ></div>
 
         <div class="relative mx-auto max-w-4xl text-center">
           <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
-            <Icon name="map-pin" class="h-4 w-4" />
-            Blumenau e região
+            <Icon name="briefcase" class="h-4 w-4" />
+            Para pequenas empresas
           </p>
           <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
-            Criação de sites profissionais em Blumenau
+            Sites profissionais para pequenas empresas
           </h1>
           <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
-            Sites institucionais, landing pages, catálogos e sites com painel administrativo para pequenas empresas
-            de Blumenau e região — com domínio, hospedagem, integração com WhatsApp e suporte técnico.
+            Ajudamos pequenas empresas a ter presença profissional na internet, apresentar seus serviços com
+            clareza e facilitar o contato com clientes — com domínio, hospedagem, WhatsApp e suporte.
           </p>
 
           <div class="mt-9 flex flex-wrap justify-center gap-4">
             <button
               type="button"
               data-open-contact-form
-              data-contact-origin="blumenau-hero"
+              data-contact-origin="pequenas-empresas-hero"
               class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
             >
-              Solicitar orçamento
+              Solicitar proposta
             </button>
             <a
-              href={whatsappBlumenau}
+              href={whatsappSmallBiz}
               target="_blank"
               rel="noopener noreferrer"
-              data-ga-origin="blumenau-hero"
+              data-ga-origin="pequenas-empresas-hero"
               class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
             >
               <Icon name="whatsapp" class="h-4 w-4" />
@@ -222,16 +236,16 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Para quais empresas -->
+      <!-- Problemas -->
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Para quem é indicado</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Empresas que atendemos em Blumenau e além</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Situações comuns</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Problemas que resolvemos para pequenas empresas</h2>
           </div>
-          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {
-              audiences.map((item) => (
+              problems.map((item) => (
                 <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
                   <span
                     class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
@@ -248,22 +262,22 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Tipos de sites -->
+      <!-- Tipos de site indicados -->
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
-        <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-5xl">
           <div class="mx-auto max-w-2xl text-center">
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Tipos de projeto</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Tipos de sites que desenvolvemos</h2>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Tipos de site indicados para pequenas empresas</h2>
           </div>
-          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="mt-12 grid gap-6 sm:grid-cols-3">
             {
               siteTypes.map((item) => (
-                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                <div class="rounded-2xl border border-white/10 p-7 text-center" style="background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);">
                   <span
-                    class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
+                    class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border text-[var(--accent)]"
                     style="background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, var(--border));"
                   >
-                    <Icon name={item.icon} class="h-5 w-5" />
+                    <Icon name={item.icon} class="h-6 w-6" />
                   </span>
                   <h3 class="mt-4 text-base font-semibold text-white">{item.title}</h3>
                   <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
@@ -274,12 +288,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- O que está incluído -->
+      <!-- O que a CronosStart entrega -->
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que está incluído</h2>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que a CronosStart entrega</h2>
           </div>
           <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
             {
@@ -294,14 +308,37 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Modelos demonstrativos relacionados -->
+      <!-- Benefícios comerciais -->
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-5xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Benefícios</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que muda no dia a dia da empresa</h2>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2">
+            {
+              benefits.map((item) => (
+                <div class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                  <Icon name="check" class="mt-0.5 h-5 w-5 shrink-0 text-[var(--accent)]" />
+                  <div>
+                    <h3 class="text-base font-semibold text-white">{item.title}</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Modelos demonstrativos -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-[92rem]">
           <div class="mx-auto max-w-2xl text-center">
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Portfólio de modelos</p>
             <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Modelos demonstrativos por segmento</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Cada demonstração é uma proposta visual completa, que pode ser personalizada para sua empresa.
+              Diferentes propostas visuais que servem de ponto de partida e podem ser personalizadas para o seu negócio.
             </p>
           </div>
           <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -311,7 +348,7 @@ const structuredData = {
       </section>
 
       <!-- Como funciona -->
-      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-5xl">
           <div class="mx-auto max-w-2xl text-center">
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
@@ -331,14 +368,14 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- FAQ específico -->
+      <!-- FAQ -->
       <FAQSection
-        id="faq-blumenau"
+        id="faq-pequenas-empresas"
         eyebrow="Dúvidas"
-        title="Perguntas frequentes sobre sites em Blumenau"
-        description="Respostas diretas para quem está avaliando criar um site em Blumenau e região."
+        title="Perguntas frequentes de pequenas empresas"
+        description="Respostas diretas para quem está avaliando ter um site profissional pela primeira vez."
         items={faqItems}
-        groupName="blumenau-faq"
+        groupName="pequenas-empresas-faq"
       />
 
       <!-- CTA final -->
@@ -350,26 +387,26 @@ const structuredData = {
           >
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
             <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Sua empresa em Blumenau pronta para estar no digital
+              Sua empresa pronta para ter presença profissional
             </h2>
             <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
-              Conte sua ideia e ajudamos a definir a melhor estrutura para o site da sua empresa.
+              Conte sua ideia e ajudamos a definir a melhor estrutura para o site do seu negócio.
             </p>
             <div class="mt-9 flex flex-wrap justify-center gap-4">
               <button
                 type="button"
                 data-open-contact-form
-                data-contact-origin="blumenau-cta-final"
+                data-contact-origin="pequenas-empresas-cta-final"
                 class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
               >
-                Solicitar orçamento
+                Solicitar proposta
               </button>
               <a
-                href={whatsappBlumenau}
+                href={whatsappSmallBiz}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-ga-origin="blumenau-cta-final"
+                data-ga-origin="pequenas-empresas-cta-final"
                 class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />
@@ -381,8 +418,8 @@ const structuredData = {
               Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
               os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a>,
               <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a>, a página de
-              <a href="/sites-para-pequenas-empresas" class="underline underline-offset-2 hover:text-white">sites para pequenas empresas</a> e a de
-              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a>.
+              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a> e a de
+              <a href="/criacao-de-sites-blumenau" class="underline underline-offset-2 hover:text-white">criação de sites em Blumenau</a>.
             </p>
           </div>
         </div>
