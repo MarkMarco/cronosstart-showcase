@@ -24,10 +24,16 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Exclui /modelos (agora um redirect) e os 6 modelos demonstrativos (noindex) —
-      // só a home e as páginas legais são públicas, canônicas e indexáveis.
+      // só a home, as páginas legais e as landing pages comerciais são públicas,
+      // canônicas e indexáveis.
       filter: (page) => {
         const path = new URL(page).pathname;
-        return path === '/' || path === '/politica-de-privacidade/' || path === '/termos-de-uso/';
+        return (
+          path === '/' ||
+          path === '/politica-de-privacidade/' ||
+          path === '/termos-de-uso/' ||
+          path === '/criacao-de-sites-blumenau/'
+        );
       },
     }),
   ],

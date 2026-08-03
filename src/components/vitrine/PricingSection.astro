@@ -79,6 +79,8 @@ const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Falar no WhatsApp sobre o plano ${tier.name}`}
+                data-ga-origin={`planos-${tier.slug}`}
+                data-ga-plan={tier.name}
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />

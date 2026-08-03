@@ -5,6 +5,7 @@ import ShowcaseFooter from "../components/showcase/ShowcaseFooter.astro";
 import WhatsAppButton from "../components/showcase/WhatsAppButton.astro";
 import DemoNotice from "../components/ui/DemoNotice.astro";
 import SEOHead from "../components/seo/SEOHead.astro";
+import Analytics from "../components/analytics/Analytics.astro";
 import type { ShowcaseConfig } from "../config/showcases/types";
 
 interface Props {
@@ -40,6 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       ogImageAlt={config.seo.ogImageAlt}
       robots="noindex"
     />
+    <Analytics />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
     <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref={config.primaryCtaHref ?? "#contato"}>
@@ -58,6 +60,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <WhatsAppButton contact={config.contact} />
 
+    <script define:vars={{ modelName: config.company.name, segment: config.company.segment }}>
+      window.__cronosDemoView = { modelName, segment };
+    </script>
+    <script>
+      import { trackEvent } from "../utils/analytics";
+      const demoInfo = (window as any).__cronosDemoView;
+      if (demoInfo) {
+        trackEvent("demo_view", {
+          modelo: demoInfo.modelName,
+          segmento: demoInfo.segment,
+          pagina: window.location.pathname,
+        });
+      }
+    </script>
     <script>
       const observer = new IntersectionObserver(
         (entries) => {

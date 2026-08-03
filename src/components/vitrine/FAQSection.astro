@@ -1,22 +1,41 @@
 ---
 import Icon from "../ui/Icon.astro";
-import { homeFaq } from "../../config/faq";
+import { homeFaq, type FaqEntry } from "../../config/faq";
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  items?: FaqEntry[];
+  /** Nome do grupo dos <details> — precisa ser único por página quando há mais de um FAQSection. */
+  groupName?: string;
+}
+
+const {
+  id = "faq",
+  eyebrow = "FAQ",
+  title = "Dúvidas frequentes",
+  description = "Respostas diretas sobre domínio, hospedagem, suporte e desenvolvimento.",
+  items = homeFaq,
+  groupName = "home-faq",
+} = Astro.props;
 ---
 
-<section id="faq" class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-20 sm:py-28">
+<section id={id} class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-20 sm:py-28">
   <div class="mx-auto max-w-3xl">
     <div class="text-center" data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">FAQ</p>
-      <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Dúvidas frequentes</h2>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{eyebrow}</p>
+      <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{title}</h2>
       <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-        Respostas diretas sobre domínio, hospedagem, suporte e desenvolvimento.
+        {description}
       </p>
     </div>
 
     <div class="mt-12 divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/[0.02]" data-animate>
       {
-        homeFaq.map((item) => (
-          <details name="home-faq" class="group px-6 py-5 first:rounded-t-2xl last:rounded-b-2xl open:bg-white/[0.02]">
+        items.map((item) => (
+          <details name={groupName} class="group px-6 py-5 first:rounded-t-2xl last:rounded-b-2xl open:bg-white/[0.02]">
             <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-white marker:content-none group-open:text-[var(--accent)] sm:text-base">
               {item.question}
               <Icon

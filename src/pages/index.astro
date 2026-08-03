@@ -16,6 +16,7 @@ import FAQSection from "../components/vitrine/FAQSection.astro";
 import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
 import AstroAssistant from "../components/vitrine/AstroAssistant.astro";
 import SEOHead from "../components/seo/SEOHead.astro";
+import Analytics from "../components/analytics/Analytics.astro";
 import Icon from "../components/ui/Icon.astro";
 import { showcaseRegistry } from "../config/showcases";
 import { buildWhatsappLink, homeStructuredData } from "../config/company";
@@ -86,6 +87,7 @@ const ctaButtonStyle =
       themeColor="#070b16"
       structuredData={homeStructuredData}
     />
+    <Analytics />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
     <LaunchIntroLoader />
@@ -400,6 +402,7 @@ const ctaButtonStyle =
                   href={whatsappGeneral}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-ga-origin="cta-final"
                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
                 >
                   <Icon name="whatsapp" class="h-4 w-4" />

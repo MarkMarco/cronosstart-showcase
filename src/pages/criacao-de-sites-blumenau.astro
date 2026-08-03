@@ -1,0 +1,409 @@
+---
+import "../styles/global.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/space-grotesk";
+import SiteHeader from "../components/vitrine/SiteHeader.astro";
+import SiteFooter from "../components/vitrine/SiteFooter.astro";
+import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
+import AstroAssistant from "../components/vitrine/AstroAssistant.astro";
+import FAQSection from "../components/vitrine/FAQSection.astro";
+import ShowcaseCard from "../components/vitrine/ShowcaseCard.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
+import Analytics from "../components/analytics/Analytics.astro";
+import Icon from "../components/ui/Icon.astro";
+import { showcaseRegistry } from "../config/showcases";
+import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
+
+const title = "Criação de Sites em Blumenau | CronosStart";
+const description =
+  "Criação de sites profissionais em Blumenau para pequenas empresas, com domínio, hospedagem, WhatsApp, personalização e suporte técnico.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const whatsappBlumenau = buildWhatsappLink(
+  "Olá! Vi a página de criação de sites em Blumenau da CronosStart e gostaria de saber mais sobre um site para minha empresa."
+);
+
+const audiences = [
+  {
+    icon: "briefcase" as const,
+    title: "Pequenas empresas e autônomos",
+    description: "Consultórios, escritórios, prestadores de serviço e profissionais que ainda não têm um site próprio.",
+  },
+  {
+    icon: "layers" as const,
+    title: "Comércio e varejo local",
+    description: "Lojas e negócios que já atendem pelo WhatsApp ou redes sociais e querem uma presença mais profissional.",
+  },
+  {
+    icon: "trending-up" as const,
+    title: "Empresas em expansão",
+    description: "Negócios que estão crescendo e precisam de um site à altura da confiança que já conquistaram.",
+  },
+  {
+    icon: "users" as const,
+    title: "Empresas de todo o Brasil e LATAM",
+    description: "Atendimento remoto para empresas fora de Blumenau, com o mesmo processo e acompanhamento.",
+  },
+];
+
+const siteTypes = [
+  {
+    icon: "sparkle" as const,
+    title: "Sites institucionais",
+    description: "Apresentam sua empresa, seus serviços e facilitam o contato com quem já busca por você.",
+  },
+  {
+    icon: "arrow-right" as const,
+    title: "Landing pages",
+    description: "Página única e objetiva, focada em um serviço, produto ou campanha específica.",
+  },
+  {
+    icon: "file-check" as const,
+    title: "Catálogos digitais",
+    description: "Produtos, imóveis ou cardápios organizados e fáceis de navegar, com atualização quando necessário.",
+  },
+  {
+    icon: "settings" as const,
+    title: "Sites com painel administrativo",
+    description: "Para quem precisa atualizar conteúdo, catálogo ou agenda sem depender de terceiros a cada mudança.",
+  },
+];
+
+const included = [
+  { icon: "key" as const, label: "Domínio registrado em nome do cliente" },
+  { icon: "layers" as const, label: "Hospedagem configurada" },
+  { icon: "shield-check" as const, label: "Certificado SSL" },
+  { icon: "whatsapp" as const, label: "Integração com WhatsApp" },
+  { icon: "arrow-right" as const, label: "Publicação do site" },
+  { icon: "message-circle" as const, label: "Suporte após o lançamento" },
+  { icon: "sliders" as const, label: "Personalização conforme a identidade da empresa" },
+];
+
+const steps = [
+  { title: "Conversa inicial", description: "Entendemos seu negócio, seu público e o que você precisa apresentar no site." },
+  { title: "Estrutura e proposta", description: "Definimos o tipo de site mais adequado e o escopo do projeto." },
+  { title: "Desenvolvimento e personalização", description: "Construímos o site com sua identidade — cores, textos e imagens." },
+  { title: "Publicação e suporte", description: "Colocamos o site no ar, com domínio e hospedagem configurados, e seguimos disponíveis para suporte." },
+];
+
+const faqItems = [
+  {
+    question: "Vocês atendem presencialmente em Blumenau?",
+    answer:
+      "O atendimento é majoritariamente remoto, o que permite agilidade e flexibilidade para empresas de Blumenau, região e também de outras cidades. Quando aplicável, o contato local pode ser combinado diretamente.",
+  },
+  {
+    question: "O domínio do site fica no nome da minha empresa?",
+    answer:
+      "Sim. Sempre que possível, o domínio é registrado em nome do cliente ou da empresa, e a CronosStart realiza a configuração e a gestão técnica.",
+  },
+  {
+    question: "Preciso ter conteúdo pronto (textos e fotos) para começar?",
+    answer:
+      "Não é obrigatório. Ajudamos a organizar o que sua empresa já tem e orientamos sobre o que é útil incluir no site.",
+  },
+  {
+    question: "Quanto tempo leva para o site de uma empresa de Blumenau ficar pronto?",
+    answer:
+      "O prazo depende do tamanho e das funcionalidades do projeto. Sites institucionais costumam ter prazo menor do que projetos com catálogo ou painel administrativo.",
+  },
+  {
+    question: "É possível ver modelos antes de fechar o projeto?",
+    answer:
+      "Sim. O portfólio de modelos demonstrativos mostra propostas visuais completas para diferentes segmentos, que servem como ponto de partida e podem ser totalmente personalizadas.",
+  },
+  {
+    question: "O site inclui suporte depois de publicado?",
+    answer:
+      "Sim. O tipo de suporte e a quantidade de alterações incluídas dependem do plano contratado.",
+  },
+];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    ...homeStructuredData["@graph"],
+    {
+      "@type": "Service",
+      "@id": `${canonicalURL}#service`,
+      name: "Criação de sites profissionais em Blumenau",
+      serviceType: "Criação de sites",
+      provider: { "@id": ORGANIZATION_ID },
+      areaServed: [
+        { "@type": "City", name: "Blumenau" },
+        { "@type": "State", name: "Santa Catarina" },
+      ],
+      description,
+      url: canonicalURL.toString(),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "CronosStart", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Criação de Sites em Blumenau", item: canonicalURL.toString() },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<html
+  lang="pt-BR"
+  style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
+>
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      robots="index, follow"
+      ogImage="/images/og/home.png"
+      ogImageAlt="CronosStart — Criação de sites profissionais em Blumenau"
+      siteName="CronosStart"
+      themeColor="#070b16"
+      structuredData={structuredData}
+    />
+    <Analytics />
+  </head>
+  <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <SiteHeader />
+
+    <main>
+      <!-- Hero -->
+      <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div
+          class="pointer-events-none absolute -left-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
+          style="background: var(--primary);"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative mx-auto max-w-4xl text-center">
+          <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+            <Icon name="map-pin" class="h-4 w-4" />
+            Blumenau e região
+          </p>
+          <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
+            Criação de sites profissionais em Blumenau
+          </h1>
+          <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
+            Sites institucionais, landing pages, catálogos e sites com painel administrativo para pequenas empresas
+            de Blumenau e região — com domínio, hospedagem, integração com WhatsApp e suporte técnico.
+          </p>
+
+          <div class="mt-9 flex flex-wrap justify-center gap-4">
+            <button
+              type="button"
+              data-open-contact-form
+              data-contact-origin="blumenau-hero"
+              class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
+            >
+              Solicitar orçamento
+            </button>
+            <a
+              href={whatsappBlumenau}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-ga-origin="blumenau-hero"
+              class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+            >
+              <Icon name="whatsapp" class="h-4 w-4" />
+              Falar no WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Para quais empresas -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-6xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Para quem é indicado</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Empresas que atendemos em Blumenau e além</h2>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {
+              audiences.map((item) => (
+                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
+                    style="background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, var(--border));"
+                  >
+                    <Icon name={item.icon} class="h-5 w-5" />
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-white">{item.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Tipos de sites -->
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-6xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Tipos de projeto</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Tipos de sites que desenvolvemos</h2>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {
+              siteTypes.map((item) => (
+                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
+                    style="background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, var(--border));"
+                  >
+                    <Icon name={item.icon} class="h-5 w-5" />
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-white">{item.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- O que está incluído -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-4xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que está incluído</h2>
+          </div>
+          <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
+            {
+              included.map((item) => (
+                <li class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white/80">
+                  <Icon name={item.icon} class="h-4 w-4 shrink-0 text-[var(--accent)]" />
+                  {item.label}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- Modelos demonstrativos relacionados -->
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-[92rem]">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Portfólio de modelos</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Modelos demonstrativos por segmento</h2>
+            <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
+              Cada demonstração é uma proposta visual completa, que pode ser personalizada para sua empresa.
+            </p>
+          </div>
+          <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {showcaseRegistry.map((item, index) => <ShowcaseCard item={item} index={index} />)}
+          </div>
+        </div>
+      </section>
+
+      <!-- Como funciona -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-5xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Do primeiro contato ao site no ar</h2>
+          </div>
+          <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {
+              steps.map((step, index) => (
+                <li class="rounded-2xl border border-white/10 p-6" style="background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);">
+                  <span class="text-3xl font-bold text-white/10">0{index + 1}</span>
+                  <h3 class="mt-2 text-base font-semibold text-white">{step.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{step.description}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <!-- FAQ específico -->
+      <FAQSection
+        id="faq-blumenau"
+        eyebrow="Dúvidas"
+        title="Perguntas frequentes sobre sites em Blumenau"
+        description="Respostas diretas para quem está avaliando criar um site em Blumenau e região."
+        items={faqItems}
+        groupName="blumenau-faq"
+      />
+
+      <!-- CTA final -->
+      <section class="relative overflow-hidden px-6 py-16 sm:py-24">
+        <div class="relative mx-auto max-w-4xl">
+          <div
+            class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center sm:px-16 sm:py-20"
+            style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
+          >
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Sua empresa em Blumenau pronta para estar no digital
+            </h2>
+            <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
+              Conte sua ideia e ajudamos a definir a melhor estrutura para o site da sua empresa.
+            </p>
+            <div class="mt-9 flex flex-wrap justify-center gap-4">
+              <button
+                type="button"
+                data-open-contact-form
+                data-contact-origin="blumenau-cta-final"
+                class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
+              >
+                Solicitar orçamento
+              </button>
+              <a
+                href={whatsappBlumenau}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-ga-origin="blumenau-cta-final"
+                class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+              >
+                <Icon name="whatsapp" class="h-4 w-4" />
+                Falar no WhatsApp
+              </a>
+            </div>
+
+            <p class="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-white/40">
+              Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
+              os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a> e
+              <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <SiteFooter />
+    <ContactFormModal />
+    <AstroAssistant />
+
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

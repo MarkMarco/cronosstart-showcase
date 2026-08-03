@@ -1,0 +1,50 @@
+---
+// Integração central com o Google Analytics 4. Só carrega o script do GA quando a
+// variável de ambiente PUBLIC_GA_MEASUREMENT_ID está configurada — sem ID fictício
+// no código e sem erro/bloqueio quando a variável está ausente.
+//
+// Incluir uma única vez por layout/página (index.astro, ShowcaseLayout.astro,
+// LegalLayout.astro e a página /criacao-de-sites-blumenau já incluem).
+const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+---
+
+{
+  measurementId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} />
+      <script define:vars={{ measurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          window.dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag("js", new Date());
+        gtag("config", measurementId);
+      </script>
+    </>
+  )
+}
+
+<script>
+  import { trackEvent } from "../../utils/analytics";
+
+  // Captura todo clique em link do WhatsApp (wa.me), em qualquer página onde este
+  // componente esteja presente — inclusive links injetados dinamicamente (ex.: o
+  // fallback de erro do formulário de contato), já que a delegação verifica o alvo
+  // no momento do clique, não no carregamento da página.
+  document.addEventListener("click", (event) => {
+    const target = (event.target as HTMLElement)?.closest<HTMLAnchorElement>('a[href*="wa.me"]');
+    if (!target) return;
+
+    const origin = target.getAttribute("data-ga-origin") || target.getAttribute("data-contact-origin") || "unknown";
+    const plan = target.getAttribute("data-ga-plan") || target.getAttribute("data-contact-plan") || undefined;
+    const context = target.getAttribute("aria-label") || target.textContent?.trim().slice(0, 80) || undefined;
+
+    trackEvent("whatsapp_click", {
+      origem: origin,
+      plano: plan,
+      pagina: window.location.pathname,
+      contexto: context,
+    });
+  });
+</script>

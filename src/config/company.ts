@@ -21,7 +21,9 @@ export function buildWhatsappLink(message: string): string {
   return `https://wa.me/${company.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
-const SITE_URL = "https://cronosstart.com.br/";
+export const SITE_URL = "https://cronosstart.com.br/";
+/** @id estável da entidade CronosStart — reutilizar ao referenciar a Organization em outras páginas. */
+export const ORGANIZATION_ID = `${SITE_URL}#organization`;
 
 /**
  * Dados estruturados (schema.org) da homepage, como um único @graph com IDs estáveis.
