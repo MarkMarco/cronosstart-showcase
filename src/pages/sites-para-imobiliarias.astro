@@ -1,0 +1,474 @@
+---
+import "../styles/global.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/space-grotesk";
+import SiteHeader from "../components/vitrine/SiteHeader.astro";
+import SiteFooter from "../components/vitrine/SiteFooter.astro";
+import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
+import AstroAssistant from "../components/vitrine/AstroAssistant.astro";
+import FAQSection from "../components/vitrine/FAQSection.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
+import Analytics from "../components/analytics/Analytics.astro";
+import Icon from "../components/ui/Icon.astro";
+import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
+
+const title = "Sites para Imobiliárias e Corretores | CronosStart";
+const description =
+  "Criamos sites para imobiliárias e corretores com catálogo de imóveis, filtros, integração com WhatsApp, painel administrativo e estrutura personalizada.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const whatsappImoveis = buildWhatsappLink(
+  "Olá! Vi a página de sites para imobiliárias da CronosStart e gostaria de saber mais sobre um site para a minha imobiliária."
+);
+
+const problems = [
+  { icon: "refresh" as const, title: "Imóveis desatualizados", description: "Anúncios vendidos ou alugados que continuam aparecendo, gerando contato por algo que não existe mais." },
+  { icon: "layers" as const, title: "Dificuldade para apresentar o catálogo", description: "Sem uma estrutura própria, fica difícil organizar imóveis por tipo, região ou faixa de valor." },
+  { icon: "compare" as const, title: "Dependência exclusiva de portais", description: "Portais ajudam na divulgação, mas não substituem uma vitrine própria que a imobiliária controla." },
+  { icon: "message-circle" as const, title: "Contatos espalhados", description: "Interessados entram em contato por canais diferentes, sem um fluxo único até o WhatsApp ou o formulário." },
+  { icon: "sparkle" as const, title: "Ausência de identidade própria", description: "Perfis genéricos em portais não transmitem a identidade e a credibilidade da imobiliária." },
+  { icon: "maximize" as const, title: "Site antigo ou ruim no celular", description: "A maior parte de quem busca imóvel navega pelo celular — um site que não se adapta bem afasta interessados." },
+  { icon: "settings" as const, title: "Depender do desenvolvedor a cada mudança", description: "Atualizar preço, disponibilidade ou fotos não deveria exigir abrir um chamado toda vez." },
+];
+
+const catalogFeatures = [
+  { icon: "file-check" as const, title: "Catálogo de imóveis", description: "Todos os imóveis organizados em um só lugar, com fotos, valores e informações." },
+  { icon: "home" as const, title: "Página individual de cada imóvel", description: "Cada imóvel com sua própria página, com fotos, descrição, localização e formulário de interesse." },
+  { icon: "search" as const, title: "Filtros de busca", description: "Filtros por tipo, região e valor para o visitante encontrar rapidamente o que procura." },
+  { icon: "star" as const, title: "Imóveis em destaque", description: "Destaque para os imóveis prioritários da imobiliária na página inicial." },
+  { icon: "key" as const, title: "Venda e locação", description: "Estrutura preparada para imóveis à venda e para locação, com identificação clara de cada operação." },
+  { icon: "map-pin" as const, title: "Localização e mapas", description: "Localização de cada imóvel apresentada de forma clara, quando fizer sentido para o projeto." },
+];
+
+const panelFeatures = [
+  { icon: "settings" as const, label: "Atualização de preço e disponibilidade" },
+  { icon: "camera" as const, label: "Atualização de fotos" },
+  { icon: "layers" as const, label: "Atualização de informações e descrições" },
+  { icon: "users" as const, label: "Cadastro e gestão de corretores" },
+];
+
+const included = [
+  { icon: "key" as const, label: "Domínio" },
+  { icon: "layers" as const, label: "Hospedagem" },
+  { icon: "shield-check" as const, label: "Certificado SSL e suporte" },
+  { icon: "maximize" as const, label: "Versão adaptada para celular" },
+  { icon: "sliders" as const, label: "Personalização conforme a identidade da imobiliária" },
+];
+
+const steps = [
+  { title: "Entendemos o negócio", description: "Conversamos sobre o portfólio de imóveis, a região de atuação e como a imobiliária trabalha hoje." },
+  { title: "Definimos catálogo e painel", description: "Estruturamos o catálogo, os filtros e o escopo do painel administrativo conforme a necessidade." },
+  { title: "Desenvolvemos e personalizamos", description: "Construímos o site com a identidade da imobiliária — cores, textos, fotos e funcionalidades." },
+  { title: "Publicamos e treinamos a equipe", description: "Colocamos o site no ar, orientamos o uso do painel e seguimos disponíveis para suporte." },
+];
+
+const faqItems = [
+  {
+    question: "Por que uma imobiliária precisa de um site próprio, além dos portais?",
+    answer:
+      "Os portais ajudam na divulgação, mas o site próprio é um espaço que a imobiliária controla, com identidade própria, catálogo organizado e um caminho direto até o WhatsApp — sem depender de um perfil genérico.",
+  },
+  {
+    question: "É possível ter catálogo com filtros por tipo, região e valor?",
+    answer:
+      "Sim. O catálogo pode incluir filtros de busca para o visitante encontrar rapidamente o imóvel que procura, conforme o escopo definido para o projeto.",
+  },
+  {
+    question: "Como atualizamos os imóveis depois que o site estiver no ar?",
+    answer:
+      "Projetos com painel administrativo permitem que a própria imobiliária atualize preço, disponibilidade, fotos e informações dos imóveis, sem depender do desenvolvedor a cada mudança.",
+  },
+  {
+    question: "O modelo Vértice Imóveis é uma imobiliária real?",
+    answer:
+      "Não. A Vértice Imóveis é um modelo demonstrativo, criado pela CronosStart para apresentar visualmente como um site para imobiliárias pode funcionar. Não representa uma empresa real.",
+  },
+  {
+    question: "É possível integrar o site com portais ou sistemas externos?",
+    answer:
+      "Integrações externas são possíveis, mas precisam ser analisadas caso a caso conforme o sistema envolvido e o escopo do projeto.",
+  },
+  {
+    question: "O site funciona bem no celular?",
+    answer: "Sim. Todos os sites são responsivos, se adaptando para funcionar bem em celular, tablet e computador.",
+  },
+];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    ...homeStructuredData["@graph"],
+    {
+      "@type": "Service",
+      "@id": `${canonicalURL}#service`,
+      name: "Sites para imobiliárias e corretores",
+      serviceType: "Criação de sites para imobiliárias",
+      provider: { "@id": ORGANIZATION_ID },
+      areaServed: [
+        { "@type": "Country", name: "Brasil" },
+        { "@type": "Place", name: "América Latina" },
+      ],
+      description,
+      url: canonicalURL.toString(),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "CronosStart", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Sites para Imobiliárias e Corretores", item: canonicalURL.toString() },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ],
+};
+---
+
+<html
+  lang="pt-BR"
+  style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
+>
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      robots="index, follow"
+      ogImage="/images/og/imobiliaria.png"
+      ogImageAlt="CronosStart — Sites para imobiliárias e corretores"
+      siteName="CronosStart"
+      themeColor="#070b16"
+      structuredData={structuredData}
+    />
+    <Analytics />
+  </head>
+  <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <SiteHeader />
+
+    <main>
+      <!-- Hero -->
+      <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div
+          class="pointer-events-none absolute -right-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
+          style="background: var(--primary);"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative mx-auto max-w-4xl text-center">
+          <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+            <Icon name="home" class="h-4 w-4" />
+            Para imobiliárias e corretores
+          </p>
+          <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
+            Sites profissionais para imobiliárias e corretores
+          </h1>
+          <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
+            Catálogo de imóveis, filtros de busca, integração com WhatsApp e painel administrativo para imobiliárias
+            e corretores que precisam apresentar imóveis e gerar contatos com uma estrutura própria.
+          </p>
+
+          <div class="mt-9 flex flex-wrap justify-center gap-4">
+            <button
+              type="button"
+              data-open-contact-form
+              data-contact-origin="pagina-imobiliarias"
+              data-contact-segment="imobiliaria"
+              class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
+            >
+              Solicitar proposta
+            </button>
+            <a
+              href={whatsappImoveis}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-ga-origin="pagina-imobiliarias"
+              class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+            >
+              <Icon name="whatsapp" class="h-4 w-4" />
+              Falar no WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problemas comuns do setor -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-6xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Situações comuns</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Problemas comuns do setor imobiliário</h2>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              problems.map((item) => (
+                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
+                    style="background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, var(--border));"
+                  >
+                    <Icon name={item.icon} class="h-5 w-5" />
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-white">{item.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Catálogo e páginas de imóveis -->
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-6xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Catálogo</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Catálogo e páginas de imóveis</h2>
+          </div>
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              catalogFeatures.map((item) => (
+                <div class="rounded-2xl border border-white/10 p-6" style="background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl border text-[var(--accent)]"
+                    style="background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: color-mix(in srgb, var(--accent) 30%, var(--border));"
+                  >
+                    <Icon name={item.icon} class="h-5 w-5" />
+                  </span>
+                  <h3 class="mt-4 text-base font-semibold text-white">{item.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel administrativo -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-4xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Autonomia</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Painel administrativo</h2>
+            <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
+              Atualize os imóveis do seu site sem depender do desenvolvedor a cada mudança.
+            </p>
+          </div>
+          <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
+            {
+              panelFeatures.map((item) => (
+                <li class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white/80">
+                  <Icon name={item.icon} class="h-4 w-4 shrink-0 text-[var(--accent)]" />
+                  {item.label}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mx-auto mt-6 max-w-xl text-center text-sm leading-relaxed text-white/40">
+            As telas e permissões do painel são definidas conforme o escopo de cada projeto — veja também a página de{" "}
+            <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- WhatsApp e formulários -->
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Contato</p>
+          <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Integração com WhatsApp e formulário de interesse</h2>
+          <p class="mt-5 text-base leading-relaxed text-[var(--ink-muted)]">
+            Quem visita a página de um imóvel e se interessa deve conseguir falar com a imobiliária em poucos
+            cliques. Por isso, cada imóvel pode ter um caminho direto até o WhatsApp e um formulário de interesse,
+            evitando que o contato se perca entre canais diferentes.
+          </p>
+        </div>
+      </section>
+
+      <!-- O que está incluído -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-4xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que está incluído</h2>
+          </div>
+          <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
+            {
+              included.map((item) => (
+                <li class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white/80">
+                  <Icon name={item.icon} class="h-4 w-4 shrink-0 text-[var(--accent)]" />
+                  {item.label}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- Demonstração Vértice Imóveis -->
+      <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-4xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Demonstração</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Vértice Imóveis — modelo demonstrativo</h2>
+          </div>
+          <div class="mt-10 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.02]">
+            <div class="grid gap-0 sm:grid-cols-2">
+              <div class="relative aspect-[8/5] overflow-hidden border-b border-white/10 sm:border-b-0 sm:border-r">
+                <picture>
+                  <source srcset="/images/showcases/imobiliaria/screenshot.webp" type="image/webp" />
+                  <img
+                    src="/images/showcases/imobiliaria/screenshot.jpg"
+                    alt="Captura de tela do modelo demonstrativo Vértice Imóveis, com catálogo de imóveis"
+                    width="960"
+                    height="600"
+                    loading="lazy"
+                    decoding="async"
+                    class="block h-full w-full object-cover"
+                  />
+                </picture>
+              </div>
+              <div class="flex flex-col justify-center p-7 sm:p-9">
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">Imobiliária</p>
+                <h3 class="mt-2 text-xl font-semibold text-white">Vértice Imóveis</h3>
+                <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
+                  Modelo demonstrativo com catálogo de imóveis, busca por tipo e região, ficha de corretores e
+                  formulário de interesse. A Vértice Imóveis é um projeto fictício, usado apenas para apresentar
+                  visualmente as possibilidades de um site imobiliário — não representa uma empresa real.
+                </p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                  <a
+                    href="/modelos/imobiliaria"
+                    class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0a0e1a] transition-all hover:-translate-y-0.5"
+                  >
+                    Ver demonstração para imobiliária
+                    <Icon name="arrow-right" class="h-3.5 w-3.5" />
+                  </a>
+                  <button
+                    type="button"
+                    data-open-contact-form
+                    data-contact-model="Vértice Imóveis"
+                    data-contact-origin="sites-imobiliarias-demo"
+                    class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  >
+                    Quero um site como este
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Como funciona -->
+      <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+        <div class="mx-auto max-w-5xl">
+          <div class="mx-auto max-w-2xl text-center">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Do primeiro contato ao site no ar</h2>
+          </div>
+          <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {
+              steps.map((step, index) => (
+                <li class="rounded-2xl border border-white/10 p-6" style="background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);">
+                  <span class="text-3xl font-bold text-white/10">0{index + 1}</span>
+                  <h3 class="mt-2 text-base font-semibold text-white">{step.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{step.description}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <FAQSection
+        id="faq-imobiliarias"
+        eyebrow="Dúvidas"
+        title="Perguntas frequentes de imobiliárias e corretores"
+        description="Respostas diretas para quem está avaliando um site para o setor imobiliário."
+        items={faqItems}
+        groupName="imobiliarias-faq"
+      />
+
+      <!-- CTA final -->
+      <section class="relative overflow-hidden px-6 py-16 sm:py-24">
+        <div class="relative mx-auto max-w-4xl">
+          <div
+            class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center sm:px-16 sm:py-20"
+            style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
+          >
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Sua imobiliária com uma vitrine própria
+            </h2>
+            <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
+              Conte como sua imobiliária trabalha hoje e ajudamos a definir o catálogo e o painel ideais.
+            </p>
+            <div class="mt-9 flex flex-wrap justify-center gap-4">
+              <button
+                type="button"
+                data-open-contact-form
+                data-contact-origin="pagina-imobiliarias"
+                data-contact-segment="imobiliaria"
+                class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
+              >
+                Solicitar proposta
+              </button>
+              <a
+                href={whatsappImoveis}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-ga-origin="pagina-imobiliarias"
+                class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
+              >
+                <Icon name="whatsapp" class="h-4 w-4" />
+                Falar no WhatsApp
+              </a>
+            </div>
+
+            <p class="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-white/40">
+              As funcionalidades apresentadas dependem do escopo de cada projeto e integrações externas precisam ser
+              analisadas caso a caso. Não há promessa de resultado ou posicionamento em buscadores. A Vértice Imóveis
+              é um modelo demonstrativo e não representa uma empresa real.
+            </p>
+
+            <p class="mx-auto mt-6 max-w-lg text-xs leading-relaxed text-white/40">
+              Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
+              os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a>,
+              <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a> e as páginas de
+              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">painel administrativo</a>,
+              <a href="/sites-para-pequenas-empresas" class="underline underline-offset-2 hover:text-white">pequenas empresas</a> e
+              <a href="/criacao-de-sites-blumenau" class="underline underline-offset-2 hover:text-white">criação de sites em Blumenau</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <SiteFooter />
+    <ContactFormModal />
+    <AstroAssistant />
+
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.15 }
+      );
+      document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

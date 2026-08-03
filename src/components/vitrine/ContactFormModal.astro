@@ -436,6 +436,9 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     const model = trigger.getAttribute("data-contact-model");
     const plan = trigger.getAttribute("data-contact-plan");
     const origin = trigger.getAttribute("data-contact-origin") || "unknown";
+    // Dica opcional de segmento para páginas comerciais de nicho (ex.: data-contact-segment="imobiliaria")
+    // — só usada quando não há um modelo (que já tem segmento mapeado via MODEL_SEGMENT).
+    const segmentHint = trigger.getAttribute("data-contact-segment");
 
     originField.value = origin;
     planField.value = plan || "";
@@ -466,7 +469,12 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
     whatsappFloatingButton?.classList.add("opacity-0", "pointer-events-none");
 
     const page = window.location.pathname;
-    trackEvent("contact_form_open", { origem: origin, plano: plan || undefined, pagina: page });
+    trackEvent("contact_form_open", {
+      origem: origin,
+      plano: plan || undefined,
+      segmento: (model ? MODEL_SEGMENT[model] : segmentHint) || undefined,
+      pagina: page,
+    });
     if (plan) trackEvent("proposal_click", { origem: origin, plano: plan, pagina: page });
     if (model) {
       trackEvent("model_interest_click", { modelo: model, segmento: MODEL_SEGMENT[model] || undefined, pagina: page });
