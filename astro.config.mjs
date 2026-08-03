@@ -35,7 +35,8 @@ export default defineConfig({
           path === '/criacao-de-sites-blumenau/' ||
           path === '/sites-para-pequenas-empresas/' ||
           path === '/sites-com-painel-administrativo/' ||
-          path === '/sites-para-imobiliarias/'
+          path === '/sites-para-imobiliarias/' ||
+          path === '/sites-para-restaurantes/'
         );
       },
     }),
