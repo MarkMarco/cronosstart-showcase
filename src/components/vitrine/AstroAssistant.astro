@@ -128,8 +128,8 @@ const whatsappHref = buildWhatsappLink(
   }
 
   .astro-trigger {
-    height: 4.75rem;
-    width: 4.75rem;
+    height: 4.25rem;
+    width: 4.25rem;
     border: 1px solid rgba(56, 189, 248, 0.35);
     background: linear-gradient(160deg, rgba(19, 27, 46, 0.94) 0%, rgba(8, 12, 21, 0.96) 100%);
     box-shadow:
@@ -153,8 +153,8 @@ const whatsappHref = buildWhatsappLink(
      animada, e um <source> concorrente sempre venceria essa troca. */
   .astro-avatar {
     display: block;
-    height: 4.1rem;
-    width: 4.1rem;
+    height: 3.75rem;
+    width: 3.75rem;
     border-radius: 50%;
     object-fit: cover;
     object-position: center 32%;
@@ -193,12 +193,12 @@ const whatsappHref = buildWhatsappLink(
 
   @media (max-width: 640px) {
     .astro-trigger {
-      height: 4rem;
-      width: 4rem;
+      height: 3.5rem;
+      width: 3.5rem;
     }
     .astro-avatar {
-      height: 3.4rem;
-      width: 3.4rem;
+      height: 3rem;
+      width: 3rem;
     }
     .astro-greeting,
     .astro-panel {
@@ -246,6 +246,14 @@ const whatsappHref = buildWhatsappLink(
     animatedAvatar.alt = "";
     animatedAvatar.loading = "eager";
     animatedAvatar.decoding = "async";
+    // Copia o atributo de escopo do Astro (data-astro-cid-*) do <img> original —
+    // sem ele, o CSS ".astro-avatar" não bate no elemento criado via JS e o
+    // avatar cai no tamanho padrão do navegador em vez do círculo definido.
+    for (const attr of Array.from(avatar.attributes)) {
+      if (attr.name.startsWith("data-astro-cid")) {
+        animatedAvatar.setAttribute(attr.name, attr.value);
+      }
+    }
     animatedAvatar.src = "/images/astro/astro-idle-head-animated.webp";
     avatar.replaceWith(animatedAvatar);
   }
