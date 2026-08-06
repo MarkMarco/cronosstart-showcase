@@ -5,7 +5,7 @@ import "@fontsource-variable/space-grotesk";
 import CronosStartLogo from "../components/brand/CronosStartLogo.astro";
 import HeroTechBackground from "../components/vitrine/HeroTechBackground.astro";
 import LaunchIntroLoader from "../components/vitrine/LaunchIntroLoader.astro";
-import ShowcaseCard from "../components/vitrine/ShowcaseCard.astro";
+import ModelShowcaseCarousel from "../components/vitrine/ModelShowcaseCarousel.astro";
 import HeroPreviewCard from "../components/vitrine/HeroPreviewCard.astro";
 import SiteHeader from "../components/vitrine/SiteHeader.astro";
 import SiteFooter from "../components/vitrine/SiteFooter.astro";
@@ -246,13 +246,9 @@ const ctaButtonStyle =
         </div>
       </section>
 
-      <!-- Grade dos modelos -->
+      <!-- Carrossel dos modelos -->
       <section class="bg-[var(--surface-alt)] px-6 pb-20 pt-6 sm:pb-28">
-        <div class="mx-auto max-w-[92rem]">
-          <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {showcaseRegistry.map((item, index) => <ShowcaseCard item={item} index={index} />)}
-          </div>
-        </div>
+        <ModelShowcaseCarousel items={showcaseRegistry} />
       </section>
 
       <!-- Serviço gerenciado -->

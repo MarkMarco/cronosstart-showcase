@@ -44,9 +44,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <Analytics />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
-    <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref={config.primaryCtaHref ?? "#contato"}>
-      <slot name="header-logo" slot="logo" />
-    </ShowcaseHeader>
+    {
+      Astro.slots.has("header-override") ? (
+        <slot name="header-override" />
+      ) : (
+        <ShowcaseHeader nav={config.nav} ctaLabel={config.hero.ctaPrimaryLabel} ctaHref={config.primaryCtaHref ?? "#contato"}>
+          <slot name="header-logo" slot="logo" />
+        </ShowcaseHeader>
+      )
+    }
 
     <DemoNotice />
 
@@ -54,11 +60,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
 
-    <ShowcaseFooter company={config.company} nav={config.nav} contact={config.contact}>
-      <slot name="footer-logo" slot="logo" />
-    </ShowcaseFooter>
+    {
+      Astro.slots.has("footer-override") ? (
+        <slot name="footer-override" />
+      ) : (
+        <ShowcaseFooter
+          company={config.company}
+          nav={config.nav}
+          contact={config.contact}
+          extraColumn={config.footerExtra}
+          showHours={config.footerShowHours}
+        >
+          <slot name="footer-logo" slot="logo" />
+        </ShowcaseFooter>
+      )
+    }
 
-    <WhatsAppButton contact={config.contact} />
+    <WhatsAppButton contact={config.contact} variant={config.whatsappButtonVariant} />
 
     <script define:vars={{ modelName: config.company.name, segment: config.company.segment }}>
       window.__cronosDemoView = { modelName, segment };

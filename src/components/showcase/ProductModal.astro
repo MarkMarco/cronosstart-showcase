@@ -1,0 +1,503 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
+
+interface Props {
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  collections: CatalogCollection[];
+  ambientes: CatalogAmbiente[];
+  whatsappNumber: string;
+}
+const { products, categories, collections, ambientes, whatsappNumber } = Astro.props;
+
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+const collectionBySlug = new Map(collections.map((c) => [c.slug, c]));
+const ambienteBySlug = new Map(ambientes.map((a) => [a.slug, a]));
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+function installmentOf(value: number) {
+  return (value / 10).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+const productData = products.map((p) => ({
+  slug: p.slug,
+  sku: p.sku,
+  name: p.name,
+  description: p.description,
+  categoryName: categoryBySlug.get(p.category)?.name ?? p.category,
+  categorySlug: p.category,
+  collectionName: p.collection ? (collectionBySlug.get(p.collection)?.name ?? p.collection) : null,
+  ambienteName: p.ambiente ? (ambienteBySlug.get(p.ambiente)?.name ?? p.ambiente) : null,
+  ambienteSlug: p.ambiente ?? null,
+  price: formatBRL(p.price),
+  installment: installmentOf(p.price),
+  previousPrice: p.previousPrice ? formatBRL(p.previousPrice) : null,
+  materials: p.materials,
+  dimensions: p.dimensions,
+  colors: p.colors,
+  available: p.available,
+  featured: p.featured,
+  tone: p.tone,
+  icon: p.icon,
+  image: p.image ?? "",
+  ambienteImage: p.ambiente ? (ambienteBySlug.get(p.ambiente)?.image ?? "") : "",
+  collectionImage: p.collection ? (collectionBySlug.get(p.collection)?.image ?? "") : "",
+  related: products
+    .filter((other) => other.slug !== p.slug && other.category === p.category)
+    .slice(0, 3)
+    .map((r) => ({ slug: r.slug, name: r.name, price: formatBRL(r.price), image: r.image ?? "" })),
+}));
+---
+
+<div id="product-modal" class="fixed inset-0 z-[100] hidden">
+  <div data-product-modal-backdrop class="absolute inset-0 bg-[var(--ink)]/60 opacity-0 backdrop-blur-sm transition-opacity duration-300" aria-hidden="true"></div>
+
+  <div class="relative flex h-full items-end justify-center sm:items-center sm:p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+      data-product-modal-panel
+      class="pm-panel relative flex max-h-[calc(100dvh-24px)] w-full translate-y-6 flex-col overflow-hidden rounded-t-[1.5rem] border-t border-[var(--border)] bg-[var(--surface)] opacity-0 shadow-[0_50px_120px_-40px_rgba(43,38,33,0.5)] transition-all duration-300 sm:w-[min(880px,calc(100vw-32px))] sm:translate-y-2 sm:rounded-[1.5rem] sm:border"
+    >
+      <button
+        type="button"
+        data-product-modal-close
+        aria-label="Fechar detalhes do produto"
+        class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
+      >
+        <Icon name="close" class="h-4 w-4" />
+      </button>
+
+      <div class="overflow-y-auto p-6 sm:p-8" data-product-modal-scroll>
+        <div class="grid gap-7 sm:grid-cols-[1.1fr_1fr]">
+          <div>
+            <button
+              type="button"
+              data-product-modal-zoom-toggle
+              class="block w-full cursor-zoom-in overflow-hidden rounded-[var(--radius-card)]"
+              aria-label="Ampliar imagem do produto"
+            >
+              <img data-product-modal-image src="" alt="" class="aspect-[4/5] w-full object-cover transition-transform duration-300" />
+            </button>
+            <p class="mt-2 text-xs text-[var(--ink-muted)]" data-product-modal-image-caption></p>
+            <div data-product-modal-thumbs class="mt-3 grid grid-cols-3 gap-2" role="tablist" aria-label="Imagens do produto"></div>
+          </div>
+
+          <div>
+            <p data-product-modal-taxonomy class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]"></p>
+            <h2 id="product-modal-title" data-product-modal-name class="mt-1.5 font-[var(--font-heading)] text-2xl font-semibold text-[var(--ink)]"></h2>
+
+            <div class="mt-2 flex items-baseline gap-2">
+              <span data-product-modal-prev-price class="text-sm text-[var(--ink-muted)] line-through"></span>
+              <span data-product-modal-price class="text-xl font-semibold text-[var(--ink)]"></span>
+            </div>
+            <p data-product-modal-installment class="text-xs text-[var(--ink-muted)]"></p>
+            <p data-product-modal-availability class="mt-1 text-sm font-medium"></p>
+
+            <p data-product-modal-description class="mt-4 text-sm leading-relaxed text-[var(--ink-muted)]"></p>
+
+            <div data-product-modal-colors-wrap class="mt-4">
+              <p class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Cores</p>
+              <div data-product-modal-colors class="mt-2 flex flex-wrap gap-2"></div>
+            </div>
+
+            <dl class="mt-4 space-y-2 text-sm">
+              <div class="flex gap-2">
+                <dt class="w-28 shrink-0 text-[var(--ink-muted)]">Materiais</dt>
+                <dd data-product-modal-materials class="text-[var(--ink)]"></dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="w-28 shrink-0 text-[var(--ink-muted)]">Dimensões</dt>
+                <dd data-product-modal-dimensions class="text-[var(--ink)]"></dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="w-28 shrink-0 text-[var(--ink-muted)]">SKU</dt>
+                <dd data-product-modal-sku class="text-[var(--ink)]"></dd>
+              </div>
+              <div data-product-modal-ambiente-row class="flex gap-2">
+                <dt class="w-28 shrink-0 text-[var(--ink-muted)]">Ambiente</dt>
+                <dd class="text-[var(--ink)]">
+                  <button type="button" data-product-modal-ambiente-link class="text-[var(--accent)] underline-offset-2 hover:underline"></button>
+                </dd>
+              </div>
+            </dl>
+
+            <div class="mt-5 flex items-center gap-3">
+              <div class="flex items-center rounded-full border border-[var(--border)]">
+                <button type="button" data-product-modal-qty-dec class="flex h-9 w-9 items-center justify-center text-[var(--ink)]" aria-label="Diminuir quantidade">
+                  <Icon name="minus" class="h-3.5 w-3.5" />
+                </button>
+                <span data-product-modal-qty class="w-6 text-center text-sm font-semibold">1</span>
+                <button type="button" data-product-modal-qty-inc class="flex h-9 w-9 items-center justify-center text-[var(--ink)]" aria-label="Aumentar quantidade">
+                  <Icon name="plus" class="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <button
+                type="button"
+                data-product-modal-favorite
+                aria-label="Adicionar aos favoritos"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink-muted)] transition-colors hover:text-[var(--accent)]"
+              >
+                <Icon name="heart" class="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                data-product-modal-share
+                aria-label="Compartilhar"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
+              >
+                <Icon name="share" class="h-4 w-4" />
+              </button>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button
+                type="button"
+                data-product-modal-add-cart
+                class="inline-flex items-center gap-1.5 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+              >
+                <Icon name="cart" class="h-4 w-4" />
+                Adicionar ao carrinho
+              </button>
+              <a
+                href="#orcamento"
+                data-product-modal-quote-link
+                class="inline-flex items-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              >
+                Solicitar orçamento
+              </a>
+              <a
+                data-product-modal-whatsapp
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 rounded-[var(--radius-control)] bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+              >
+                <Icon name="whatsapp" class="h-4 w-4" />
+                WhatsApp
+              </a>
+            </div>
+            <p class="mt-3 text-xs text-[var(--ink-muted)]">
+              Carrinho, favoritos e parcelamento são demonstrativos — não há pagamento online neste modelo.
+            </p>
+          </div>
+        </div>
+
+        <div data-product-modal-related class="mt-8 hidden border-t border-[var(--border)] pt-6">
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Combina com</h3>
+          <div data-product-modal-related-list class="mt-3 grid gap-3 sm:grid-cols-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="product-modal-data" set:html={JSON.stringify(productData)} />
+<script define:vars={{ whatsappNumber }}>
+  window.__mlWhatsappNumber = whatsappNumber;
+</script>
+
+<script>
+  import { addToCart, toggleFavorite, isFavorite } from "../../utils/maisonLumeShop";
+  import { colorToHex } from "../../utils/colorSwatches";
+
+  interface ProductViewModel {
+    slug: string;
+    sku: string;
+    name: string;
+    description: string;
+    categoryName: string;
+    categorySlug: string;
+    collectionName: string | null;
+    ambienteName: string | null;
+    ambienteSlug: string | null;
+    price: string;
+    installment: string;
+    previousPrice: string | null;
+    materials: string[];
+    dimensions: string;
+    colors: string[];
+    available: boolean;
+    tone: string;
+    icon: string;
+    image: string;
+    ambienteImage: string;
+    collectionImage: string;
+    related: { slug: string; name: string; price: string; image: string }[];
+  }
+
+  interface GalleryImage {
+    src: string;
+    label: string;
+  }
+
+  const dataEl = document.getElementById("product-modal-data");
+  const products: ProductViewModel[] = dataEl ? JSON.parse(dataEl.textContent || "[]") : [];
+  const bySlug = new Map(products.map((p) => [p.slug, p]));
+
+  const modal = document.getElementById("product-modal");
+  const backdrop = modal?.querySelector<HTMLElement>("[data-product-modal-backdrop]");
+  const panel = modal?.querySelector<HTMLElement>("[data-product-modal-panel]");
+  let lastFocused: HTMLElement | null = null;
+  let currentSlug = "";
+  let currentQty = 1;
+  let currentGallery: GalleryImage[] = [];
+  let currentImageIndex = 0;
+
+  function setActiveImage(index: number) {
+    if (!modal || !currentGallery[index]) return;
+    currentImageIndex = index;
+    const img = modal.querySelector<HTMLImageElement>("[data-product-modal-image]")!;
+    img.src = currentGallery[index].src;
+    img.alt = currentGallery[index].label;
+    img.classList.remove("scale-150");
+    modal.querySelector<HTMLElement>("[data-product-modal-zoom-toggle]")!.classList.remove("cursor-zoom-out");
+    modal.querySelector<HTMLElement>("[data-product-modal-zoom-toggle]")!.classList.add("cursor-zoom-in");
+    modal.querySelector<HTMLElement>("[data-product-modal-image-caption]")!.textContent = currentGallery[index].label;
+    modal.querySelectorAll<HTMLElement>("[data-thumb-index]").forEach((thumb) => {
+      const active = thumb.dataset.thumbIndex === String(index);
+      thumb.setAttribute("aria-selected", String(active));
+      thumb.classList.toggle("border-[var(--accent)]", active);
+      thumb.classList.toggle("border-transparent", !active);
+    });
+  }
+
+  function getFocusable(): HTMLElement[] {
+    if (!panel) return [];
+    return Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+  }
+
+  function updateFavoriteButton() {
+    const btn = modal?.querySelector<HTMLElement>("[data-product-modal-favorite]");
+    const active = isFavorite(currentSlug);
+    btn?.classList.toggle("text-[var(--accent)]", active);
+    btn?.classList.toggle("border-[var(--accent)]", active);
+  }
+
+  function render(product: ProductViewModel) {
+    if (!modal) return;
+    currentSlug = product.slug;
+    currentQty = 1;
+    modal.querySelector<HTMLElement>("[data-product-modal-qty]")!.textContent = "1";
+
+    modal.querySelector<HTMLElement>("[data-product-modal-zoom-toggle]")!.classList.remove("cursor-zoom-out");
+    modal.querySelector<HTMLElement>("[data-product-modal-zoom-toggle]")!.classList.add("cursor-zoom-in");
+
+    const gallery: GalleryImage[] = [{ src: product.image, label: `Foto principal de ${product.name}` }];
+    if (product.ambienteImage) gallery.push({ src: product.ambienteImage, label: `${product.name} no ambiente ${product.ambienteName ?? ""}` });
+    if (product.collectionImage) gallery.push({ src: product.collectionImage, label: `Tom e material da coleção ${product.collectionName ?? ""}` });
+    currentGallery = gallery;
+    setActiveImage(0);
+
+    const thumbsWrap = modal.querySelector<HTMLElement>("[data-product-modal-thumbs]")!;
+    thumbsWrap.innerHTML = "";
+    if (gallery.length > 1) {
+      thumbsWrap.classList.remove("hidden");
+      gallery.forEach((g, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+        btn.setAttribute("aria-label", g.label);
+        btn.dataset.thumbIndex = String(i);
+        btn.className = `overflow-hidden rounded-lg border-2 transition-colors ${i === 0 ? "border-[var(--accent)]" : "border-transparent"}`;
+        btn.innerHTML = `<img src="${g.src}" alt="" class="aspect-square w-full object-cover" />`;
+        thumbsWrap.appendChild(btn);
+      });
+    } else {
+      thumbsWrap.classList.add("hidden");
+    }
+
+    modal.querySelector("[data-product-modal-taxonomy]")!.textContent =
+      [product.categoryName, product.collectionName].filter(Boolean).join(" · ");
+    modal.querySelector("[data-product-modal-name]")!.textContent = product.name;
+    modal.querySelector("[data-product-modal-price]")!.textContent = product.price;
+    modal.querySelector("[data-product-modal-installment]")!.textContent = `ou 10x de ${product.installment} (demonstrativo)`;
+    const prevEl = modal.querySelector<HTMLElement>("[data-product-modal-prev-price]")!;
+    prevEl.textContent = product.previousPrice ?? "";
+    prevEl.classList.toggle("hidden", !product.previousPrice);
+    const availEl = modal.querySelector<HTMLElement>("[data-product-modal-availability]")!;
+    availEl.textContent = product.available ? "Disponível" : "Indisponível no momento";
+    availEl.style.color = product.available ? "var(--accent)" : "var(--ink-muted)";
+    modal.querySelector("[data-product-modal-description]")!.textContent = product.description;
+    modal.querySelector("[data-product-modal-materials]")!.textContent = product.materials.join(", ");
+    modal.querySelector("[data-product-modal-dimensions]")!.textContent = product.dimensions;
+    modal.querySelector("[data-product-modal-sku]")!.textContent = product.sku;
+
+    const colorsWrap = modal.querySelector<HTMLElement>("[data-product-modal-colors]")!;
+    colorsWrap.innerHTML = "";
+    product.colors.forEach((color) => {
+      const dot = document.createElement("span");
+      dot.className = "flex items-center gap-1.5 rounded-full border border-[var(--border)] py-1 pl-1 pr-2.5 text-xs text-[var(--ink)]";
+      dot.innerHTML = `<span class="h-4 w-4 rounded-full border border-black/10" style="background:${colorToHex(color)}"></span>${color}`;
+      colorsWrap.appendChild(dot);
+    });
+
+    const ambienteRow = modal.querySelector<HTMLElement>("[data-product-modal-ambiente-row]")!;
+    const ambienteBtn = modal.querySelector<HTMLElement>("[data-product-modal-ambiente-link]")!;
+    if (product.ambienteName) {
+      ambienteRow.classList.remove("hidden");
+      ambienteBtn.textContent = product.ambienteName;
+    } else {
+      ambienteRow.classList.add("hidden");
+    }
+
+    const whatsappNumber = (window as any).__mlWhatsappNumber ?? "";
+    const message = encodeURIComponent(`Olá! Tenho interesse no produto "${product.name}" (SKU ${product.sku}) da Maison Lume.`);
+    modal.querySelector<HTMLAnchorElement>("[data-product-modal-whatsapp]")!.href = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+    updateFavoriteButton();
+
+    const relatedWrap = modal.querySelector<HTMLElement>("[data-product-modal-related]")!;
+    const relatedList = modal.querySelector<HTMLElement>("[data-product-modal-related-list]")!;
+    relatedList.innerHTML = "";
+    if (product.related.length) {
+      relatedWrap.classList.remove("hidden");
+      product.related.forEach((rel) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "flex items-center gap-3 rounded-[var(--radius-control)] border border-[var(--border)] p-2.5 text-left text-sm transition-colors hover:border-[var(--accent)]";
+        btn.innerHTML = `<img src="${rel.image}" alt="" class="h-12 w-12 shrink-0 rounded-md object-cover" /><span><span class="block font-medium text-[var(--ink)]">${rel.name}</span><span class="block text-[var(--ink-muted)]">${rel.price}</span></span>`;
+        btn.addEventListener("click", () => openModal(rel.slug));
+        relatedList.appendChild(btn);
+      });
+    } else {
+      relatedWrap.classList.add("hidden");
+    }
+
+    modal.querySelector<HTMLElement>("[data-product-modal-scroll]")!.scrollTop = 0;
+  }
+
+  function openModal(slug: string) {
+    const product = bySlug.get(slug);
+    if (!product || !modal || !backdrop || !panel) return;
+    render(product);
+    lastFocused = document.activeElement as HTMLElement;
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      backdrop.classList.remove("opacity-0");
+      panel.classList.remove("opacity-0", "translate-y-6", "sm:translate-y-2");
+    });
+    window.setTimeout(() => panel.querySelector<HTMLElement>("[data-product-modal-close]")?.focus(), 50);
+  }
+
+  function closeModal() {
+    if (!modal || !backdrop || !panel) return;
+    backdrop.classList.add("opacity-0");
+    panel.classList.add("opacity-0", "translate-y-6");
+    document.body.style.overflow = "";
+    window.setTimeout(() => modal.classList.add("hidden"), 250);
+    lastFocused?.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    const trigger = target.closest<HTMLElement>("[data-open-product]");
+    if (trigger) {
+      event.preventDefault();
+      openModal(trigger.dataset.openProduct!);
+      return;
+    }
+    if (target.closest("[data-product-modal-close]") || target === backdrop) {
+      closeModal();
+      return;
+    }
+    if (target.closest("[data-product-modal-zoom-toggle]")) {
+      const img = modal?.querySelector<HTMLImageElement>("[data-product-modal-image]");
+      const zoomBtn = modal?.querySelector<HTMLElement>("[data-product-modal-zoom-toggle]");
+      const zoomed = img?.classList.toggle("scale-150");
+      zoomBtn?.classList.toggle("cursor-zoom-in", !zoomed);
+      zoomBtn?.classList.toggle("cursor-zoom-out", Boolean(zoomed));
+      return;
+    }
+    const thumbBtn = target.closest<HTMLElement>("[data-thumb-index]");
+    if (thumbBtn) {
+      setActiveImage(Number(thumbBtn.dataset.thumbIndex));
+      return;
+    }
+    if (target.closest("[data-product-modal-qty-dec]")) {
+      currentQty = Math.max(1, currentQty - 1);
+      modal!.querySelector("[data-product-modal-qty]")!.textContent = String(currentQty);
+      return;
+    }
+    if (target.closest("[data-product-modal-qty-inc]")) {
+      currentQty += 1;
+      modal!.querySelector("[data-product-modal-qty]")!.textContent = String(currentQty);
+      return;
+    }
+    if (target.closest("[data-product-modal-favorite]")) {
+      toggleFavorite(currentSlug);
+      updateFavoriteButton();
+      return;
+    }
+    if (target.closest("[data-product-modal-share]")) {
+      const url = `${window.location.origin}${window.location.pathname}#produto-${currentSlug}`;
+      navigator.clipboard?.writeText(url).catch(() => {});
+      const btn = modal?.querySelector<HTMLElement>("[data-product-modal-share]");
+      if (btn) {
+        const original = btn.innerHTML;
+        btn.setAttribute("data-copied", "1");
+        window.setTimeout(() => btn.removeAttribute("data-copied"), 1500);
+      }
+      return;
+    }
+    if (target.closest("[data-product-modal-add-cart]")) {
+      addToCart(currentSlug, currentQty);
+      const btn = modal?.querySelector<HTMLElement>("[data-product-modal-add-cart]");
+      if (btn) {
+        const original = btn.textContent;
+        btn.textContent = "Adicionado ✓";
+        window.setTimeout(() => {
+          btn.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3.5 4.5h2l1.4 10.2a1.5 1.5 0 001.5 1.3h8.4a1.5 1.5 0 001.5-1.2l1.3-6.8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="16.5" cy="19.5" r="1.3"/></svg>Adicionar ao carrinho';
+        }, 1600);
+      }
+      return;
+    }
+    const ambienteBtn = target.closest("[data-product-modal-ambiente-link]");
+    if (ambienteBtn) {
+      const product = bySlug.get(currentSlug);
+      if (product?.ambienteSlug) {
+        closeModal();
+        window.setTimeout(() => {
+          document.getElementById("ambientes")?.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+      return;
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!modal || modal.classList.contains("hidden")) return;
+    if (event.key === "Escape") {
+      closeModal();
+      return;
+    }
+    if (event.key === "ArrowLeft" && currentGallery.length > 1) {
+      setActiveImage((currentImageIndex - 1 + currentGallery.length) % currentGallery.length);
+      return;
+    }
+    if (event.key === "ArrowRight" && currentGallery.length > 1) {
+      setActiveImage((currentImageIndex + 1) % currentGallery.length);
+      return;
+    }
+    if (event.key === "Tab") {
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+</script>

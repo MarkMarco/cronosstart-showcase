@@ -1,0 +1,294 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import CategoryQuickNav from "./CategoryQuickNav.astro";
+import ProductCard from "./ProductCard.astro";
+import Icon from "../ui/Icon.astro";
+import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  collections: CatalogCollection[];
+  ambientes: CatalogAmbiente[];
+  whatsappNumber: string;
+}
+const { id, products, categories, collections, ambientes, whatsappNumber } = Astro.props;
+
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+const collectionBySlug = new Map(collections.map((c) => [c.slug, c]));
+const ambienteBySlug = new Map(ambientes.map((a) => [a.slug, a]));
+
+const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1400px]">
+    <SectionHeader
+      eyebrow="Catálogo completo"
+      title="Encontre a peça certa para o seu espaço"
+      description="Busque, filtre e ordene todo o catálogo demonstrativo da Maison Lume."
+    />
+
+    <div class="mt-8">
+      <CategoryQuickNav categories={categories} />
+    </div>
+
+    <div data-catalog-controls class="mt-6 rounded-full border border-[var(--border)] bg-[var(--surface)] p-2 shadow-sm">
+      <div class="flex flex-wrap items-center gap-2">
+        <label class="relative min-w-[180px] flex-1">
+          <span class="sr-only">Buscar produto</span>
+          <Icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-muted)]" />
+          <input
+            type="search"
+            data-catalog-search
+            placeholder="Buscar por nome..."
+            class="w-full rounded-full border-0 bg-[var(--surface-alt)] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30"
+          />
+        </label>
+
+        <select data-catalog-category class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
+          <option value="">Categoria</option>
+          {categories.map((c) => <option value={c.slug}>{c.name}</option>)}
+        </select>
+
+        <select data-catalog-collection class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
+          <option value="">Coleção</option>
+          {collections.map((c) => <option value={c.slug}>{c.name}</option>)}
+        </select>
+
+        <select data-catalog-ambiente class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
+          <option value="">Ambiente</option>
+          {ambientes.map((a) => <option value={a.slug}>{a.name}</option>)}
+        </select>
+
+        <select data-catalog-price class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
+          <option value="">Preço</option>
+          <option value="0-1000">Até R$ 1.000</option>
+          <option value="1000-3000">R$ 1.000 a R$ 3.000</option>
+          <option value="3000-999999">Acima de R$ 3.000</option>
+        </select>
+
+        <select data-catalog-sort class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
+          <option value="relevance">Relevância</option>
+          <option value="price-asc">Menor preço</option>
+          <option value="price-desc">Maior preço</option>
+          <option value="name">Nome (A-Z)</option>
+          <option value="newest">Mais recentes</option>
+        </select>
+      </div>
+
+      <div class="mt-2 flex flex-wrap items-center gap-2 px-1">
+        <label class="flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3.5 py-2 text-sm text-[var(--ink)]">
+          <input type="checkbox" data-catalog-available class="h-4 w-4 rounded border-[var(--border)] accent-[var(--primary)]" />
+          Somente disponíveis
+        </label>
+        <label class="flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3.5 py-2 text-sm text-[var(--ink)]">
+          <input type="checkbox" data-catalog-offer class="h-4 w-4 rounded border-[var(--border)] accent-[var(--primary)]" />
+          Somente em oferta
+        </label>
+        <button type="button" data-catalog-clear class="text-sm font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)]">
+          Limpar filtros
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-2">
+      <p data-catalog-count class="text-sm text-[var(--ink-muted)]"></p>
+      <div data-active-chips class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <div data-catalog-grid class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {
+        sorted.map((product) => (
+          <ProductCard
+            product={product}
+            category={categoryBySlug.get(product.category)}
+            collection={product.collection ? collectionBySlug.get(product.collection) : undefined}
+            ambiente={product.ambiente ? ambienteBySlug.get(product.ambiente) : undefined}
+          />
+        ))
+      }
+
+      <div
+        style="order: 999"
+        class="col-span-1 flex flex-col items-start justify-center gap-3 rounded-[var(--radius-card)] border border-dashed border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:col-span-1 lg:col-span-1 xl:col-span-3"
+      >
+        <h3 class="font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)] sm:text-2xl">Precisa de ajuda para escolher?</h3>
+        <p class="max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
+          Um consultor Maison Lume pode te ajudar a montar a combinação certa para o seu espaço — ou, se já tiver itens no carrinho, é só enviar a lista pelo WhatsApp.
+        </p>
+        <div class="mt-1 flex flex-wrap gap-3">
+          <a
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de ajuda para escolher produtos da Maison Lume.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+          >
+            <Icon name="whatsapp" class="h-4 w-4" />
+            Falar com um consultor
+          </a>
+          <button
+            type="button"
+            data-catalog-send-cart-whatsapp
+            class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            <Icon name="cart" class="h-4 w-4" />
+            Enviar carrinho pelo WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p data-catalog-empty class="hidden mt-4 rounded-[var(--radius-card)] border border-dashed border-[var(--border)] py-12 text-center text-sm text-[var(--ink-muted)]">
+      Nenhum produto encontrado com os filtros selecionados. Tente ajustar a busca ou limpar os filtros.
+    </p>
+  </div>
+</section>
+
+<script>
+  const controls = document.querySelector<HTMLElement>("[data-catalog-controls]");
+  const grid = document.querySelector<HTMLElement>("[data-catalog-grid]");
+  const emptyState = document.querySelector<HTMLElement>("[data-catalog-empty]");
+  const countLabel = document.querySelector<HTMLElement>("[data-catalog-count]");
+  if (!controls || !grid || !emptyState || !countLabel) {
+    // seção de catálogo ausente nesta página
+  } else {
+    const searchInput = controls.querySelector<HTMLInputElement>("[data-catalog-search]")!;
+    const categorySelect = controls.querySelector<HTMLSelectElement>("[data-catalog-category]")!;
+    const collectionSelect = controls.querySelector<HTMLSelectElement>("[data-catalog-collection]")!;
+    const ambienteSelect = controls.querySelector<HTMLSelectElement>("[data-catalog-ambiente]")!;
+    const priceSelect = controls.querySelector<HTMLSelectElement>("[data-catalog-price]")!;
+    const sortSelect = controls.querySelector<HTMLSelectElement>("[data-catalog-sort]")!;
+    const availableCheckbox = controls.querySelector<HTMLInputElement>("[data-catalog-available]")!;
+    const offerCheckbox = controls.querySelector<HTMLInputElement>("[data-catalog-offer]")!;
+    const clearButton = controls.querySelector<HTMLButtonElement>("[data-catalog-clear]")!;
+    const activeChips = document.querySelector<HTMLElement>("[data-active-chips]")!;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>("[data-product-card]"));
+
+    function renderChips() {
+      const chips: { label: string; onClear: () => void }[] = [];
+      if (searchInput.value.trim()) chips.push({ label: `"${searchInput.value.trim()}"`, onClear: () => (searchInput.value = "") });
+      if (categorySelect.value) chips.push({ label: categorySelect.options[categorySelect.selectedIndex].text, onClear: () => (categorySelect.value = "") });
+      if (collectionSelect.value) chips.push({ label: collectionSelect.options[collectionSelect.selectedIndex].text, onClear: () => (collectionSelect.value = "") });
+      if (ambienteSelect.value) chips.push({ label: ambienteSelect.options[ambienteSelect.selectedIndex].text, onClear: () => (ambienteSelect.value = "") });
+      if (priceSelect.value) chips.push({ label: priceSelect.options[priceSelect.selectedIndex].text, onClear: () => (priceSelect.value = "") });
+      if (availableCheckbox.checked) chips.push({ label: "Disponíveis", onClear: () => (availableCheckbox.checked = false) });
+      if (offerCheckbox.checked) chips.push({ label: "Em oferta", onClear: () => (offerCheckbox.checked = false) });
+
+      activeChips.innerHTML = "";
+      chips.forEach((chip) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "inline-flex items-center gap-1.5 rounded-full bg-[var(--surface-alt)] px-3 py-1 text-xs font-medium text-[var(--ink)] hover:bg-[var(--border)]";
+        btn.innerHTML = `${chip.label} <span aria-hidden="true">✕</span>`;
+        btn.addEventListener("click", () => {
+          chip.onClear();
+          run();
+        });
+        activeChips.appendChild(btn);
+      });
+    }
+
+    function run() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = categorySelect.value;
+      const collection = collectionSelect.value;
+      const ambiente = ambienteSelect.value;
+      const priceRange = priceSelect.value;
+      const onlyAvailable = availableCheckbox.checked;
+      const onlyOffer = offerCheckbox.checked;
+      const sort = sortSelect.value;
+
+      let [min, max] = priceRange ? priceRange.split("-").map(Number) : [0, Infinity];
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const price = Number(card.dataset.price ?? 0);
+        const matches =
+          (!query || (card.dataset.name ?? "").includes(query)) &&
+          (!category || card.dataset.category === category) &&
+          (!collection || card.dataset.collection === collection) &&
+          (!ambiente || card.dataset.ambiente === ambiente) &&
+          (!priceRange || (price >= min && price <= max)) &&
+          (!onlyAvailable || card.dataset.available === "true") &&
+          (!onlyOffer || card.dataset.offer === "true");
+
+        card.classList.toggle("hidden", !matches);
+        if (matches) visibleCount++;
+      });
+
+      const sortKey = (card: HTMLElement): number => {
+        switch (sort) {
+          case "price-asc":
+            return Number(card.dataset.price ?? 0);
+          case "price-desc":
+            return -Number(card.dataset.price ?? 0);
+          case "name":
+            return 0;
+          case "newest":
+            return -new Date(card.dataset.created ?? 0).getTime();
+          default:
+            return Number(card.dataset.order ?? 0);
+        }
+      };
+
+      if (sort === "name") {
+        const namesSorted = [...cards].sort((a, b) => (a.dataset.name ?? "").localeCompare(b.dataset.name ?? ""));
+        namesSorted.forEach((card, i) => (card.style.order = String(i)));
+      } else {
+        cards.forEach((card) => (card.style.order = String(sortKey(card))));
+      }
+
+      emptyState!.classList.toggle("hidden", visibleCount > 0);
+      grid!.classList.toggle("hidden", visibleCount === 0);
+      countLabel!.textContent = `${visibleCount} ${visibleCount === 1 ? "produto encontrado" : "produtos encontrados"}`;
+      renderChips();
+    }
+
+    [searchInput].forEach((el) => el.addEventListener("input", run));
+    [categorySelect, collectionSelect, ambienteSelect, priceSelect, sortSelect].forEach((el) => el.addEventListener("change", run));
+    [availableCheckbox, offerCheckbox].forEach((el) => el.addEventListener("change", run));
+
+    document.querySelector("[data-catalog-send-cart-whatsapp]")?.addEventListener("click", () => {
+      document.querySelector<HTMLElement>('[data-open-drawer="cart"]')?.click();
+    });
+
+    clearButton.addEventListener("click", () => {
+      searchInput.value = "";
+      categorySelect.value = "";
+      collectionSelect.value = "";
+      ambienteSelect.value = "";
+      priceSelect.value = "";
+      sortSelect.value = "relevance";
+      availableCheckbox.checked = false;
+      offerCheckbox.checked = false;
+      run();
+    });
+
+    document.addEventListener("click", (event) => {
+      const quickCategory = (event.target as HTMLElement).closest<HTMLElement>("[data-category-quick-link]");
+      const collectionLink = (event.target as HTMLElement).closest<HTMLElement>("[data-collection-link]");
+      const ambienteLink = (event.target as HTMLElement).closest<HTMLElement>("[data-ambiente-link]");
+
+      if (quickCategory) {
+        categorySelect.value = quickCategory.dataset.categoryQuickLink ?? "";
+        run();
+      } else if (collectionLink) {
+        event.preventDefault();
+        collectionSelect.value = collectionLink.dataset.collectionLink ?? "";
+        run();
+        document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+      } else if (ambienteLink) {
+        event.preventDefault();
+        ambienteSelect.value = ambienteLink.dataset.ambienteLink ?? "";
+        run();
+        document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+
+    run();
+  }
+</script>

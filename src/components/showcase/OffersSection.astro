@@ -1,0 +1,116 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+}
+const { id, products, categories } = Astro.props;
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+function savingsPct(price: number, previous: number) {
+  return Math.round((1 - price / previous) * 100);
+}
+
+const [main, ...rest] = [...products].sort((a, b) => (b.previousPrice ? savingsPct(b.price, b.previousPrice) : 0) - (a.previousPrice ? savingsPct(a.price, a.previousPrice) : 0));
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1400px]">
+    <SectionHeader
+      eyebrow="Por tempo limitado"
+      title="Ofertas em destaque"
+      description="Peças selecionadas com condição especial — válidas até a data indicada em cada item (dados demonstrativos)."
+    />
+
+    {main && (
+      <div class="mt-10 grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+        <div class="group relative overflow-hidden rounded-[var(--radius-card)]" data-animate>
+          <img
+            src={main.image}
+            alt={main.name}
+            loading="lazy"
+            decoding="async"
+            width="1200"
+            height="1000"
+            class="aspect-[6/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] sm:aspect-[3/2]"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          {main.previousPrice && (
+            <span class="absolute left-4 top-4 rounded-full bg-[var(--accent)] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white">
+              -{savingsPct(main.price, main.previousPrice)}% por tempo limitado
+            </span>
+          )}
+          <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+            <p class="text-xs font-medium uppercase tracking-wide text-white/70">{categoryBySlug.get(main.category)?.name ?? main.category}</p>
+            <h3 class="mt-1.5 font-[var(--font-heading)] text-2xl font-semibold text-white sm:text-3xl">{main.name}</h3>
+            <div class="mt-3 flex items-baseline gap-3">
+              {main.previousPrice && <span class="text-base text-white/60 line-through">{formatBRL(main.previousPrice)}</span>}
+              <span class="text-2xl font-semibold text-white">{formatBRL(main.price)}</span>
+            </div>
+            {main.offerEndsAt && (
+              <p class="mt-1 flex items-center gap-1.5 text-sm text-white/70">
+                <Icon name="clock" class="h-4 w-4" />
+                Oferta válida até {new Date(main.offerEndsAt).toLocaleDateString("pt-BR")}
+              </p>
+            )}
+            <button
+              type="button"
+              data-open-product={main.slug}
+              class="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-white px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+            >
+              Ver oferta
+              <Icon name="arrow-right" class="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          {
+            rest.map((product, i) => (
+              <div
+                data-animate
+                style={`transition-delay: ${(i + 1) * 60}ms`}
+                class="group flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border)] p-3"
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                  width="200"
+                  height="200"
+                  class="h-24 w-24 shrink-0 rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">
+                    {categoryBySlug.get(product.category)?.name ?? product.category}
+                  </p>
+                  <h4 class="truncate font-[var(--font-heading)] text-base font-semibold text-[var(--ink)]">{product.name}</h4>
+                  <div class="mt-1 flex items-baseline gap-2">
+                    {product.previousPrice && <span class="text-xs text-[var(--ink-muted)] line-through">{formatBRL(product.previousPrice)}</span>}
+                    <span class="text-sm font-semibold text-[var(--accent)]">{formatBRL(product.price)}</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  data-open-product={product.slug}
+                  aria-label={`Ver oferta de ${product.name}`}
+                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                >
+                  <Icon name="arrow-right" class="h-4 w-4" />
+                </button>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    )}
+  </div>
+</section>

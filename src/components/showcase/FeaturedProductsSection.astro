@@ -1,0 +1,44 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import CardGrid from "./CardGrid.astro";
+import ProductCard from "./ProductCard.astro";
+import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  collections: CatalogCollection[];
+  ambientes: CatalogAmbiente[];
+}
+const { id, eyebrow, title, description, products, categories, collections, ambientes } = Astro.props;
+
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+const collectionBySlug = new Map(collections.map((c) => [c.slug, c]));
+const ambienteBySlug = new Map(ambientes.map((a) => [a.slug, a]));
+---
+
+<section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1400px]">
+    <SectionHeader eyebrow={eyebrow} title={title} description={description} />
+
+    <div class="mt-10">
+      <CardGrid cols={3} tabletCols={2}>
+        {
+          products.map((product, i) => (
+            <ProductCard
+              product={product}
+              category={categoryBySlug.get(product.category)}
+              collection={product.collection ? collectionBySlug.get(product.collection) : undefined}
+              ambiente={product.ambiente ? ambienteBySlug.get(product.ambiente) : undefined}
+              animateDelay={i * 60}
+            />
+          ))
+        }
+      </CardGrid>
+    </div>
+  </div>
+</section>

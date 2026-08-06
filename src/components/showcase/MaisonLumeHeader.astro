@@ -1,0 +1,116 @@
+---
+import type { NavItem } from "../../config/showcases/types";
+import Icon from "../ui/Icon.astro";
+import MobileMenu from "./MobileMenu.astro";
+
+interface Props {
+  nav: NavItem[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { nav, ctaLabel, ctaHref } = Astro.props;
+---
+
+<header
+  data-ml-header
+  class="sticky top-0 z-50 border-b border-transparent bg-[var(--surface)]/80 backdrop-blur transition-shadow duration-300"
+  style="--header-h: 76px"
+>
+  <div class="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between gap-4 px-6">
+    <a href="/" class="flex shrink-0 items-center" aria-label="Página inicial">
+      <slot name="logo" />
+    </a>
+
+    <nav class="hidden lg:block" aria-label="Navegação principal">
+      <ul class="flex items-center gap-7">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="relative inline-block py-1 text-sm font-medium text-[var(--ink-muted)] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-[var(--accent)] after:transition-all after:duration-200 hover:text-[var(--ink)] hover:after:w-full"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
+      <button
+        type="button"
+        data-header-search
+        aria-label="Buscar no catálogo"
+        class="hidden h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)] sm:inline-flex"
+      >
+        <Icon name="search" class="h-5 w-5" />
+      </button>
+
+      <button
+        type="button"
+        data-open-drawer="favorites"
+        aria-label="Ver favoritos"
+        class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
+      >
+        <Icon name="heart" class="h-5 w-5" />
+        <span
+          data-favorites-count
+          class="absolute -right-0.5 -top-0.5 hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold leading-none text-white"
+        >0</span>
+      </button>
+
+      <button
+        type="button"
+        data-open-drawer="cart"
+        aria-label="Ver carrinho"
+        class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
+      >
+        <Icon name="cart" class="h-5 w-5" />
+        <span
+          data-cart-count
+          class="absolute -right-0.5 -top-0.5 hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold leading-none text-white"
+        >0</span>
+      </button>
+
+      <a
+        href={ctaHref}
+        class="hidden items-center rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 lg:inline-flex"
+      >
+        {ctaLabel}
+      </a>
+
+      <button
+        id="menu-toggle"
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menu"
+      >
+        <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+        <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu nav={nav} ctaLabel={ctaLabel} ctaHref={ctaHref} />
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-ml-header]");
+  function onScroll() {
+    if (!header) return;
+    const scrolled = window.scrollY > 12;
+    header.classList.toggle("border-[var(--border)]", scrolled);
+    header.classList.toggle("shadow-[0_4px_20px_-8px_rgba(43,38,33,0.15)]", scrolled);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  document.querySelector("[data-header-search]")?.addEventListener("click", () => {
+    document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+    window.setTimeout(() => document.querySelector<HTMLInputElement>("[data-catalog-search]")?.focus(), 500);
+  });
+</script>

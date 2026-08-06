@@ -1,0 +1,47 @@
+---
+// Placeholder visual (sem foto real) para produtos/categorias/coleções/
+// ambientes de qualquer modelo demonstrativo baseado em catálogo. Reaproveita
+// o mesmo princípio das ilustrações CSS/SVG já usadas em AccountingHeroVisual
+// e HorizonteHeroVisual — evita depender de bancos de imagem externos.
+import Icon from "../ui/Icon.astro";
+import type { CatalogTone, IconName } from "../../config/showcases/types";
+
+interface Props {
+  tone: CatalogTone;
+  icon: IconName;
+  class?: string;
+  iconClass?: string;
+}
+const { tone, icon, class: className = "", iconClass = "h-10 w-10" } = Astro.props;
+
+const toneGradient: Record<CatalogTone, string> = {
+  sand: "linear-gradient(145deg, #efe4d2 0%, #e2cfae 100%)",
+  linen: "linear-gradient(145deg, #f4efe6 0%, #e6dccb 100%)",
+  walnut: "linear-gradient(145deg, #cbb08c 0%, #8a6a49 100%)",
+  graphite: "linear-gradient(145deg, #4b4741 0%, #2b2621 100%)",
+  stone: "linear-gradient(145deg, #d8d2c6 0%, #b6ac9a 100%)",
+  clay: "linear-gradient(145deg, #d1a37e 0%, #a9784f 100%)",
+  sage: "linear-gradient(145deg, #cbd3bf 0%, #a7b190 100%)",
+};
+
+const toneInk: Record<CatalogTone, string> = {
+  sand: "#5c4a30",
+  linen: "#6b6153",
+  walnut: "#f4ece0",
+  graphite: "#f2ede4",
+  stone: "#5a5346",
+  clay: "#4a2f1a",
+  sage: "#3c4430",
+};
+---
+
+<div
+  class={`relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden ${className}`}
+  style={`background: ${toneGradient[tone]};`}
+  aria-hidden="true"
+>
+  <div class="absolute inset-0 opacity-[0.08]" style="background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 1px, transparent 14px);" />
+  <div style={`color: ${toneInk[tone]}`}>
+    <Icon name={icon} class={iconClass} />
+  </div>
+</div>

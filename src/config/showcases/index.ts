@@ -83,4 +83,16 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     icon: "sparkle",
     premium: true,
   },
+  {
+    slug: "moveis-decoracao",
+    segment: "Loja de móveis e decoração premium",
+    companyName: "Maison Lume",
+    shortDescription:
+      "Modelo premium de catálogo com categorias, coleções, ofertas, \"compre o ambiente\" e painel administrativo completo.",
+    available: true,
+    primary: "#2b2621",
+    accent: "#a9784f",
+    icon: "sofa",
+    premium: true,
+  },
 ];

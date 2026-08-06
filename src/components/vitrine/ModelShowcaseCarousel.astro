@@ -1,0 +1,280 @@
+---
+// Carrossel premium do portfólio de modelos: substitui a antiga grade estática.
+// Um card ativo em destaque no centro, vizinhos parcialmente visíveis nas
+// laterais (efeito coverflow via scroll nativo + transform), setas, dots e
+// navegação por teclado. O conteúdo de cada card (ShowcaseCard) não muda —
+// este componente só adiciona a "pista" que os organiza e a lógica de
+// profundidade/scroll.
+import Icon from "../ui/Icon.astro";
+import ShowcaseCard from "./ShowcaseCard.astro";
+import type { ShowcaseSummary } from "../../config/showcases";
+
+interface Props {
+  items: ShowcaseSummary[];
+}
+const { items } = Astro.props;
+
+function hexToRgbTriplet(hex: string): string {
+  const clean = hex.replace("#", "");
+  const value = parseInt(clean, 16);
+  const r = (value >> 16) & 255;
+  const g = (value >> 8) & 255;
+  const b = value & 255;
+  return `${r}, ${g}, ${b}`;
+}
+---
+
+<div class="model-carousel relative" data-model-carousel>
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.05]"
+    style="background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(65% 60% at 50% 45%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(65% 60% at 50% 45%, black 0%, transparent 100%);"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="pointer-events-none absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.12] blur-[120px]"
+    style="background: var(--accent);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto max-w-[80rem]">
+    <div class="relative">
+      <button
+        type="button"
+        data-carousel-prev
+        aria-label="Modelo anterior"
+        class="carousel-arrow absolute left-1 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:pointer-events-none disabled:opacity-30 sm:flex md:left-2"
+      >
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+      </button>
+      <button
+        type="button"
+        data-carousel-next
+        aria-label="Próximo modelo"
+        class="carousel-arrow absolute right-1 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:pointer-events-none disabled:opacity-30 sm:flex md:right-2"
+      >
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </button>
+
+      <ul
+        data-carousel-track
+        tabindex="0"
+        role="region"
+        aria-roledescription="carrossel"
+        aria-label="Modelos disponíveis para demonstração — use as setas do teclado para navegar"
+        class="carousel-track no-scrollbar flex list-none snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth py-4 pl-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] sm:gap-6"
+      >
+        {
+          items.map((item, index) => (
+            <li
+              data-carousel-slide
+              data-index={index}
+              data-name={item.companyName}
+              style={`--card-accent: ${item.accent}; --card-accent-rgb: ${hexToRgbTriplet(item.accent)};`}
+              class="carousel-slide shrink-0 snap-center"
+            >
+              <ShowcaseCard item={item} index={index} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-8 flex flex-col items-center gap-3">
+      <div data-carousel-dots role="tablist" aria-label="Selecionar modelo" class="flex items-center gap-2">
+        {
+          items.map((item, index) => (
+            <button
+              type="button"
+              data-dot
+              data-index={index}
+              role="tab"
+              aria-label={`Ir para ${item.companyName}`}
+              class="dot h-1.5 w-1.5 rounded-full bg-white/25 transition-all duration-300 hover:bg-white/50"
+            />
+          ))
+        }
+      </div>
+      <p data-carousel-counter class="sr-only" aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .carousel-track {
+    --card-w: 88%;
+    padding-inline: calc((100% - var(--card-w)) / 2);
+    perspective: 1600px;
+    scrollbar-width: none;
+    /* Contém o overscroll/bounce do swipe dentro da pista, sem deixar o
+       gesto "vazar" para rolagem da página ou navegação do navegador
+       quando o usuário arrasta além do primeiro/último card. */
+    overscroll-behavior-x: contain;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-track {
+      --card-w: 62%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .carousel-track {
+      --card-w: 46%;
+    }
+  }
+  @media (min-width: 1280px) {
+    .carousel-track {
+      --card-w: 40%;
+    }
+  }
+
+  .carousel-slide {
+    /* A largura-alvo (--card-w) já é aplicada via padding-inline da pista
+       (que reduz o content-box da pista para exatamente --card-w do total);
+       o slide só precisa preencher 100% desse content-box. Repetir --card-w
+       aqui componentizaria a porcentagem (ex.: 40% de 40% = 16%). */
+    width: 100%;
+    transform: scale(var(--slide-scale, 1)) rotateY(var(--slide-rotate, 0deg));
+    opacity: var(--slide-opacity, 1);
+    filter: blur(var(--slide-blur, 0px));
+    transition: transform 0.55s cubic-bezier(0.22, 1.06, 0.36, 1), opacity 0.55s ease, filter 0.55s ease;
+    will-change: transform, opacity;
+  }
+
+  .carousel-slide.is-active {
+    filter: drop-shadow(0 30px 60px rgba(var(--card-accent-rgb, 56, 189, 248), 0.18));
+  }
+
+  .carousel-arrow {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+
+  .dot.is-active {
+    width: 1.5rem;
+    background: var(--accent);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-model-carousel]");
+  if (root) {
+    const track = root.querySelector<HTMLElement>("[data-carousel-track]")!;
+    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-carousel-slide]"));
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-carousel-next]");
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dot]"));
+    const counter = root.querySelector<HTMLElement>("[data-carousel-counter]");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let activeIndex = 0;
+    let rafId: number | null = null;
+
+    function updateDepth() {
+      const trackRect = track.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let closestIndex = 0;
+      let closestDist = Infinity;
+
+      slides.forEach((slide, i) => {
+        const rect = slide.getBoundingClientRect();
+        const slideCenter = rect.left + rect.width / 2;
+        const dist = slideCenter - center;
+        const absDist = Math.abs(dist);
+
+        if (absDist < closestDist) {
+          closestDist = absDist;
+          closestIndex = i;
+        }
+
+        if (prefersReducedMotion) {
+          slide.style.setProperty("--slide-scale", "1");
+          slide.style.setProperty("--slide-opacity", "1");
+          slide.style.setProperty("--slide-rotate", "0deg");
+          slide.style.setProperty("--slide-blur", "0px");
+        } else {
+          const norm = Math.min(absDist / (trackRect.width / 2), 1.2);
+          const scale = 1 - Math.min(norm, 1) * 0.16;
+          const opacity = 1 - Math.min(norm, 1) * 0.55;
+          const rotate = Math.max(-10, Math.min(10, (-dist / trackRect.width) * 22));
+          const blur = Math.min(norm, 1) * 1.4;
+
+          slide.style.setProperty("--slide-scale", scale.toFixed(3));
+          slide.style.setProperty("--slide-opacity", opacity.toFixed(3));
+          slide.style.setProperty("--slide-rotate", `${rotate.toFixed(2)}deg`);
+          slide.style.setProperty("--slide-blur", `${blur.toFixed(2)}px`);
+        }
+
+        const isActive = absDist < rect.width * 0.15;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-current", isActive ? "true" : "false");
+      });
+
+      if (closestIndex !== activeIndex) {
+        activeIndex = closestIndex;
+        syncControls();
+      }
+    }
+
+    function syncControls() {
+      dots.forEach((dot, i) => dot.classList.toggle("is-active", i === activeIndex));
+      if (counter) {
+        counter.textContent = `Modelo ${activeIndex + 1} de ${slides.length}: ${slides[activeIndex]?.dataset.name ?? ""}`;
+      }
+      if (prevBtn) prevBtn.disabled = activeIndex === 0;
+      // A seta direita nunca fica desabilitada: no último card ela reinicia
+      // para o primeiro (loop só nessa direção, ver goNext()).
+    }
+
+    function scrollToIndex(index: number) {
+      const clamped = Math.max(0, Math.min(slides.length - 1, index));
+      const target = slides[clamped];
+      const trackRect = track.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const offset = targetRect.left - trackRect.left - (trackRect.width - targetRect.width) / 2;
+      track.scrollBy({ left: offset, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    }
+
+    // Único ponto de "loop": ao avançar a partir do último card, volta
+    // suavemente para o primeiro. A seta/tecla esquerda não tem equivalente —
+    // fica desabilitada no primeiro card, sem voltar para o último.
+    function goNext() {
+      if (activeIndex >= slides.length - 1) {
+        scrollToIndex(0);
+      } else {
+        scrollToIndex(activeIndex + 1);
+      }
+    }
+
+    function onScroll() {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        updateDepth();
+        rafId = null;
+      });
+    }
+
+    track.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => updateDepth());
+
+    prevBtn?.addEventListener("click", () => {
+      if (prevBtn.disabled) return;
+      scrollToIndex(activeIndex - 1);
+    });
+    nextBtn?.addEventListener("click", () => goNext());
+    dots.forEach((dot, i) => dot.addEventListener("click", () => scrollToIndex(i)));
+
+    track.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goNext();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (activeIndex <= 0) return;
+        scrollToIndex(activeIndex - 1);
+      }
+    });
+
+    updateDepth();
+    syncControls();
+  }
+</script>

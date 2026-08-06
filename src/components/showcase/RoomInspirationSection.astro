@@ -1,0 +1,68 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { CatalogAmbiente, CatalogProduct } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  ambientes: CatalogAmbiente[];
+  products: CatalogProduct[];
+}
+const { id, ambientes, products } = Astro.props;
+
+function countFor(slug: string) {
+  return products.filter((p) => p.ambiente === slug).length;
+}
+
+const spanClasses = [
+  "sm:col-span-2 lg:col-span-2 lg:row-span-2",
+  "",
+  "",
+  "",
+  "",
+  "sm:col-span-2 lg:col-span-4",
+];
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1400px]">
+    <SectionHeader
+      eyebrow="Ambientes"
+      title="Inspirações completas por ambiente"
+      description="Composições pensadas para inspirar — cada ambiente reúne peças do catálogo que combinam entre si."
+    />
+
+    <div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[220px]">
+      {
+        ambientes.map((ambiente, i) => (
+          <a
+            href={`#catalogo?ambiente=${ambiente.slug}`}
+            data-ambiente-link={ambiente.slug}
+            data-animate
+            style={`transition-delay: ${i * 60}ms`}
+            class={`group relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] lg:aspect-auto ${spanClasses[i] ?? ""}`}
+          >
+            <img
+              src={ambiente.image}
+              alt={ambiente.name}
+              loading="lazy"
+              decoding="async"
+              width="1400"
+              height="933"
+              class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+            <div class="absolute inset-x-0 bottom-0 p-5">
+              <h3 class="font-[var(--font-heading)] text-lg font-semibold text-white sm:text-xl">{ambiente.name}</h3>
+              <p class="mt-1 line-clamp-2 max-w-md text-sm leading-relaxed text-white/80">{ambiente.description}</p>
+              <span class="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-white">
+                <Icon name="grid" class="h-4 w-4" />
+                {countFor(ambiente.slug)} {countFor(ambiente.slug) === 1 ? "peça" : "peças"} neste ambiente
+              </span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

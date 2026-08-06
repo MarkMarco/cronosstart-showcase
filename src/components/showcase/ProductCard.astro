@@ -1,0 +1,136 @@
+---
+import Icon from "../ui/Icon.astro";
+import { colorToHex } from "../../utils/colorSwatches";
+import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
+
+interface Props {
+  product: CatalogProduct;
+  category?: CatalogCategory;
+  collection?: CatalogCollection;
+  ambiente?: CatalogAmbiente;
+  animateDelay?: number;
+}
+const { product, category, collection, ambiente, animateDelay = 0 } = Astro.props;
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+---
+
+<div
+  data-animate
+  data-product-card
+  data-slug={product.slug}
+  data-category={product.category}
+  data-collection={product.collection ?? ""}
+  data-ambiente={product.ambiente ?? ""}
+  data-price={product.price}
+  data-available={String(product.available)}
+  data-offer={String(Boolean(product.offerActive))}
+  data-name={product.name.toLowerCase()}
+  data-created={product.createdAt}
+  data-order={product.displayOrder}
+  style={`transition-delay: ${animateDelay}ms`}
+  class="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(43,38,33,0.22)]"
+>
+  <div class="relative overflow-hidden">
+    <button type="button" data-open-product={product.slug} class="block aspect-[4/5] w-full">
+      <img
+        src={product.image}
+        alt={product.name}
+        loading="lazy"
+        decoding="async"
+        width="900"
+        height="1125"
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+      />
+    </button>
+
+    <div class="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
+      {product.badge && (
+        <span class="rounded-full bg-[var(--primary)] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
+          {product.badge}
+        </span>
+      )}
+      {product.offerActive && (
+        <span class="inline-flex items-center gap-1 rounded-full bg-[var(--accent)] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-white">
+          <Icon name="tag" class="h-3 w-3" />
+          Oferta
+        </span>
+      )}
+    </div>
+
+    <div class="absolute right-3 top-3 flex flex-col gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100">
+      <button
+        type="button"
+        data-quick-favorite={product.slug}
+        aria-label="Adicionar aos favoritos"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface)]/95 text-[var(--ink-muted)] shadow-sm transition-colors hover:text-[var(--accent)]"
+      >
+        <Icon name="heart" class="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        data-quick-add={product.slug}
+        aria-label="Adicionar ao carrinho"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface)]/95 text-[var(--ink-muted)] shadow-sm transition-colors hover:text-[var(--accent)]"
+      >
+        <Icon name="cart" class="h-4 w-4" />
+      </button>
+    </div>
+
+    {!product.available && (
+      <div class="absolute inset-0 flex items-center justify-center bg-[var(--ink)]/55">
+        <span class="rounded-full bg-[var(--surface)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">Indisponível</span>
+      </div>
+    )}
+  </div>
+
+  <div class="flex flex-1 flex-col p-4">
+    <p class="line-clamp-1 text-[0.7rem] font-medium uppercase tracking-wide text-[var(--ink-muted)]">
+      {category?.name ?? product.category}
+      {collection && <span> · {collection.name}</span>}
+      {ambiente && <span> · {ambiente.name}</span>}
+    </p>
+    <h3 class="mt-1.5 line-clamp-2 min-h-[2.6rem] font-[var(--font-heading)] text-base font-semibold leading-tight text-[var(--ink)]">
+      <button type="button" data-field="name" data-open-product={product.slug} class="text-left hover:text-[var(--accent)]">{product.name}</button>
+    </h3>
+
+    <div class="mt-2 flex h-3.5 gap-1.5">
+      {product.colors.map((c) => (
+        <span class="h-3.5 w-3.5 rounded-full border border-black/10" style={`background:${colorToHex(c)}`} title={c} />
+      ))}
+    </div>
+
+    <div class="mt-auto flex items-baseline gap-2 pt-2.5">
+      {product.previousPrice && (
+        <span class="text-sm text-[var(--ink-muted)] line-through">{formatBRL(product.previousPrice)}</span>
+      )}
+      <span data-field="price" class="text-base font-semibold text-[var(--ink)]">{formatBRL(product.price)}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { addToCart, toggleFavorite } from "../../utils/maisonLumeShop";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    const favSlug = target.closest<HTMLElement>("[data-quick-favorite]")?.dataset.quickFavorite;
+    if (favSlug) {
+      const active = toggleFavorite(favSlug);
+      const btn = target.closest<HTMLElement>("[data-quick-favorite]")!;
+      btn.classList.toggle("text-[var(--accent)]", active);
+      return;
+    }
+
+    const addSlug = target.closest<HTMLElement>("[data-quick-add]")?.dataset.quickAdd;
+    if (addSlug) {
+      addToCart(addSlug, 1);
+      const btn = target.closest<HTMLElement>("[data-quick-add]")!;
+      btn.classList.add("text-[var(--accent)]");
+      window.setTimeout(() => btn.classList.remove("text-[var(--accent)]"), 800);
+    }
+  });
+</script>

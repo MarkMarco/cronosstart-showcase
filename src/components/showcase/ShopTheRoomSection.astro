@@ -1,0 +1,144 @@
+---
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { CatalogAmbiente, CatalogProduct } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  ambientes: CatalogAmbiente[];
+  products: CatalogProduct[];
+}
+const { id, ambientes, products } = Astro.props;
+const shoppable = ambientes.filter((a) => a.shoppable);
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+interface ShopItem {
+  x: number;
+  y: number;
+  product: CatalogProduct;
+}
+
+function shopItemsFor(ambiente: CatalogAmbiente): ShopItem[] {
+  const result: ShopItem[] = [];
+  for (const hotspot of ambiente.hotspots ?? []) {
+    const product = products.find((p) => p.slug === hotspot.productSlug);
+    if (product) result.push({ x: hotspot.x, y: hotspot.y, product });
+  }
+  return result;
+}
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1400px]">
+    <SectionHeader
+      eyebrow="Compre o ambiente"
+      title="Cada peça, um clique"
+      description="Explore composições completas e veja o preço de cada item — clique em um número ou na lista ao lado para abrir os detalhes."
+    />
+
+    <div class="mt-10 space-y-16">
+      {
+        shoppable.map((ambiente) => {
+          const items = shopItemsFor(ambiente);
+          const subtotal = items.reduce((sum, item) => sum + item.product.price, 0);
+
+          return (
+            <div class="grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-start" data-animate>
+              <div class="relative overflow-hidden rounded-[var(--radius-card)]">
+                <img
+                  src={ambiente.image}
+                  alt={ambiente.name}
+                  loading="lazy"
+                  decoding="async"
+                  width="1400"
+                  height="933"
+                  class="aspect-[4/3] w-full object-cover"
+                />
+                {items.map((item, i) => (
+                  <button
+                    type="button"
+                    data-open-product={item.product.slug}
+                    aria-label={`Ver detalhes de ${item.product.name}`}
+                    style={`top:${item.y}%; left:${item.x}%`}
+                    class="absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-[var(--primary)]/90 text-sm font-semibold text-[var(--primary-ink)] shadow-md ring-4 ring-white/30 transition-transform hover:scale-110"
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <h3 class="font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)]">{ambiente.name}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-[var(--ink-muted)]">{ambiente.description}</p>
+
+                <ul class="mt-5 space-y-2">
+                  {items.map((item, i) => (
+                    <li>
+                      <button
+                        type="button"
+                        data-open-product={item.product.slug}
+                        class="flex w-full items-center gap-3 rounded-[var(--radius-control)] border border-[var(--border)] p-3 text-left transition-colors hover:border-[var(--accent)]"
+                      >
+                        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--surface)] text-sm font-semibold text-[var(--ink)]">
+                          {i + 1}
+                        </span>
+                        <img src={item.product.image} alt="" class="h-11 w-11 shrink-0 rounded-md object-cover" />
+                        <span class="min-w-0 flex-1">
+                          <span class="block truncate text-sm font-medium text-[var(--ink)]">{item.product.name}</span>
+                          <span class="block text-sm text-[var(--ink-muted)]">{formatBRL(item.product.price)}</span>
+                        </span>
+                        <Icon name="arrow-right" class="h-4 w-4 shrink-0 text-[var(--ink-muted)]" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+
+                <div class="mt-5 flex items-center justify-between rounded-[var(--radius-card)] border border-dashed border-[var(--border)] p-4">
+                  <span class="text-sm font-medium text-[var(--ink)]">Subtotal do ambiente</span>
+                  <span class="text-lg font-semibold text-[var(--ink)]">{formatBRL(subtotal)}</span>
+                </div>
+
+                <div class="mt-4 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    data-add-ambiente={ambiente.slug}
+                    data-ambiente-products={items.map((item) => item.product.slug).join(",")}
+                    class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+                  >
+                    <Icon name="cart" class="h-4 w-4" />
+                    Adicionar ambiente ao carrinho
+                  </button>
+                  <a
+                    href="#orcamento"
+                    class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  >
+                    Solicitar orçamento completo
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { addToCart } from "../../utils/maisonLumeShop";
+
+  document.addEventListener("click", (event) => {
+    const btn = (event.target as HTMLElement).closest<HTMLElement>("[data-add-ambiente]");
+    if (!btn) return;
+    const slugs = (btn.dataset.ambienteProducts || "").split(",").filter(Boolean);
+    slugs.forEach((slug) => addToCart(slug, 1));
+    const originalHtml = btn.innerHTML;
+    btn.textContent = "Ambiente adicionado ✓";
+    window.setTimeout(() => {
+      btn.innerHTML = originalHtml;
+    }, 1600);
+  });
+</script>

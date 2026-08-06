@@ -9,15 +9,22 @@ interface Props {
   description?: string;
   items: FaqItem[];
   id?: string;
+  /** Presença visual um pouco mais rica (sombra + selo decorativo). Opcional — não altera modelos existentes. */
+  elevated?: boolean;
 }
-const { eyebrow, title, description, items, id } = Astro.props;
+const { eyebrow, title, description, items, id, elevated = false } = Astro.props;
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
   <div class="mx-auto max-w-3xl">
     <SectionHeader eyebrow={eyebrow} title={title} description={description} align="center" class="mx-auto" />
 
-    <div class="mt-8 divide-y divide-[var(--border)] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)]">
+    <div class={`relative mt-8 divide-y divide-[var(--border)] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] ${elevated ? "shadow-[0_25px_60px_-25px_rgba(43,38,33,0.18)]" : ""}`}>
+      {elevated && (
+        <span class="absolute -top-4 left-6 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-ink)] shadow-md">
+          <Icon name="message-circle" class="h-4 w-4" />
+        </span>
+      )}
       {
         items.map((item) => (
           <details class="group px-6 py-4">

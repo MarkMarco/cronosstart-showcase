@@ -1,0 +1,122 @@
+---
+import Icon from "../ui/Icon.astro";
+import type { HeroChip } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  highlight?: string;
+  subheadline: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel?: string;
+  ctaSecondaryHref?: string;
+  chips?: HeroChip[];
+  heroImage: string;
+  detailImage: string;
+  featuredProductSlug: string;
+  featuredProductName: string;
+  featuredProductPrice: string;
+  featuredProductImage: string;
+  collectionName: string;
+}
+const {
+  eyebrow,
+  headline,
+  highlight,
+  subheadline,
+  ctaPrimaryLabel,
+  ctaPrimaryHref,
+  ctaSecondaryLabel,
+  ctaSecondaryHref,
+  chips,
+  heroImage,
+  detailImage,
+  featuredProductSlug,
+  featuredProductName,
+  featuredProductPrice,
+  featuredProductImage,
+  collectionName,
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-[var(--surface)]">
+  <div class="mx-auto grid max-w-[1400px] gap-10 px-6 pb-16 pt-10 sm:pt-14 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
+    <div data-animate>
+      {eyebrow && (
+        <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>
+          {eyebrow}
+        </p>
+      )}
+      <h1 class="font-[var(--font-heading)] text-4xl font-semibold leading-[1.1] tracking-tight text-[var(--ink)] sm:text-5xl lg:text-[3.4rem]">
+        {headline} {highlight && <span class="text-[var(--primary)]">{highlight}</span>}
+      </h1>
+      <p class="mt-5 max-w-lg text-lg leading-relaxed text-[var(--ink-muted)]">{subheadline}</p>
+
+      <p class="mt-5 text-sm text-[var(--ink-muted)]">
+        Coleção em destaque:
+        <a href="#colecoes" class="font-semibold text-[var(--ink)] underline decoration-[var(--accent)] decoration-2 underline-offset-4 hover:text-[var(--accent)]">{collectionName}</a>
+        — madeira clara e linho, inspirados na luz da manhã.
+      </p>
+
+      {chips && chips.length > 0 && (
+        <div class="mt-6 flex flex-wrap gap-2.5">
+          {chips.map((chip) => (
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-1.5 text-xs font-medium text-[var(--ink)]">
+              <Icon name={chip.icon} class="h-3.5 w-3.5 text-[var(--accent)]" />
+              {chip.label}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a
+          href={ctaPrimaryHref}
+          class="inline-flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-7 py-3.5 text-sm font-semibold text-[var(--primary-ink)] shadow-sm transition-transform hover:-translate-y-0.5"
+        >
+          {ctaPrimaryLabel}
+        </a>
+        {ctaSecondaryLabel && ctaSecondaryHref && (
+          <a
+            href={ctaSecondaryHref}
+            class="inline-flex items-center justify-center rounded-[var(--radius-control)] border border-[var(--border)] px-7 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            {ctaSecondaryLabel}
+          </a>
+        )}
+      </div>
+    </div>
+
+    <div class="relative" data-animate style="animation-delay: 100ms">
+      <div class="relative mx-auto max-w-md">
+        <div class="overflow-hidden rounded-[var(--radius-card)] shadow-[0_40px_80px_-30px_rgba(43,38,33,0.35)]">
+          <img
+            src={heroImage}
+            alt="Ambiente Maison Lume com iluminação natural e materiais claros"
+            width="1200"
+            height="1500"
+            class="aspect-[4/5] w-full object-cover"
+          />
+        </div>
+
+        <div class="absolute -left-6 bottom-10 hidden w-32 overflow-hidden rounded-[var(--radius-card)] border-4 border-[var(--surface)] shadow-[0_20px_45px_-15px_rgba(43,38,33,0.35)] sm:block">
+          <img src={detailImage} alt="Detalhe de material e textura" width="700" height="900" class="aspect-[4/5] w-full object-cover" />
+        </div>
+
+        <button
+          type="button"
+          data-open-product={featuredProductSlug}
+          class="absolute -right-4 bottom-6 flex w-48 items-center gap-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-3 text-left shadow-[0_20px_45px_-15px_rgba(43,38,33,0.4)] transition-transform hover:-translate-y-1 sm:-right-8"
+        >
+          <img src={featuredProductImage} alt="" width="56" height="56" class="h-14 w-14 shrink-0 rounded-lg object-cover" />
+          <span class="min-w-0">
+            <span class="block truncate text-xs font-semibold text-[var(--ink)]">{featuredProductName}</span>
+            <span class="block text-xs text-[var(--accent)]">{featuredProductPrice}</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

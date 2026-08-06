@@ -1,0 +1,365 @@
+---
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  whatsappNumber: string;
+}
+const { whatsappNumber } = Astro.props;
+---
+
+<div id="shopping-drawer" class="fixed inset-0 z-[110] hidden">
+  <div data-drawer-backdrop class="absolute inset-0 bg-[var(--ink)]/50 opacity-0 backdrop-blur-sm transition-opacity duration-300" aria-hidden="true"></div>
+
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="drawer-title"
+    data-drawer-panel
+    class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col bg-[var(--surface)] shadow-[-30px_0_60px_-30px_rgba(43,38,33,0.4)] transition-transform duration-300"
+  >
+    <div class="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
+      <div class="flex gap-1 rounded-full bg-[var(--surface-alt)] p-1">
+        <button
+          type="button"
+          data-drawer-tab="cart"
+          class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
+        >
+          Carrinho
+        </button>
+        <button
+          type="button"
+          data-drawer-tab="favorites"
+          class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
+        >
+          Favoritos
+        </button>
+      </div>
+      <button
+        type="button"
+        data-drawer-close
+        aria-label="Fechar"
+        class="flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
+      >
+        <Icon name="close" class="h-4 w-4" />
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 py-4">
+      <div data-drawer-panel-content="cart">
+        <ul data-cart-list class="space-y-3"></ul>
+        <div data-cart-empty class="hidden py-8 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--surface-alt)] text-[var(--ink-muted)]">
+            <Icon name="cart" class="h-5 w-5" />
+          </div>
+          <p class="mx-auto mt-3 max-w-[220px] text-sm text-[var(--ink-muted)]">
+            Seu carrinho está vazio. Explore o catálogo e adicione peças que combinam com você.
+          </p>
+          <button
+            type="button"
+            data-cart-explore
+            class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            Explorar catálogo
+            <Icon name="arrow-right" class="h-3.5 w-3.5" />
+          </button>
+          <div data-cart-suggestions class="mt-6 space-y-2 text-left"></div>
+        </div>
+      </div>
+      <div data-drawer-panel-content="favorites" class="hidden">
+        <ul data-favorites-list class="space-y-3"></ul>
+        <p data-favorites-empty class="hidden py-12 text-center text-sm text-[var(--ink-muted)]">
+          Você ainda não favoritou nenhuma peça. Toque no coração de um produto para guardá-lo aqui.
+        </p>
+      </div>
+    </div>
+
+    <div data-drawer-footer="cart" class="border-t border-[var(--border)] px-5 py-4">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-[var(--ink-muted)]">Subtotal demonstrativo</span>
+        <span data-cart-subtotal class="text-lg font-semibold text-[var(--ink)]">R$ 0,00</span>
+      </div>
+      <a
+        data-cart-whatsapp
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-3 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+      >
+        <Icon name="whatsapp" class="h-4 w-4" />
+        Enviar lista pelo WhatsApp
+      </a>
+      <p class="mt-2 text-center text-xs text-[var(--ink-muted)]">
+        Carrinho demonstrativo — valores e disponibilidade confirmados por um consultor, sem pagamento online.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ whatsappNumber }}>
+  window.__mlWhatsappNumberDrawer = whatsappNumber;
+</script>
+
+<script>
+  import { getCart, updateCartQuantity, removeFromCart, getCartCount, getFavorites, removeFavorite, addToCart } from "../../utils/maisonLumeShop";
+
+  function getProducts(): any[] {
+    const dataEl = document.getElementById("product-modal-data");
+    return dataEl ? JSON.parse(dataEl.textContent || "[]") : [];
+  }
+
+  function parsePrice(formatted: string): number {
+    return Number(formatted.replace(/[^\d,]/g, "").replace(",", ".")) || 0;
+  }
+
+  const drawer = document.getElementById("shopping-drawer");
+  const backdrop = drawer?.querySelector<HTMLElement>("[data-drawer-backdrop]");
+  const panel = drawer?.querySelector<HTMLElement>("[data-drawer-panel]");
+  let lastFocused: HTMLElement | null = null;
+
+  function setTab(tab: "cart" | "favorites") {
+    drawer?.querySelectorAll<HTMLElement>("[data-drawer-tab]").forEach((btn) => {
+      const isActive = btn.dataset.drawerTab === tab;
+      btn.classList.toggle("bg-[var(--primary)]", isActive);
+      btn.classList.toggle("text-[var(--primary-ink)]", isActive);
+      btn.classList.toggle("text-[var(--ink-muted)]", !isActive);
+    });
+    drawer?.querySelectorAll<HTMLElement>("[data-drawer-panel-content]").forEach((el) => {
+      el.classList.toggle("hidden", el.dataset.drawerPanelContent !== tab);
+    });
+    const footer = drawer?.querySelector<HTMLElement>('[data-drawer-footer="cart"]');
+    footer?.classList.toggle("hidden", tab !== "cart");
+  }
+
+  function renderCart() {
+    const products = getProducts();
+    const cart = getCart();
+    const list = drawer?.querySelector<HTMLElement>("[data-cart-list]")!;
+    const empty = drawer?.querySelector<HTMLElement>("[data-cart-empty]")!;
+    list.classList.toggle("hidden", cart.length === 0);
+    list.innerHTML = "";
+    empty.classList.toggle("hidden", cart.length > 0);
+
+    if (cart.length === 0) {
+      const suggestions = drawer?.querySelector<HTMLElement>("[data-cart-suggestions]")!;
+      suggestions.innerHTML = "";
+      products
+        .filter((p) => p.featured && p.available)
+        .slice(0, 2)
+        .forEach((product) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.dataset.openProduct = product.slug;
+          btn.className = "flex w-full items-center gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-2.5 text-left transition-colors hover:border-[var(--accent)]";
+          btn.innerHTML = `<img src="${product.image ?? ""}" alt="" class="h-12 w-12 shrink-0 rounded-lg object-cover" /><span class="min-w-0"><span class="block truncate text-sm font-medium text-[var(--ink)]">${product.name}</span><span class="block text-sm text-[var(--ink-muted)]">${product.price}</span></span>`;
+          suggestions.appendChild(btn);
+        });
+    }
+
+    let subtotal = 0;
+    cart.forEach((item) => {
+      const product = products.find((p) => p.slug === item.slug);
+      if (!product) return;
+      const unitPrice = parsePrice(product.price);
+      subtotal += unitPrice * item.quantity;
+
+      const li = document.createElement("li");
+      li.className = "flex gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-3";
+      li.innerHTML = `
+        <img src="${product.image ?? ""}" alt="" class="h-16 w-16 shrink-0 rounded-lg object-cover" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-[var(--ink)]">${product.name}</p>
+          <p class="text-sm text-[var(--ink-muted)]">${product.price}</p>
+          <div class="mt-1.5 flex items-center gap-2">
+            <button type="button" data-qty-dec="${item.slug}" class="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--border)] text-xs">-</button>
+            <span class="w-5 text-center text-xs font-semibold">${item.quantity}</span>
+            <button type="button" data-qty-inc="${item.slug}" class="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--border)] text-xs">+</button>
+            <button type="button" data-remove-item="${item.slug}" class="ml-auto text-xs text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+
+    const subtotalEl = drawer?.querySelector<HTMLElement>("[data-cart-subtotal]")!;
+    subtotalEl.textContent = subtotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    const waLink = drawer?.querySelector<HTMLAnchorElement>("[data-cart-whatsapp]")!;
+    const lines = cart
+      .map((item) => {
+        const product = products.find((p) => p.slug === item.slug);
+        return product ? `- ${product.name} (x${item.quantity}) — ${product.price}` : "";
+      })
+      .filter(Boolean);
+
+    if (lines.length > 0) {
+      const message = `Olá! Gostaria de solicitar um orçamento para os seguintes produtos da Maison Lume:\n${lines.join("\n")}\nSubtotal demonstrativo: ${subtotalEl.textContent}`;
+      waLink.href = `https://wa.me/${(window as any).__mlWhatsappNumberDrawer}?text=${encodeURIComponent(message)}`;
+      waLink.removeAttribute("aria-disabled");
+      waLink.classList.remove("pointer-events-none", "opacity-40");
+    } else {
+      waLink.href = "#";
+      waLink.setAttribute("aria-disabled", "true");
+      waLink.classList.add("pointer-events-none", "opacity-40");
+    }
+
+    updateCounts();
+  }
+
+  function renderFavorites() {
+    const products = getProducts();
+    const favs = getFavorites();
+    const list = drawer?.querySelector<HTMLElement>("[data-favorites-list]")!;
+    const empty = drawer?.querySelector<HTMLElement>("[data-favorites-empty]")!;
+    list.innerHTML = "";
+    empty.classList.toggle("hidden", favs.length > 0);
+
+    favs.forEach((slug) => {
+      const product = products.find((p) => p.slug === slug);
+      if (!product) return;
+      const li = document.createElement("li");
+      li.className = "flex gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-3";
+      li.innerHTML = `
+        <img src="${product.image ?? ""}" alt="" class="h-16 w-16 shrink-0 rounded-lg object-cover" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-[var(--ink)]">${product.name}</p>
+          <p class="text-sm text-[var(--ink-muted)]">${product.price}</p>
+          <div class="mt-1.5 flex items-center gap-3">
+            <button type="button" data-fav-to-cart="${slug}" class="text-xs font-semibold text-[var(--accent)]">Adicionar ao carrinho</button>
+            <button type="button" data-fav-remove="${slug}" class="text-xs text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+          </div>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+
+    updateCounts();
+  }
+
+  function updateCounts() {
+    const cartCount = getCartCount();
+    const favCount = getFavorites().length;
+    document.querySelectorAll<HTMLElement>("[data-cart-count]").forEach((el) => {
+      el.textContent = String(cartCount);
+      el.classList.toggle("hidden", cartCount === 0);
+      el.classList.toggle("flex", cartCount > 0);
+    });
+    document.querySelectorAll<HTMLElement>("[data-favorites-count]").forEach((el) => {
+      el.textContent = String(favCount);
+      el.classList.toggle("hidden", favCount === 0);
+      el.classList.toggle("flex", favCount > 0);
+    });
+  }
+
+  function getFocusable(): HTMLElement[] {
+    if (!panel) return [];
+    return Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+  }
+
+  function openDrawer(tab: "cart" | "favorites") {
+    if (!drawer || !backdrop || !panel) return;
+    setTab(tab);
+    renderCart();
+    renderFavorites();
+    lastFocused = document.activeElement as HTMLElement;
+    drawer.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      backdrop.classList.remove("opacity-0");
+      panel.classList.remove("translate-x-full");
+    });
+    window.setTimeout(() => panel.querySelector<HTMLElement>("[data-drawer-close]")?.focus(), 50);
+  }
+
+  function closeDrawer() {
+    if (!drawer || !backdrop || !panel) return;
+    backdrop.classList.add("opacity-0");
+    panel.classList.add("translate-x-full");
+    document.body.style.overflow = "";
+    window.setTimeout(() => drawer.classList.add("hidden"), 300);
+    lastFocused?.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const openTrigger = target.closest<HTMLElement>("[data-open-drawer]");
+    if (openTrigger) {
+      event.preventDefault();
+      openDrawer(openTrigger.dataset.openDrawer as "cart" | "favorites");
+      return;
+    }
+    if (target.closest("[data-drawer-close]") || target === backdrop) {
+      closeDrawer();
+      return;
+    }
+    if (target.closest("[data-cart-explore]")) {
+      closeDrawer();
+      window.setTimeout(() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" }), 300);
+      return;
+    }
+    if (target.closest("[data-cart-suggestions] [data-open-product]")) {
+      closeDrawer();
+      return;
+    }
+    const tabBtn = target.closest<HTMLElement>("[data-drawer-tab]");
+    if (tabBtn) {
+      setTab(tabBtn.dataset.drawerTab as "cart" | "favorites");
+      return;
+    }
+    const decSlug = target.closest<HTMLElement>("[data-qty-dec]")?.dataset.qtyDec;
+    if (decSlug) {
+      const item = getCart().find((i) => i.slug === decSlug);
+      if (item) updateCartQuantity(decSlug, item.quantity - 1);
+      renderCart();
+      return;
+    }
+    const incSlug = target.closest<HTMLElement>("[data-qty-inc]")?.dataset.qtyInc;
+    if (incSlug) {
+      const item = getCart().find((i) => i.slug === incSlug);
+      if (item) updateCartQuantity(incSlug, item.quantity + 1);
+      renderCart();
+      return;
+    }
+    const removeSlug = target.closest<HTMLElement>("[data-remove-item]")?.dataset.removeItem;
+    if (removeSlug) {
+      removeFromCart(removeSlug);
+      renderCart();
+      return;
+    }
+    const favToCart = target.closest<HTMLElement>("[data-fav-to-cart]")?.dataset.favToCart;
+    if (favToCart) {
+      addToCart(favToCart, 1);
+      renderCart();
+      return;
+    }
+    const favRemove = target.closest<HTMLElement>("[data-fav-remove]")?.dataset.favRemove;
+    if (favRemove) {
+      removeFavorite(favRemove);
+      renderFavorites();
+      return;
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!drawer || drawer.classList.contains("hidden")) return;
+    if (event.key === "Escape") {
+      closeDrawer();
+      return;
+    }
+    if (event.key === "Tab") {
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener("ml:cart-updated", updateCounts);
+  window.addEventListener("ml:favorites-updated", updateCounts);
+  updateCounts();
+</script>

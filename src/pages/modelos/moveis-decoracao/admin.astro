@@ -1,0 +1,1627 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import MaisonLumeLogo from "../../../components/logos/MaisonLumeLogo.astro";
+import Icon from "../../../components/ui/Icon.astro";
+import { maisonLumeConfig as config, categories, collections, ambientes, products } from "../../../config/showcases/moveis-decoracao";
+
+const seo = {
+  title: "Painel administrativo — Maison Lume (modelo demonstrativo)",
+  description: "Painel administrativo demonstrativo de catálogo, ofertas e conteúdo da Maison Lume.",
+};
+
+const seedProducts = products.map((p) => ({ ...p, archived: false }));
+const seedCategories = categories.map((c) => ({ ...c }));
+const seedCollections = collections.map((c) => ({ ...c }));
+const seedAmbientes = ambientes.map((a) => ({ ...a }));
+
+const seedBanners = [
+  {
+    id: "banner-1",
+    title: "Coleção Aurora chegou",
+    subtitle: "Tons claros para começar a estação com leveza.",
+    ctaLabel: "Ver coleção",
+    ctaHref: "#colecoes",
+    active: true,
+    order: 1,
+    startDate: "2026-06-01",
+    endDate: "",
+  },
+  {
+    id: "banner-2",
+    title: "Até 20% em peças selecionadas",
+    subtitle: "Ofertas por tempo limitado no catálogo.",
+    ctaLabel: "Ver ofertas",
+    ctaHref: "#ofertas",
+    active: false,
+    order: 2,
+    startDate: "",
+    endDate: "",
+  },
+];
+
+const seedQuoteRequests = [
+  {
+    id: "req-1",
+    name: "Fernanda Lopes",
+    phone: "(11) 98888-1234",
+    email: "fernanda@exemplo.com",
+    interest: "Sofá Modular Aurora",
+    city: "São Paulo/SP",
+    message: "Gostaria de saber prazo de entrega e cores disponíveis.",
+    contactPreference: "WhatsApp",
+    status: "novo",
+    notes: "",
+    createdAt: "2026-07-20",
+  },
+  {
+    id: "req-2",
+    name: "Carlos Menezes",
+    phone: "(21) 97777-5678",
+    email: "carlos@exemplo.com",
+    interest: "Sala contemporânea (ambiente completo)",
+    city: "Rio de Janeiro/RJ",
+    message: "Quero orçar o ambiente inteiro, incluindo iluminação.",
+    contactPreference: "E-mail",
+    status: "em atendimento",
+    notes: "Catálogo enviado por e-mail em 22/07.",
+    createdAt: "2026-07-18",
+  },
+  {
+    id: "req-3",
+    name: "Juliana Prado",
+    phone: "(31) 96666-4321",
+    email: "juliana@exemplo.com",
+    interest: "Mesa de Jantar Terra 6 Lugares",
+    city: "Belo Horizonte/MG",
+    message: "Confirmar se acompanha as cadeiras no valor.",
+    contactPreference: "Telefone",
+    status: "orçamento enviado",
+    notes: "",
+    createdAt: "2026-07-10",
+  },
+  {
+    id: "req-4",
+    name: "Roberto Alves",
+    phone: "(41) 95555-9876",
+    email: "roberto@exemplo.com",
+    interest: "Cadeira Ergonômica Essencial",
+    city: "Curitiba/PR",
+    message: "Pedido finalizado na loja física.",
+    contactPreference: "WhatsApp",
+    status: "concluído",
+    notes: "Cliente satisfeito.",
+    createdAt: "2026-06-30",
+  },
+];
+
+const seedSettings = {
+  companyName: config.company.name,
+  whatsapp: config.contact.whatsappNumber,
+  phone: config.contact.phone,
+  email: config.contact.email,
+  address: `${config.contact.city}/${config.contact.state}`,
+  hours: config.contact.hours ?? "",
+  instagram: config.contact.instagram ?? "",
+  facebook: config.contact.facebook ?? "",
+  deliveryInfo: "Prazo e condições de entrega calculados no orçamento, conforme a região.",
+  institutionalText: config.about?.paragraphs?.[0] ?? "",
+  footerText: "Modelo demonstrativo desenvolvido pela CronosStart.",
+  defaultWhatsappMessage: config.contact.whatsappMessage,
+};
+
+const iconOptions = ["sofa", "bed", "layers", "briefcase", "lamp", "palette", "leaf", "home", "grid", "tag", "ruler", "sparkle"];
+const toneOptions = ["sand", "linen", "walnut", "graphite", "stone", "clay", "sage"];
+
+const tabs = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "produtos", label: "Produtos" },
+  { id: "categorias", label: "Categorias" },
+  { id: "colecoes", label: "Coleções" },
+  { id: "ambientes", label: "Ambientes" },
+  { id: "ofertas", label: "Ofertas" },
+  { id: "banners", label: "Banners" },
+  { id: "solicitacoes", label: "Solicitações" },
+  { id: "config", label: "Configurações" },
+];
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <MaisonLumeLogo slot="header-logo" />
+  <MaisonLumeLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <div data-login-gate class="mx-auto max-w-sm py-16 text-center">
+        <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
+          <Icon name="key" class="h-6 w-6" />
+        </span>
+        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-[var(--ink)]">Acesso restrito</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Maison Lume</p>
+        <form data-login-form class="mt-8 space-y-3 text-left">
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            E-mail
+            <input
+              type="email"
+              value="loja@maisonlume-demo.com.br"
+              readonly
+              class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none"
+            />
+          </label>
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            Senha
+            <input
+              type="password"
+              value="demonstracao"
+              readonly
+              class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none"
+            />
+          </label>
+          <button
+            type="submit"
+            class="!mt-6 w-full rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+          >
+            Entrar no painel
+          </button>
+          <p class="text-center text-xs text-[var(--ink-muted)]">
+            Acesso demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.
+          </p>
+        </form>
+      </div>
+
+      <div data-admin-content class="hidden">
+        <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-[var(--ink)]">
+          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas
+          neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador
+          e dispositivo.
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
+            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">
+              Maison Lume
+            </h1>
+          </div>
+          <button
+            type="button"
+            data-action="reset-all"
+            class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            <Icon name="refresh" class="h-4 w-4" />
+            Restaurar dados originais
+          </button>
+        </div>
+
+        <div class="-mx-6 mt-6 flex gap-2 overflow-x-auto px-6 pb-1" role="tablist">
+          {
+            tabs.map((tab) => (
+              <button
+                type="button"
+                role="tab"
+                data-tab-button={tab.id}
+                class="shrink-0 rounded-full border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--ink-muted)] transition-colors"
+              >
+                {tab.label}
+              </button>
+            ))
+          }
+        </div>
+
+        <!-- DASHBOARD -->
+        <div data-panel="dashboard" class="mt-6">
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Produtos ativos</p>
+              <p data-stat="produtos-ativos" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Em oferta</p>
+              <p data-stat="em-oferta" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Categorias ativas</p>
+              <p data-stat="categorias-ativas" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Solicitações novas</p>
+              <p data-stat="solicitacoes-novas" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Coleções ativas</p>
+              <p data-stat="colecoes-ativas" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Ambientes ativos</p>
+              <p data-stat="ambientes-ativos" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Banners ativos</p>
+              <p data-stat="banners-ativos" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm text-[var(--ink-muted)]">
+            Em um projeto real, esta área também mostraria os produtos e categorias mais visitados, com base em
+            dados reais de acesso. Como este é um modelo demonstrativo sem tráfego real, esse indicador não é
+            simulado aqui para não apresentar números fictícios como se fossem reais.
+          </div>
+        </div>
+
+        <!-- PRODUTOS -->
+        <div data-panel="produtos" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-[var(--ink)]">Produtos</h2>
+            <button
+              type="button"
+              data-action="toggle-product-form"
+              class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+            >
+              <Icon name="check" class="h-4 w-4" />
+              Adicionar produto
+            </button>
+          </div>
+
+          <div class="mt-4 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 sm:grid-cols-[1.3fr_1fr_1fr_1fr_auto]">
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Buscar
+              <input type="text" data-p-search placeholder="Nome ou SKU..." class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Categoria
+              <select data-p-filter-category class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                <option value="">Todas</option>
+                {categories.map((c) => <option value={c.slug}>{c.name}</option>)}
+              </select>
+            </label>
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Status
+              <select data-p-filter-status class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                <option value="">Todos</option>
+                <option value="disponivel">Disponível</option>
+                <option value="indisponivel">Indisponível</option>
+              </select>
+            </label>
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Ordenar por
+              <select data-p-sort class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                <option value="order">Ordem de exibição</option>
+                <option value="name">Nome</option>
+                <option value="price-asc">Menor preço</option>
+                <option value="price-desc">Maior preço</option>
+              </select>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--ink-muted)] sm:pt-4">
+              <input type="checkbox" data-p-show-archived class="h-4 w-4 rounded accent-[var(--primary)]" />
+              Arquivados
+            </label>
+          </div>
+
+          <form data-product-form class="mt-6 hidden grid-cols-1 gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <h3 data-product-form-title class="text-base font-semibold text-[var(--ink)]">Novo produto</h3>
+              <input type="hidden" name="id" />
+              <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Nome
+                  <input type="text" name="name" data-pf="name" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  SKU
+                  <input type="text" name="sku" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Categoria
+                  <select name="category" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                    {categories.map((c) => <option value={c.slug}>{c.name}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Coleção
+                  <select name="collection" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                    <option value="">Nenhuma</option>
+                    {collections.map((c) => <option value={c.slug}>{c.name}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Ambiente
+                  <select name="ambiente" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                    <option value="">Nenhum</option>
+                    {ambientes.map((a) => <option value={a.slug}>{a.name}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Preço (R$)
+                  <input type="number" name="price" data-pf="price" required min="0" step="10" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Preço anterior (oferta)
+                  <input type="number" name="previousPrice" data-pf="previousPrice" min="0" step="10" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
+                  <input type="checkbox" name="offerActive" class="h-4 w-4 rounded accent-[var(--primary)]" />
+                  Oferta ativa
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Oferta válida até
+                  <input type="date" name="offerEndsAt" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Tom visual
+                  <select name="tone" data-pf="tone" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                    {toneOptions.map((t) => <option value={t}>{t}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Ícone
+                  <select name="icon" data-pf="icon" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                    {iconOptions.map((i) => <option value={i}>{i}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Materiais (separados por vírgula)
+                  <input type="text" name="materials" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Dimensões
+                  <input type="text" name="dimensions" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Cores (separadas por vírgula)
+                  <input type="text" name="colors" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Selo (opcional)
+                  <input type="text" name="badge" placeholder="Ex.: Novo" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Ordem de exibição
+                  <input type="number" name="displayOrder" min="1" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+                </label>
+                <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+                  <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+                    <input type="checkbox" name="available" checked class="h-4 w-4 rounded accent-[var(--primary)]" />
+                    Disponível
+                  </label>
+                  <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+                    <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--primary)]" />
+                    Destaque
+                  </label>
+                  <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+                    <input type="checkbox" name="isNew" class="h-4 w-4 rounded accent-[var(--primary)]" />
+                    Novo
+                  </label>
+                </div>
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Caminho da imagem
+                  <input
+                    type="text"
+                    name="image"
+                    data-pf="image"
+                    placeholder="/images/showcases/moveis-decoracao/products/nome-do-produto.jpg"
+                    class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
+                  />
+                  <span class="mt-1 block text-xs text-[var(--ink-muted)]">
+                    Use um caminho de imagem já existente em /images/showcases/moveis-decoracao/products/ — se deixar em branco, um tom de cor é usado como imagem padrão.
+                  </span>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Descrição
+                  <textarea name="description" rows="3" data-pf="description" class="mt-1.5 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"></textarea>
+                </label>
+              </div>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+                  Publicar produto
+                </button>
+                <button type="button" data-action="duplicate-current" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]">
+                  Duplicar
+                </button>
+                <button type="button" data-action="cancel-product-form" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+              <div class="mt-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
+                <div class="relative aspect-[4/3] w-full">
+                  <div data-preview="visual" class="absolute inset-0"></div>
+                  <img data-preview="image" src="" alt="" class="absolute inset-0 hidden h-full w-full object-cover" />
+                </div>
+                <div class="p-5">
+                  <p data-preview="taxonomy" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Categoria</p>
+                  <h3 data-preview="name" class="mt-1 text-base font-semibold text-[var(--ink)]">Nome do produto</h3>
+                  <p data-preview="price" class="mt-3 font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)]">R$ 0</p>
+                  <p data-preview="description" class="mt-2 text-xs text-[var(--ink-muted)]"></p>
+                </div>
+              </div>
+              <p class="mt-2 text-xs text-[var(--ink-muted)]">Assim o card aparecerá no catálogo público, antes de publicar.</p>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[860px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Produto</th>
+                  <th class="px-4 py-3 font-medium">Categoria</th>
+                  <th class="px-4 py-3 font-medium">Preço</th>
+                  <th class="px-4 py-3 font-medium">Disponibilidade</th>
+                  <th class="px-4 py-3 font-medium">Destaque</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-product-table-body></tbody>
+            </table>
+          </div>
+          <p data-product-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">Nenhum produto encontrado para esses filtros.</p>
+        </div>
+
+        <!-- CATEGORIAS -->
+        <div data-panel="categorias" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Categorias</h2>
+          <form data-taxonomy-form="categorias" class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Ícone
+              <select name="icon" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                {iconOptions.map((i) => <option value={i}>{i}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <div class="flex items-center gap-4 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar categoria</button>
+              <button type="button" data-action="cancel-taxonomy-form" data-target="categorias" class="text-sm font-semibold text-[var(--ink-muted)]">Cancelar edição</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Categoria</th>
+                  <th class="px-4 py-3 font-medium">Produtos</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-taxonomy-table-body="categorias"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm">
+            <span class="font-medium text-[var(--ink)]">Mover produtos de</span>
+            <select data-move-from="categorias" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <span class="text-[var(--ink-muted)]">para</span>
+            <select data-move-to="categorias" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <button type="button" data-action="move-products" data-target="categorias" class="rounded-[var(--radius-control)] border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)]">Mover</button>
+          </div>
+        </div>
+
+        <!-- COLECOES -->
+        <div data-panel="colecoes" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Coleções</h2>
+          <form data-taxonomy-form="colecoes" class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Tom visual
+              <select name="tone" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                {toneOptions.map((t) => <option value={t}>{t}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Caminho da imagem
+              <input type="text" name="image" placeholder="/images/showcases/moveis-decoracao/collections/nome.jpg" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+              <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--primary)]" />
+              Coleção em destaque
+            </label>
+            <div class="flex items-center gap-4">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar coleção</button>
+              <button type="button" data-action="cancel-taxonomy-form" data-target="colecoes" class="text-sm font-semibold text-[var(--ink-muted)]">Cancelar edição</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Coleção</th>
+                  <th class="px-4 py-3 font-medium">Produtos</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-taxonomy-table-body="colecoes"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm">
+            <span class="font-medium text-[var(--ink)]">Mover produtos de</span>
+            <select data-move-from="colecoes" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <span class="text-[var(--ink-muted)]">para</span>
+            <select data-move-to="colecoes" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <button type="button" data-action="move-products" data-target="colecoes" class="rounded-[var(--radius-control)] border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)]">Mover</button>
+          </div>
+        </div>
+
+        <!-- AMBIENTES -->
+        <div data-panel="ambientes" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Ambientes</h2>
+          <form data-taxonomy-form="ambientes" class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Tom visual
+              <select name="tone" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">
+                {toneOptions.map((t) => <option value={t}>{t}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Caminho da imagem
+              <input type="text" name="image" placeholder="/images/showcases/moveis-decoracao/ambientes/nome.jpg" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+              <input type="checkbox" name="shoppable" class="h-4 w-4 rounded accent-[var(--primary)]" />
+              Habilitar "Compre o ambiente"
+            </label>
+            <div class="flex items-center gap-4">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar ambiente</button>
+              <button type="button" data-action="cancel-taxonomy-form" data-target="ambientes" class="text-sm font-semibold text-[var(--ink-muted)]">Cancelar edição</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Ambiente</th>
+                  <th class="px-4 py-3 font-medium">Produtos</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-taxonomy-table-body="ambientes"></tbody>
+            </table>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm">
+            <span class="font-medium text-[var(--ink)]">Mover produtos de</span>
+            <select data-move-from="ambientes" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <span class="text-[var(--ink-muted)]">para</span>
+            <select data-move-to="ambientes" class="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm"></select>
+            <button type="button" data-action="move-products" data-target="ambientes" class="rounded-[var(--radius-control)] border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)]">Mover</button>
+          </div>
+        </div>
+
+        <!-- OFERTAS -->
+        <div data-panel="ofertas" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Ofertas</h2>
+          <p class="mt-1 text-sm text-[var(--ink-muted)]">Gerencie os preços promocionais e a validade de cada oferta ativa no catálogo.</p>
+          <label class="mt-4 flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+            <input type="checkbox" data-offers-show-expired class="h-4 w-4 rounded accent-[var(--primary)]" />
+            Mostrar também ofertas expiradas
+          </label>
+          <div class="mt-4 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[820px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Produto</th>
+                  <th class="px-4 py-3 font-medium">Preço atual</th>
+                  <th class="px-4 py-3 font-medium">Preço anterior</th>
+                  <th class="px-4 py-3 font-medium">Válida até</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium">Destaque</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-offers-table-body></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BANNERS -->
+        <div data-panel="banners" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Banners</h2>
+          <form data-banner-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="id" />
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Título
+              <input type="text" name="title" required class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Subtítulo
+              <input type="text" name="subtitle" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Texto do botão
+              <input type="text" name="ctaLabel" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Destino do botão
+              <input type="text" name="ctaHref" placeholder="#catalogo" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Início da exibição
+              <input type="date" name="startDate" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Fim da exibição
+              <input type="date" name="endDate" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+              <input type="checkbox" name="active" class="h-4 w-4 rounded accent-[var(--primary)]" />
+              Banner ativo
+            </label>
+            <div class="flex items-center gap-4 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar banner</button>
+              <button type="button" data-action="cancel-banner-form" class="text-sm font-semibold text-[var(--ink-muted)]">Cancelar edição</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Banner</th>
+                  <th class="px-4 py-3 font-medium">Período</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-banner-table-body></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SOLICITAÇÕES -->
+        <div data-panel="solicitacoes" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Solicitações de orçamento</h2>
+          <p class="mt-1 rounded-xl border border-dashed border-[var(--border)] p-3 text-sm text-[var(--ink-muted)]">
+            Dados de exemplo — em um projeto real, aqui apareceriam as solicitações reais enviadas pelos visitantes através do formulário de orçamento.
+          </p>
+          <div class="mt-4 space-y-3" data-quote-list></div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div data-panel="config" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Configurações</h2>
+          <form data-settings-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome da empresa
+              <input type="text" name="companyName" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              WhatsApp (com DDI/DDD)
+              <input type="text" name="whatsapp" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Telefone
+              <input type="text" name="phone" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              E-mail
+              <input type="email" name="email" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Endereço (fictício)
+              <input type="text" name="address" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Horário de atendimento
+              <input type="text" name="hours" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Instagram (URL)
+              <input type="text" name="instagram" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Facebook (URL)
+              <input type="text" name="facebook" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Informações de entrega
+              <input type="text" name="deliveryInfo" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Texto institucional
+              <textarea name="institutionalText" rows="3" class="mt-1.5 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Texto do rodapé
+              <input type="text" name="footerText" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Mensagem padrão do WhatsApp
+              <input type="text" name="defaultWhatsappMessage" class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]" />
+            </label>
+            <div class="sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar configurações</button>
+              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">Configurações salvas neste navegador.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>
+
+<script define:vars={{ seedProducts, seedCategories, seedCollections, seedAmbientes, seedBanners, seedQuoteRequests, seedSettings }}>
+  const STORAGE_KEY = "maison-lume-admin-v1";
+  const AUTH_KEY = "maison-lume-admin-authed";
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  }
+  function slugify(text) {
+    return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+  function formatBRL(value) {
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  function todayISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function loadState() {
+    const seed = {
+      products: seedProducts,
+      categories: seedCategories,
+      collections: seedCollections,
+      ambientes: seedAmbientes,
+      banners: seedBanners,
+      quoteRequests: seedQuoteRequests,
+      settings: seedSettings,
+    };
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return { ...seed, ...parsed };
+      }
+    } catch {}
+    saveState(seed);
+    return seed;
+  }
+  function saveState(next) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {}
+  }
+
+  let state = loadState();
+  const pendingDeletes = new Set();
+
+  // --- Login demonstrativo ---
+  const loginGate = document.querySelector("[data-login-gate]");
+  const adminContent = document.querySelector("[data-admin-content]");
+  const loginForm = document.querySelector("[data-login-form]");
+  function unlock() {
+    loginGate.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+    try {
+      window.sessionStorage.setItem(AUTH_KEY, "1");
+    } catch {}
+  }
+  loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    unlock();
+  });
+  try {
+    if (window.sessionStorage.getItem(AUTH_KEY) === "1") unlock();
+  } catch {}
+
+  // --- Tabs ---
+  const tabButtons = Array.from(document.querySelectorAll("[data-tab-button]"));
+  const panels = Array.from(document.querySelectorAll("[data-panel]"));
+  function activateTab(id) {
+    tabButtons.forEach((btn) => {
+      const active = btn.dataset.tabButton === id;
+      btn.classList.toggle("border-[var(--primary)]", active);
+      btn.classList.toggle("bg-[var(--primary)]", active);
+      btn.classList.toggle("text-[var(--primary-ink)]", active);
+      btn.classList.toggle("text-[var(--ink-muted)]", !active);
+    });
+    panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.panel !== id));
+  }
+  tabButtons.forEach((btn) => btn.addEventListener("click", () => activateTab(btn.dataset.tabButton)));
+  activateTab("dashboard");
+
+  // --- Dashboard ---
+  function renderDashboard() {
+    const activeProducts = state.products.filter((p) => !p.archived);
+    document.querySelector('[data-stat="produtos-ativos"]').textContent = String(activeProducts.length);
+    document.querySelector('[data-stat="em-oferta"]').textContent = String(activeProducts.filter((p) => p.offerActive).length);
+    document.querySelector('[data-stat="categorias-ativas"]').textContent = String(state.categories.filter((c) => c.active).length);
+    document.querySelector('[data-stat="colecoes-ativas"]').textContent = String(state.collections.filter((c) => c.active).length);
+    document.querySelector('[data-stat="ambientes-ativos"]').textContent = String(state.ambientes.filter((a) => a.active).length);
+    document.querySelector('[data-stat="banners-ativos"]').textContent = String(state.banners.filter((b) => b.active).length);
+    document.querySelector('[data-stat="solicitacoes-novas"]').textContent = String(state.quoteRequests.filter((q) => q.status === "novo").length);
+  }
+
+  // ============ PRODUTOS ============
+  const toneGradient = {
+    sand: "linear-gradient(145deg, #efe4d2 0%, #e2cfae 100%)",
+    linen: "linear-gradient(145deg, #f4efe6 0%, #e6dccb 100%)",
+    walnut: "linear-gradient(145deg, #cbb08c 0%, #8a6a49 100%)",
+    graphite: "linear-gradient(145deg, #4b4741 0%, #2b2621 100%)",
+    stone: "linear-gradient(145deg, #d8d2c6 0%, #b6ac9a 100%)",
+    clay: "linear-gradient(145deg, #d1a37e 0%, #a9784f 100%)",
+    sage: "linear-gradient(145deg, #cbd3bf 0%, #a7b190 100%)",
+  };
+
+  const productForm = document.querySelector("[data-product-form]");
+  const productFormTitle = document.querySelector("[data-product-form-title]");
+  const productTableBody = document.querySelector("[data-product-table-body]");
+  const productEmpty = document.querySelector("[data-product-empty]");
+  const pSearch = document.querySelector("[data-p-search]");
+  const pFilterCategory = document.querySelector("[data-p-filter-category]");
+  const pFilterStatus = document.querySelector("[data-p-filter-status]");
+  const pSort = document.querySelector("[data-p-sort]");
+  const pShowArchived = document.querySelector("[data-p-show-archived]");
+
+  function categoryName(slug) {
+    return state.categories.find((c) => c.slug === slug)?.name ?? slug;
+  }
+
+  function showProductForm(editing) {
+    productForm.classList.remove("hidden");
+    productForm.classList.add("grid");
+    productFormTitle.textContent = editing ? "Editar produto" : "Novo produto";
+    updateProductPreview();
+    productForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideProductForm() {
+    productForm.classList.add("hidden");
+    productForm.classList.remove("grid");
+    productForm.reset();
+    productForm.querySelector('[name="id"]').value = "";
+  }
+
+  function updateProductPreview() {
+    const get = (name) => productForm.querySelector(`[name="${name}"]`)?.value || "";
+    document.querySelector('[data-preview="name"]').textContent = get("name") || "Nome do produto";
+    document.querySelector('[data-preview="taxonomy"]').textContent = categoryName(productForm.querySelector('[name="category"]').value);
+    document.querySelector('[data-preview="price"]').textContent = formatBRL(get("price"));
+    document.querySelector('[data-preview="description"]').textContent = get("description");
+    const tone = get("tone") || "sand";
+    document.querySelector('[data-preview="visual"]').style.background = toneGradient[tone] ?? toneGradient.sand;
+    const image = get("image");
+    const imgEl = document.querySelector('[data-preview="image"]');
+    const visualEl = document.querySelector('[data-preview="visual"]');
+    if (image) {
+      imgEl.src = image;
+      imgEl.classList.remove("hidden");
+      visualEl.classList.add("hidden");
+    } else {
+      imgEl.classList.add("hidden");
+      visualEl.classList.remove("hidden");
+    }
+  }
+  ["name", "price", "category", "description", "tone", "image"].forEach((field) => {
+    productForm.querySelector(`[name="${field}"]`)?.addEventListener("input", updateProductPreview);
+  });
+
+  document.querySelector('[data-action="toggle-product-form"]').addEventListener("click", () => {
+    productForm.reset();
+    productForm.querySelector('[name="id"]').value = "";
+    showProductForm(false);
+  });
+  document.querySelector('[data-action="cancel-product-form"]').addEventListener("click", hideProductForm);
+
+  document.querySelector('[data-action="duplicate-current"]').addEventListener("click", () => {
+    const id = productForm.querySelector('[name="id"]').value;
+    const original = state.products.find((p) => p.id === id);
+    if (!original) return;
+    const copy = { ...original, id: `${original.id}-copia-${Date.now()}`, name: `${original.name} (cópia)`, slug: `${original.slug}-copia-${Date.now()}` };
+    state.products.push(copy);
+    saveState(state);
+    renderProducts();
+    renderDashboard();
+    hideProductForm();
+  });
+
+  function getFilteredProducts() {
+    const search = (pSearch.value || "").trim().toLowerCase();
+    const category = pFilterCategory.value;
+    const status = pFilterStatus.value;
+    const showArchived = pShowArchived.checked;
+    const sort = pSort.value;
+
+    let list = state.products.filter((p) => {
+      if (!showArchived && p.archived) return false;
+      if (showArchived && !p.archived) return false;
+      if (search && !`${p.name} ${p.sku}`.toLowerCase().includes(search)) return false;
+      if (category && p.category !== category) return false;
+      if (status === "disponivel" && !p.available) return false;
+      if (status === "indisponivel" && p.available) return false;
+      return true;
+    });
+
+    list = [...list].sort((a, b) => {
+      if (sort === "name") return a.name.localeCompare(b.name);
+      if (sort === "price-asc") return a.price - b.price;
+      if (sort === "price-desc") return b.price - a.price;
+      return a.displayOrder - b.displayOrder;
+    });
+    return list;
+  }
+
+  function renderProducts() {
+    renderProductFilters();
+    const list = getFilteredProducts();
+    productTableBody.innerHTML = "";
+    productEmpty.classList.toggle("hidden", list.length > 0);
+
+    list.forEach((product) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      const actions = product.archived
+        ? `<button type="button" data-p-reactivate="${product.id}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Reativar</button>
+           <button type="button" data-p-delete="${product.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>`
+        : `<button type="button" data-p-edit="${product.id}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Editar</button>
+           <button type="button" data-p-archive="${product.id}" class="mr-2 text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)]">Arquivar</button>
+           <button type="button" data-p-delete="${product.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>`;
+      row.innerHTML = `
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-3">
+            ${product.image ? `<img src="${escapeHtml(product.image)}" alt="" class="h-10 w-10 shrink-0 rounded-lg object-cover" />` : ""}
+            <div>
+              <p class="font-semibold text-[var(--ink)]">${escapeHtml(product.name)}</p>
+              <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(product.sku)}</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${escapeHtml(categoryName(product.category))}</td>
+        <td class="px-4 py-3 font-semibold text-[var(--ink)]">${formatBRL(product.price)}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-p-toggle-available="${product.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${product.available ? "bg-[var(--primary)]/15 text-[var(--primary)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${product.available ? "Disponível" : "Indisponível"}
+          </button>
+        </td>
+        <td class="px-4 py-3">
+          <button type="button" data-p-toggle-featured="${product.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${product.featured ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${product.featured ? "Em destaque" : "Padrão"}
+          </button>
+        </td>
+        <td class="px-4 py-3 text-right">${actions}</td>
+      `;
+      productTableBody.appendChild(row);
+    });
+  }
+
+  function renderProductFilters() {
+    if (pFilterCategory.dataset.rendered) return;
+    pFilterCategory.dataset.rendered = "1";
+  }
+
+  productTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const toggleAvail = target.getAttribute("data-p-toggle-available");
+    if (toggleAvail) {
+      const product = state.products.find((p) => p.id === toggleAvail);
+      if (product) product.available = !product.available;
+      saveState(state);
+      renderProducts();
+      return;
+    }
+    const toggleFeatured = target.getAttribute("data-p-toggle-featured");
+    if (toggleFeatured) {
+      const product = state.products.find((p) => p.id === toggleFeatured);
+      if (product) product.featured = !product.featured;
+      saveState(state);
+      renderProducts();
+      return;
+    }
+    const editId = target.getAttribute("data-p-edit");
+    if (editId) {
+      const product = state.products.find((p) => p.id === editId);
+      if (!product) return;
+      productForm.querySelector('[name="id"]').value = product.id;
+      productForm.querySelector('[name="name"]').value = product.name;
+      productForm.querySelector('[name="sku"]').value = product.sku;
+      productForm.querySelector('[name="category"]').value = product.category;
+      productForm.querySelector('[name="collection"]').value = product.collection || "";
+      productForm.querySelector('[name="ambiente"]').value = product.ambiente || "";
+      productForm.querySelector('[name="price"]').value = String(product.price);
+      productForm.querySelector('[name="previousPrice"]').value = product.previousPrice ? String(product.previousPrice) : "";
+      productForm.querySelector('[name="offerActive"]').checked = Boolean(product.offerActive);
+      productForm.querySelector('[name="offerEndsAt"]').value = product.offerEndsAt || "";
+      productForm.querySelector('[name="tone"]').value = product.tone;
+      productForm.querySelector('[name="icon"]').value = product.icon;
+      productForm.querySelector('[name="materials"]').value = (product.materials || []).join(", ");
+      productForm.querySelector('[name="dimensions"]').value = product.dimensions || "";
+      productForm.querySelector('[name="colors"]').value = (product.colors || []).join(", ");
+      productForm.querySelector('[name="badge"]').value = product.badge || "";
+      productForm.querySelector('[name="displayOrder"]').value = String(product.displayOrder);
+      productForm.querySelector('[name="available"]').checked = Boolean(product.available);
+      productForm.querySelector('[name="featured"]').checked = Boolean(product.featured);
+      productForm.querySelector('[name="isNew"]').checked = Boolean(product.isNew);
+      productForm.querySelector('[name="description"]').value = product.description || "";
+      productForm.querySelector('[name="image"]').value = product.image || "";
+      showProductForm(true);
+      return;
+    }
+    const archiveId = target.getAttribute("data-p-archive");
+    if (archiveId) {
+      const product = state.products.find((p) => p.id === archiveId);
+      if (product) product.archived = true;
+      saveState(state);
+      renderProducts();
+      renderDashboard();
+      return;
+    }
+    const reactivateId = target.getAttribute("data-p-reactivate");
+    if (reactivateId) {
+      const product = state.products.find((p) => p.id === reactivateId);
+      if (product) product.archived = false;
+      saveState(state);
+      renderProducts();
+      renderDashboard();
+      return;
+    }
+    const deleteId = target.getAttribute("data-p-delete");
+    if (deleteId) {
+      if (!pendingDeletes.has(deleteId)) {
+        pendingDeletes.add(deleteId);
+        target.textContent = "Confirmar remoção?";
+        target.classList.add("text-red-500");
+        setTimeout(() => {
+          pendingDeletes.delete(deleteId);
+        }, 4000);
+        return;
+      }
+      pendingDeletes.delete(deleteId);
+      state.products = state.products.filter((p) => p.id !== deleteId);
+      saveState(state);
+      renderProducts();
+      renderDashboard();
+    }
+  });
+
+  [pSearch].forEach((el) => el.addEventListener("input", renderProducts));
+  [pFilterCategory, pFilterStatus, pSort, pShowArchived].forEach((el) => el.addEventListener("change", renderProducts));
+
+  productForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(productForm);
+    const existingId = String(data.get("id") || "");
+    const name = String(data.get("name") || "").trim();
+    const payload = {
+      name,
+      sku: String(data.get("sku") || "").trim(),
+      category: String(data.get("category") || ""),
+      collection: String(data.get("collection") || "") || undefined,
+      ambiente: String(data.get("ambiente") || "") || undefined,
+      price: Number(data.get("price") || 0),
+      previousPrice: data.get("previousPrice") ? Number(data.get("previousPrice")) : undefined,
+      offerActive: data.get("offerActive") === "on",
+      offerEndsAt: String(data.get("offerEndsAt") || "") || undefined,
+      materials: String(data.get("materials") || "").split(",").map((m) => m.trim()).filter(Boolean),
+      dimensions: String(data.get("dimensions") || ""),
+      colors: String(data.get("colors") || "").split(",").map((c) => c.trim()).filter(Boolean),
+      tone: String(data.get("tone") || "sand"),
+      icon: String(data.get("icon") || "sofa"),
+      badge: String(data.get("badge") || "") || undefined,
+      displayOrder: Number(data.get("displayOrder") || state.products.length + 1),
+      available: data.get("available") === "on",
+      featured: data.get("featured") === "on",
+      isNew: data.get("isNew") === "on",
+      description: String(data.get("description") || ""),
+      image: String(data.get("image") || "") || undefined,
+      updatedAt: todayISO(),
+    };
+
+    if (existingId) {
+      const index = state.products.findIndex((p) => p.id === existingId);
+      if (index >= 0) state.products[index] = { ...state.products[index], ...payload, id: existingId };
+    } else {
+      let slug = slugify(name);
+      let suffix = 2;
+      while (state.products.some((p) => p.slug === slug)) {
+        slug = `${slugify(name)}-${suffix}`;
+        suffix += 1;
+      }
+      state.products.push({ ...payload, id: `prod-${Date.now()}`, slug, sku: payload.sku || slug.toUpperCase(), archived: false, createdAt: todayISO() });
+    }
+    saveState(state);
+    renderProducts();
+    renderDashboard();
+    renderOffers();
+    hideProductForm();
+  });
+
+  // ============ CATEGORIAS / COLEÇÕES / AMBIENTES (genérico) ============
+  const taxonomyConfig = {
+    categorias: { stateKey: "categories", extraFields: ["icon"] },
+    colecoes: { stateKey: "collections", extraFields: ["tone", "featured", "image"] },
+    ambientes: { stateKey: "ambientes", extraFields: ["tone", "shoppable", "image"] },
+  };
+
+  function productCountFor(target, slug) {
+    const field = target === "categorias" ? "category" : target === "colecoes" ? "collection" : "ambiente";
+    return state.products.filter((p) => p[field] === slug && !p.archived).length;
+  }
+
+  function renderTaxonomy(target) {
+    const cfg = taxonomyConfig[target];
+    const list = [...state[cfg.stateKey]].sort((a, b) => a.order - b.order);
+    const tbody = document.querySelector(`[data-taxonomy-table-body="${target}"]`);
+    tbody.innerHTML = "";
+    list.forEach((item, index) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3">
+          <p class="font-semibold text-[var(--ink)]">${escapeHtml(item.name)}</p>
+          <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(item.description || "")}</p>
+        </td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${productCountFor(target, item.slug)}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-tx-toggle="${target}:${item.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${item.active ? "bg-[var(--primary)]/15 text-[var(--primary)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${item.active ? "Ativa" : "Oculta"}
+          </button>
+        </td>
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-1">
+            <button type="button" data-tx-up="${target}:${item.slug}" ${index === 0 ? "disabled" : ""} class="rounded border border-[var(--border)] px-2 py-1 text-xs disabled:opacity-30">↑</button>
+            <button type="button" data-tx-down="${target}:${item.slug}" ${index === list.length - 1 ? "disabled" : ""} class="rounded border border-[var(--border)] px-2 py-1 text-xs disabled:opacity-30">↓</button>
+          </div>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-tx-edit="${target}:${item.slug}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-tx-delete="${target}:${item.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+    renderMoveSelects(target, list);
+  }
+
+  function renderMoveSelects(target, list) {
+    const from = document.querySelector(`[data-move-from="${target}"]`);
+    const to = document.querySelector(`[data-move-to="${target}"]`);
+    const options = list.map((item) => `<option value="${item.slug}">${escapeHtml(item.name)}</option>`).join("");
+    from.innerHTML = options;
+    to.innerHTML = options;
+  }
+
+  Object.keys(taxonomyConfig).forEach((target) => {
+    const form = document.querySelector(`[data-taxonomy-form="${target}"]`);
+    const cfg = taxonomyConfig[target];
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const existingSlug = String(data.get("slug") || "");
+      const name = String(data.get("name") || "").trim();
+      const payload = { name, description: String(data.get("description") || "") };
+      if (cfg.extraFields.includes("icon")) payload.icon = String(data.get("icon") || "sparkle");
+      if (cfg.extraFields.includes("tone")) payload.tone = String(data.get("tone") || "sand");
+      if (cfg.extraFields.includes("featured")) payload.featured = data.get("featured") === "on";
+      if (cfg.extraFields.includes("shoppable")) payload.shoppable = data.get("shoppable") === "on";
+      if (cfg.extraFields.includes("image")) payload.image = String(data.get("image") || "") || undefined;
+
+      const list = state[cfg.stateKey];
+      if (existingSlug) {
+        const index = list.findIndex((i) => i.slug === existingSlug);
+        if (index >= 0) list[index] = { ...list[index], ...payload };
+      } else {
+        let slug = slugify(name);
+        let suffix = 2;
+        while (list.some((i) => i.slug === slug)) {
+          slug = `${slugify(name)}-${suffix}`;
+          suffix += 1;
+        }
+        list.push({ ...payload, slug, order: list.length + 1, active: true });
+      }
+      saveState(state);
+      renderTaxonomy(target);
+      renderDashboard();
+      form.reset();
+      form.querySelector('[name="slug"]').value = "";
+    });
+
+    document.querySelectorAll(`[data-action="cancel-taxonomy-form"][data-target="${target}"]`).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        form.reset();
+        form.querySelector('[name="slug"]').value = "";
+      });
+    });
+
+    document.querySelector(`[data-taxonomy-table-body="${target}"]`).addEventListener("click", (event) => {
+      const el = event.target;
+      if (!(el instanceof HTMLElement)) return;
+      const list = state[cfg.stateKey];
+
+      const toggleKey = el.getAttribute("data-tx-toggle");
+      if (toggleKey) {
+        const slug = toggleKey.split(":")[1];
+        const item = list.find((i) => i.slug === slug);
+        if (item) item.active = !item.active;
+        saveState(state);
+        renderTaxonomy(target);
+        renderDashboard();
+        return;
+      }
+      const upKey = el.getAttribute("data-tx-up");
+      const downKey = el.getAttribute("data-tx-down");
+      if (upKey || downKey) {
+        const slug = (upKey || downKey).split(":")[1];
+        const sorted = [...list].sort((a, b) => a.order - b.order);
+        const idx = sorted.findIndex((i) => i.slug === slug);
+        const swapIdx = upKey ? idx - 1 : idx + 1;
+        if (swapIdx < 0 || swapIdx >= sorted.length) return;
+        const a = sorted[idx];
+        const b = sorted[swapIdx];
+        const tmp = a.order;
+        a.order = b.order;
+        b.order = tmp;
+        saveState(state);
+        renderTaxonomy(target);
+        return;
+      }
+      const editKey = el.getAttribute("data-tx-edit");
+      if (editKey) {
+        const slug = editKey.split(":")[1];
+        const item = list.find((i) => i.slug === slug);
+        if (!item) return;
+        form.querySelector('[name="slug"]').value = item.slug;
+        form.querySelector('[name="name"]').value = item.name;
+        form.querySelector('[name="description"]').value = item.description || "";
+        if (cfg.extraFields.includes("icon")) form.querySelector('[name="icon"]').value = item.icon;
+        if (cfg.extraFields.includes("tone")) form.querySelector('[name="tone"]').value = item.tone;
+        if (cfg.extraFields.includes("featured")) form.querySelector('[name="featured"]').checked = Boolean(item.featured);
+        if (cfg.extraFields.includes("shoppable")) form.querySelector('[name="shoppable"]').checked = Boolean(item.shoppable);
+        if (cfg.extraFields.includes("image")) form.querySelector('[name="image"]').value = item.image || "";
+        form.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      const deleteKey = el.getAttribute("data-tx-delete");
+      if (deleteKey) {
+        const pendingId = `tx-${deleteKey}`;
+        if (!pendingDeletes.has(pendingId)) {
+          pendingDeletes.add(pendingId);
+          el.textContent = "Confirmar remoção?";
+          el.classList.add("text-red-500");
+          setTimeout(() => pendingDeletes.delete(pendingId), 4000);
+          return;
+        }
+        pendingDeletes.delete(pendingId);
+        const slug = deleteKey.split(":")[1];
+        state[cfg.stateKey] = list.filter((i) => i.slug !== slug);
+        saveState(state);
+        renderTaxonomy(target);
+        renderDashboard();
+      }
+    });
+
+    document.querySelector(`[data-action="move-products"][data-target="${target}"]`).addEventListener("click", () => {
+      const from = document.querySelector(`[data-move-from="${target}"]`).value;
+      const to = document.querySelector(`[data-move-to="${target}"]`).value;
+      if (!from || !to || from === to) return;
+      const field = target === "categorias" ? "category" : target === "colecoes" ? "collection" : "ambiente";
+      let moved = 0;
+      state.products.forEach((p) => {
+        if (p[field] === from) {
+          p[field] = to;
+          moved += 1;
+        }
+      });
+      saveState(state);
+      renderTaxonomy(target);
+      renderProducts();
+      alert(moved > 0 ? `${moved} produto(s) movido(s).` : "Nenhum produto encontrado nesta origem.");
+    });
+  });
+
+  // ============ OFERTAS ============
+  const offersTableBody = document.querySelector("[data-offers-table-body]");
+  const offersShowExpired = document.querySelector("[data-offers-show-expired]");
+
+  function isExpired(product) {
+    return Boolean(product.offerEndsAt) && product.offerEndsAt < todayISO();
+  }
+
+  function renderOffers() {
+    const showExpired = offersShowExpired.checked;
+    const list = state.products.filter((p) => p.offerActive || (showExpired && p.previousPrice));
+    offersTableBody.innerHTML = "";
+    list.forEach((product) => {
+      const expired = isExpired(product);
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3 font-semibold text-[var(--ink)]">${escapeHtml(product.name)}</td>
+        <td class="px-4 py-3">${formatBRL(product.price)}</td>
+        <td class="px-4 py-3 text-[var(--ink-muted)] line-through">${product.previousPrice ? formatBRL(product.previousPrice) : "—"}</td>
+        <td class="px-4 py-3">${product.offerEndsAt || "—"}</td>
+        <td class="px-4 py-3">
+          <span class="rounded-full px-3 py-1 text-xs font-semibold ${expired ? "bg-red-500/10 text-red-500" : product.offerActive ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${expired ? "Expirada" : product.offerActive ? "Ativa" : "Pausada"}
+          </span>
+        </td>
+        <td class="px-4 py-3">
+          <button type="button" data-o-toggle-featured="${product.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${product.featured ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${product.featured ? "Na home" : "Padrão"}
+          </button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-o-pause="${product.id}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">${product.offerActive ? "Pausar" : "Ativar"}</button>
+          <button type="button" data-o-end="${product.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Encerrar</button>
+        </td>
+      `;
+      offersTableBody.appendChild(row);
+    });
+  }
+
+  offersShowExpired.addEventListener("change", renderOffers);
+  offersTableBody.addEventListener("click", (event) => {
+    const el = event.target;
+    if (!(el instanceof HTMLElement)) return;
+    const toggleId = el.getAttribute("data-o-toggle-featured");
+    if (toggleId) {
+      const product = state.products.find((p) => p.id === toggleId);
+      if (product) product.featured = !product.featured;
+      saveState(state);
+      renderOffers();
+      renderProducts();
+      return;
+    }
+    const pauseId = el.getAttribute("data-o-pause");
+    if (pauseId) {
+      const product = state.products.find((p) => p.id === pauseId);
+      if (product) product.offerActive = !product.offerActive;
+      saveState(state);
+      renderOffers();
+      renderDashboard();
+      return;
+    }
+    const endId = el.getAttribute("data-o-end");
+    if (endId) {
+      const product = state.products.find((p) => p.id === endId);
+      if (product) {
+        product.offerActive = false;
+        product.previousPrice = undefined;
+        product.offerEndsAt = undefined;
+      }
+      saveState(state);
+      renderOffers();
+      renderDashboard();
+    }
+  });
+
+  // ============ BANNERS ============
+  const bannerForm = document.querySelector("[data-banner-form]");
+  const bannerTableBody = document.querySelector("[data-banner-table-body]");
+
+  function renderBanners() {
+    const list = [...state.banners].sort((a, b) => a.order - b.order);
+    bannerTableBody.innerHTML = "";
+    list.forEach((banner) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3">
+          <p class="font-semibold text-[var(--ink)]">${escapeHtml(banner.title)}</p>
+          <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(banner.subtitle || "")}</p>
+        </td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${banner.startDate || "—"} a ${banner.endDate || "—"}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-b-toggle="${banner.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${banner.active ? "bg-[var(--primary)]/15 text-[var(--primary)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">
+            ${banner.active ? "Ativo" : "Inativo"}
+          </button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-b-edit="${banner.id}" class="mr-2 text-xs font-semibold text-[var(--ink)] hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-b-delete="${banner.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>
+      `;
+      bannerTableBody.appendChild(row);
+    });
+  }
+
+  bannerForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(bannerForm);
+    const existingId = String(data.get("id") || "");
+    const payload = {
+      title: String(data.get("title") || "").trim(),
+      subtitle: String(data.get("subtitle") || ""),
+      ctaLabel: String(data.get("ctaLabel") || ""),
+      ctaHref: String(data.get("ctaHref") || "#catalogo"),
+      startDate: String(data.get("startDate") || ""),
+      endDate: String(data.get("endDate") || ""),
+      active: data.get("active") === "on",
+    };
+    if (existingId) {
+      const idx = state.banners.findIndex((b) => b.id === existingId);
+      if (idx >= 0) state.banners[idx] = { ...state.banners[idx], ...payload };
+    } else {
+      state.banners.push({ ...payload, id: `banner-${Date.now()}`, order: state.banners.length + 1 });
+    }
+    saveState(state);
+    renderBanners();
+    renderDashboard();
+    bannerForm.reset();
+    bannerForm.querySelector('[name="id"]').value = "";
+  });
+
+  document.querySelector('[data-action="cancel-banner-form"]').addEventListener("click", () => {
+    bannerForm.reset();
+    bannerForm.querySelector('[name="id"]').value = "";
+  });
+
+  bannerTableBody.addEventListener("click", (event) => {
+    const el = event.target;
+    if (!(el instanceof HTMLElement)) return;
+    const toggleId = el.getAttribute("data-b-toggle");
+    if (toggleId) {
+      const banner = state.banners.find((b) => b.id === toggleId);
+      if (banner) banner.active = !banner.active;
+      saveState(state);
+      renderBanners();
+      renderDashboard();
+      return;
+    }
+    const editId = el.getAttribute("data-b-edit");
+    if (editId) {
+      const banner = state.banners.find((b) => b.id === editId);
+      if (!banner) return;
+      bannerForm.querySelector('[name="id"]').value = banner.id;
+      bannerForm.querySelector('[name="title"]').value = banner.title;
+      bannerForm.querySelector('[name="subtitle"]').value = banner.subtitle || "";
+      bannerForm.querySelector('[name="ctaLabel"]').value = banner.ctaLabel || "";
+      bannerForm.querySelector('[name="ctaHref"]').value = banner.ctaHref || "";
+      bannerForm.querySelector('[name="startDate"]').value = banner.startDate || "";
+      bannerForm.querySelector('[name="endDate"]').value = banner.endDate || "";
+      bannerForm.querySelector('[name="active"]').checked = Boolean(banner.active);
+      bannerForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const deleteId = el.getAttribute("data-b-delete");
+    if (deleteId) {
+      const pendingId = `banner-${deleteId}`;
+      if (!pendingDeletes.has(pendingId)) {
+        pendingDeletes.add(pendingId);
+        el.textContent = "Confirmar remoção?";
+        el.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(pendingId), 4000);
+        return;
+      }
+      pendingDeletes.delete(pendingId);
+      state.banners = state.banners.filter((b) => b.id !== deleteId);
+      saveState(state);
+      renderBanners();
+      renderDashboard();
+    }
+  });
+
+  // ============ SOLICITAÇÕES ============
+  const quoteList = document.querySelector("[data-quote-list]");
+  const statusOptions = ["novo", "em atendimento", "orçamento enviado", "concluído", "arquivado"];
+
+  function renderQuoteRequests() {
+    quoteList.innerHTML = "";
+    [...state.quoteRequests].sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || "")).forEach((req) => {
+      const card = document.createElement("div");
+      card.className = "rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-5";
+      card.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p class="font-semibold text-[var(--ink)]">${escapeHtml(req.name)}</p>
+            <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(req.phone)} · ${escapeHtml(req.email)} · ${escapeHtml(req.city || "")}</p>
+            <p class="mt-1 text-xs text-[var(--ink-muted)]">Recebido em ${req.createdAt}</p>
+          </div>
+          <select data-q-status="${req.id}" class="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--ink)]">
+            ${statusOptions.map((s) => `<option value="${s}" ${req.status === s ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </div>
+        <p class="mt-3 text-sm text-[var(--ink)]"><strong>Interesse:</strong> ${escapeHtml(req.interest || "—")}</p>
+        <p class="mt-1 text-sm text-[var(--ink-muted)]">${escapeHtml(req.message || "")}</p>
+        <p class="mt-1 text-xs text-[var(--ink-muted)]">Preferência de contato: ${escapeHtml(req.contactPreference || "—")}</p>
+        <label class="mt-3 block text-xs font-medium text-[var(--ink-muted)]">
+          Notas internas
+          <textarea data-q-notes="${req.id}" rows="2" class="mt-1 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]">${escapeHtml(req.notes || "")}</textarea>
+        </label>
+      `;
+      quoteList.appendChild(card);
+    });
+  }
+
+  quoteList.addEventListener("change", (event) => {
+    const target = event.target;
+    const statusId = target.getAttribute?.("data-q-status");
+    if (statusId) {
+      const req = state.quoteRequests.find((r) => r.id === statusId);
+      if (req) req.status = target.value;
+      saveState(state);
+      renderDashboard();
+    }
+  });
+  quoteList.addEventListener("blur", (event) => {
+    const target = event.target;
+    const notesId = target.getAttribute?.("data-q-notes");
+    if (notesId) {
+      const req = state.quoteRequests.find((r) => r.id === notesId);
+      if (req) req.notes = target.value;
+      saveState(state);
+    }
+  }, true);
+
+  // ============ CONFIGURAÇÕES ============
+  const settingsForm = document.querySelector("[data-settings-form]");
+  function renderSettings() {
+    Object.entries(state.settings).forEach(([key, value]) => {
+      const field = settingsForm.querySelector(`[name="${key}"]`);
+      if (field) field.value = value || "";
+    });
+  }
+  settingsForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(settingsForm);
+    const next = {};
+    for (const [key, value] of data.entries()) next[key] = String(value);
+    state.settings = { ...state.settings, ...next };
+    saveState(state);
+    const feedback = settingsForm.querySelector("[data-settings-feedback]");
+    feedback.classList.remove("hidden");
+    setTimeout(() => feedback.classList.add("hidden"), 3000);
+  });
+
+  // --- Reset geral ---
+  document.querySelector('[data-action="reset-all"]').addEventListener("click", () => {
+    if (!confirm("Restaurar todos os dados do painel (produtos, categorias, coleções, ambientes, ofertas, banners, solicitações e configurações) para os valores originais de demonstração? Isso apaga suas alterações locais.")) return;
+    state = {
+      products: seedProducts.map((p) => ({ ...p })),
+      categories: seedCategories.map((c) => ({ ...c })),
+      collections: seedCollections.map((c) => ({ ...c })),
+      ambientes: seedAmbientes.map((a) => ({ ...a })),
+      banners: seedBanners.map((b) => ({ ...b })),
+      quoteRequests: seedQuoteRequests.map((q) => ({ ...q })),
+      settings: { ...seedSettings },
+    };
+    saveState(state);
+    renderAll();
+    alert("Dados originais restaurados com sucesso.");
+  });
+
+  function renderAll() {
+    renderDashboard();
+    renderProducts();
+    renderTaxonomy("categorias");
+    renderTaxonomy("colecoes");
+    renderTaxonomy("ambientes");
+    renderOffers();
+    renderBanners();
+    renderQuoteRequests();
+    renderSettings();
+  }
+
+  renderAll();
+</script>

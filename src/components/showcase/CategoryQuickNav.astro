@@ -1,0 +1,27 @@
+---
+// Tira de acesso rápido às categorias, funciona como atalho de filtro para
+// a seção de catálogo (não é uma grade — 7 itens ficam melhor como pílulas
+// em linha do que forçados em colunas).
+import Icon from "../ui/Icon.astro";
+import type { CatalogCategory } from "../../config/showcases/types";
+
+interface Props {
+  categories: CatalogCategory[];
+}
+const { categories } = Astro.props;
+---
+
+<div class="-mx-6 flex gap-2.5 overflow-x-auto px-6 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+  {
+    categories.map((category) => (
+      <button
+        type="button"
+        data-category-quick-link={category.slug}
+        class="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      >
+        <Icon name={category.icon} class="h-4 w-4" />
+        {category.name}
+      </button>
+    ))
+  }
+</div>
