@@ -1,0 +1,195 @@
+---
+import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import NexoraLogo from "../../../components/logos/NexoraLogo.astro";
+import NexoraHeader from "../../../components/showcase/NexoraHeader.astro";
+import NexoraFooter from "../../../components/showcase/NexoraFooter.astro";
+import NexoraHero from "../../../components/showcase/NexoraHero.astro";
+import NexoraCategoriesSection from "../../../components/showcase/NexoraCategoriesSection.astro";
+import NexoraLaunchesSection from "../../../components/showcase/NexoraLaunchesSection.astro";
+import NexoraCatalogSection from "../../../components/showcase/NexoraCatalogSection.astro";
+import NexoraRecentlyViewedSection from "../../../components/showcase/NexoraRecentlyViewedSection.astro";
+import NexoraOffersSection from "../../../components/showcase/NexoraOffersSection.astro";
+import NexoraKitsSection from "../../../components/showcase/NexoraKitsSection.astro";
+import NexoraBrandsSection from "../../../components/showcase/NexoraBrandsSection.astro";
+import NexoraAdvisorSection from "../../../components/showcase/NexoraAdvisorSection.astro";
+import NexoraQuoteFormSection from "../../../components/showcase/NexoraQuoteFormSection.astro";
+import FAQSection from "../../../components/showcase/FAQSection.astro";
+import NexoraProductModal from "../../../components/showcase/NexoraProductModal.astro";
+import NexoraCompareBar from "../../../components/showcase/NexoraCompareBar.astro";
+import NexoraCartDrawer from "../../../components/showcase/NexoraCartDrawer.astro";
+import {
+  nexoraTechConfig as config,
+  categories,
+  brands,
+  products,
+  kits,
+  categoryAccents,
+} from "../../../config/showcases/nexora-tech";
+
+const heroProduct = products.find((p) => p.slug === "nexora-vision-x1")!;
+const heroComplementary = ["nexora-pulse-buds", "nexora-air-charger"]
+  .map((s) => products.find((p) => p.slug === s)!)
+  .map((p) => ({ product: p, accent: categoryAccents[p.category] ?? "#22d3ee" }));
+
+const launchPrimary = products.find((p) => p.slug === "draventa-strike-16")!;
+const launchComplementary = ["nexora-vision-x1", "velstra-curve-34u", "nexora-home-hub"]
+  .map((s) => products.find((p) => p.slug === s)!)
+  .filter((p) => p.slug !== launchPrimary.slug);
+
+const offerPrimary = products.find((p) => p.slug === "nexora-vision-lite")!;
+const offerComplementary = products.filter((p) => p.offerActive && p.slug !== offerPrimary.slug).slice(0, 4);
+
+const breadcrumbStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "CronosStart", item: "https://modelos.cronosstart.com.br/" },
+    { "@type": "ListItem", position: 2, name: "Modelos", item: "https://modelos.cronosstart.com.br/modelos" },
+    { "@type": "ListItem", position: 3, name: "Nexora Tech", item: "https://modelos.cronosstart.com.br/modelos/eletronicos" },
+  ],
+};
+const serviceStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "Modelo de site para loja de eletrônicos com catálogo, comparador de produtos e painel administrativo",
+  provider: { "@type": "Organization", name: "CronosStart", url: "https://modelos.cronosstart.com.br/" },
+  areaServed: "BR",
+};
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: config.faq!.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [breadcrumbStructuredData, serviceStructuredData, faqStructuredData],
+};
+---
+
+<ShowcaseLayout config={config} structuredData={structuredData}>
+  <NexoraHeader slot="header-override" nav={config.nav} ctaLabel="Explorar produtos" ctaHref="#catalogo">
+    <NexoraLogo slot="logo" />
+  </NexoraHeader>
+  <NexoraFooter slot="footer-override" nav={config.nav} contact={config.contact} categories={categories} />
+
+  <div data-banner-slot class="hidden border-b border-white/10 bg-[var(--surface-alt)] px-6 py-3">
+    <div class="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3">
+      <div>
+        <p data-banner-title class="text-sm font-semibold text-white"></p>
+        <p data-banner-subtitle class="text-xs text-white/60"></p>
+      </div>
+      <a data-banner-cta class="shrink-0 rounded-full border border-white/20 px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"></a>
+    </div>
+  </div>
+
+  <NexoraHero product={heroProduct} accent={categoryAccents[heroProduct.category] ?? "#22d3ee"} complementary={heroComplementary} />
+
+  <NexoraCategoriesSection id="categorias" categories={categories} products={products} accents={categoryAccents} />
+
+  <NexoraLaunchesSection id="lancamentos" primary={launchPrimary} complementary={launchComplementary} accents={categoryAccents} />
+
+  <NexoraCatalogSection id="catalogo" products={products} categories={categories} brands={brands} accents={categoryAccents} />
+
+  <NexoraRecentlyViewedSection id="vistos-recentemente" />
+
+  <NexoraOffersSection id="ofertas" primary={offerPrimary} complementary={offerComplementary} accents={categoryAccents} />
+
+  <NexoraKitsSection id="kits" kits={kits} products={products} accents={categoryAccents} />
+
+  <NexoraBrandsSection id="marcas" brands={brands} products={products} accents={categoryAccents} />
+
+  <NexoraAdvisorSection id="assistente" products={products} accents={categoryAccents} />
+
+  <NexoraQuoteFormSection id="orcamento" cta={config.contactCta} contact={config.contact} />
+
+  {config.faq && (
+    <FAQSection id="faq" eyebrow="Dúvidas frequentes" title="Perguntas frequentes" description="Tudo o que costuma ser perguntado antes de fechar um pedido." items={config.faq} elevated />
+  )}
+
+  <NexoraProductModal products={products} categories={categories} accents={categoryAccents} whatsappNumber={config.contact.whatsappNumber} />
+
+  <NexoraCompareBar products={products} categories={categories} accents={categoryAccents} />
+
+  <NexoraCartDrawer whatsappNumber={config.contact.whatsappNumber} />
+</ShowcaseLayout>
+
+<style>
+  :global(section[id]) {
+    scroll-margin-top: 88px;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "nexora-tech-admin-v1";
+
+  function formatBRL(value: number) {
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
+  function todayISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const state = JSON.parse(raw);
+
+      if (Array.isArray(state.products)) {
+        document.querySelectorAll<HTMLElement>("[data-product-card]").forEach((card) => {
+          const slug = card.dataset.slug;
+          const override = state.products.find((p: any) => p.slug === slug);
+          if (!override || override.archived) {
+            card.remove();
+            return;
+          }
+          const priceEl = card.querySelector<HTMLElement>('[data-field="price"]');
+          if (priceEl) priceEl.textContent = formatBRL(override.price);
+          card.dataset.available = String(Boolean(override.available));
+          card.dataset.offer = String(Boolean(override.offerActive));
+          card.dataset.price = String(override.price);
+
+          const photoMain = override.images && override.images.main;
+          if (photoMain) {
+            const visual = card.querySelector<HTMLElement>(".nexora-visual");
+            if (visual) {
+              visual.innerHTML = `<img src="${photoMain}" alt="${override.name || ""}" loading="lazy" decoding="async" class="h-full w-full object-cover" />`;
+            }
+          }
+        });
+      }
+
+      if (Array.isArray(state.banners)) {
+        const today = todayISO();
+        const active = state.banners
+          .filter((b: any) => b.active && (!b.startDate || b.startDate <= today) && (!b.endDate || b.endDate >= today))
+          .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))[0];
+        const slot = document.querySelector<HTMLElement>("[data-banner-slot]");
+        if (active && slot) {
+          slot.classList.remove("hidden");
+          const titleEl = slot.querySelector<HTMLElement>("[data-banner-title]")!;
+          const subtitleEl = slot.querySelector<HTMLElement>("[data-banner-subtitle]")!;
+          const ctaEl = slot.querySelector<HTMLAnchorElement>("[data-banner-cta]")!;
+          titleEl.textContent = active.title;
+          subtitleEl.textContent = active.subtitle || "";
+          if (active.ctaLabel) {
+            ctaEl.textContent = active.ctaLabel;
+            ctaEl.href = active.ctaHref || "#catalogo";
+            ctaEl.classList.remove("hidden");
+          } else {
+            ctaEl.classList.add("hidden");
+          }
+        }
+      }
+    }
+  } catch {
+    // localStorage indisponível — mantém o conteúdo estático padrão
+  }
+</script>

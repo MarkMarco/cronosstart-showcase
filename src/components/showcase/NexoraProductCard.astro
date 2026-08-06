@@ -1,0 +1,222 @@
+---
+// Card de produto da Nexora Tech — mais "vivo" que o da Maison Lume: visual
+// técnico com glow, ações rápidas no hover (favoritar, comparar, adicionar
+// ao carrinho) e specs em chips, não apenas texto corrido.
+import Icon from "../ui/Icon.astro";
+import NexoraProductVisual from "./NexoraProductVisual.astro";
+import { colorToHex } from "../../utils/colorSwatches";
+import { productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
+import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
+
+interface Props {
+  product: CatalogProduct;
+  category?: CatalogCategory;
+  accent: string;
+  index?: number;
+}
+const { product, category, accent, index = 0 } = Astro.props;
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 2);
+const visualVariant = productRenderVariant(product);
+const visualMood = moodForCategory(product.category);
+const photoSrc = product.images?.main;
+const discountPct =
+  product.previousPrice && product.previousPrice > product.price
+    ? Math.round((1 - product.price / product.previousPrice) * 100)
+    : null;
+---
+
+<article
+  data-product-card
+  data-slug={product.slug}
+  data-name={product.name}
+  data-category={product.category}
+  data-brand={product.brand ?? ""}
+  data-price={product.price}
+  data-offer={String(Boolean(product.offerActive))}
+  data-launch={String(Boolean(product.isNew))}
+  data-featured={String(Boolean(product.featured))}
+  data-available={String(product.available)}
+  data-created={product.createdAt}
+  data-conn={product.specs?.conectividade ?? ""}
+  class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
+  style={`transition-delay: ${(index % 8) * 40}ms`}
+>
+  <div class="relative aspect-[4/5] overflow-hidden">
+    <NexoraProductVisual
+      variant={visualVariant}
+      accent={accent}
+      mood={visualMood}
+      photoSrc={photoSrc}
+      photoAlt={product.name}
+      class="h-full w-full transition-transform duration-500 group-hover:scale-[1.04]"
+    />
+
+    <div class="absolute left-3 top-3 z-10 flex flex-col gap-1.5">
+      {product.isNew && (
+        <span class="rounded-full bg-white/95 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-[#0a0e16]">Lançamento</span>
+      )}
+      {product.offerActive && (
+        <span class="rounded-full bg-[#f59e0b] px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-[#1a1200]">
+          {discountPct ? `-${discountPct}%` : "Oferta"}
+        </span>
+      )}
+      {!product.isNew && !product.offerActive && product.featured && (
+        <span class="rounded-full border border-white/25 bg-black/40 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-white backdrop-blur">Destaque</span>
+      )}
+    </div>
+
+    <div class="absolute right-3 top-3 z-10 flex flex-col gap-2">
+      <button
+        type="button"
+        data-fav-toggle={product.slug}
+        aria-label={`Favoritar ${product.name}`}
+        aria-pressed="false"
+        class="fav-btn inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-colors hover:border-white/30"
+      >
+        <Icon name="heart" class="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        data-compare-toggle={product.slug}
+        data-compare-category={product.category}
+        aria-label={`Comparar ${product.name}`}
+        aria-pressed="false"
+        class="compare-btn inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-colors hover:border-white/30"
+      >
+        <Icon name="scale" class="h-4 w-4" />
+      </button>
+    </div>
+
+    {!product.available && (
+      <div class="absolute inset-x-3 bottom-3 z-10 rounded-lg bg-black/60 px-3 py-1.5 text-center text-[0.65rem] font-semibold uppercase tracking-wide text-white backdrop-blur">
+        Indisponível
+      </div>
+    )}
+
+    {
+      quickSpecs.length > 0 && (
+        <div class="pointer-events-none absolute inset-x-3 bottom-3 z-10 flex flex-wrap gap-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          {quickSpecs.map(([label, value]) => (
+            <span class="rounded-md border border-white/15 bg-black/55 px-2 py-1 text-[0.6rem] text-white/90 backdrop-blur">
+              <span class="text-white/55">{label}:</span> {value}
+            </span>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-4">
+    <p class="text-[0.65rem] uppercase tracking-wide text-[var(--ink-muted)]">
+      {category?.name ?? product.category}{product.subcategory ? ` · ${product.subcategory}` : ""}
+    </p>
+    <h3 data-field="name" class="mt-1 line-clamp-2 min-h-[2.5rem] text-[0.95rem] font-semibold leading-tight text-white">
+      {product.name}
+    </h3>
+
+    <div class="mt-2 flex h-3.5 items-center gap-1.5">
+      {product.colors.slice(0, 4).map((c) => (
+        <span data-color-dot={c} class="h-3.5 w-3.5 rounded-full border border-white/20" style={`background:${colorToHex(c)}`} title={c} />
+      ))}
+    </div>
+
+    <div class="mt-auto flex items-end justify-between gap-2 pt-3">
+      <div>
+        {product.previousPrice && (
+          <p class="text-xs text-white/40 line-through">{formatBRL(product.previousPrice)}</p>
+        )}
+        <p data-field="price" class="text-base font-semibold text-white">{formatBRL(product.price)}</p>
+      </div>
+      <button
+        type="button"
+        data-add-cart={product.slug}
+        disabled={!product.available}
+        aria-label={`Adicionar ${product.name} ao carrinho`}
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full text-white transition-transform hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-30"
+        style={`background: linear-gradient(135deg, var(--primary) 0%, ${accent} 100%);`}
+      >
+        <Icon name="cart" class="h-4 w-4" />
+      </button>
+    </div>
+
+    <button type="button" data-open-product={product.slug} class="mt-3 inline-flex items-center gap-1.5 border-t border-white/10 pt-3 text-xs font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
+      Ver detalhes
+      <Icon name="arrow-right" class="h-3 w-3" />
+    </button>
+  </div>
+</article>
+
+<style>
+  .fav-btn.is-active {
+    color: #ff6b81;
+    border-color: rgba(255, 107, 129, 0.5);
+  }
+  .compare-btn.is-active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>
+
+<script>
+  function getCategoryForSlug(slug: string): string | null {
+    return document.querySelector<HTMLElement>(`[data-product-card][data-slug="${slug}"]`)?.dataset.category ?? null;
+  }
+
+  async function syncButtons() {
+    const { getFavorites, getCompareList } = await import("../../utils/nexoraTechShop");
+    const favs = getFavorites();
+    const compareList = getCompareList();
+    document.querySelectorAll<HTMLElement>("[data-fav-toggle]").forEach((btn) => {
+      const active = favs.includes(btn.dataset.favToggle ?? "");
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+    document.querySelectorAll<HTMLElement>("[data-compare-toggle]").forEach((btn) => {
+      const active = compareList.includes(btn.dataset.compareToggle ?? "");
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  document.addEventListener("click", async (event) => {
+    const favBtn = (event.target as HTMLElement).closest<HTMLElement>("[data-fav-toggle]");
+    const compareBtn = (event.target as HTMLElement).closest<HTMLElement>("[data-compare-toggle]");
+    const cartBtn = (event.target as HTMLElement).closest<HTMLElement>("[data-add-cart]");
+
+    if (favBtn) {
+      const { toggleFavorite } = await import("../../utils/nexoraTechShop");
+      toggleFavorite(favBtn.dataset.favToggle ?? "");
+      syncButtons();
+    } else if (compareBtn) {
+      const { toggleCompare, getCompareList } = await import("../../utils/nexoraTechShop");
+      const slug = compareBtn.dataset.compareToggle ?? "";
+      const category = compareBtn.dataset.compareCategory ?? "";
+      const currentList = getCompareList();
+      if (!currentList.includes(slug) && currentList.length > 0) {
+        const firstCategory = getCategoryForSlug(currentList[0]);
+        if (firstCategory && firstCategory !== category) {
+          window.dispatchEvent(new CustomEvent("nx:toast", { detail: `Só é possível comparar produtos da mesma categoria.` }));
+          return;
+        }
+      }
+      const result = toggleCompare(slug);
+      if (!result.added && result.reason === "limit") {
+        window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Você pode comparar até 4 produtos por vez." }));
+      }
+      syncButtons();
+    } else if (cartBtn) {
+      const { addToCart } = await import("../../utils/nexoraTechShop");
+      addToCart(cartBtn.dataset.addCart ?? "");
+      window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Adicionado ao carrinho." }));
+    }
+  });
+
+  window.addEventListener("nx:favorites-updated", syncButtons);
+  window.addEventListener("nx:compare-updated", syncButtons);
+  syncButtons();
+</script>

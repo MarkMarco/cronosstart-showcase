@@ -1,0 +1,510 @@
+---
+// Modal de produto da Nexora Tech — galeria (visual técnico + variações de
+// cor), abas (visão geral/especificações/compatibilidade/garantia/entrega),
+// variações, favoritos, comparação, carrinho, orçamento e WhatsApp.
+import Icon from "../ui/Icon.astro";
+import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
+
+interface Props {
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  accents: Record<string, string>;
+  whatsappNumber: string;
+}
+const { products, categories, accents, whatsappNumber } = Astro.props;
+
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+
+const productData = products.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  description: p.description,
+  category: p.category,
+  categoryName: categoryBySlug.get(p.category)?.name ?? p.category,
+  subcategory: p.subcategory ?? "",
+  brand: p.brand ?? "",
+  price: p.price,
+  previousPrice: p.previousPrice ?? null,
+  available: p.available,
+  stockQty: p.stockQty ?? null,
+  warranty: p.warranty ?? "12 meses",
+  colors: p.colors,
+  icon: p.icon,
+  accent: accents[p.category] ?? "#22d3ee",
+  specs: p.specs ?? {},
+  variationOptions: p.variationOptions ?? [],
+  materials: p.materials,
+  dimensions: p.dimensions,
+  relatedSlugs: p.relatedSlugs ?? [],
+  compatibleAccessories: p.compatibleAccessories ?? [],
+  images: p.images ?? {},
+}));
+---
+
+<script type="application/json" id="nx-product-modal-data" set:html={JSON.stringify({ products: productData, whatsappNumber })} />
+
+<div data-product-modal class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true" aria-labelledby="nx-pm-title">
+  <div data-pm-backdrop class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
+  <div class="relative flex h-full items-center justify-center p-3 sm:p-6">
+    <div
+      data-pm-panel
+      class="pm-panel relative flex max-h-[calc(100dvh-24px)] w-full max-w-4xl translate-y-4 scale-95 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[var(--surface)] opacity-0 shadow-2xl transition-all duration-300"
+    >
+      <button type="button" data-pm-close aria-label="Fechar" class="absolute right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white backdrop-blur hover:bg-black/60">
+        <Icon name="close" class="h-5 w-5" />
+      </button>
+
+      <div class="flex-1 overflow-y-auto">
+        <div class="grid gap-0 sm:grid-cols-2">
+          <div class="p-5 sm:p-6">
+            <button type="button" data-pm-zoom-toggle class="relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-xl border border-white/10" aria-label="Ampliar imagem">
+              <div data-pm-visual class="h-full w-full"></div>
+            </button>
+            <div data-pm-gallery-thumbs class="mt-3 hidden flex-wrap justify-center gap-2" role="tablist" aria-label="Imagens do produto"></div>
+
+            <p data-pm-color-caption class="mt-2 text-center text-xs text-[var(--ink-muted)]"></p>
+
+            <div data-pm-color-thumbs class="mt-3 flex flex-wrap justify-center gap-2" role="tablist" aria-label="Cores disponíveis"></div>
+          </div>
+
+          <div class="flex flex-col p-5 sm:p-6">
+            <p data-pm-category class="text-xs uppercase tracking-wide text-[var(--ink-muted)]"></p>
+            <h2 id="nx-pm-title" data-pm-name class="mt-1 font-[var(--font-heading)] text-2xl font-semibold text-white"></h2>
+
+            <div class="mt-3 flex flex-wrap items-baseline gap-2.5">
+              <span data-pm-previous-price class="hidden text-sm text-white/40 line-through"></span>
+              <span data-pm-price class="text-2xl font-semibold text-white"></span>
+            </div>
+            <p data-pm-installments class="mt-0.5 text-xs text-[var(--ink-muted)]"></p>
+            <p data-pm-availability class="mt-2 text-sm font-medium"></p>
+
+            <div data-pm-variation-wrap class="mt-4 hidden">
+              <label data-pm-variation-label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]"></label>
+              <select data-pm-variation-select class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60"></select>
+            </div>
+
+            <div class="mt-4 flex items-center gap-3">
+              <span class="text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Qtd.</span>
+              <div class="flex items-center rounded-full border border-white/15">
+                <button type="button" data-pm-qty-minus aria-label="Diminuir quantidade" class="flex h-8 w-8 items-center justify-center text-white"><Icon name="minus" class="h-3.5 w-3.5" /></button>
+                <span data-pm-qty class="w-8 text-center text-sm font-semibold text-white">1</span>
+                <button type="button" data-pm-qty-plus aria-label="Aumentar quantidade" class="flex h-8 w-8 items-center justify-center text-white"><Icon name="plus" class="h-3.5 w-3.5" /></button>
+              </div>
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-2.5">
+              <button type="button" data-pm-add-cart class="inline-flex flex-1 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+                <Icon name="cart" class="h-4 w-4" />
+                Adicionar ao carrinho
+              </button>
+              <button type="button" data-pm-fav aria-label="Favoritar" aria-pressed="false" class="pm-fav-btn inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white">
+                <Icon name="heart" class="h-4 w-4" />
+              </button>
+              <button type="button" data-pm-compare aria-label="Comparar" aria-pressed="false" class="pm-compare-btn inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white">
+                <Icon name="scale" class="h-4 w-4" />
+              </button>
+            </div>
+
+            <div class="mt-2.5 flex flex-wrap gap-2.5">
+              <button type="button" data-pm-quote class="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-xs font-semibold text-white hover:border-white/30">
+                Solicitar orçamento
+              </button>
+              <a data-pm-whatsapp target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-semibold text-white hover:bg-[#20bd5a]">
+                <Icon name="whatsapp" class="h-3.5 w-3.5" />
+                WhatsApp
+              </a>
+            </div>
+
+            <p class="mt-4 text-xs text-[var(--ink-muted)]">Carrinho, favoritos e comparação são demonstrativos — não há pagamento online neste modelo.</p>
+
+            <div class="mt-5 border-t border-white/10 pt-4">
+              <div class="flex flex-wrap gap-1.5" role="tablist" aria-label="Detalhes do produto">
+                <button type="button" data-pm-tab="overview" class="pm-tab is-active rounded-full px-3 py-1.5 text-xs font-medium">Visão geral</button>
+                <button type="button" data-pm-tab="specs" class="pm-tab rounded-full px-3 py-1.5 text-xs font-medium">Especificações</button>
+                <button type="button" data-pm-tab="compat" class="pm-tab rounded-full px-3 py-1.5 text-xs font-medium">Compatibilidade</button>
+                <button type="button" data-pm-tab="warranty" class="pm-tab rounded-full px-3 py-1.5 text-xs font-medium">Garantia</button>
+                <button type="button" data-pm-tab="delivery" class="pm-tab rounded-full px-3 py-1.5 text-xs font-medium">Entrega</button>
+              </div>
+
+              <div data-pm-panel-overview class="pm-tab-panel mt-3 text-sm leading-relaxed text-[var(--ink-muted)]"></div>
+              <div data-pm-panel-specs class="pm-tab-panel mt-3 hidden space-y-1.5 text-sm"></div>
+              <div data-pm-panel-compat class="pm-tab-panel mt-3 hidden text-sm text-[var(--ink-muted)]"></div>
+              <div data-pm-panel-warranty class="pm-tab-panel mt-3 hidden text-sm leading-relaxed text-[var(--ink-muted)]"></div>
+              <div data-pm-panel-delivery class="pm-tab-panel mt-3 hidden text-sm leading-relaxed text-[var(--ink-muted)]">
+                Entrega demonstrativa — prazos e frete reais devem ser confirmados com um consultor no momento do pedido.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-pm-related class="hidden border-t border-white/10 p-5 sm:p-6">
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Produtos relacionados</h3>
+          <div data-pm-related-list class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pm-tab.is-active {
+    background: var(--accent);
+    color: #04121a;
+  }
+  .pm-tab:not(.is-active) {
+    color: var(--ink-muted);
+  }
+  .pm-fav-btn.is-active {
+    color: #ff6b81;
+    border-color: rgba(255, 107, 129, 0.5);
+  }
+  .pm-compare-btn.is-active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>
+
+<script>
+  interface ModalProduct {
+    slug: string; name: string; description: string; category: string; categoryName: string; subcategory: string;
+    brand: string; price: number; previousPrice: number | null; available: boolean; stockQty: number | null;
+    warranty: string; colors: string[]; icon: string; accent: string; specs: Record<string, string>;
+    variationOptions: { label: string; values: string[] }[]; materials: string[]; dimensions: string;
+    relatedSlugs: string[]; compatibleAccessories: string[];
+    images: { main?: string; clean?: string; angle2?: string; detail?: string; context?: string };
+  }
+
+  const dataEl = document.getElementById("nx-product-modal-data");
+  if (dataEl) {
+    const { products, whatsappNumber } = JSON.parse(dataEl.textContent || "{}") as { products: ModalProduct[]; whatsappNumber: string };
+    const bySlug = new Map(products.map((p) => [p.slug, p]));
+
+    const modal = document.querySelector<HTMLElement>("[data-product-modal]")!;
+    const backdrop = modal.querySelector<HTMLElement>("[data-pm-backdrop]")!;
+    const panel = modal.querySelector<HTMLElement>("[data-pm-panel]")!;
+    const visual = modal.querySelector<HTMLElement>("[data-pm-visual]")!;
+    const zoomToggle = modal.querySelector<HTMLElement>("[data-pm-zoom-toggle]")!;
+    const galleryThumbs = modal.querySelector<HTMLElement>("[data-pm-gallery-thumbs]")!;
+    const colorCaption = modal.querySelector<HTMLElement>("[data-pm-color-caption]")!;
+    const colorThumbs = modal.querySelector<HTMLElement>("[data-pm-color-thumbs]")!;
+    const categoryEl = modal.querySelector<HTMLElement>("[data-pm-category]")!;
+    const nameEl = modal.querySelector<HTMLElement>("[data-pm-name]")!;
+    const prevPriceEl = modal.querySelector<HTMLElement>("[data-pm-previous-price]")!;
+    const priceEl = modal.querySelector<HTMLElement>("[data-pm-price]")!;
+    const installmentsEl = modal.querySelector<HTMLElement>("[data-pm-installments]")!;
+    const availabilityEl = modal.querySelector<HTMLElement>("[data-pm-availability]")!;
+    const variationWrap = modal.querySelector<HTMLElement>("[data-pm-variation-wrap]")!;
+    const variationLabel = modal.querySelector<HTMLElement>("[data-pm-variation-label]")!;
+    const variationSelect = modal.querySelector<HTMLSelectElement>("[data-pm-variation-select]")!;
+    const qtyEl = modal.querySelector<HTMLElement>("[data-pm-qty]")!;
+    const addCartBtn = modal.querySelector<HTMLButtonElement>("[data-pm-add-cart]")!;
+    const favBtn = modal.querySelector<HTMLElement>("[data-pm-fav]")!;
+    const compareBtn = modal.querySelector<HTMLElement>("[data-pm-compare]")!;
+    const whatsappLink = modal.querySelector<HTMLAnchorElement>("[data-pm-whatsapp]")!;
+    const relatedWrap = modal.querySelector<HTMLElement>("[data-pm-related]")!;
+    const relatedList = modal.querySelector<HTMLElement>("[data-pm-related-list]")!;
+
+    const panelOverview = modal.querySelector<HTMLElement>("[data-pm-panel-overview]")!;
+    const panelSpecs = modal.querySelector<HTMLElement>("[data-pm-panel-specs]")!;
+    const panelCompat = modal.querySelector<HTMLElement>("[data-pm-panel-compat]")!;
+    const panelWarranty = modal.querySelector<HTMLElement>("[data-pm-panel-warranty]")!;
+
+    let current: ModalProduct | null = null;
+    let currentColor = "";
+    let currentQty = 1;
+    let lastFocused: HTMLElement | null = null;
+
+    function formatBRL(value: number) {
+      return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    async function renderVisual(product: ModalProduct, photoOverride?: string) {
+      visual.innerHTML = "";
+      const photoSrc = photoOverride ?? product.images.main;
+      if (photoSrc) {
+        const img = document.createElement("img");
+        img.src = photoSrc;
+        img.alt = product.name;
+        img.loading = "eager";
+        img.className = "h-full w-full object-cover";
+        visual.appendChild(img);
+        return;
+      }
+      const { renderVisualHTML, productRenderVariant, moodForCategory } = await import("../../utils/nexoraProductRender");
+      const el = document.createElement("div");
+      el.className = "relative flex h-full w-full items-center justify-center overflow-hidden";
+      el.innerHTML = renderVisualHTML({
+        variant: productRenderVariant(product),
+        accent: product.accent,
+        mood: moodForCategory(product.category),
+      });
+      visual.appendChild(el);
+    }
+
+    function renderGalleryThumbs(product: ModalProduct) {
+      const slots: { key: keyof ModalProduct["images"]; label: string }[] = [
+        { key: "main", label: "Principal" },
+        { key: "angle2", label: "Outro ângulo" },
+        { key: "context", label: "Em uso" },
+        { key: "detail", label: "Detalhe" },
+      ];
+      const available = slots.filter((s) => product.images[s.key]);
+      galleryThumbs.innerHTML = "";
+      if (available.length < 2) {
+        galleryThumbs.classList.add("hidden");
+        galleryThumbs.classList.remove("flex");
+        return;
+      }
+      galleryThumbs.classList.remove("hidden");
+      galleryThumbs.classList.add("flex");
+      available.forEach((s, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.title = s.label;
+        btn.className = `h-12 w-12 overflow-hidden rounded-lg border ${i === 0 ? "border-[var(--accent)]" : "border-white/15"}`;
+        const img = document.createElement("img");
+        img.src = product.images[s.key]!;
+        img.alt = s.label;
+        img.className = "h-full w-full object-cover";
+        btn.appendChild(img);
+        btn.addEventListener("click", () => {
+          renderVisual(product, product.images[s.key]);
+          galleryThumbs.querySelectorAll("button").forEach((b) => b.classList.remove("border-[var(--accent)]"));
+          galleryThumbs.querySelectorAll("button").forEach((b) => b.classList.add("border-white/15"));
+          btn.classList.remove("border-white/15");
+          btn.classList.add("border-[var(--accent)]");
+        });
+        galleryThumbs.appendChild(btn);
+      });
+    }
+
+    function setActiveColor(color: string) {
+      currentColor = color;
+      colorCaption.textContent = color ? `Cor: ${color}` : "";
+      colorThumbs.querySelectorAll<HTMLElement>("[data-pm-color]").forEach((el) => {
+        el.classList.toggle("ring-2", el.dataset.pmColor === color);
+        el.style.outlineColor = current?.accent ?? "var(--accent)";
+      });
+    }
+
+    function setTab(tab: string) {
+      modal.querySelectorAll<HTMLElement>("[data-pm-tab]").forEach((btn) => btn.classList.toggle("is-active", btn.dataset.pmTab === tab));
+      [
+        ["overview", panelOverview],
+        ["specs", panelSpecs],
+        ["compat", panelCompat],
+        ["warranty", panelWarranty],
+        ["delivery", modal.querySelector("[data-pm-panel-delivery]")!],
+      ].forEach(([key, el]) => (el as HTMLElement).classList.toggle("hidden", key !== tab));
+    }
+
+    async function syncButtons() {
+      if (!current) return;
+      const { isFavorite, isInCompare } = await import("../../utils/nexoraTechShop");
+      const fav = isFavorite(current.slug);
+      favBtn.classList.toggle("is-active", fav);
+      favBtn.setAttribute("aria-pressed", String(fav));
+      const cmp = isInCompare(current.slug);
+      compareBtn.classList.toggle("is-active", cmp);
+      compareBtn.setAttribute("aria-pressed", String(cmp));
+    }
+
+    function render(product: ModalProduct) {
+      current = product;
+      currentQty = 1;
+      qtyEl.textContent = "1";
+
+      renderVisual(product);
+      renderGalleryThumbs(product);
+      categoryEl.textContent = `${product.categoryName}${product.subcategory ? " · " + product.subcategory : ""}`;
+      nameEl.textContent = product.name;
+
+      if (product.previousPrice) {
+        prevPriceEl.textContent = formatBRL(product.previousPrice);
+        prevPriceEl.classList.remove("hidden");
+      } else {
+        prevPriceEl.classList.add("hidden");
+      }
+      priceEl.textContent = formatBRL(product.price);
+      installmentsEl.textContent = `ou 10x de ${formatBRL(product.price / 10)} (demonstrativo)`;
+      availabilityEl.textContent = product.available
+        ? `Disponível${product.stockQty ? ` — ${product.stockQty} em estoque (demonstrativo)` : ""}`
+        : "Indisponível no momento";
+      availabilityEl.className = `mt-2 text-sm font-medium ${product.available ? "text-emerald-400" : "text-red-400"}`;
+      addCartBtn.disabled = !product.available;
+      addCartBtn.classList.toggle("opacity-40", !product.available);
+
+      colorThumbs.innerHTML = "";
+      if (product.colors.length > 0) {
+        product.colors.forEach((c) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.dataset.pmColor = c;
+          btn.title = c;
+          btn.setAttribute("role", "tab");
+          btn.className = "h-8 w-8 rounded-full border-2 border-white/20 outline outline-2 outline-offset-2 outline-transparent";
+          btn.style.background = colorHex(c);
+          btn.addEventListener("click", () => setActiveColor(c));
+          colorThumbs.appendChild(btn);
+        });
+        setActiveColor(product.colors[0]);
+      } else {
+        colorCaption.textContent = "";
+      }
+
+      if (product.variationOptions.length > 0) {
+        const opt = product.variationOptions[0];
+        variationLabel.textContent = opt.label;
+        variationSelect.innerHTML = opt.values.map((v) => `<option value="${v}">${v}</option>`).join("");
+        variationWrap.classList.remove("hidden");
+      } else {
+        variationWrap.classList.add("hidden");
+      }
+
+      panelOverview.textContent = product.description;
+
+      panelSpecs.innerHTML = Object.entries(product.specs)
+        .map(
+          ([label, value]) =>
+            `<div class="flex justify-between border-b border-white/5 py-1.5"><span class="text-[var(--ink-muted)]">${label}</span><span class="font-medium text-white">${value}</span></div>`
+        )
+        .join("") + `<div class="flex justify-between border-b border-white/5 py-1.5"><span class="text-[var(--ink-muted)]">Materiais</span><span class="font-medium text-white">${product.materials.join(", ")}</span></div>` +
+        `<div class="flex justify-between py-1.5"><span class="text-[var(--ink-muted)]">Dimensões</span><span class="font-medium text-white">${product.dimensions}</span></div>`;
+
+      const accessories = product.compatibleAccessories.map((s) => bySlug.get(s)).filter((p): p is ModalProduct => Boolean(p));
+      panelCompat.innerHTML = accessories.length
+        ? `<p class="mb-2">Acessórios compatíveis:</p><ul class="list-inside list-disc space-y-1">${accessories.map((a) => `<li>${a.name}</li>`).join("")}</ul>`
+        : "Sem restrições de compatibilidade conhecidas para este produto.";
+
+      panelWarranty.textContent = `Garantia demonstrativa de ${product.warranty}. Cobre defeitos de fabricação; termos completos variam por fabricante.`;
+
+      const related = product.relatedSlugs.map((s) => bySlug.get(s)).filter((p): p is ModalProduct => Boolean(p));
+      relatedWrap.classList.toggle("hidden", related.length === 0);
+      relatedList.innerHTML = related
+        .map(
+          (r) => `
+        <button type="button" data-open-product="${r.slug}" class="flex flex-col items-start gap-1.5 rounded-xl border border-white/10 p-3 text-left hover:border-white/25">
+          <span class="text-xs text-[var(--ink-muted)]">${r.categoryName}</span>
+          <span class="line-clamp-1 text-sm font-medium text-white">${r.name}</span>
+          <span class="text-sm font-semibold" style="color:${r.accent}">${formatBRL(r.price)}</span>
+        </button>`
+        )
+        .join("");
+
+      whatsappLink.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá! Tenho interesse no ${product.name} da Nexora Tech.`)}`;
+
+      setTab("overview");
+      zoomToggle.classList.remove("cursor-zoom-out");
+      zoomToggle.classList.add("cursor-zoom-in");
+      visual.classList.remove("scale-150");
+      syncButtons();
+    }
+
+    function colorHex(name: string): string {
+      const map: Record<string, string> = {
+        Prata: "#c7ccd1", "Azul titânio": "#3d4a6b", "Roxo meia-noite": "#39304f", "Preto espacial": "#15161a",
+        Branco: "#ffffff", Preto: "#1c1a18", "Verde noturno": "#243b34",
+      };
+      return map[name] ?? "#8a8680";
+    }
+
+    async function openModal(slug: string) {
+      const product = bySlug.get(slug);
+      if (!product) return;
+      lastFocused = document.activeElement as HTMLElement;
+      render(product);
+      const { trackRecentlyViewed } = await import("../../utils/nexoraTechShop");
+      trackRecentlyViewed(slug);
+      modal.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        backdrop.classList.remove("opacity-0");
+        panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
+      });
+      document.addEventListener("keydown", onKeydown);
+    }
+    function closeModal() {
+      backdrop.classList.add("opacity-0");
+      panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+      document.removeEventListener("keydown", onKeydown);
+      window.setTimeout(() => modal.classList.add("hidden"), 300);
+      lastFocused?.focus();
+    }
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeModal();
+    }
+
+    document.addEventListener("click", async (event) => {
+      const target = event.target as HTMLElement;
+      const opener = target.closest<HTMLElement>("[data-open-product]");
+      if (opener) {
+        openModal(opener.dataset.openProduct ?? "");
+        return;
+      }
+      if (!modal.contains(target)) return;
+
+      if (target.closest("[data-pm-close]") || target === backdrop) {
+        closeModal();
+        return;
+      }
+      if (target.closest("[data-pm-zoom-toggle]")) {
+        const zoomed = visual.classList.toggle("scale-150");
+        zoomToggle.classList.toggle("cursor-zoom-in", !zoomed);
+        zoomToggle.classList.toggle("cursor-zoom-out", zoomed);
+        return;
+      }
+      const tabBtn = target.closest<HTMLElement>("[data-pm-tab]");
+      if (tabBtn) {
+        setTab(tabBtn.dataset.pmTab ?? "overview");
+        return;
+      }
+      if (target.closest("[data-pm-qty-plus]")) {
+        currentQty += 1;
+        qtyEl.textContent = String(currentQty);
+        return;
+      }
+      if (target.closest("[data-pm-qty-minus]")) {
+        currentQty = Math.max(1, currentQty - 1);
+        qtyEl.textContent = String(currentQty);
+        return;
+      }
+      if (target.closest("[data-pm-add-cart]") && current) {
+        const { addToCart } = await import("../../utils/nexoraTechShop");
+        addToCart(current.slug, currentQty, currentColor || undefined);
+        window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Adicionado ao carrinho." }));
+        return;
+      }
+      if (target.closest("[data-pm-fav]") && current) {
+        const { toggleFavorite } = await import("../../utils/nexoraTechShop");
+        toggleFavorite(current.slug);
+        syncButtons();
+        return;
+      }
+      if (target.closest("[data-pm-compare]") && current) {
+        const { toggleCompare, getCompareList } = await import("../../utils/nexoraTechShop");
+        const list = getCompareList();
+        if (!list.includes(current.slug) && list.length > 0) {
+          const firstCategory = document.querySelector<HTMLElement>(`[data-product-card][data-slug="${list[0]}"]`)?.dataset.category;
+          if (firstCategory && firstCategory !== current.category) {
+            window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Só é possível comparar produtos da mesma categoria." }));
+            return;
+          }
+        }
+        const result = toggleCompare(current.slug);
+        if (!result.added && result.reason === "limit") {
+          window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Você pode comparar até 4 produtos por vez." }));
+        }
+        syncButtons();
+        return;
+      }
+      if (target.closest("[data-pm-quote]") && current) {
+        window.dispatchEvent(new CustomEvent("nx:prefill-quote", { detail: { product: current.name } }));
+        closeModal();
+        window.setTimeout(() => document.getElementById("orcamento")?.scrollIntoView({ behavior: "smooth" }), 320);
+        return;
+      }
+    });
+
+    window.addEventListener("nx:favorites-updated", syncButtons);
+    window.addEventListener("nx:compare-updated", syncButtons);
+  }
+</script>

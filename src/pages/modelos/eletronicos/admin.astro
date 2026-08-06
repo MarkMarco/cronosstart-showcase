@@ -1,0 +1,1509 @@
+---
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import NexoraLogo from "../../../components/logos/NexoraLogo.astro";
+import Icon from "../../../components/ui/Icon.astro";
+import { nexoraTechConfig as config, categories, brands, products, kits } from "../../../config/showcases/nexora-tech";
+
+const seo = {
+  title: "Painel administrativo — Nexora Tech (modelo demonstrativo)",
+  description: "Painel administrativo demonstrativo de catálogo, comparador, kits e ofertas da Nexora Tech.",
+};
+
+const seedProducts = products.map((p) => ({ ...p, archived: false }));
+const seedCategories = categories.map((c) => ({ ...c }));
+const seedBrands = brands.map((b) => ({ ...b }));
+const seedKits = kits.map((k) => ({ ...k }));
+
+const seedBanners = [
+  {
+    id: "banner-1",
+    title: "Nexora Vision X1 chegou",
+    subtitle: "Lançamento com três câmeras e tela AMOLED 120Hz.",
+    ctaLabel: "Ver lançamento",
+    ctaHref: "#lancamentos",
+    active: true,
+    order: 1,
+    startDate: "2026-07-01",
+    endDate: "",
+  },
+  {
+    id: "banner-2",
+    title: "Até 15% em produtos selecionados",
+    subtitle: "Ofertas por tempo limitado no catálogo.",
+    ctaLabel: "Ver ofertas",
+    ctaHref: "#ofertas",
+    active: false,
+    order: 2,
+    startDate: "",
+    endDate: "",
+  },
+];
+
+const seedRequests = [
+  {
+    id: "req-1", name: "Marina Souza", phone: "(11) 98888-2345", email: "marina@exemplo.com",
+    interest: "Nexora Vision X1", category: "Smartphones", usage: "Uso geral", budget: "R$ 3.000 a R$ 8.000",
+    message: "Gostaria de saber se tem entrega expressa.", contactPreference: "WhatsApp",
+    status: "novo", notes: "", createdAt: "2026-07-22",
+  },
+  {
+    id: "req-2", name: "Eduardo Lima", phone: "(21) 97777-6789", email: "eduardo@exemplo.com",
+    interest: "Kit Setup Gamer", category: "Gamer", usage: "Jogos", budget: "Acima de R$ 8.000",
+    message: "Quero confirmar compatibilidade do monitor com o notebook.", contactPreference: "E-mail",
+    status: "em atendimento", notes: "Catálogo técnico enviado em 23/07.", createdAt: "2026-07-19",
+  },
+  {
+    id: "req-3", name: "Patrícia Nogueira", phone: "(31) 96666-5432", email: "patricia@exemplo.com",
+    interest: "Nexora Studio 14", category: "Notebooks", usage: "Criação de conteúdo", budget: "R$ 3.000 a R$ 8.000",
+    message: "Confirmar prazo de garantia estendida.", contactPreference: "Telefone",
+    status: "orçamento enviado", notes: "", createdAt: "2026-07-12",
+  },
+  {
+    id: "req-4", name: "Vinícius Prado", phone: "(41) 95555-8765", email: "vinicius@exemplo.com",
+    interest: "Nexora Home Hub", category: "Casa inteligente", usage: "Casa inteligente", budget: "Até R$ 1.000",
+    message: "Pedido finalizado na loja física.", contactPreference: "WhatsApp",
+    status: "concluído", notes: "Cliente satisfeito.", createdAt: "2026-06-28",
+  },
+];
+
+const seedSettings = {
+  companyName: config.company.name,
+  whatsapp: config.contact.whatsappNumber,
+  phone: config.contact.phone,
+  email: config.contact.email,
+  address: `${config.contact.city}/${config.contact.state}`,
+  hours: config.contact.hours ?? "",
+  instagram: config.contact.instagram ?? "",
+  facebook: config.contact.facebook ?? "",
+  deliveryInfo: "Prazo e frete calculados no orçamento, conforme a região.",
+  warrantyInfo: "Garantia demonstrativa — termos completos variam por fabricante.",
+  institutionalText: config.company.description,
+  footerText: "Modelo demonstrativo desenvolvido pela CronosStart.",
+  defaultWhatsappMessage: config.contact.whatsappMessage,
+};
+
+const iconOptions = ["smartphone", "laptop", "cpu", "monitor", "headphones", "package", "wifi", "gamepad", "zap", "sparkle"];
+const categoryOptions = categories.filter((c) => c.slug !== "ofertas");
+
+const tabs = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "produtos", label: "Produtos" },
+  { id: "categorias", label: "Categorias" },
+  { id: "marcas", label: "Marcas" },
+  { id: "kits", label: "Kits" },
+  { id: "ofertas", label: "Ofertas" },
+  { id: "banners", label: "Banners" },
+  { id: "solicitacoes", label: "Solicitações" },
+  { id: "config", label: "Configurações" },
+];
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <NexoraLogo slot="header-logo" />
+  <NexoraLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <div data-login-gate class="mx-auto max-w-sm py-16 text-center">
+        <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/15 text-[var(--accent)]">
+          <Icon name="key" class="h-6 w-6" />
+        </span>
+        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">Acesso restrito</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Nexora Tech</p>
+        <form data-login-form class="mt-8 space-y-3 text-left">
+          <label class="block text-sm font-medium text-white">
+            E-mail
+            <input type="email" value="admin@nexoratech-demo.com.br" readonly class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
+          </label>
+          <label class="block text-sm font-medium text-white">
+            Senha
+            <input type="password" value="demonstracao" readonly class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
+          </label>
+          <button type="submit" class="!mt-6 w-full rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+            Entrar no painel
+          </button>
+          <p class="text-center text-xs text-[var(--ink-muted)]">Acesso demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.</p>
+        </form>
+      </div>
+
+      <div data-admin-content class="hidden">
+        <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-white">
+          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
+            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">Nexora Tech</h1>
+          </div>
+          <button type="button" data-action="reset-all" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+            <Icon name="refresh" class="h-4 w-4" />
+            Restaurar dados originais
+          </button>
+        </div>
+
+        <div class="-mx-6 mt-6 flex gap-2 overflow-x-auto px-6 pb-1" role="tablist">
+          {tabs.map((tab) => (
+            <button type="button" role="tab" data-tab-button={tab.id} class="shrink-0 rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-[var(--ink-muted)] transition-colors">
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <!-- DASHBOARD -->
+        <div data-panel="dashboard" class="mt-6">
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Total de produtos</p>
+              <p data-stat="total-produtos" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Produtos ativos</p>
+              <p data-stat="produtos-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Lançamentos</p>
+              <p data-stat="lancamentos" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Em oferta</p>
+              <p data-stat="em-oferta" class="mt-1 text-2xl font-semibold text-[#f59e0b]">0</p>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Indisponíveis</p>
+              <p data-stat="indisponiveis" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Categorias ativas</p>
+              <p data-stat="categorias-ativas" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Marcas ativas</p>
+              <p data-stat="marcas-ativas" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Kits ativos</p>
+              <p data-stat="kits-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Banners ativos</p>
+              <p data-stat="banners-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Solicitações novas</p>
+              <p data-stat="solicitacoes-novas" class="mt-1 text-2xl font-semibold text-white">0</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Comparações demonstrativas</p>
+              <p class="mt-1 text-2xl font-semibold text-white">—</p>
+            </div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-dashed border-white/15 p-4 text-sm text-[var(--ink-muted)]">
+            Em um projeto real, esta área também mostraria produtos mais visualizados e carrinhos/contatos demonstrativos com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esses indicadores não são simulados aqui para não apresentar números fictícios como se fossem reais.
+          </div>
+        </div>
+
+        <!-- PRODUTOS -->
+        <div data-panel="produtos" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-white">Produtos</h2>
+            <button type="button" data-action="toggle-product-form" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+              <Icon name="check" class="h-4 w-4" />
+              Adicionar produto
+            </button>
+          </div>
+
+          <div class="mt-4 grid gap-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:grid-cols-[1.3fr_1fr_1fr_auto]">
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Buscar
+              <input type="text" data-p-search placeholder="Nome ou SKU..." class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Categoria
+              <select data-p-filter-category class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]">
+                <option value="">Todas</option>
+                {categoryOptions.map((c) => <option value={c.slug}>{c.name}</option>)}
+              </select>
+            </label>
+            <label class="block text-xs font-medium text-[var(--ink-muted)]">
+              Status
+              <select data-p-filter-status class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]">
+                <option value="">Todos</option>
+                <option value="disponivel">Disponível</option>
+                <option value="indisponivel">Indisponível</option>
+              </select>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-medium text-[var(--ink-muted)] sm:pt-4">
+              <input type="checkbox" data-p-show-archived class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Arquivados
+            </label>
+          </div>
+
+          <form data-product-form class="mt-6 hidden grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-white/[0.02] p-6 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <h3 data-product-form-title class="text-base font-semibold text-white">Novo produto</h3>
+              <input type="hidden" name="id" />
+              <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <label class="block text-sm font-medium text-white sm:col-span-2">
+                  Nome
+                  <input type="text" name="name" data-pf="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  SKU
+                  <input type="text" name="sku" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Marca
+                  <select name="brand" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
+                    {seedBrands.map((b) => <option value={b.slug}>{b.name}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Categoria
+                  <select name="category" data-pf="category" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
+                    {categoryOptions.map((c) => <option value={c.slug}>{c.name}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Subcategoria
+                  <input type="text" name="subcategory" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Preço (R$)
+                  <input type="number" name="price" data-pf="price" required min="0" step="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Preço anterior (oferta)
+                  <input type="number" name="previousPrice" min="0" step="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
+                  <input type="checkbox" name="offerActive" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                  Oferta ativa
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Oferta válida até
+                  <input type="date" name="offerEndsAt" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Estoque demonstrativo
+                  <input type="number" name="stockQty" min="0" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Garantia demonstrativa
+                  <input type="text" name="warranty" placeholder="Ex.: 12 meses" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Ícone
+                  <select name="icon" data-pf="icon" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
+                    {iconOptions.map((i) => <option value={i}>{i}</option>)}
+                  </select>
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Cores (separadas por vírgula)
+                  <input type="text" name="colors" placeholder="Preto espacial, Prata" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Materiais (separados por vírgula)
+                  <input type="text" name="materials" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Dimensões
+                  <input type="text" name="dimensions" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Selo (opcional)
+                  <input type="text" name="badge" placeholder="Ex.: Destaque" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-white">
+                  Ordem de exibição
+                  <input type="number" name="displayOrder" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                </label>
+                <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+                  <label class="flex items-center gap-2 text-sm font-medium text-white">
+                    <input type="checkbox" name="available" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+                    Disponível
+                  </label>
+                  <label class="flex items-center gap-2 text-sm font-medium text-white">
+                    <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                    Destaque
+                  </label>
+                  <label class="flex items-center gap-2 text-sm font-medium text-white">
+                    <input type="checkbox" name="isNew" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                    Lançamento
+                  </label>
+                </div>
+                <label class="block text-sm font-medium text-white sm:col-span-2">
+                  Especificações (uma por linha, "chave: valor")
+                  <textarea name="specs" rows="4" placeholder={"processador: Nexora N3\nmemoria: 8GB RAM"} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+                  <span class="mt-1 block text-xs text-[var(--ink-muted)]">Estrutura livre — categorias diferentes podem usar campos diferentes.</span>
+                </label>
+                <div class="sm:col-span-2">
+                  <p class="text-sm font-medium text-white">Imagens do produto (opcional)</p>
+                  <p class="mt-1 text-xs text-[var(--ink-muted)]">Cole a URL de uma foto real para cada campo. Campos vazios continuam usando o render vetorial premium da categoria — nada é obrigatório.</p>
+                  <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                    <label class="block text-xs font-medium text-white">
+                      Imagem principal
+                      <input type="url" name="imageMain" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                    </label>
+                    <label class="block text-xs font-medium text-white">
+                      Fundo limpo
+                      <input type="url" name="imageClean" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                    </label>
+                    <label class="block text-xs font-medium text-white">
+                      Segundo ângulo
+                      <input type="url" name="imageAngle2" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                    </label>
+                    <label class="block text-xs font-medium text-white">
+                      Detalhe de acabamento
+                      <input type="url" name="imageDetail" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                    </label>
+                    <label class="block text-xs font-medium text-white">
+                      Em contexto de uso
+                      <input type="url" name="imageContext" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                    </label>
+                  </div>
+                </div>
+                <label class="block text-sm font-medium text-white sm:col-span-2">
+                  Descrição
+                  <textarea name="description" rows="3" data-pf="description" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+                </label>
+              </div>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+                  Publicar produto
+                </button>
+                <button type="button" data-action="duplicate-current" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">Duplicar</button>
+                <button type="button" data-action="cancel-product-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+              <div class="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-[var(--surface)]">
+                <div data-preview="visual" class="relative flex aspect-square items-center justify-center bg-[#0d1220]">
+                  <Icon name="smartphone" data-preview="icon" class="h-14 w-14 text-white/60" />
+                </div>
+                <div class="p-5">
+                  <p data-preview="taxonomy" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Categoria</p>
+                  <h3 data-preview="name" class="mt-1 text-base font-semibold text-white">Nome do produto</h3>
+                  <p data-preview="price" class="mt-3 font-[var(--font-heading)] text-xl font-semibold text-white">R$ 0</p>
+                  <p data-preview="description" class="mt-2 text-xs text-[var(--ink-muted)]"></p>
+                </div>
+              </div>
+              <p class="mt-2 text-xs text-[var(--ink-muted)]">Assim o card aparecerá no catálogo público, antes de publicar.</p>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[860px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Produto</th>
+                  <th class="px-4 py-3 font-medium">Categoria</th>
+                  <th class="px-4 py-3 font-medium">Preço</th>
+                  <th class="px-4 py-3 font-medium">Disponibilidade</th>
+                  <th class="px-4 py-3 font-medium">Destaque</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-product-table-body class="text-white"></tbody>
+            </table>
+          </div>
+          <p data-product-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">Nenhum produto encontrado para esses filtros.</p>
+        </div>
+
+        <!-- CATEGORIAS -->
+        <div data-panel="categorias" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Categorias</h2>
+          <form data-category-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-white">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Ícone
+              <select name="icon" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
+                {iconOptions.map((i) => <option value={i}>{i}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
+              <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Ativa
+            </label>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar categoria</button>
+              <button type="button" data-action="cancel-category-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[600px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Categoria</th>
+                  <th class="px-4 py-3 font-medium">Produtos</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-category-table-body class="text-white"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MARCAS -->
+        <div data-panel="marcas" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Marcas fictícias</h2>
+          <form data-brand-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-white">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
+              <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Ativa
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar marca</button>
+              <button type="button" data-action="cancel-brand-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[560px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Marca</th>
+                  <th class="px-4 py-3 font-medium">Produtos</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-brand-table-body class="text-white"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- KITS -->
+        <div data-panel="kits" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Kits e combinações</h2>
+          <form data-kit-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Descrição
+              <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Economia demonstrativa
+              <input type="text" name="savingsLabel" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <div class="sm:col-span-2">
+              <p class="mb-1.5 text-sm font-medium text-white">Produtos do kit</p>
+              <div data-kit-product-checkboxes class="grid max-h-56 grid-cols-2 gap-1.5 overflow-y-auto rounded-lg border border-white/10 bg-[var(--surface)] p-3 sm:grid-cols-3"></div>
+            </div>
+            <label class="block text-sm font-medium text-white">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <div class="flex items-center gap-4 self-end pb-2.5">
+              <label class="flex items-center gap-2 text-sm font-medium text-white">
+                <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+                Ativo
+              </label>
+              <label class="flex items-center gap-2 text-sm font-medium text-white">
+                <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                Destaque
+              </label>
+            </div>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar kit</button>
+              <button type="button" data-action="cancel-kit-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Kit</th>
+                  <th class="px-4 py-3 font-medium">Itens</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-kit-table-body class="text-white"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- OFERTAS -->
+        <div data-panel="ofertas" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Ofertas</h2>
+          <p class="mt-1 text-sm text-[var(--ink-muted)]">Ofertas são definidas diretamente no cadastro do produto (preço anterior + oferta ativa). Aqui você acompanha e encerra rapidamente.</p>
+          <div class="mt-4 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Produto</th>
+                  <th class="px-4 py-3 font-medium">Preço anterior</th>
+                  <th class="px-4 py-3 font-medium">Preço atual</th>
+                  <th class="px-4 py-3 font-medium">Validade</th>
+                  <th class="px-4 py-3 font-medium">Estoque</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-offers-table-body class="text-white"></tbody>
+            </table>
+          </div>
+          <p data-offers-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">Nenhuma oferta ativa no momento.</p>
+        </div>
+
+        <!-- BANNERS -->
+        <div data-panel="banners" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Banners do topo</h2>
+          <form data-banner-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
+            <input type="hidden" name="id" />
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Título
+              <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Subtítulo
+              <input type="text" name="subtitle" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Texto do CTA
+              <input type="text" name="ctaLabel" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Link do CTA
+              <input type="text" name="ctaHref" placeholder="#ofertas" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Início
+              <input type="date" name="startDate" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Fim
+              <input type="date" name="endDate" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
+              <input type="checkbox" name="active" class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Ativo
+            </label>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar banner</button>
+              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Banner</th>
+                  <th class="px-4 py-3 font-medium">Vigência</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-banner-table-body class="text-white"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SOLICITAÇÕES -->
+        <div data-panel="solicitacoes" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Solicitações demonstrativas</h2>
+          <div class="mt-4 space-y-3" data-requests-list></div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div data-panel="config" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-white">Configurações</h2>
+          <form data-settings-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
+            <label class="block text-sm font-medium text-white">
+              Nome da empresa
+              <input type="text" name="companyName" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              WhatsApp (demonstrativo)
+              <input type="text" name="whatsapp" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Telefone
+              <input type="text" name="phone" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              E-mail
+              <input type="email" name="email" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Endereço
+              <input type="text" name="address" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Horário de atendimento
+              <input type="text" name="hours" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Instagram (URL)
+              <input type="text" name="instagram" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white">
+              Facebook (URL)
+              <input type="text" name="facebook" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Informações de entrega
+              <textarea name="deliveryInfo" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Informações de garantia
+              <textarea name="warrantyInfo" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Texto institucional
+              <textarea name="institutionalText" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Texto do rodapé
+              <input type="text" name="footerText" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-white sm:col-span-2">
+              Mensagem padrão do WhatsApp
+              <textarea name="defaultWhatsappMessage" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <div class="sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+                Salvar configurações
+              </button>
+              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">Configurações salvas neste navegador.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>
+
+<script define:vars={{ seedProducts, seedCategories, seedBrands, seedKits, seedBanners, seedRequests, seedSettings }}>
+  const STORAGE_KEY = "nexora-tech-admin-v1";
+  const AUTH_KEY = "nexora-tech-admin-authed";
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  }
+  function slugify(text) {
+    return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+  function formatBRL(value) {
+    return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  function todayISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+  function parseSpecs(text) {
+    const specs = {};
+    String(text || "").split("\n").forEach((line) => {
+      const idx = line.indexOf(":");
+      if (idx > 0) {
+        const key = line.slice(0, idx).trim();
+        const value = line.slice(idx + 1).trim();
+        if (key && value) specs[key] = value;
+      }
+    });
+    return specs;
+  }
+  function specsToText(specs) {
+    return Object.entries(specs || {}).map(([k, v]) => `${k}: ${v}`).join("\n");
+  }
+
+  function loadState() {
+    const seed = {
+      products: seedProducts,
+      categories: seedCategories,
+      brands: seedBrands,
+      kits: seedKits,
+      banners: seedBanners,
+      requests: seedRequests,
+      settings: seedSettings,
+    };
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) return { ...seed, ...JSON.parse(raw) };
+    } catch {}
+    saveState(seed);
+    return seed;
+  }
+  function saveState(next) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {}
+  }
+
+  let state = loadState();
+  const pendingDeletes = new Set();
+
+  // --- Login ---
+  const loginGate = document.querySelector("[data-login-gate]");
+  const adminContent = document.querySelector("[data-admin-content]");
+  const loginForm = document.querySelector("[data-login-form]");
+  function unlock() {
+    loginGate.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+    try { window.sessionStorage.setItem(AUTH_KEY, "1"); } catch {}
+  }
+  loginForm.addEventListener("submit", (e) => { e.preventDefault(); unlock(); });
+  try { if (window.sessionStorage.getItem(AUTH_KEY) === "1") unlock(); } catch {}
+
+  // --- Tabs ---
+  const tabButtons = Array.from(document.querySelectorAll("[data-tab-button]"));
+  const panels = Array.from(document.querySelectorAll("[data-panel]"));
+  function activateTab(id) {
+    tabButtons.forEach((btn) => {
+      const active = btn.dataset.tabButton === id;
+      btn.classList.toggle("border-transparent", active);
+      btn.style.background = active ? "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)" : "";
+      btn.classList.toggle("text-white", active);
+      btn.classList.toggle("text-[var(--ink-muted)]", !active);
+    });
+    panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.panel !== id));
+  }
+  tabButtons.forEach((btn) => btn.addEventListener("click", () => activateTab(btn.dataset.tabButton)));
+  activateTab("dashboard");
+
+  // --- Dashboard ---
+  function renderDashboard() {
+    const active = state.products.filter((p) => !p.archived);
+    document.querySelector('[data-stat="total-produtos"]').textContent = String(state.products.length);
+    document.querySelector('[data-stat="produtos-ativos"]').textContent = String(active.length);
+    document.querySelector('[data-stat="lancamentos"]').textContent = String(active.filter((p) => p.isNew).length);
+    document.querySelector('[data-stat="em-oferta"]').textContent = String(active.filter((p) => p.offerActive).length);
+    document.querySelector('[data-stat="indisponiveis"]').textContent = String(active.filter((p) => !p.available).length);
+    document.querySelector('[data-stat="categorias-ativas"]').textContent = String(state.categories.filter((c) => c.active).length);
+    document.querySelector('[data-stat="marcas-ativas"]').textContent = String(state.brands.filter((b) => b.active).length);
+    document.querySelector('[data-stat="kits-ativos"]').textContent = String(state.kits.filter((k) => k.active).length);
+    document.querySelector('[data-stat="banners-ativos"]').textContent = String(state.banners.filter((b) => b.active).length);
+    document.querySelector('[data-stat="solicitacoes-novas"]').textContent = String(state.requests.filter((r) => r.status === "novo").length);
+  }
+
+  function categoryName(slug) {
+    return state.categories.find((c) => c.slug === slug)?.name ?? slug;
+  }
+  function brandName(slug) {
+    return state.brands.find((b) => b.slug === slug)?.name ?? slug;
+  }
+
+  // ============ PRODUTOS ============
+  const productForm = document.querySelector("[data-product-form]");
+  const productFormTitle = document.querySelector("[data-product-form-title]");
+  const productTableBody = document.querySelector("[data-product-table-body]");
+  const productEmpty = document.querySelector("[data-product-empty]");
+  const pSearch = document.querySelector("[data-p-search]");
+  const pFilterCategory = document.querySelector("[data-p-filter-category]");
+  const pFilterStatus = document.querySelector("[data-p-filter-status]");
+  const pShowArchived = document.querySelector("[data-p-show-archived]");
+
+  function showProductForm(editing) {
+    productForm.classList.remove("hidden");
+    productForm.classList.add("grid");
+    productFormTitle.textContent = editing ? "Editar produto" : "Novo produto";
+    updateProductPreview();
+    productForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideProductForm() {
+    productForm.classList.add("hidden");
+    productForm.classList.remove("grid");
+    productForm.reset();
+    productForm.querySelector('[name="id"]').value = "";
+  }
+  function updateProductPreview() {
+    const get = (name) => productForm.querySelector(`[name="${name}"]`)?.value || "";
+    document.querySelector('[data-preview="name"]').textContent = get("name") || "Nome do produto";
+    document.querySelector('[data-preview="taxonomy"]').textContent = categoryName(get("category"));
+    document.querySelector('[data-preview="price"]').textContent = formatBRL(get("price"));
+    document.querySelector('[data-preview="description"]').textContent = get("description");
+  }
+  ["name", "price", "category", "description"].forEach((field) => {
+    productForm.querySelector(`[name="${field}"]`)?.addEventListener("input", updateProductPreview);
+  });
+
+  document.querySelector('[data-action="toggle-product-form"]').addEventListener("click", () => {
+    productForm.reset();
+    productForm.querySelector('[name="id"]').value = "";
+    showProductForm(false);
+  });
+  document.querySelector('[data-action="cancel-product-form"]').addEventListener("click", hideProductForm);
+
+  document.querySelector('[data-action="duplicate-current"]').addEventListener("click", () => {
+    const id = productForm.querySelector('[name="id"]').value;
+    const original = state.products.find((p) => p.id === id);
+    if (!original) return;
+    const copy = { ...original, id: `prod-${Date.now()}`, name: `${original.name} (cópia)`, slug: `${original.slug}-copia-${Date.now()}` };
+    state.products.push(copy);
+    saveState(state);
+    renderProducts();
+    renderDashboard();
+    hideProductForm();
+  });
+
+  function getFilteredProducts() {
+    const search = (pSearch.value || "").trim().toLowerCase();
+    const category = pFilterCategory.value;
+    const status = pFilterStatus.value;
+    const showArchived = pShowArchived.checked;
+
+    let list = state.products.filter((p) => {
+      if (!showArchived && p.archived) return false;
+      if (showArchived && !p.archived) return false;
+      if (search && !`${p.name} ${p.sku}`.toLowerCase().includes(search)) return false;
+      if (category && p.category !== category) return false;
+      if (status === "disponivel" && !p.available) return false;
+      if (status === "indisponivel" && p.available) return false;
+      return true;
+    });
+    return [...list].sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  function renderProducts() {
+    const list = getFilteredProducts();
+    productTableBody.innerHTML = "";
+    productEmpty.classList.toggle("hidden", list.length > 0);
+
+    list.forEach((product) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      const actions = product.archived
+        ? `<button type="button" data-p-reactivate="${product.id}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Reativar</button>
+           <button type="button" data-p-delete="${product.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>`
+        : `<button type="button" data-p-edit="${product.id}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Editar</button>
+           <button type="button" data-p-archive="${product.id}" class="mr-2 text-xs font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)]">Arquivar</button>
+           <button type="button" data-p-delete="${product.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>`;
+      row.innerHTML = `
+        <td class="px-4 py-3">
+          <p class="font-semibold text-white">${escapeHtml(product.name)}</p>
+          <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(product.sku)}</p>
+        </td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${escapeHtml(categoryName(product.category))}${product.brand ? ` · ${escapeHtml(brandName(product.brand))}` : ""}</td>
+        <td class="px-4 py-3 font-semibold text-white">${formatBRL(product.price)}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-p-toggle-available="${product.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${product.available ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">
+            ${product.available ? "Disponível" : "Indisponível"}
+          </button>
+        </td>
+        <td class="px-4 py-3">
+          <button type="button" data-p-toggle-featured="${product.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${product.featured ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">
+            ${product.featured ? "Em destaque" : "Padrão"}
+          </button>
+        </td>
+        <td class="px-4 py-3 text-right">${actions}</td>
+      `;
+      productTableBody.appendChild(row);
+    });
+  }
+
+  productTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const toggleAvail = target.getAttribute("data-p-toggle-available");
+    if (toggleAvail) {
+      const p = state.products.find((x) => x.id === toggleAvail);
+      if (p) p.available = !p.available;
+      saveState(state); renderProducts(); return;
+    }
+    const toggleFeatured = target.getAttribute("data-p-toggle-featured");
+    if (toggleFeatured) {
+      const p = state.products.find((x) => x.id === toggleFeatured);
+      if (p) p.featured = !p.featured;
+      saveState(state); renderProducts(); return;
+    }
+    const editId = target.getAttribute("data-p-edit");
+    if (editId) {
+      const p = state.products.find((x) => x.id === editId);
+      if (!p) return;
+      productForm.querySelector('[name="id"]').value = p.id;
+      productForm.querySelector('[name="name"]').value = p.name;
+      productForm.querySelector('[name="sku"]').value = p.sku;
+      productForm.querySelector('[name="brand"]').value = p.brand || "";
+      productForm.querySelector('[name="category"]').value = p.category;
+      productForm.querySelector('[name="subcategory"]').value = p.subcategory || "";
+      productForm.querySelector('[name="price"]').value = String(p.price);
+      productForm.querySelector('[name="previousPrice"]').value = p.previousPrice ? String(p.previousPrice) : "";
+      productForm.querySelector('[name="offerActive"]').checked = Boolean(p.offerActive);
+      productForm.querySelector('[name="offerEndsAt"]').value = (p.offerEndsAt || "").slice(0, 10);
+      productForm.querySelector('[name="stockQty"]').value = p.stockQty != null ? String(p.stockQty) : "";
+      productForm.querySelector('[name="warranty"]').value = p.warranty || "";
+      productForm.querySelector('[name="icon"]').value = p.icon;
+      productForm.querySelector('[name="colors"]').value = (p.colors || []).join(", ");
+      productForm.querySelector('[name="materials"]').value = (p.materials || []).join(", ");
+      productForm.querySelector('[name="dimensions"]').value = p.dimensions || "";
+      productForm.querySelector('[name="badge"]').value = p.badge || "";
+      productForm.querySelector('[name="displayOrder"]').value = String(p.displayOrder);
+      productForm.querySelector('[name="available"]').checked = Boolean(p.available);
+      productForm.querySelector('[name="featured"]').checked = Boolean(p.featured);
+      productForm.querySelector('[name="isNew"]').checked = Boolean(p.isNew);
+      productForm.querySelector('[name="specs"]').value = specsToText(p.specs);
+      productForm.querySelector('[name="description"]').value = p.description || "";
+      productForm.querySelector('[name="imageMain"]').value = (p.images && p.images.main) || "";
+      productForm.querySelector('[name="imageClean"]').value = (p.images && p.images.clean) || "";
+      productForm.querySelector('[name="imageAngle2"]').value = (p.images && p.images.angle2) || "";
+      productForm.querySelector('[name="imageDetail"]').value = (p.images && p.images.detail) || "";
+      productForm.querySelector('[name="imageContext"]').value = (p.images && p.images.context) || "";
+      showProductForm(true);
+      return;
+    }
+    const archiveId = target.getAttribute("data-p-archive");
+    if (archiveId) {
+      const p = state.products.find((x) => x.id === archiveId);
+      if (p) p.archived = true;
+      saveState(state); renderProducts(); renderDashboard(); return;
+    }
+    const reactivateId = target.getAttribute("data-p-reactivate");
+    if (reactivateId) {
+      const p = state.products.find((x) => x.id === reactivateId);
+      if (p) p.archived = false;
+      saveState(state); renderProducts(); renderDashboard(); return;
+    }
+    const deleteId = target.getAttribute("data-p-delete");
+    if (deleteId) {
+      if (!pendingDeletes.has(deleteId)) {
+        pendingDeletes.add(deleteId);
+        target.textContent = "Confirmar remoção?";
+        target.classList.add("text-red-400");
+        setTimeout(() => pendingDeletes.delete(deleteId), 4000);
+        return;
+      }
+      pendingDeletes.delete(deleteId);
+      state.products = state.products.filter((x) => x.id !== deleteId);
+      saveState(state); renderProducts(); renderDashboard();
+    }
+  });
+
+  [pSearch].forEach((el) => el.addEventListener("input", renderProducts));
+  [pFilterCategory, pFilterStatus, pShowArchived].forEach((el) => el.addEventListener("change", renderProducts));
+
+  productForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(productForm);
+    const existingId = String(data.get("id") || "");
+    const name = String(data.get("name") || "").trim();
+    const payload = {
+      name,
+      sku: String(data.get("sku") || "").trim(),
+      brand: String(data.get("brand") || "") || undefined,
+      category: String(data.get("category") || ""),
+      subcategory: String(data.get("subcategory") || "") || undefined,
+      price: Number(data.get("price") || 0),
+      previousPrice: data.get("previousPrice") ? Number(data.get("previousPrice")) : undefined,
+      offerActive: data.get("offerActive") === "on",
+      offerEndsAt: String(data.get("offerEndsAt") || "") || undefined,
+      stockQty: data.get("stockQty") ? Number(data.get("stockQty")) : undefined,
+      warranty: String(data.get("warranty") || "") || undefined,
+      colors: String(data.get("colors") || "").split(",").map((c) => c.trim()).filter(Boolean),
+      materials: String(data.get("materials") || "").split(",").map((m) => m.trim()).filter(Boolean),
+      dimensions: String(data.get("dimensions") || ""),
+      icon: String(data.get("icon") || "smartphone"),
+      tone: "graphite",
+      badge: String(data.get("badge") || "") || undefined,
+      displayOrder: Number(data.get("displayOrder") || state.products.length + 1),
+      available: data.get("available") === "on",
+      featured: data.get("featured") === "on",
+      isNew: data.get("isNew") === "on",
+      specs: parseSpecs(String(data.get("specs") || "")),
+      description: String(data.get("description") || ""),
+      images: {
+        main: String(data.get("imageMain") || "") || undefined,
+        clean: String(data.get("imageClean") || "") || undefined,
+        angle2: String(data.get("imageAngle2") || "") || undefined,
+        detail: String(data.get("imageDetail") || "") || undefined,
+        context: String(data.get("imageContext") || "") || undefined,
+      },
+      updatedAt: todayISO(),
+    };
+
+    if (existingId) {
+      const index = state.products.findIndex((p) => p.id === existingId);
+      if (index >= 0) state.products[index] = { ...state.products[index], ...payload, id: existingId };
+    } else {
+      let slug = slugify(name);
+      let suffix = 2;
+      while (state.products.some((p) => p.slug === slug)) {
+        slug = `${slugify(name)}-${suffix}`;
+        suffix += 1;
+      }
+      state.products.push({ ...payload, id: `prod-${Date.now()}`, slug, sku: payload.sku || slug.toUpperCase(), archived: false, createdAt: todayISO() });
+    }
+    saveState(state);
+    renderProducts();
+    renderDashboard();
+    renderOffers();
+    renderKitProductCheckboxes();
+    hideProductForm();
+  });
+
+  // ============ CATEGORIAS ============
+  const categoryForm = document.querySelector("[data-category-form]");
+  const categoryTableBody = document.querySelector("[data-category-table-body]");
+
+  function renderCategories() {
+    const list = [...state.categories].sort((a, b) => a.order - b.order);
+    categoryTableBody.innerHTML = "";
+    list.forEach((item) => {
+      const count = state.products.filter((p) => p.category === item.slug && !p.archived).length;
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-white">${escapeHtml(item.name)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(item.description || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${count}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-cat-toggle="${item.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${item.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">${item.active ? "Ativa" : "Oculta"}</button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-cat-edit="${item.slug}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-cat-delete="${item.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+        </td>`;
+      categoryTableBody.appendChild(row);
+    });
+  }
+  categoryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(categoryForm);
+    const existingSlug = String(data.get("slug") || "");
+    const name = String(data.get("name") || "").trim();
+    const payload = {
+      name, description: String(data.get("description") || ""), icon: String(data.get("icon") || "smartphone"),
+      order: Number(data.get("order") || state.categories.length + 1), active: data.get("active") === "on",
+    };
+    if (existingSlug) {
+      const idx = state.categories.findIndex((c) => c.slug === existingSlug);
+      if (idx >= 0) state.categories[idx] = { ...state.categories[idx], ...payload, slug: existingSlug };
+    } else {
+      state.categories.push({ ...payload, slug: slugify(name) });
+    }
+    saveState(state); renderCategories(); renderDashboard(); categoryForm.reset(); categoryForm.querySelector('[name="slug"]').value = "";
+  });
+  document.querySelector('[data-action="cancel-category-form"]').addEventListener("click", () => {
+    categoryForm.reset(); categoryForm.querySelector('[name="slug"]').value = "";
+  });
+  categoryTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-cat-toggle");
+    if (toggle) {
+      const c = state.categories.find((x) => x.slug === toggle);
+      if (c) c.active = !c.active;
+      saveState(state); renderCategories(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-cat-edit");
+    if (edit) {
+      const c = state.categories.find((x) => x.slug === edit);
+      if (!c) return;
+      categoryForm.querySelector('[name="slug"]').value = c.slug;
+      categoryForm.querySelector('[name="name"]').value = c.name;
+      categoryForm.querySelector('[name="icon"]').value = c.icon;
+      categoryForm.querySelector('[name="description"]').value = c.description || "";
+      categoryForm.querySelector('[name="order"]').value = String(c.order);
+      categoryForm.querySelector('[name="active"]').checked = c.active;
+      categoryForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const del = target.getAttribute("data-cat-delete");
+    if (del) {
+      const key = `cat-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-400");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.categories = state.categories.filter((x) => x.slug !== del);
+      saveState(state); renderCategories(); renderDashboard();
+    }
+  });
+
+  // ============ MARCAS ============
+  const brandForm = document.querySelector("[data-brand-form]");
+  const brandTableBody = document.querySelector("[data-brand-table-body]");
+  function renderBrands() {
+    brandTableBody.innerHTML = "";
+    state.brands.forEach((item) => {
+      const count = state.products.filter((p) => p.brand === item.slug && !p.archived).length;
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-white">${escapeHtml(item.name)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(item.description || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${count}</td>
+        <td class="px-4 py-3"><button type="button" data-brand-toggle="${item.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${item.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">${item.active ? "Ativa" : "Oculta"}</button></td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-brand-edit="${item.slug}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-brand-delete="${item.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+        </td>`;
+      brandTableBody.appendChild(row);
+    });
+  }
+  brandForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(brandForm);
+    const existingSlug = String(data.get("slug") || "");
+    const name = String(data.get("name") || "").trim();
+    const payload = { name, description: String(data.get("description") || ""), active: data.get("active") === "on" };
+    if (existingSlug) {
+      const idx = state.brands.findIndex((b) => b.slug === existingSlug);
+      if (idx >= 0) state.brands[idx] = { ...state.brands[idx], ...payload, slug: existingSlug };
+    } else {
+      state.brands.push({ ...payload, slug: slugify(name) });
+    }
+    saveState(state); renderBrands(); renderDashboard(); brandForm.reset(); brandForm.querySelector('[name="slug"]').value = "";
+  });
+  document.querySelector('[data-action="cancel-brand-form"]').addEventListener("click", () => {
+    brandForm.reset(); brandForm.querySelector('[name="slug"]').value = "";
+  });
+  brandTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-brand-toggle");
+    if (toggle) {
+      const b = state.brands.find((x) => x.slug === toggle);
+      if (b) b.active = !b.active;
+      saveState(state); renderBrands(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-brand-edit");
+    if (edit) {
+      const b = state.brands.find((x) => x.slug === edit);
+      if (!b) return;
+      brandForm.querySelector('[name="slug"]').value = b.slug;
+      brandForm.querySelector('[name="name"]').value = b.name;
+      brandForm.querySelector('[name="description"]').value = b.description || "";
+      brandForm.querySelector('[name="active"]').checked = b.active;
+      brandForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const del = target.getAttribute("data-brand-delete");
+    if (del) {
+      const key = `brand-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-400");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.brands = state.brands.filter((x) => x.slug !== del);
+      saveState(state); renderBrands(); renderDashboard();
+    }
+  });
+
+  // ============ KITS ============
+  const kitForm = document.querySelector("[data-kit-form]");
+  const kitTableBody = document.querySelector("[data-kit-table-body]");
+  const kitCheckboxWrap = document.querySelector("[data-kit-product-checkboxes]");
+
+  function renderKitProductCheckboxes(checkedSlugs) {
+    const checked = new Set(checkedSlugs || []);
+    kitCheckboxWrap.innerHTML = "";
+    state.products.filter((p) => !p.archived).forEach((p) => {
+      const label = document.createElement("label");
+      label.className = "flex items-center gap-1.5 text-xs text-white";
+      label.innerHTML = `<input type="checkbox" value="${p.slug}" ${checked.has(p.slug) ? "checked" : ""} class="h-3.5 w-3.5 rounded accent-[var(--accent)]" /> ${escapeHtml(p.name)}`;
+      kitCheckboxWrap.appendChild(label);
+    });
+  }
+  function renderKits() {
+    kitTableBody.innerHTML = "";
+    [...state.kits].sort((a, b) => a.order - b.order).forEach((kit) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-white">${escapeHtml(kit.name)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(kit.description || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${kit.productSlugs.length} itens</td>
+        <td class="px-4 py-3"><button type="button" data-kit-toggle="${kit.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${kit.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">${kit.active ? "Ativo" : "Oculto"}</button></td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-kit-edit="${kit.slug}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-kit-delete="${kit.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+        </td>`;
+      kitTableBody.appendChild(row);
+    });
+  }
+  kitForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(kitForm);
+    const existingSlug = String(data.get("slug") || "");
+    const name = String(data.get("name") || "").trim();
+    const productSlugs = Array.from(kitCheckboxWrap.querySelectorAll('input[type="checkbox"]:checked')).map((el) => el.value);
+    const payload = {
+      name, description: String(data.get("description") || ""), savingsLabel: String(data.get("savingsLabel") || "") || undefined,
+      productSlugs, order: Number(data.get("order") || state.kits.length + 1),
+      active: data.get("active") === "on", featured: data.get("featured") === "on",
+    };
+    if (existingSlug) {
+      const idx = state.kits.findIndex((k) => k.slug === existingSlug);
+      if (idx >= 0) state.kits[idx] = { ...state.kits[idx], ...payload, slug: existingSlug };
+    } else {
+      state.kits.push({ ...payload, slug: slugify(name) });
+    }
+    saveState(state); renderKits(); renderDashboard(); kitForm.reset(); kitForm.querySelector('[name="slug"]').value = ""; renderKitProductCheckboxes();
+  });
+  document.querySelector('[data-action="cancel-kit-form"]').addEventListener("click", () => {
+    kitForm.reset(); kitForm.querySelector('[name="slug"]').value = ""; renderKitProductCheckboxes();
+  });
+  kitTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-kit-toggle");
+    if (toggle) {
+      const k = state.kits.find((x) => x.slug === toggle);
+      if (k) k.active = !k.active;
+      saveState(state); renderKits(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-kit-edit");
+    if (edit) {
+      const k = state.kits.find((x) => x.slug === edit);
+      if (!k) return;
+      kitForm.querySelector('[name="slug"]').value = k.slug;
+      kitForm.querySelector('[name="name"]').value = k.name;
+      kitForm.querySelector('[name="description"]').value = k.description || "";
+      kitForm.querySelector('[name="savingsLabel"]').value = k.savingsLabel || "";
+      kitForm.querySelector('[name="order"]').value = String(k.order);
+      kitForm.querySelector('[name="active"]').checked = k.active;
+      kitForm.querySelector('[name="featured"]').checked = Boolean(k.featured);
+      renderKitProductCheckboxes(k.productSlugs);
+      kitForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const del = target.getAttribute("data-kit-delete");
+    if (del) {
+      const key = `kit-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-400");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.kits = state.kits.filter((x) => x.slug !== del);
+      saveState(state); renderKits(); renderDashboard();
+    }
+  });
+
+  // ============ OFERTAS ============
+  const offersTableBody = document.querySelector("[data-offers-table-body]");
+  const offersEmpty = document.querySelector("[data-offers-empty]");
+  function renderOffers() {
+    const list = state.products.filter((p) => p.offerActive && !p.archived);
+    offersTableBody.innerHTML = "";
+    offersEmpty.classList.toggle("hidden", list.length > 0);
+    const today = todayISO();
+    list.forEach((p) => {
+      const endDateOnly = (p.offerEndsAt || "").slice(0, 10);
+      const expired = endDateOnly && endDateOnly < today;
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3 font-semibold text-white">${escapeHtml(p.name)}</td>
+        <td class="px-4 py-3 text-white/50 line-through">${p.previousPrice ? formatBRL(p.previousPrice) : "—"}</td>
+        <td class="px-4 py-3 font-semibold text-white">${formatBRL(p.price)}</td>
+        <td class="px-4 py-3 ${expired ? "text-red-400" : "text-[var(--ink-muted)]"}">${endDateOnly || "—"}${expired ? " (expirada)" : ""}</td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${p.stockQty ?? "—"}</td>
+        <td class="px-4 py-3 text-right"><button type="button" data-offer-end="${p.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Encerrar oferta</button></td>
+      `;
+      offersTableBody.appendChild(row);
+    });
+  }
+  offersTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const endId = target.getAttribute("data-offer-end");
+    if (endId) {
+      const p = state.products.find((x) => x.id === endId);
+      if (p) p.offerActive = false;
+      saveState(state); renderOffers(); renderProducts(); renderDashboard();
+    }
+  });
+
+  // ============ BANNERS ============
+  const bannerForm = document.querySelector("[data-banner-form]");
+  const bannerTableBody = document.querySelector("[data-banner-table-body]");
+  function renderBanners() {
+    bannerTableBody.innerHTML = "";
+    [...state.banners].sort((a, b) => a.order - b.order).forEach((banner) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-white/10 last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-white">${escapeHtml(banner.title)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(banner.subtitle || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${banner.startDate || "—"} a ${banner.endDate || "—"}</td>
+        <td class="px-4 py-3"><button type="button" data-banner-toggle="${banner.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${banner.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-white/15 text-[var(--ink-muted)]"}">${banner.active ? "Ativo" : "Pausado"}</button></td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-banner-edit="${banner.id}" class="mr-2 text-xs font-semibold text-white hover:text-[var(--accent)]">Editar</button>
+          <button type="button" data-banner-delete="${banner.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+        </td>`;
+      bannerTableBody.appendChild(row);
+    });
+  }
+  bannerForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(bannerForm);
+    const existingId = String(data.get("id") || "");
+    const payload = {
+      title: String(data.get("title") || "").trim(), subtitle: String(data.get("subtitle") || ""),
+      ctaLabel: String(data.get("ctaLabel") || ""), ctaHref: String(data.get("ctaHref") || "#catalogo"),
+      startDate: String(data.get("startDate") || ""), endDate: String(data.get("endDate") || ""),
+      order: Number(data.get("order") || state.banners.length + 1), active: data.get("active") === "on",
+    };
+    if (existingId) {
+      const idx = state.banners.findIndex((b) => b.id === existingId);
+      if (idx >= 0) state.banners[idx] = { ...state.banners[idx], ...payload, id: existingId };
+    } else {
+      state.banners.push({ ...payload, id: `banner-${Date.now()}` });
+    }
+    saveState(state); renderBanners(); renderDashboard(); bannerForm.reset(); bannerForm.querySelector('[name="id"]').value = "";
+  });
+  document.querySelector('[data-action="cancel-banner-form"]').addEventListener("click", () => {
+    bannerForm.reset(); bannerForm.querySelector('[name="id"]').value = "";
+  });
+  bannerTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-banner-toggle");
+    if (toggle) {
+      const b = state.banners.find((x) => x.id === toggle);
+      if (b) b.active = !b.active;
+      saveState(state); renderBanners(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-banner-edit");
+    if (edit) {
+      const b = state.banners.find((x) => x.id === edit);
+      if (!b) return;
+      bannerForm.querySelector('[name="id"]').value = b.id;
+      bannerForm.querySelector('[name="title"]').value = b.title;
+      bannerForm.querySelector('[name="subtitle"]').value = b.subtitle || "";
+      bannerForm.querySelector('[name="ctaLabel"]').value = b.ctaLabel || "";
+      bannerForm.querySelector('[name="ctaHref"]').value = b.ctaHref || "";
+      bannerForm.querySelector('[name="startDate"]').value = b.startDate || "";
+      bannerForm.querySelector('[name="endDate"]').value = b.endDate || "";
+      bannerForm.querySelector('[name="order"]').value = String(b.order);
+      bannerForm.querySelector('[name="active"]').checked = b.active;
+      bannerForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const del = target.getAttribute("data-banner-delete");
+    if (del) {
+      const key = `banner-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-400");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.banners = state.banners.filter((x) => x.id !== del);
+      saveState(state); renderBanners(); renderDashboard();
+    }
+  });
+
+  // ============ SOLICITAÇÕES ============
+  const requestsList = document.querySelector("[data-requests-list]");
+  const statusOptions = ["novo", "em atendimento", "orçamento enviado", "concluído"];
+  function renderRequests() {
+    requestsList.innerHTML = "";
+    [...state.requests].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).forEach((req) => {
+      const card = document.createElement("div");
+      card.className = "rounded-2xl border border-white/10 bg-white/[0.02] p-4";
+      card.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p class="font-semibold text-white">${escapeHtml(req.name)}</p>
+            <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(req.phone)} · ${escapeHtml(req.email)} · ${escapeHtml(req.city || "")}</p>
+            <p class="mt-1 text-sm text-white/80">Interesse: <strong>${escapeHtml(req.interest)}</strong> (${escapeHtml(req.category || "")})</p>
+            <p class="text-xs text-[var(--ink-muted)]">Perfil: ${escapeHtml(req.usage || "—")} · Orçamento: ${escapeHtml(req.budget || "—")} · Contato preferido: ${escapeHtml(req.contactPreference || "—")}</p>
+            <p class="mt-2 text-sm text-[var(--ink-muted)]">${escapeHtml(req.message || "")}</p>
+            <p class="mt-1 text-xs text-white/30">${escapeHtml(req.createdAt)}</p>
+          </div>
+          <select data-req-status="${req.id}" class="rounded-full border border-white/15 bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-white outline-none">
+            ${statusOptions.map((s) => `<option value="${s}" ${s === req.status ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </div>
+        <label class="mt-3 block text-xs font-medium text-[var(--ink-muted)]">
+          Observações internas
+          <textarea data-req-notes="${req.id}" rows="2" class="mt-1 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]">${escapeHtml(req.notes || "")}</textarea>
+        </label>
+      `;
+      requestsList.appendChild(card);
+    });
+  }
+  requestsList.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLSelectElement)) return;
+    const id = target.getAttribute("data-req-status");
+    if (id) {
+      const r = state.requests.find((x) => x.id === id);
+      if (r) r.status = target.value;
+      saveState(state); renderDashboard();
+    }
+  });
+  requestsList.addEventListener("blur", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLTextAreaElement)) return;
+    const id = target.getAttribute("data-req-notes");
+    if (id) {
+      const r = state.requests.find((x) => x.id === id);
+      if (r) r.notes = target.value;
+      saveState(state);
+    }
+  }, true);
+
+  // ============ CONFIGURAÇÕES ============
+  const settingsForm = document.querySelector("[data-settings-form]");
+  function loadSettingsForm() {
+    Object.entries(state.settings).forEach(([key, value]) => {
+      const field = settingsForm.querySelector(`[name="${key}"]`);
+      if (field) field.value = value;
+    });
+  }
+  settingsForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(settingsForm);
+    Object.keys(state.settings).forEach((key) => {
+      state.settings[key] = String(data.get(key) || "");
+    });
+    saveState(state);
+    settingsForm.querySelector("[data-settings-feedback]")?.classList.remove("hidden");
+    window.setTimeout(() => settingsForm.querySelector("[data-settings-feedback]")?.classList.add("hidden"), 3000);
+  });
+
+  // ============ RESET ============
+  document.querySelector('[data-action="reset-all"]').addEventListener("click", () => {
+    if (!confirm("Restaurar todos os dados originais? Isso apaga as alterações feitas neste navegador.")) return;
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+    window.location.reload();
+  });
+
+  // --- Init ---
+  pFilterCategory.dataset.rendered = "1";
+  renderDashboard();
+  renderProducts();
+  renderCategories();
+  renderBrands();
+  renderKitProductCheckboxes();
+  renderKits();
+  renderOffers();
+  renderBanners();
+  renderRequests();
+  loadSettingsForm();
+</script>

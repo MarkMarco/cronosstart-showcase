@@ -1,0 +1,61 @@
+---
+// "Vistos recentemente" — vitrine horizontal client-side (localStorage),
+// oculta por completo enquanto não houver histórico nesta sessão/navegador.
+interface Props {
+  id?: string;
+}
+const { id } = Astro.props;
+---
+
+<section id={id} data-recently-viewed-section class="hidden border-b border-white/[0.06] bg-[var(--surface)] px-6 py-12">
+  <div class="mx-auto max-w-[1400px]">
+    <p class="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vistos recentemente</p>
+    <div data-recently-viewed-list class="flex gap-4 overflow-x-auto pb-1"></div>
+  </div>
+</section>
+
+<script>
+  async function render() {
+    const section = document.querySelector<HTMLElement>("[data-recently-viewed-section]");
+    const list = document.querySelector<HTMLElement>("[data-recently-viewed-list]");
+    if (!section || !list) return;
+
+    const dataEl = document.getElementById("nx-product-modal-data");
+    if (!dataEl) return;
+    const { products } = JSON.parse(dataEl.textContent || "{}") as {
+      products: { slug: string; name: string; price: number; category: string; subcategory: string; accent: string; images: { main?: string } }[];
+    };
+    const bySlug = new Map(products.map((p) => [p.slug, p]));
+
+    const { getRecentlyViewed } = await import("../../utils/nexoraTechShop");
+    const { renderVisualHTML, productRenderVariant, moodForCategory } = await import("../../utils/nexoraProductRender");
+    const slugs = getRecentlyViewed();
+    const items = slugs.map((s) => bySlug.get(s)).filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+    section.classList.toggle("hidden", items.length === 0);
+    if (items.length === 0) return;
+
+    function formatBRL(value: number) {
+      return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    list.innerHTML = items
+      .map((p) => {
+        const thumbMarkup = p.images.main
+          ? `<img src="${p.images.main}" alt="${p.name}" class="h-full w-full object-cover" />`
+          : renderVisualHTML({ variant: productRenderVariant(p), accent: p.accent, mood: moodForCategory(p.category) });
+        return `
+      <button type="button" data-open-product="${p.slug}" class="group flex w-40 shrink-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] text-left transition-colors hover:border-white/25">
+        <div class="relative aspect-square overflow-hidden">${thumbMarkup}</div>
+        <div class="p-2.5">
+          <p class="line-clamp-1 text-xs font-medium text-white">${p.name}</p>
+          <p class="mt-0.5 text-xs font-semibold" style="color:${p.accent}">${formatBRL(p.price)}</p>
+        </div>
+      </button>`;
+      })
+      .join("");
+  }
+
+  window.addEventListener("nx:recently-viewed-updated", render);
+  render();
+</script>

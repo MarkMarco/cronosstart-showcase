@@ -15,6 +15,13 @@ export const colorSwatchMap: Record<string, string> = {
   Cinza: "#8a8680",
   "Branco fosco": "#ece7df",
   Cru: "#ded2b8",
+  // Cores adicionais usadas por catálogos técnicos (ex.: Nexora Tech) — não
+  // afetam os nomes já usados pela Maison Lume acima.
+  Prata: "#c7ccd1",
+  "Azul titânio": "#3d4a6b",
+  "Roxo meia-noite": "#39304f",
+  "Preto espacial": "#15161a",
+  "Verde noturno": "#243b34",
 };
 
 export function colorToHex(name: string): string {

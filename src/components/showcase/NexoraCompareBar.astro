@@ -1,0 +1,260 @@
+---
+// Comparador de produtos — uma das funcionalidades centrais do modelo.
+// Barra flutuante (tray) quando há itens selecionados + modal com tabela de
+// especificações lado a lado. Recusa produtos de categorias diferentes e
+// limita a 4 itens. Persiste a seleção via nexoraTechShop.
+import Icon from "../ui/Icon.astro";
+import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
+
+interface Props {
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
+  accents: Record<string, string>;
+}
+const { products, categories, accents } = Astro.props;
+
+const compareData = products.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  category: p.category,
+  subcategory: p.subcategory ?? "",
+  icon: p.icon,
+  accent: accents[p.category] ?? "#22d3ee",
+  price: p.price,
+  available: p.available,
+  warranty: p.warranty ?? "—",
+  colors: p.colors,
+  specs: p.specs ?? {},
+  images: p.images ?? {},
+}));
+const categoryNameBySlug = Object.fromEntries(categories.map((c) => [c.slug, c.name]));
+---
+
+<script type="application/json" id="nx-compare-data" set:html={JSON.stringify({ products: compareData, categoryNames: categoryNameBySlug, accents })} />
+
+<!-- Tray flutuante -->
+<div
+  data-compare-tray
+  class="fixed inset-x-0 bottom-0 z-[95] hidden translate-y-full border-t border-white/10 bg-[#0d1220]/95 px-4 py-3 shadow-[0_-20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur transition-transform duration-300 sm:px-6"
+>
+  <div class="mx-auto flex max-w-[1400px] items-center gap-3">
+    <div data-compare-tray-thumbs class="flex flex-1 items-center gap-2 overflow-x-auto"></div>
+    <button type="button" data-compare-clear class="hidden shrink-0 text-xs font-medium text-[var(--ink-muted)] hover:text-white sm:inline-block">
+      Limpar
+    </button>
+    <button
+      type="button"
+      data-compare-open-modal
+      class="inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+      style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);"
+    >
+      <Icon name="scale" class="h-4 w-4" />
+      Comparar (<span data-compare-tray-count>0</span>)
+    </button>
+  </div>
+</div>
+
+<!-- Modal de comparação -->
+<div data-compare-modal class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true" aria-labelledby="nx-compare-title">
+  <div data-compare-backdrop class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
+  <div class="relative flex h-full items-center justify-center p-4 sm:p-6">
+    <div
+      data-compare-panel
+      class="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-5xl translate-y-4 scale-95 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[var(--surface)] opacity-0 shadow-2xl transition-all duration-300"
+    >
+      <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+        <h2 id="nx-compare-title" class="text-base font-semibold text-white">Comparar produtos</h2>
+        <button type="button" data-compare-close aria-label="Fechar comparação" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-white/[0.06] hover:text-white">
+          <Icon name="close" class="h-5 w-5" />
+        </button>
+      </div>
+
+      <div data-compare-empty class="hidden flex-1 flex-col items-center justify-center gap-2 p-10 text-center">
+        <Icon name="scale" class="h-8 w-8 text-[var(--ink-muted)]" />
+        <p class="text-sm text-[var(--ink-muted)]">Nenhum produto selecionado para comparar ainda.</p>
+      </div>
+
+      <div data-compare-table-wrap class="flex-1 overflow-auto p-5">
+        <table class="w-full min-w-[640px] border-collapse text-sm">
+          <thead>
+            <tr data-compare-row-header></tr>
+          </thead>
+          <tbody data-compare-body></tbody>
+        </table>
+      </div>
+
+      <div class="border-t border-white/10 px-5 py-3 text-center text-xs text-[var(--ink-muted)]">
+        Preços e disponibilidade demonstrativos — confirme com um consultor antes de decidir.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface CompareProduct {
+    slug: string;
+    name: string;
+    category: string;
+    subcategory: string;
+    icon: string;
+    accent: string;
+    price: number;
+    available: boolean;
+    warranty: string;
+    colors: string[];
+    specs: Record<string, string>;
+    images: { main?: string };
+  }
+
+  const dataEl = document.getElementById("nx-compare-data");
+  if (dataEl) {
+    const { products, categoryNames } = JSON.parse(dataEl.textContent || "{}") as {
+      products: CompareProduct[];
+      categoryNames: Record<string, string>;
+    };
+    const productBySlug = new Map(products.map((p) => [p.slug, p]));
+
+    const tray = document.querySelector<HTMLElement>("[data-compare-tray]")!;
+    const trayThumbs = document.querySelector<HTMLElement>("[data-compare-tray-thumbs]")!;
+    const trayCount = document.querySelector<HTMLElement>("[data-compare-tray-count]")!;
+    const modal = document.querySelector<HTMLElement>("[data-compare-modal]")!;
+    const backdrop = modal.querySelector<HTMLElement>("[data-compare-backdrop]")!;
+    const panel = modal.querySelector<HTMLElement>("[data-compare-panel]")!;
+    const emptyState = modal.querySelector<HTMLElement>("[data-compare-empty]")!;
+    const tableWrap = modal.querySelector<HTMLElement>("[data-compare-table-wrap]")!;
+    const rowHeader = modal.querySelector<HTMLElement>("[data-compare-row-header]")!;
+    const tbody = modal.querySelector<HTMLElement>("[data-compare-body]")!;
+
+    function formatBRL(value: number) {
+      return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    async function render() {
+      const { getCompareList } = await import("../../utils/nexoraTechShop");
+      const { renderVisualHTML, productRenderVariant, moodForCategory } = await import("../../utils/nexoraProductRender");
+      const list = getCompareList();
+      const items = list.map((slug) => productBySlug.get(slug)).filter((p): p is CompareProduct => Boolean(p));
+
+      // Tray
+      tray.classList.toggle("hidden", items.length === 0);
+      tray.classList.toggle("translate-y-full", items.length === 0);
+      trayCount.textContent = String(items.length);
+      trayThumbs.innerHTML = "";
+      items.forEach((p) => {
+        const chip = document.createElement("div");
+        chip.className = "flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1 pr-2.5";
+        const avatarMarkup = p.images.main
+          ? `<img src="${p.images.main}" alt="${p.name}" class="h-full w-full object-cover" />`
+          : renderVisualHTML({ variant: productRenderVariant(p), accent: p.accent, mood: moodForCategory(p.category) });
+        chip.innerHTML = `<span class="relative flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10">${avatarMarkup}</span><span class="max-w-[8rem] truncate text-xs text-white">${p.name}</span>`;
+        trayThumbs.appendChild(chip);
+      });
+
+      // Modal
+      const hasItems = items.length > 0;
+      emptyState.classList.toggle("hidden", hasItems);
+      tableWrap.classList.toggle("hidden", !hasItems);
+      if (!hasItems) return;
+
+      const allSpecKeys = Array.from(new Set(items.flatMap((p) => Object.keys(p.specs))));
+
+      rowHeader.innerHTML = `<th class="sticky left-0 bg-[var(--surface)] p-3 text-left text-xs uppercase tracking-wide text-[var(--ink-muted)]">&nbsp;</th>` +
+        items
+          .map((p) => {
+            const thumbMarkup = p.images.main
+              ? `<img src="${p.images.main}" alt="${p.name}" class="h-full w-full object-cover" />`
+              : renderVisualHTML({ variant: productRenderVariant(p), accent: p.accent, mood: moodForCategory(p.category) });
+            return `
+        <th class="p-3 text-left align-top min-w-[180px]">
+          <div class="relative mb-2 h-20 w-20 overflow-hidden rounded-xl">${thumbMarkup}</div>
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-[0.65rem] uppercase tracking-wide text-[var(--ink-muted)]">${categoryNames[p.category] ?? p.category}</p>
+              <p class="text-sm font-semibold text-white">${p.name}</p>
+              <p class="mt-1 text-sm font-semibold text-[var(--accent)]">${formatBRL(p.price)}</p>
+              <p class="mt-0.5 text-xs ${p.available ? "text-emerald-400" : "text-red-400"}">${p.available ? "Disponível" : "Indisponível"}</p>
+            </div>
+            <button type="button" data-compare-remove="${p.slug}" aria-label="Remover ${p.name}" class="shrink-0 rounded-full p-1 text-[var(--ink-muted)] hover:bg-white/10 hover:text-white">✕</button>
+          </div>
+          <div class="mt-2 flex gap-2">
+            <button type="button" data-add-cart="${p.slug}" class="rounded-full bg-[var(--accent)] px-2.5 py-1 text-[0.65rem] font-semibold text-[#04121a]">Adicionar</button>
+            <button type="button" data-open-product="${p.slug}" class="rounded-full border border-white/15 px-2.5 py-1 text-[0.65rem] font-semibold text-white">Detalhes</button>
+          </div>
+        </th>`;
+          })
+          .join("");
+
+      const rows = allSpecKeys
+        .map((key) => {
+          const values = items.map((p) => p.specs[key] ?? "—");
+          const allSame = values.every((v) => v === values[0]);
+          return `<tr class="border-t border-white/10">
+          <td class="sticky left-0 bg-[var(--surface)] p-3 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">${key}</td>
+          ${values
+            .map(
+              (v) =>
+                `<td class="p-3 text-sm ${allSame ? "text-white/70" : "font-semibold text-white"}">${v}${!allSame ? '<span class="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent)]"></span>' : ""}</td>`
+            )
+            .join("")}
+        </tr>`;
+        })
+        .join("");
+
+      const warrantyRow = `<tr class="border-t border-white/10">
+        <td class="sticky left-0 bg-[var(--surface)] p-3 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Garantia</td>
+        ${items.map((p) => `<td class="p-3 text-sm text-white/70">${p.warranty}</td>`).join("")}
+      </tr>`;
+
+      const colorsRow = `<tr class="border-t border-white/10">
+        <td class="sticky left-0 bg-[var(--surface)] p-3 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Cores</td>
+        ${items.map((p) => `<td class="p-3 text-sm text-white/70">${p.colors.join(", ") || "—"}</td>`).join("")}
+      </tr>`;
+
+      tbody.innerHTML = rows + warrantyRow + colorsRow;
+    }
+
+    function openModal() {
+      modal.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        backdrop.classList.remove("opacity-0");
+        panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
+      });
+      document.addEventListener("keydown", onKeydown);
+    }
+    function closeModal() {
+      backdrop.classList.add("opacity-0");
+      panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+      document.removeEventListener("keydown", onKeydown);
+      window.setTimeout(() => modal.classList.add("hidden"), 300);
+    }
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeModal();
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      if (target.closest('[data-compare-open-modal], [data-open-drawer="compare"], a[href="#comparador"]')) {
+        event.preventDefault();
+        openModal();
+      }
+    });
+    document.querySelector("[data-compare-close]")?.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", closeModal);
+
+    document.querySelector("[data-compare-clear]")?.addEventListener("click", async () => {
+      const { clearCompare } = await import("../../utils/nexoraTechShop");
+      clearCompare();
+    });
+
+    document.addEventListener("click", async (event) => {
+      const removeBtn = (event.target as HTMLElement).closest<HTMLElement>("[data-compare-remove]");
+      if (removeBtn) {
+        const { removeFromCompare } = await import("../../utils/nexoraTechShop");
+        removeFromCompare(removeBtn.dataset.compareRemove ?? "");
+      }
+    });
+
+    window.addEventListener("nx:compare-updated", render);
+    render();
+  }
+</script>

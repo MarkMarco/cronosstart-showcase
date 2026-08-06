@@ -1,0 +1,350 @@
+---
+// "Encontre por categoria" — vitrine editorial assimétrica, não uma grade
+// uniforme de cards clonados. Três hierarquias:
+//   Linha 1 — 3 cards grandes (Smartphones, Notebooks, Gamer)
+//   Linha 2 — 4 cards médios (Computadores, Monitores, Áudio, Acessórios)
+//   Linha 3 — 2 cards largos (Casa inteligente, Ofertas — tratada como
+//   campanha comercial, não categoria comum)
+// Cada card usa a foto real do produto em destaque da categoria (fallback
+// para o render vetorial só se a categoria não tiver nenhum produto com
+// foto cadastrada — não deve acontecer hoje, todo o catálogo tem foto).
+import Icon from "../ui/Icon.astro";
+import NexoraProductVisual from "./NexoraProductVisual.astro";
+import { categoryRenderVariant, productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
+import type { CatalogCategory, CatalogProduct } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  categories: CatalogCategory[];
+  products: CatalogProduct[];
+  accents: Record<string, string>;
+}
+const { id, categories, products } = Astro.props;
+
+// Paleta própria desta seção — deliberadamente distinta do mapa global
+// categoryAccents (que segue em uso inalterado no resto do site) para dar a
+// cada categoria uma identidade cromática mais expressiva só nesta vitrine.
+const tileAccents: Record<string, string> = {
+  smartphones: "#3b82f6",
+  notebooks: "#22d3ee",
+  computadores: "#8b5cf6",
+  monitores: "#38bdf8",
+  audio: "#a78bfa",
+  acessorios: "#2dd4bf",
+  "casa-inteligente": "#10b981",
+  gamer: "#d946ef",
+  ofertas: "#f97316",
+};
+
+function featuredProductFor(slug: string): CatalogProduct | undefined {
+  const inCategory = products.filter((p) => p.category === slug && p.available);
+  return inCategory.find((p) => p.featured) ?? inCategory[0];
+}
+
+function firstSpec(product?: CatalogProduct): string | undefined {
+  if (!product?.specs) return undefined;
+  const entry = Object.entries(product.specs)[0];
+  return entry ? `${entry[1]}` : undefined;
+}
+
+const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+const largeSlugs = ["smartphones", "notebooks", "gamer"];
+const mediumSlugs = ["computadores", "monitores", "audio", "acessorios"];
+
+const largeCards = largeSlugs.map((slug) => categoryBySlug.get(slug)!).filter(Boolean);
+const mediumCards = mediumSlugs.map((slug) => categoryBySlug.get(slug)!).filter(Boolean);
+const casaInteligente = categoryBySlug.get("casa-inteligente")!;
+
+const offerProducts = products.filter((p) => p.offerActive && p.previousPrice);
+const offerPrimary = offerProducts
+  .slice()
+  .sort((a, b) => 1 - a.price / (a.previousPrice ?? a.price) - (1 - b.price / (b.previousPrice ?? b.price)))
+  .reverse()[0];
+const offerDiscount = offerPrimary?.previousPrice ? Math.round((1 - offerPrimary.price / offerPrimary.previousPrice) * 100) : null;
+const offerCount = products.filter((p) => p.offerActive).length;
+
+const badges: Record<string, string> = {
+  smartphones: "Mais procurado",
+  gamer: "Setup completo",
+  "casa-inteligente": "Conectado",
+};
+
+function countFor(slug: string) {
+  return products.filter((p) => p.category === slug).length;
+}
+
+function cardVisual(product: CatalogProduct | undefined, slug: string, accent: string) {
+  return {
+    photoSrc: product?.images?.main,
+    photoAlt: product?.name ?? categoryBySlug.get(slug)?.name ?? "",
+    variant: product ? productRenderVariant(product) : categoryRenderVariant(slug),
+    mood: moodForCategory(slug),
+    accent,
+  };
+}
+---
+
+<section id={id} class="border-b border-white/[0.06] bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
+  <div class="mx-auto max-w-[1400px]">
+    <div class="mb-10 max-w-xl" data-animate>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Categorias</p>
+      <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">Encontre por categoria</h2>
+      <p class="mt-3 text-base leading-relaxed text-[var(--ink-muted)]">
+        Do bolso à mesa de trabalho — navegue pelo catálogo demonstrativo da Nexora Tech por tipo de produto.
+      </p>
+    </div>
+
+    <!-- Linha 1 — categorias principais (cards grandes) -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-12">
+      {
+        largeCards.map((cat, i) => {
+          const accent = tileAccents[cat.slug] ?? "var(--accent)";
+          const product = featuredProductFor(cat.slug);
+          const visual = cardVisual(product, cat.slug, accent);
+          const spec = firstSpec(product);
+          const badge = badges[cat.slug];
+          const isLast = i === largeCards.length - 1;
+          return (
+            <a
+              href={`#catalogo?categoria=${cat.slug}`}
+              data-category-link={cat.slug}
+              data-animate
+              style={`transition-delay: ${i * 60}ms; --tile-accent: ${accent};`}
+              class={`nx-cat-tile group relative flex min-h-[19rem] flex-col overflow-hidden rounded-3xl border border-white/10 transition-all duration-300 hover:border-[var(--tile-accent)]/50 sm:min-h-[22rem] lg:col-span-4 ${isLast ? "sm:col-span-2 lg:col-span-4" : ""}`}
+            >
+              <div class="absolute inset-0">
+                {visual.photoSrc ? (
+                  <img
+                    src={visual.photoSrc}
+                    alt={visual.photoAlt}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover nx-cat-photo"
+                  />
+                ) : (
+                  <NexoraProductVisual variant={visual.variant} accent={accent} mood={visual.mood} class="h-full w-full" />
+                )}
+                <div class="nx-cat-scrim absolute inset-0" />
+                <div class="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={`background: radial-gradient(120% 90% at 15% 100%, ${accent}33, transparent 65%);`} />
+              </div>
+
+              <div class="relative z-10 flex items-center justify-between p-5">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 backdrop-blur" style={`color: ${accent};`}>
+                  <Icon name={cat.icon} class="h-4 w-4" />
+                </span>
+                {badge && (
+                  <span class="rounded-full border px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-wide backdrop-blur" style={`border-color: ${accent}66; color: ${accent}; background: ${accent}1a;`}>
+                    {badge}
+                  </span>
+                )}
+              </div>
+
+              <div class="relative z-10 mt-auto flex flex-col gap-2 p-5 pt-16">
+                {spec && (
+                  <span class="w-fit rounded-md border border-white/15 bg-black/40 px-2 py-1 text-[0.65rem] font-medium text-white/80 backdrop-blur">{spec}</span>
+                )}
+                <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white sm:text-2xl">{cat.name}</h3>
+                <p class="line-clamp-2 max-w-[26rem] text-sm leading-relaxed text-white/70">{cat.description}</p>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="text-xs text-white/60">{countFor(cat.slug)} produtos</span>
+                  <span class="inline-flex items-center gap-1.5 text-sm font-semibold" style={`color: ${accent};`}>
+                    Explorar
+                    <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+
+    <!-- Linha 2 — categorias de apoio (cards médios) -->
+    <div class="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-12">
+      {
+        mediumCards.map((cat, i) => {
+          const accent = tileAccents[cat.slug] ?? "var(--accent)";
+          const product = featuredProductFor(cat.slug);
+          const visual = cardVisual(product, cat.slug, accent);
+          return (
+            <a
+              href={`#catalogo?categoria=${cat.slug}`}
+              data-category-link={cat.slug}
+              data-animate
+              style={`transition-delay: ${(largeCards.length + i) * 60}ms; --tile-accent: ${accent};`}
+              class="nx-cat-tile group relative flex min-h-[16rem] flex-col overflow-hidden rounded-2xl border border-white/10 transition-all duration-300 hover:border-[var(--tile-accent)]/50 lg:col-span-3"
+            >
+              <div class="absolute inset-0">
+                {visual.photoSrc ? (
+                  <img
+                    src={visual.photoSrc}
+                    alt={visual.photoAlt}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover nx-cat-photo"
+                  />
+                ) : (
+                  <NexoraProductVisual variant={visual.variant} accent={accent} mood={visual.mood} class="h-full w-full" />
+                )}
+                <div class="nx-cat-scrim absolute inset-0" />
+              </div>
+
+              <span class="relative z-10 m-4 mb-0 inline-flex h-8 w-8 items-center justify-center self-start rounded-full border border-white/15 bg-black/30 backdrop-blur" style={`color: ${accent};`}>
+                <Icon name={cat.icon} class="h-3.5 w-3.5" />
+              </span>
+
+              <div class="relative z-10 mt-auto flex flex-col gap-1.5 p-4">
+                <h3 class="text-base font-semibold text-white">{cat.name}</h3>
+                <div class="flex items-center justify-between">
+                  <span class="text-[0.7rem] text-white/60">{countFor(cat.slug)} produtos</span>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold" style={`color: ${accent};`}>
+                    Ver
+                    <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-3 w-3" /></span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+
+    <!-- Linha 3 — cards amplos (Casa inteligente + Ofertas como campanha) -->
+    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 sm:mt-5">
+      {(() => {
+        const accent = tileAccents["casa-inteligente"];
+        const product = featuredProductFor("casa-inteligente");
+        const visual = cardVisual(product, "casa-inteligente", accent);
+        const badge = badges["casa-inteligente"];
+        return (
+          <a
+            href={`#catalogo?categoria=casa-inteligente`}
+            data-category-link="casa-inteligente"
+            data-animate
+            style={`transition-delay: ${(largeCards.length + mediumCards.length) * 60}ms; --tile-accent: ${accent};`}
+            class="nx-cat-tile group relative flex min-h-[14rem] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 transition-all duration-300 hover:border-[var(--tile-accent)]/50 sm:min-h-[15rem]"
+          >
+            <div class="absolute inset-0">
+              {visual.photoSrc ? (
+                <img src={visual.photoSrc} alt={visual.photoAlt} loading="lazy" decoding="async" class="h-full w-full object-cover nx-cat-photo" />
+              ) : (
+                <NexoraProductVisual variant={visual.variant} accent={accent} mood={visual.mood} class="h-full w-full" />
+              )}
+              <div class="nx-cat-scrim absolute inset-0" />
+            </div>
+            <div class="relative z-10 flex items-start justify-between p-5">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 backdrop-blur" style={`color: ${accent};`}>
+                <Icon name={casaInteligente.icon} class="h-4 w-4" />
+              </span>
+              {badge && (
+                <span class="rounded-full border px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-wide backdrop-blur" style={`border-color: ${accent}66; color: ${accent}; background: ${accent}1a;`}>
+                  {badge}
+                </span>
+              )}
+            </div>
+            <div class="relative z-10 flex flex-col gap-1.5 p-5 pt-10">
+              <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white">{casaInteligente.name}</h3>
+              <p class="line-clamp-1 text-sm text-white/70">{casaInteligente.description}</p>
+              <div class="mt-1.5 flex items-center justify-between">
+                <span class="text-xs text-white/60">{countFor("casa-inteligente")} produtos</span>
+                <span class="inline-flex items-center gap-1.5 text-sm font-semibold" style={`color: ${accent};`}>
+                  Explorar
+                  <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
+                </span>
+              </div>
+            </div>
+          </a>
+        );
+      })()}
+
+      <a
+        href="#ofertas"
+        data-animate
+        style={`transition-delay: ${(largeCards.length + mediumCards.length + 1) * 60}ms; --tile-accent: ${tileAccents.ofertas};`}
+        class="nx-cat-tile group relative flex min-h-[14rem] flex-col justify-end overflow-hidden rounded-2xl border border-[var(--tile-accent)]/25 transition-all duration-300 hover:border-[var(--tile-accent)]/60 sm:min-h-[15rem]"
+      >
+        <div class="absolute inset-0">
+          {offerPrimary?.images?.main ? (
+            <img src={offerPrimary.images.main} alt={offerPrimary.name} loading="lazy" decoding="async" class="h-full w-full object-cover opacity-90 nx-cat-photo" />
+          ) : (
+            <NexoraProductVisual variant="smartphone" accent={tileAccents.ofertas} mood="studio" class="h-full w-full" />
+          )}
+          <div class="absolute inset-0" style={`background: linear-gradient(155deg, rgba(249,115,22,0.32) 0%, rgba(10,6,3,0.55) 55%, rgba(10,6,3,0.85) 100%);`} />
+        </div>
+
+        <div class="relative z-10 flex items-start justify-between p-5">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-[var(--tile-accent)] px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-[#2a0f00]">
+            <Icon name="zap" class="h-3.5 w-3.5" />
+            Campanha ativa
+          </span>
+          {offerDiscount && (
+            <span class="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white backdrop-blur">
+              Até -{offerDiscount}%
+            </span>
+          )}
+        </div>
+
+        <div class="relative z-10 flex flex-col gap-1.5 p-5 pt-10">
+          <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white">Ofertas</h3>
+          <p class="line-clamp-1 text-sm text-white/75">Economia demonstrativa por tempo limitado em produtos selecionados.</p>
+          <div class="mt-1.5 flex items-center justify-between">
+            <span class="text-xs text-white/70">{offerCount} produtos em oferta</span>
+            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-white">
+              Ver ofertas
+              <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
+            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nx-cat-scrim {
+    background: linear-gradient(180deg, rgba(8, 11, 18, 0.15) 0%, rgba(8, 11, 18, 0.55) 55%, rgba(8, 11, 18, 0.92) 100%);
+  }
+
+  /* Tailwind's ring-* utilities generate no CSS in this build (same class of
+     bug as other arbitrary/variant utilities in this project) — plain focus
+     ring instead of focus-visible:ring-*. */
+  .nx-cat-tile:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.75);
+    outline-offset: 2px;
+  }
+
+  /* Plain CSS for the hover lift/zoom instead of Tailwind utilities: the
+     shared [data-animate].is-visible rule (global.css) sets `transform`
+     with the same specificity as a class+pseudo hover utility, so it wins
+     the cascade and silently cancels hover:-translate-y-1 once a tile has
+     scrolled into view. The extra [data-animate] qualifier here raises
+     specificity just enough to win regardless of source order. Also
+     sidesteps the `scale-[1.06]` arbitrary-value utility, which — like
+     other bracket values in this project's Tailwind v4 build — generates
+     no CSS at all. */
+  .nx-cat-tile {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  [data-animate].nx-cat-tile:hover {
+    transform: translateY(-4px);
+  }
+  .nx-cat-photo {
+    transition: transform 0.5s ease;
+  }
+  .nx-cat-tile:hover .nx-cat-photo {
+    transform: scale(1.06);
+  }
+  .nx-cat-arrow {
+    transition: transform 0.3s ease;
+  }
+  .nx-cat-tile:hover .nx-cat-arrow {
+    transform: translateX(4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-animate].nx-cat-tile:hover,
+    .nx-cat-tile:hover .nx-cat-photo,
+    .nx-cat-tile:hover .nx-cat-arrow {
+      transform: none;
+    }
+  }
+</style>

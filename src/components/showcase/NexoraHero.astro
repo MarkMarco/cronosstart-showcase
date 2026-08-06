@@ -1,0 +1,146 @@
+---
+// Hero técnico da Nexora Tech — composição assimétrica com "painel de
+// especificações" anotado ao redor do visual do produto em destaque, não um
+// banner estático. Distinto da composição editorial da Maison Lume.
+import Icon from "../ui/Icon.astro";
+import NexoraProductVisual from "./NexoraProductVisual.astro";
+import { productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
+import type { CatalogProduct } from "../../config/showcases/types";
+
+interface Props {
+  product: CatalogProduct;
+  accent: string;
+  complementary: { product: CatalogProduct; accent: string }[];
+}
+const { product, accent, complementary } = Astro.props;
+const visualVariant = productRenderVariant(product);
+const visualMood = moodForCategory(product.category);
+const photoSrc = product.images?.main;
+
+function formatBRL(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 4);
+---
+
+<section class="relative overflow-hidden border-b border-white/[0.06] bg-[var(--surface)] px-6 pb-16 pt-10 sm:pb-24 sm:pt-14">
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.05]"
+    style="background-image: linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(60% 55% at 30% 30%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(60% 55% at 30% 30%, black 0%, transparent 100%);"
+  />
+  <div class="pointer-events-none absolute -left-24 top-10 h-96 w-96 rounded-full opacity-25 blur-[110px]" style={`background: var(--primary);`} />
+  <div class="pointer-events-none absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full opacity-20 blur-[120px]" style={`background: ${accent};`} />
+
+  <div class="relative mx-auto grid max-w-[1400px] items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
+    <div data-animate>
+      <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={`background: ${accent};`} />
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full" style={`background: ${accent};`} />
+        </span>
+        <span class="text-xs font-medium text-[var(--ink-muted)]">Lançamento Nexora — modelo demonstrativo</span>
+      </div>
+
+      <h1 class="text-balance font-[var(--font-heading)] text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
+        {product.name}
+      </h1>
+      <p class="mt-5 max-w-lg text-balance text-base leading-relaxed text-[var(--ink-muted)] sm:text-lg">
+        {product.description}
+      </p>
+
+      <div class="mt-7 flex flex-wrap items-baseline gap-2.5">
+        <span class="text-xs uppercase tracking-wide text-[var(--ink-muted)]">A partir de</span>
+        <span class="font-[var(--font-heading)] text-3xl font-semibold text-white">{formatBRL(product.price)}</span>
+      </div>
+      <p class="mt-1 text-sm text-[var(--ink-muted)]">ou 10x de {formatBRL(product.price / 10)} (demonstrativo)</p>
+
+      <div class="mt-7 flex flex-wrap gap-3">
+        <button
+          type="button"
+          data-open-product={product.slug}
+          class="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+          style={`background: linear-gradient(135deg, var(--primary) 0%, ${accent} 100%);`}
+        >
+          Ver detalhes
+          <Icon name="arrow-right" class="h-4 w-4" />
+        </button>
+        <a
+          href="#lancamentos"
+          class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/30"
+        >
+          Explorar lançamentos
+        </a>
+      </div>
+
+      {
+        complementary.length > 0 && (
+          <div class="mt-9 flex items-center gap-3">
+            <span class="text-xs text-[var(--ink-muted)]">Combina com</span>
+            <div class="flex -space-x-2">
+              {complementary.map((c) => (
+                <button
+                  type="button"
+                  data-open-product={c.product.slug}
+                  aria-label={`Ver ${c.product.name}`}
+                  class="h-10 w-10 overflow-hidden rounded-full border-2 border-[var(--surface)] transition-transform hover:-translate-y-0.5 hover:z-10"
+                >
+                  <NexoraProductVisual
+                    variant={productRenderVariant(c.product)}
+                    accent={c.accent}
+                    mood={moodForCategory(c.product.category)}
+                    photoSrc={c.product.images?.main}
+                    photoAlt={c.product.name}
+                    class="h-full w-full"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      <p class="mt-8 text-xs text-[var(--ink-muted)]">
+        Produto, preço e disponibilidade fictícios — modelo demonstrativo do portfólio CronosStart.
+      </p>
+    </div>
+
+    <div class="relative hidden aspect-square items-center justify-center lg:flex" data-animate style="transition-delay: 100ms">
+      <NexoraProductVisual
+        variant={visualVariant}
+        accent={accent}
+        mood={visualMood}
+        photoSrc={photoSrc}
+        photoAlt={product.name}
+        class="aspect-square rounded-[1.75rem] border border-white/10"
+      />
+
+      {
+        quickSpecs.map(([label, value], i) => {
+          const positions = ["left:-8%;top:12%", "right:-10%;top:28%", "left:-6%;bottom:18%", "right:-4%;bottom:6%"];
+          return (
+            <div
+              class="absolute hidden rounded-xl border border-white/10 bg-[#0d1220]/90 px-3.5 py-2.5 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)] backdrop-blur sm:block"
+              data-animate
+              style={`${positions[i % positions.length]}; transition-delay: ${160 + i * 70}ms`}
+            >
+              <p class="text-[0.65rem] uppercase tracking-wide text-[var(--ink-muted)]">{label}</p>
+              <p class="text-sm font-semibold text-white">{value}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div class="flex justify-center lg:hidden" data-animate>
+      <NexoraProductVisual
+        variant={visualVariant}
+        accent={accent}
+        mood={visualMood}
+        photoSrc={photoSrc}
+        photoAlt={product.name}
+        class="aspect-square w-full max-w-xs rounded-[1.5rem] border border-white/10"
+      />
+    </div>
+  </div>
+</section>

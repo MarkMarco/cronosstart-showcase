@@ -10,8 +10,10 @@ import type { ShowcaseConfig } from "../config/showcases/types";
 
 interface Props {
   config: ShowcaseConfig;
+  /** JSON-LD adicional (BreadcrumbList, Service, FAQPage etc.). Opcional — não altera modelos que não o definem. */
+  structuredData?: Record<string, unknown>;
 }
-const { config } = Astro.props;
+const { config, structuredData } = Astro.props;
 
 const t = config.theme;
 const cssVars = [
@@ -40,6 +42,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       ogImage={config.seo.ogImage}
       ogImageAlt={config.seo.ogImageAlt}
       robots="noindex"
+      structuredData={structuredData}
     />
     <Analytics />
   </head>

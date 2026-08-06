@@ -52,7 +52,20 @@ export type IconName =
   | "cart"
   | "minus"
   | "plus"
-  | "share";
+  | "share"
+  | "cpu"
+  | "laptop"
+  | "monitor"
+  | "headphones"
+  | "smartphone"
+  | "gamepad"
+  | "wifi"
+  | "battery"
+  | "zap"
+  | "package"
+  | "truck"
+  | "filter"
+  | "scale";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -282,6 +295,8 @@ export interface CatalogCategory {
   icon: IconName;
   order: number;
   active: boolean;
+  /** Imagem de banner real opcional (catálogos técnicos); sem ela, usa o render vetorial da categoria. */
+  bannerImage?: string;
 }
 
 /** Posição percentual (0-100) de um hotspot de produto sobre a foto de um ambiente. */
@@ -350,6 +365,69 @@ export interface CatalogProduct {
   image?: string;
   /** Segunda foto real, usada na troca ao passar o mouse e na galeria do produto. */
   secondaryImage?: string;
+  /**
+   * Conjunto de imagens reais por produto (catálogos técnicos com galeria
+   * mais completa, ex.: Nexora Tech). Todos os campos são opcionais e
+   * independentes — quando `main` está ausente, os componentes recorrem ao
+   * render vetorial premium (ver src/utils/nexoraProductRender.ts). O
+   * painel administrativo permite preencher qualquer um destes campos a
+   * qualquer momento, substituindo o render vetorial pela foto real.
+   */
+  images?: {
+    /** Imagem principal (capa do card, hero do modal). */
+    main?: string;
+    /** Mesma peça em fundo limpo/neutro (usada como miniatura alternativa). */
+    clean?: string;
+    /** Segunda perspectiva/ângulo do produto. */
+    angle2?: string;
+    /** Detalhe de acabamento/material. */
+    detail?: string;
+    /** Imagem em contexto de uso (mesa, mão, ambiente). */
+    context?: string;
+  };
+
+  /**
+   * Campos abaixo são opcionais e pensados para catálogos técnicos
+   * (eletrônicos, ótica, pet shop etc.) — a Maison Lume nunca os define.
+   */
+  /** Marca fictícia do fabricante (distinta da marca da loja). */
+  brand?: string;
+  /** Subcategoria dentro da categoria (ex.: "Notebook gamer"). */
+  subcategory?: string;
+  /** Especificações técnicas livres (ex.: { processador: "...", memoria: "16GB" }) — sem schema fixo por categoria. */
+  specs?: Record<string, string>;
+  /** Variações selecionáveis além de cor (ex.: armazenamento, memória). */
+  variationOptions?: { label: string; values: string[] }[];
+  /** Texto de garantia demonstrativa (ex.: "12 meses"). */
+  warranty?: string;
+  /** Estoque demonstrativo (numérico, além do booleano `available`). */
+  stockQty?: number;
+  /** Slugs de acessórios compatíveis. */
+  compatibleAccessories?: string[];
+  /** Slugs de produtos relacionados/compatíveis (usado em "produtos relacionados" e no comparador). */
+  relatedSlugs?: string[];
+}
+
+/** Marca fictícia de fabricante — genérica, reaproveitável por catálogos técnicos. */
+export interface CatalogBrand {
+  slug: string;
+  name: string;
+  description?: string;
+  logo?: string;
+  active: boolean;
+}
+
+/** Kit/combo de produtos vendidos juntos — genérico, reaproveitável por catálogos de produto. */
+export interface CatalogKit {
+  slug: string;
+  name: string;
+  description?: string;
+  productSlugs: string[];
+  /** Economia demonstrativa em relação à soma dos itens avulsos. */
+  savingsLabel?: string;
+  active: boolean;
+  order: number;
+  featured?: boolean;
 }
 
 export interface AmbianceContent {

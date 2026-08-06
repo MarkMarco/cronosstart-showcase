@@ -1,0 +1,31 @@
+---
+interface Props {
+  variant?: "full" | "mark";
+  class?: string;
+}
+const { variant = "full", class: className = "" } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-2.5 ${className}`}>
+  <svg viewBox="0 0 40 40" class="h-9 w-9 shrink-0" aria-hidden="true">
+    <defs>
+      <linearGradient id="nx-logo-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="var(--primary)" />
+        <stop offset="100%" stop-color="var(--accent)" />
+      </linearGradient>
+    </defs>
+    <path d="M20 3.5L35 12v16L20 36.5 5 28V12z" fill="none" stroke="url(#nx-logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
+    <path d="M14 27V14l6 8 6-8v13" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="20" cy="20" r="1.4" fill="var(--accent)" />
+  </svg>
+  {variant === "full" && (
+    <span class="leading-tight">
+      <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-tight text-[var(--ink)]">
+        Nexora<span class="text-[var(--accent)]">Tech</span>
+      </span>
+      <span class="block -mt-1 text-[0.6rem] font-medium uppercase tracking-[0.22em] text-[var(--ink-muted)]">
+        Eletrônicos &amp; tecnologia
+      </span>
+    </span>
+  )}
+</span>

@@ -95,4 +95,16 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     icon: "sofa",
     premium: true,
   },
+  {
+    slug: "eletronicos",
+    segment: "Loja de eletrônicos e tecnologia premium",
+    companyName: "Nexora Tech",
+    shortDescription:
+      "Modelo premium de catálogo técnico com comparador de produtos, kits, ofertas e painel administrativo completo.",
+    available: true,
+    primary: "#3b6bff",
+    accent: "#22d3ee",
+    icon: "cpu",
+    premium: true,
+  },
 ];

@@ -1,0 +1,391 @@
+---
+// Drawer de carrinho/favoritos — lógica adaptada da Maison Lume (localStorage,
+// foco preso, Escape, contadores), visual próprio (sem fotos: usa um bloco
+// de cor com o acento da categoria no lugar da miniatura). Favoritos também
+// podem ser movidos para a comparação, recurso novo da Nexora Tech.
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  whatsappNumber: string;
+}
+const { whatsappNumber } = Astro.props;
+---
+
+<div id="nx-shopping-drawer" class="fixed inset-0 z-[110] hidden">
+  <div data-drawer-backdrop class="absolute inset-0 bg-black/60 opacity-0 backdrop-blur-sm transition-opacity duration-300" aria-hidden="true"></div>
+
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="nx-drawer-title"
+    data-drawer-panel
+    class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col border-l border-white/10 bg-[var(--surface)] shadow-2xl transition-transform duration-300"
+  >
+    <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <div class="flex gap-1 rounded-full bg-white/[0.04] p-1">
+        <button type="button" data-drawer-tab="cart" class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors">Carrinho</button>
+        <button type="button" data-drawer-tab="favorites" class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors">Favoritos</button>
+      </div>
+      <button type="button" data-drawer-close aria-label="Fechar" class="flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-white/[0.06] hover:text-white">
+        <Icon name="close" class="h-4 w-4" />
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-5 py-4">
+      <div data-drawer-panel-content="cart">
+        <ul data-cart-list class="space-y-3"></ul>
+        <div data-cart-empty class="hidden py-8 text-center">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.06] text-[var(--ink-muted)]">
+            <Icon name="cart" class="h-5 w-5" />
+          </div>
+          <p class="mx-auto mt-3 max-w-[220px] text-sm text-[var(--ink-muted)]">Seu carrinho está vazio. Explore o catálogo e adicione produtos.</p>
+          <button type="button" data-cart-explore class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+            Explorar catálogo
+            <Icon name="arrow-right" class="h-3.5 w-3.5" />
+          </button>
+          <div data-cart-suggestions class="mt-6 space-y-2 text-left"></div>
+        </div>
+      </div>
+      <div data-drawer-panel-content="favorites" class="hidden">
+        <ul data-favorites-list class="space-y-3"></ul>
+        <p data-favorites-empty class="hidden py-12 text-center text-sm text-[var(--ink-muted)]">Você ainda não favoritou nenhum produto.</p>
+      </div>
+    </div>
+
+    <div data-drawer-footer="cart" class="border-t border-white/10 px-5 py-4">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-[var(--ink-muted)]">Subtotal demonstrativo</span>
+        <span data-cart-subtotal class="text-lg font-semibold text-white">R$ 0,00</span>
+      </div>
+      <a
+        data-cart-whatsapp
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-3 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+      >
+        <Icon name="whatsapp" class="h-4 w-4" />
+        Enviar lista pelo WhatsApp
+      </a>
+      <p class="mt-2 text-center text-xs text-[var(--ink-muted)]">Carrinho demonstrativo — sem pagamento online neste modelo.</p>
+    </div>
+  </div>
+</div>
+
+<div data-nx-toast-host aria-live="polite" class="pointer-events-none fixed inset-x-0 bottom-5 z-[120] flex justify-center px-4"></div>
+
+<script define:vars={{ whatsappNumber }}>
+  window.__nxWhatsappNumberDrawer = whatsappNumber;
+</script>
+
+<script>
+  import { getCart, updateCartQuantity, removeFromCart, getCartCount, getFavorites, removeFavorite, addToCart, toggleCompare, getCompareList } from "../../utils/nexoraTechShop";
+  import { renderVisualHTML, productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
+
+  interface ModalProduct {
+    slug: string; name: string; price: number; accent: string; available: boolean; category: string;
+    subcategory?: string; images?: { main?: string };
+  }
+
+  function getProducts(): ModalProduct[] {
+    const dataEl = document.getElementById("nx-product-modal-data");
+    if (!dataEl) return [];
+    const parsed = JSON.parse(dataEl.textContent || "{}");
+    return parsed.products ?? [];
+  }
+
+  function formatBRL(value: number) {
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
+  function thumb(product: ModalProduct): string {
+    const photo = product.images?.main;
+    if (photo) {
+      return `<div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg"><img src="${photo}" alt="${product.name}" class="h-full w-full object-cover" /></div>`;
+    }
+    const markup = renderVisualHTML({
+      variant: productRenderVariant({ category: product.category, subcategory: product.subcategory }),
+      accent: product.accent,
+      mood: moodForCategory(product.category),
+    });
+    return `<div class="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">${markup}</div>`;
+  }
+
+  const drawer = document.getElementById("nx-shopping-drawer");
+  const backdrop = drawer?.querySelector<HTMLElement>("[data-drawer-backdrop]");
+  const panel = drawer?.querySelector<HTMLElement>("[data-drawer-panel]");
+  let lastFocused: HTMLElement | null = null;
+
+  function setTab(tab: "cart" | "favorites") {
+    drawer?.querySelectorAll<HTMLElement>("[data-drawer-tab]").forEach((btn) => {
+      const isActive = btn.dataset.drawerTab === tab;
+      btn.classList.toggle("bg-[var(--accent)]", isActive);
+      btn.classList.toggle("text-[#04121a]", isActive);
+      btn.classList.toggle("text-[var(--ink-muted)]", !isActive);
+    });
+    drawer?.querySelectorAll<HTMLElement>("[data-drawer-panel-content]").forEach((el) => {
+      el.classList.toggle("hidden", el.dataset.drawerPanelContent !== tab);
+    });
+    drawer?.querySelector<HTMLElement>('[data-drawer-footer="cart"]')?.classList.toggle("hidden", tab !== "cart");
+  }
+
+  function renderCart() {
+    const products = getProducts();
+    const cart = getCart();
+    const list = drawer?.querySelector<HTMLElement>("[data-cart-list]")!;
+    const empty = drawer?.querySelector<HTMLElement>("[data-cart-empty]")!;
+    list.classList.toggle("hidden", cart.length === 0);
+    list.innerHTML = "";
+    empty.classList.toggle("hidden", cart.length > 0);
+
+    if (cart.length === 0) {
+      const suggestions = drawer?.querySelector<HTMLElement>("[data-cart-suggestions]")!;
+      suggestions.innerHTML = "";
+      products.slice(0, 2).forEach((product) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.openProduct = product.slug;
+        btn.className = "flex w-full items-center gap-3 rounded-xl border border-white/10 p-2.5 text-left transition-colors hover:border-white/25";
+        btn.innerHTML = `${thumb(product)}<span class="min-w-0"><span class="block truncate text-sm font-medium text-white">${product.name}</span><span class="block text-sm text-[var(--ink-muted)]">${formatBRL(product.price)}</span></span>`;
+        suggestions.appendChild(btn);
+      });
+    }
+
+    let subtotal = 0;
+    cart.forEach((item) => {
+      const product = products.find((p) => p.slug === item.slug);
+      if (!product) return;
+      subtotal += product.price * item.quantity;
+
+      const li = document.createElement("li");
+      li.className = "flex gap-3 rounded-xl border border-white/10 p-3";
+      li.innerHTML = `
+        ${thumb(product)}
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-white">${product.name}</p>
+          ${item.variation ? `<p class="text-xs text-[var(--ink-muted)]">Cor: ${item.variation}</p>` : ""}
+          <p class="text-sm text-[var(--ink-muted)]">${formatBRL(product.price)}</p>
+          <div class="mt-1.5 flex items-center gap-2">
+            <button type="button" data-qty-dec="${item.slug}" class="flex h-6 w-6 items-center justify-center rounded-full border border-white/15 text-xs text-white">-</button>
+            <span class="w-5 text-center text-xs font-semibold text-white">${item.quantity}</span>
+            <button type="button" data-qty-inc="${item.slug}" class="flex h-6 w-6 items-center justify-center rounded-full border border-white/15 text-xs text-white">+</button>
+            <button type="button" data-remove-item="${item.slug}" class="ml-auto text-xs text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+          </div>
+        </div>`;
+      list.appendChild(li);
+    });
+
+    const subtotalEl = drawer?.querySelector<HTMLElement>("[data-cart-subtotal]")!;
+    subtotalEl.textContent = formatBRL(subtotal);
+
+    const waLink = drawer?.querySelector<HTMLAnchorElement>("[data-cart-whatsapp]")!;
+    const lines = cart
+      .map((item) => {
+        const product = products.find((p) => p.slug === item.slug);
+        return product ? `- ${product.name}${item.variation ? ` (${item.variation})` : ""} (x${item.quantity}) — ${formatBRL(product.price)}` : "";
+      })
+      .filter(Boolean);
+
+    if (lines.length > 0) {
+      const message = `Olá! Gostaria de solicitar um orçamento para os seguintes produtos da Nexora Tech:\n${lines.join("\n")}\nSubtotal demonstrativo: ${subtotalEl.textContent}`;
+      waLink.href = `https://wa.me/${(window as any).__nxWhatsappNumberDrawer}?text=${encodeURIComponent(message)}`;
+      waLink.removeAttribute("aria-disabled");
+      waLink.classList.remove("pointer-events-none", "opacity-40");
+    } else {
+      waLink.href = "#";
+      waLink.setAttribute("aria-disabled", "true");
+      waLink.classList.add("pointer-events-none", "opacity-40");
+    }
+
+    updateCounts();
+  }
+
+  function renderFavorites() {
+    const products = getProducts();
+    const favs = getFavorites();
+    const list = drawer?.querySelector<HTMLElement>("[data-favorites-list]")!;
+    const empty = drawer?.querySelector<HTMLElement>("[data-favorites-empty]")!;
+    list.innerHTML = "";
+    empty.classList.toggle("hidden", favs.length > 0);
+
+    favs.forEach((slug) => {
+      const product = products.find((p) => p.slug === slug);
+      if (!product) return;
+      const li = document.createElement("li");
+      li.className = "flex gap-3 rounded-xl border border-white/10 p-3";
+      li.innerHTML = `
+        ${thumb(product)}
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-white">${product.name}</p>
+          <p class="text-sm text-[var(--ink-muted)]">${formatBRL(product.price)}</p>
+          <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <button type="button" data-fav-to-cart="${slug}" class="text-xs font-semibold text-[var(--accent)]">Adicionar ao carrinho</button>
+            <button type="button" data-fav-to-compare="${slug}" data-fav-to-compare-category="${product.category}" class="text-xs font-semibold text-white/70 hover:text-white">Comparar</button>
+            <button type="button" data-fav-remove="${slug}" class="text-xs text-[var(--ink-muted)] hover:text-red-400">Remover</button>
+          </div>
+        </div>`;
+      list.appendChild(li);
+    });
+
+    updateCounts();
+  }
+
+  function updateCounts() {
+    const cartCount = getCartCount();
+    const favCount = getFavorites().length;
+    document.querySelectorAll<HTMLElement>("[data-cart-count]").forEach((el) => {
+      el.textContent = String(cartCount);
+      el.classList.toggle("hidden", cartCount === 0);
+      el.classList.toggle("flex", cartCount > 0);
+    });
+    document.querySelectorAll<HTMLElement>("[data-favorites-count]").forEach((el) => {
+      el.textContent = String(favCount);
+      el.classList.toggle("hidden", favCount === 0);
+      el.classList.toggle("flex", favCount > 0);
+    });
+  }
+
+  function getFocusable(): HTMLElement[] {
+    if (!panel) return [];
+    return Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+  }
+
+  function openDrawer(tab: "cart" | "favorites") {
+    if (!drawer || !backdrop || !panel) return;
+    setTab(tab);
+    renderCart();
+    renderFavorites();
+    lastFocused = document.activeElement as HTMLElement;
+    drawer.classList.remove("hidden");
+    requestAnimationFrame(() => {
+      backdrop.classList.remove("opacity-0");
+      panel.classList.remove("translate-x-full");
+    });
+    window.setTimeout(() => panel.querySelector<HTMLElement>("[data-drawer-close]")?.focus(), 50);
+  }
+  function closeDrawer() {
+    if (!drawer || !backdrop || !panel) return;
+    backdrop.classList.add("opacity-0");
+    panel.classList.add("translate-x-full");
+    window.setTimeout(() => drawer.classList.add("hidden"), 300);
+    lastFocused?.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    const openTrigger = target.closest<HTMLElement>("[data-open-drawer]");
+    if (openTrigger && (openTrigger.dataset.openDrawer === "cart" || openTrigger.dataset.openDrawer === "favorites")) {
+      event.preventDefault();
+      openDrawer(openTrigger.dataset.openDrawer as "cart" | "favorites");
+      return;
+    }
+    if (target.closest("[data-drawer-close]") || target === backdrop) {
+      closeDrawer();
+      return;
+    }
+    if (target.closest("[data-cart-explore]")) {
+      closeDrawer();
+      window.setTimeout(() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" }), 300);
+      return;
+    }
+    if (target.closest("[data-cart-suggestions] [data-open-product]")) {
+      closeDrawer();
+      return;
+    }
+    const tabBtn = target.closest<HTMLElement>("[data-drawer-tab]");
+    if (tabBtn) {
+      setTab(tabBtn.dataset.drawerTab as "cart" | "favorites");
+      return;
+    }
+    const decSlug = target.closest<HTMLElement>("[data-qty-dec]")?.dataset.qtyDec;
+    if (decSlug) {
+      const item = getCart().find((i) => i.slug === decSlug);
+      if (item) updateCartQuantity(decSlug, item.quantity - 1, item.variation);
+      renderCart();
+      return;
+    }
+    const incSlug = target.closest<HTMLElement>("[data-qty-inc]")?.dataset.qtyInc;
+    if (incSlug) {
+      const item = getCart().find((i) => i.slug === incSlug);
+      if (item) updateCartQuantity(incSlug, item.quantity + 1, item.variation);
+      renderCart();
+      return;
+    }
+    const removeSlug = target.closest<HTMLElement>("[data-remove-item]")?.dataset.removeItem;
+    if (removeSlug) {
+      removeFromCart(removeSlug);
+      renderCart();
+      return;
+    }
+    const favToCart = target.closest<HTMLElement>("[data-fav-to-cart]")?.dataset.favToCart;
+    if (favToCart) {
+      addToCart(favToCart, 1);
+      renderCart();
+      return;
+    }
+    const favToCompareEl = target.closest<HTMLElement>("[data-fav-to-compare]");
+    if (favToCompareEl) {
+      const slug = favToCompareEl.dataset.favToCompare ?? "";
+      const category = favToCompareEl.dataset.favToCompareCategory ?? "";
+      const currentList = getCompareList();
+      if (!currentList.includes(slug) && currentList.length > 0) {
+        const firstCategory = document.querySelector<HTMLElement>(`[data-product-card][data-slug="${currentList[0]}"]`)?.dataset.category;
+        if (firstCategory && firstCategory !== category) {
+          window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Só é possível comparar produtos da mesma categoria." }));
+          return;
+        }
+      }
+      const result = toggleCompare(slug);
+      if (!result.added && result.reason === "limit") {
+        window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Você pode comparar até 4 produtos por vez." }));
+      } else if (result.added) {
+        window.dispatchEvent(new CustomEvent("nx:toast", { detail: "Adicionado à comparação." }));
+      }
+      return;
+    }
+    const favRemove = target.closest<HTMLElement>("[data-fav-remove]")?.dataset.favRemove;
+    if (favRemove) {
+      removeFavorite(favRemove);
+      renderFavorites();
+      return;
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!drawer || drawer.classList.contains("hidden")) return;
+    if (event.key === "Escape") {
+      closeDrawer();
+      return;
+    }
+    if (event.key === "Tab") {
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener("nx:cart-updated", updateCounts);
+  window.addEventListener("nx:favorites-updated", updateCounts);
+  updateCounts();
+
+  const toastHost = document.querySelector<HTMLElement>("[data-nx-toast-host]");
+  window.addEventListener("nx:toast", ((event: CustomEvent<string>) => {
+    if (!toastHost) return;
+    const toast = document.createElement("div");
+    toast.className = "pointer-events-auto rounded-full border border-white/10 bg-[#0d1220] px-4 py-2.5 text-sm text-white shadow-2xl";
+    toast.textContent = event.detail;
+    toastHost.appendChild(toast);
+    window.setTimeout(() => {
+      toast.style.transition = "opacity 0.3s ease";
+      toast.style.opacity = "0";
+      window.setTimeout(() => toast.remove(), 300);
+    }, 2200);
+  }) as EventListener);
+</script>

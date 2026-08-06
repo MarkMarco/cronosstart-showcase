@@ -1,0 +1,28 @@
+---
+// Visual de produto da Nexora Tech. Prioriza fotografia curada (`photoSrc`)
+// quando disponível; caso contrário recorre ao render vetorial premium por
+// tipo de dispositivo (ver src/utils/nexoraProductRender.ts) — nunca ao
+// ícone genérico em círculo usado antes desta revisão. Ver nota completa em
+// src/config/showcases/nexora-tech.ts sobre a estratégia de imagens.
+import { renderVisualHTML, type RenderVariant, type RenderMood } from "../../utils/nexoraProductRender";
+
+interface Props {
+  variant: RenderVariant;
+  accent: string;
+  mood?: RenderMood;
+  photoSrc?: string;
+  photoAlt?: string;
+  class?: string;
+}
+const { variant, accent, mood = "studio", photoSrc, photoAlt = "", class: className = "" } = Astro.props;
+
+const markup = photoSrc ? "" : renderVisualHTML({ variant, accent, mood });
+---
+
+<div class={`nexora-visual relative flex w-full items-center justify-center overflow-hidden ${className}`} aria-hidden={photoSrc ? "false" : "true"}>
+  {photoSrc ? (
+    <img src={photoSrc} alt={photoAlt} loading="lazy" decoding="async" class="h-full w-full object-cover" />
+  ) : (
+    <Fragment set:html={markup} />
+  )}
+</div>

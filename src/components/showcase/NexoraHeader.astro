@@ -1,0 +1,197 @@
+---
+// Header próprio da Nexora Tech — visual "console técnico": barra vítrea
+// escura, busca inline, contadores de favoritos/comparação/carrinho e menu
+// com categorias. Não reaproveita a composição do MaisonLumeHeader.
+import type { NavItem } from "../../config/showcases/types";
+import Icon from "../ui/Icon.astro";
+import MobileMenu from "./MobileMenu.astro";
+
+interface Props {
+  nav: NavItem[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { nav, ctaLabel, ctaHref } = Astro.props;
+---
+
+<header
+  data-nx-header
+  class="sticky top-0 z-50 border-b border-white/[0.06] bg-[var(--surface)]/85 backdrop-blur-md transition-all duration-300"
+  style="--header-h: 72px"
+>
+  <div class="mx-auto flex h-[72px] max-w-[1400px] items-center gap-3 px-5 sm:px-6">
+    <a href="/modelos/eletronicos" class="flex shrink-0 items-center" aria-label="Nexora Tech — início">
+      <slot name="logo" />
+    </a>
+
+    <nav class="hidden xl:block" aria-label="Navegação principal">
+      <ul class="flex items-center gap-6">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="relative inline-block py-1 text-[0.85rem] font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="relative ml-auto hidden max-w-xs flex-1 items-center sm:flex">
+      <Icon name="search" class="pointer-events-none absolute left-3 h-4 w-4 text-[var(--ink-muted)]" />
+      <input
+        type="search"
+        data-header-search-input
+        placeholder="Buscar produtos, marcas..."
+        aria-label="Buscar no catálogo Nexora Tech"
+        class="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none placeholder:text-[var(--ink-muted)] transition-colors focus:border-[var(--accent)]/60 focus:bg-white/[0.06]"
+      />
+    </div>
+
+    <div class="flex items-center gap-1 sm:gap-1.5">
+      <button
+        type="button"
+        data-header-search-mobile
+        aria-label="Buscar no catálogo"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)] sm:hidden"
+      >
+        <Icon name="search" class="h-5 w-5" />
+      </button>
+
+      <button
+        type="button"
+        data-open-drawer="compare"
+        aria-label="Ver comparação de produtos"
+        class="relative hidden h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)] sm:inline-flex"
+      >
+        <Icon name="scale" class="h-5 w-5" />
+        <span
+          data-compare-count
+          class="absolute -right-0.5 -top-0.5 hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold leading-none text-[#04121a]"
+        >0</span>
+      </button>
+
+      <button
+        type="button"
+        data-open-drawer="favorites"
+        aria-label="Ver favoritos"
+        class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)]"
+      >
+        <Icon name="heart" class="h-5 w-5" />
+        <span
+          data-favorites-count
+          class="absolute -right-0.5 -top-0.5 hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold leading-none text-[#04121a]"
+        >0</span>
+      </button>
+
+      <button
+        type="button"
+        data-open-drawer="cart"
+        aria-label="Ver carrinho"
+        class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)]"
+      >
+        <Icon name="cart" class="h-5 w-5" />
+        <span
+          data-cart-count
+          class="absolute -right-0.5 -top-0.5 hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold leading-none text-[#04121a]"
+        >0</span>
+      </button>
+
+      <a
+        href={ctaHref}
+        class="hidden items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 xl:inline-flex"
+        style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);"
+      >
+        {ctaLabel}
+      </a>
+
+      <button
+        id="menu-toggle"
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink)] hover:bg-white/[0.06] xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menu"
+      >
+        <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+        <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+      </button>
+    </div>
+  </div>
+
+  <div data-header-search-mobile-panel class="hidden border-t border-white/[0.06] px-5 py-3 sm:hidden">
+    <div class="relative">
+      <Icon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-muted)]" />
+      <input
+        type="search"
+        data-header-search-input-mobile
+        placeholder="Buscar produtos, marcas..."
+        aria-label="Buscar no catálogo Nexora Tech"
+        class="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none placeholder:text-[var(--ink-muted)] focus:border-[var(--accent)]/60"
+      />
+    </div>
+  </div>
+</header>
+
+<MobileMenu nav={nav} ctaLabel={ctaLabel} ctaHref={ctaHref} />
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-nx-header]");
+  function onScroll() {
+    if (!header) return;
+    const scrolled = window.scrollY > 12;
+    header.classList.toggle("shadow-[0_10px_40px_-20px_rgba(0,0,0,0.7)]", scrolled);
+    header.style.setProperty("--header-h", scrolled ? "64px" : "72px");
+    header.style.height = "";
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  function runSearch(value: string) {
+    document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+    window.setTimeout(() => {
+      const catalogSearch = document.querySelector<HTMLInputElement>("[data-catalog-search]");
+      if (catalogSearch) {
+        catalogSearch.value = value;
+        catalogSearch.dispatchEvent(new Event("input", { bubbles: true }));
+        catalogSearch.focus();
+      }
+    }, 450);
+  }
+
+  document.querySelector<HTMLInputElement>("[data-header-search-input]")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") runSearch((e.target as HTMLInputElement).value);
+  });
+  document.querySelector<HTMLInputElement>("[data-header-search-input-mobile]")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") runSearch((e.target as HTMLInputElement).value);
+  });
+
+  document.querySelector("[data-header-search-mobile]")?.addEventListener("click", () => {
+    document.querySelector("[data-header-search-mobile-panel]")?.classList.toggle("hidden");
+    document.querySelector<HTMLInputElement>("[data-header-search-input-mobile]")?.focus();
+  });
+
+  function updateBadge(selector: string, count: number) {
+    const el = document.querySelector<HTMLElement>(selector);
+    if (!el) return;
+    el.textContent = String(count);
+    el.classList.toggle("hidden", count === 0);
+    el.classList.toggle("flex", count > 0);
+  }
+
+  async function refreshCounts() {
+    const { getCartCount, getFavorites, getCompareList } = await import("../../utils/nexoraTechShop");
+    updateBadge("[data-cart-count]", getCartCount());
+    updateBadge("[data-favorites-count]", getFavorites().length);
+    updateBadge("[data-compare-count]", getCompareList().length);
+  }
+
+  window.addEventListener("nx:cart-updated", refreshCounts);
+  window.addEventListener("nx:favorites-updated", refreshCounts);
+  window.addEventListener("nx:compare-updated", refreshCounts);
+  refreshCounts();
+</script>
