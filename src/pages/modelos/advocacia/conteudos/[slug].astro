@@ -1,0 +1,105 @@
+---
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../../layouts/ShowcaseLayout.astro";
+import ValloraLogo from "../../../../components/logos/ValloraLogo.astro";
+import Icon from "../../../../components/ui/Icon.astro";
+import { valloraAdvocaciaConfig as config, legalArticles } from "../../../../config/showcases/advocacia";
+import type { LegalArticle } from "../../../../config/showcases/types";
+
+export function getStaticPaths() {
+  return legalArticles
+    .filter((a) => a.status === "published")
+    .map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+
+interface Props {
+  article: LegalArticle;
+}
+const { article } = Astro.props;
+
+const seo = {
+  title: `${article.title} — Vallora Advocacia (conteúdo demonstrativo)`,
+  description: article.summary,
+};
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+const related = (article.relatedSlugs ?? [])
+  .map((slug) => legalArticles.find((a) => a.slug === slug && a.status === "published"))
+  .filter(Boolean) as LegalArticle[];
+
+const articleStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.title,
+  description: article.summary,
+  datePublished: article.date,
+  author: { "@type": "Person", name: article.author },
+  publisher: { "@type": "Organization", name: "Vallora Advocacia" },
+};
+---
+
+<ShowcaseLayout config={{ ...config, seo }} structuredData={articleStructuredData}>
+  <ValloraLogo slot="header-logo" />
+  <ValloraLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-3xl">
+      <a href="/modelos/advocacia#conteudos" class="inline-flex items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--primary)]">
+        <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
+        Voltar aos conteúdos
+      </a>
+
+      <span class="mt-6 inline-flex items-center rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
+        {article.category}
+      </span>
+      <h1 class="mt-4 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{article.title}</h1>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-[var(--ink-muted)]">
+        <span>{article.author}</span>
+        <span aria-hidden="true">·</span>
+        <span>{formatDate(article.date)}</span>
+        <span aria-hidden="true">·</span>
+        <span class="flex items-center gap-1"><Icon name="clock" class="h-4 w-4" />{article.readTimeMinutes} min de leitura</span>
+      </div>
+
+      {article.image && (
+        <div class="mt-8 overflow-hidden rounded-2xl">
+          <img src={article.image} alt={article.imageAlt ?? article.title} class="aspect-[16/9] w-full object-cover" loading="eager" decoding="async" />
+        </div>
+      )}
+
+      <div class="mt-8 space-y-5">
+        {article.content.map((paragraph) => <p class="text-base leading-relaxed text-[var(--ink)]">{paragraph}</p>)}
+      </div>
+
+      <p class="mt-8 rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 text-xs leading-relaxed text-[var(--ink-muted)]">
+        Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.
+      </p>
+
+      <a
+        href="/modelos/advocacia#contato"
+        class="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
+      >
+        Solicitar atendimento sobre este tema
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </a>
+
+      {related.length > 0 && (
+        <div class="mt-14 border-t border-[var(--border)] pt-8">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Conteúdos relacionados</h2>
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            {related.map((r) => (
+              <a href={`/modelos/advocacia/conteudos/${r.slug}`} class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 transition-colors hover:border-[var(--accent)]">
+                <p class="text-xs font-medium uppercase tracking-wide text-[var(--accent)]">{r.category}</p>
+                <p class="mt-1 text-sm font-semibold text-[var(--ink)]">{r.title}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</ShowcaseLayout>

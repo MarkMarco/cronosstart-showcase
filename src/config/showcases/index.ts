@@ -107,4 +107,16 @@ export const showcaseRegistry: ShowcaseSummary[] = [
     icon: "cpu",
     premium: true,
   },
+  {
+    slug: "advocacia",
+    segment: "Sociedade de advogados premium",
+    companyName: "Vallora Advocacia",
+    shortDescription:
+      "Modelo premium para escritórios de advocacia, com áreas de atuação, profissionais, conteúdos jurídicos e painel administrativo completo.",
+    available: true,
+    primary: "#4A0F1D",
+    accent: "#C7A35A",
+    icon: "scale",
+    premium: true,
+  },
 ];

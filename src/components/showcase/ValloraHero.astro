@@ -1,0 +1,150 @@
+---
+// Hero exclusivo da Vallora Advocacia — arquitetura clássica (colunas/mármore)
+// em tela cheia, com camadas de profundidade (overlay vinho + brilho dourado +
+// vinheta), uma balança da justiça (foto recortada, tratada em tom dourado)
+// como marca d'água discreta, e composição editorial premium.
+import Icon from "../ui/Icon.astro";
+import ValloraLogo from "../logos/ValloraLogo.astro";
+import type { PracticeArea } from "../../config/showcases/types";
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  subheadline: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryHref: string;
+  image: string;
+  imageAlt: string;
+  areas: PracticeArea[];
+}
+const { eyebrow, headline, subheadline, ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref, image, imageAlt, areas } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden bg-[#120F10]">
+  <div class="absolute inset-0">
+    <img src={image} alt={imageAlt} class="h-full w-full object-cover opacity-[0.62]" loading="eager" decoding="async" />
+    <div class="absolute inset-0 bg-gradient-to-r from-[#150910]/97 via-[#1c0a12]/78 to-[#120a0d]/60" />
+    <div class="absolute inset-0 bg-gradient-to-b from-[#120F10]/85 via-transparent to-[#120F10]/95" />
+    <div
+      class="absolute inset-0 opacity-[0.55] mix-blend-color"
+      style="background: linear-gradient(160deg, #4A0F1D 0%, #2a0f16 55%, #120F10 100%);"
+    />
+    <div
+      class="pointer-events-none absolute -left-24 bottom-[-10%] h-[65%] w-[65%] rounded-full opacity-[0.35] blur-[110px]"
+      style="background: radial-gradient(circle, #C7A35A 0%, transparent 70%);"
+    />
+    <div
+      class="pointer-events-none absolute -right-16 -top-16 h-[45%] w-[45%] rounded-full opacity-[0.22] blur-[100px]"
+      style="background: radial-gradient(circle, #E2C98C 0%, transparent 70%);"
+    />
+    <div class="pointer-events-none absolute inset-0 shadow-[inset_0_0_180px_60px_rgba(0,0,0,0.65)]" />
+  </div>
+
+  <span class="pointer-events-none absolute left-6 top-6 hidden h-14 w-14 border-l border-t border-[#C7A35A]/35 sm:block" aria-hidden="true" />
+  <span class="pointer-events-none absolute bottom-6 right-6 hidden h-14 w-14 border-b border-r border-[#C7A35A]/35 sm:block" aria-hidden="true" />
+
+  <div class="pointer-events-none absolute right-[4%] top-1/2 hidden w-[26rem] -translate-y-1/2 opacity-[0.32] lg:block" aria-hidden="true">
+    <img
+      src="/images/showcases/advocacia/justice-emblem.png"
+      alt=""
+      class="w-full drop-shadow-[0_20px_45px_rgba(0,0,0,0.55)]"
+      style="filter: sepia(0.55) saturate(1.5) hue-rotate(-8deg) brightness(1.05);"
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+
+  <div class="relative mx-auto flex min-h-[88vh] max-w-[1300px] flex-col justify-end px-6 pb-16 pt-14 sm:px-8 sm:pb-20 sm:pt-16">
+    <span class="mb-10 inline-flex w-fit items-center gap-2.5 rounded-full border border-[#C7A35A]/50 bg-[#120F10]/60 px-4 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-[#E2C98C] shadow-[0_0_24px_-6px_rgba(199,163,90,0.45)] backdrop-blur-sm">
+      <Icon name="sparkle" class="h-3.5 w-3.5" />
+      Modelo demonstrativo do portfólio CronosStart
+    </span>
+
+    <div class="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+      <div class="animate-hero-in relative border-l-2 border-[#C7A35A]/60 pl-6">
+        <p class="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#E2C98C]">
+          {eyebrow}
+          <span class="h-px w-10 bg-gradient-to-r from-[#C7A35A] to-transparent" aria-hidden="true" />
+        </p>
+        <h1 class="max-w-2xl font-[var(--font-heading)] text-4xl font-medium leading-[1.14] tracking-tight text-[#F5F0E8] drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] sm:text-5xl lg:text-[3.5rem]">
+          {headline}
+        </h1>
+        <p class="mt-6 max-w-xl text-base leading-relaxed text-[#F5F0E8]/75 sm:text-lg">
+          {subheadline}
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <a
+            href={ctaPrimaryHref}
+            class="vl-cta-primary inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-semibold text-[#211205]"
+          >
+            {ctaPrimaryLabel}
+          </a>
+          <a
+            href={ctaSecondaryHref}
+            class="vl-cta-secondary inline-flex items-center justify-center rounded-full border border-[#F5F0E8]/30 px-7 py-3.5 text-sm font-semibold text-[#F5F0E8] backdrop-blur-sm"
+          >
+            {ctaSecondaryLabel}
+          </a>
+        </div>
+      </div>
+
+      <div class="animate-hero-in relative overflow-hidden rounded-2xl border border-[#C7A35A]/25 bg-[#150c10]/55 p-5 backdrop-blur-[2px] lg:p-6" style="animation-delay: 140ms">
+        <span class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C7A35A]/70 to-transparent" aria-hidden="true" />
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#E2C98C]/80">Principais áreas</p>
+        <ul class="mt-3 grid grid-cols-2 gap-x-6 gap-y-3">
+          {
+            areas.slice(0, 6).map((area) => (
+              <li class="flex items-center gap-2.5 text-sm text-[#F5F0E8]/85">
+                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#C7A35A]/45 bg-[#C7A35A]/10 text-[#E2C98C]">
+                  <Icon name={area.icon} class="h-3.5 w-3.5" />
+                </span>
+                {area.title}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="pointer-events-none absolute right-8 top-24 hidden opacity-95 lg:block" aria-hidden="true">
+    <ValloraLogo variant="mark" tone="light" class="drop-shadow-[0_0_18px_rgba(199,163,90,0.35)]" />
+  </div>
+</section>
+
+<style>
+  .vl-cta-primary {
+    background: linear-gradient(135deg, #e2c98c 0%, #c7a35a 55%, #ad8542 100%);
+    box-shadow: 0 18px 40px -14px rgba(199, 163, 90, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  }
+  .vl-cta-primary:hover,
+  .vl-cta-primary:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 22px 46px -12px rgba(199, 163, 90, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .vl-cta-secondary {
+    background: rgba(245, 240, 232, 0.04);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+  .vl-cta-secondary:hover,
+  .vl-cta-secondary:focus-visible {
+    border-color: rgba(199, 163, 90, 0.75);
+    background-color: rgba(199, 163, 90, 0.1);
+    color: #e2c98c;
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vl-cta-primary:hover,
+    .vl-cta-primary:focus-visible,
+    .vl-cta-secondary:hover,
+    .vl-cta-secondary:focus-visible {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,1313 @@
+---
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import ValloraLogo from "../../../components/logos/ValloraLogo.astro";
+import Icon from "../../../components/ui/Icon.astro";
+import { valloraAdvocaciaConfig as config, practiceAreas, legalProfessionals, legalArticles } from "../../../config/showcases/advocacia";
+
+const seo = {
+  title: "Painel administrativo — Vallora Advocacia (modelo demonstrativo)",
+  description: "Painel administrativo demonstrativo de áreas de atuação, profissionais, conteúdos e solicitações da Vallora Advocacia.",
+};
+
+const seedAreas = practiceAreas.map((a) => ({ ...a }));
+const seedProfessionals = legalProfessionals.map((p) => ({ ...p }));
+const seedArticles = legalArticles.map((a) => ({ ...a }));
+const seedFaq = (config.faq ?? []).map((f, i) => ({ id: `faq-${i + 1}`, question: f.question, answer: f.answer, order: i + 1, active: true }));
+
+const seedBanners = [
+  {
+    id: "banner-1",
+    title: "Modelo demonstrativo — conteúdos jurídicos atualizados mensalmente",
+    active: false,
+    order: 1,
+  },
+  {
+    id: "banner-2",
+    title: "Atendimento online disponível para todo o Brasil (demonstrativo)",
+    active: false,
+    order: 2,
+  },
+];
+
+const seedRequests = [
+  {
+    id: "req-1",
+    name: "Camila Bezerra",
+    phone: "(11) 98888-1234",
+    email: "camila@exemplo.com",
+    city: "São Paulo/SP",
+    personType: "Pessoa jurídica",
+    area: "Direito Empresarial",
+    contactPreference: "E-mail",
+    description: "Gostaria de entender melhor o processo de due diligence para uma aquisição.",
+    status: "novo",
+    notes: "",
+    createdAt: "2026-07-20",
+  },
+  {
+    id: "req-2",
+    name: "Thiago Andrade",
+    phone: "(21) 97777-5678",
+    email: "thiago@exemplo.com",
+    city: "Rio de Janeiro/RJ",
+    personType: "Pessoa física",
+    area: "Família e Sucessões",
+    contactPreference: "WhatsApp",
+    description: "Preciso de orientação sobre inventário extrajudicial.",
+    status: "em análise",
+    notes: "Aguardando retorno com mais detalhes do caso.",
+    createdAt: "2026-07-15",
+  },
+  {
+    id: "req-3",
+    name: "Beatriz Older",
+    phone: "(31) 96666-4321",
+    email: "beatriz@exemplo.com",
+    city: "Belo Horizonte/MG",
+    personType: "Pessoa jurídica",
+    area: "Proteção de Dados e Compliance",
+    contactPreference: "Telefone",
+    description: "Quero adequar minha empresa à LGPD, mas não sei por onde começar.",
+    status: "retorno solicitado",
+    notes: "",
+    createdAt: "2026-07-10",
+  },
+  {
+    id: "req-4",
+    name: "Marcelo Vianna",
+    phone: "(41) 95555-8765",
+    email: "marcelo@exemplo.com",
+    city: "Curitiba/PR",
+    personType: "Pessoa física",
+    area: "Direito Imobiliário",
+    contactPreference: "E-mail",
+    description: "Vou comprar uma sala comercial e quero uma verificação documental antes.",
+    status: "concluído",
+    notes: "Atendimento demonstrativo finalizado.",
+    createdAt: "2026-06-25",
+  },
+  {
+    id: "req-5",
+    name: "Solicitação de teste",
+    phone: "(00) 00000-0000",
+    email: "teste@exemplo.com",
+    city: "—",
+    personType: "Pessoa física",
+    area: "Direito Civil",
+    contactPreference: "WhatsApp",
+    description: "Registro de teste do formulário.",
+    status: "arquivado",
+    notes: "",
+    createdAt: "2026-05-02",
+  },
+];
+
+const seedSettings = {
+  companyName: config.company.name,
+  subtitle: config.company.segment,
+  whatsapp: config.contact.whatsappNumber,
+  phone: config.contact.phone,
+  email: config.contact.email,
+  address: `${config.contact.city}/${config.contact.state}`,
+  hours: config.contact.hours ?? "",
+  instagram: config.contact.instagram ?? "",
+  linkedin: config.contact.linkedin ?? "",
+  institutionalText: config.company.description,
+  footerText: "Modelo demonstrativo desenvolvido pela CronosStart.",
+  demonstrativeDisclaimer: config.demonstrativeDisclaimer ?? "",
+  defaultWhatsappMessage: config.contact.whatsappMessage,
+};
+
+const iconOptions = ["briefcase", "scale", "users", "trending-up", "file-check", "heart", "shield-check", "home", "landmark", "book-open", "sparkle"];
+
+const tabs = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "areas", label: "Áreas de atuação" },
+  { id: "profissionais", label: "Profissionais" },
+  { id: "conteudos", label: "Conteúdos" },
+  { id: "solicitacoes", label: "Solicitações" },
+  { id: "faq", label: "FAQ" },
+  { id: "banners", label: "Banners e hero" },
+  { id: "config", label: "Configurações" },
+];
+---
+
+<ShowcaseLayout config={{ ...config, seo }}>
+  <ValloraLogo slot="header-logo" />
+  <ValloraLogo slot="footer-logo" />
+
+  <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
+    <div class="mx-auto max-w-6xl">
+      <div data-login-gate class="mx-auto max-w-sm py-16 text-center">
+        <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
+          <Icon name="key" class="h-6 w-6" />
+        </span>
+        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-[var(--ink)]">Acesso restrito</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Vallora Advocacia</p>
+        <form data-login-form class="mt-8 space-y-3 text-left">
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            E-mail
+            <input type="email" value="admin@vallora-advocacia-demo.com.br" readonly class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
+          </label>
+          <label class="block text-sm font-medium text-[var(--ink)]">
+            Senha
+            <input type="password" value="demonstracao" readonly class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
+          </label>
+          <button type="submit" class="!mt-6 w-full rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+            Entrar no painel
+          </button>
+          <p class="text-center text-xs text-[var(--ink-muted)]">Acesso demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.</p>
+        </form>
+      </div>
+
+      <div data-admin-content class="hidden">
+        <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-[var(--ink)]">
+          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
+            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Vallora Advocacia</h1>
+          </div>
+          <button type="button" data-action="reset-all" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+            <Icon name="refresh" class="h-4 w-4" />
+            Restaurar dados originais
+          </button>
+        </div>
+
+        <div class="-mx-6 mt-6 flex gap-2 overflow-x-auto px-6 pb-1" role="tablist">
+          {tabs.map((tab) => (
+            <button type="button" role="tab" data-tab-button={tab.id} class="shrink-0 rounded-full border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--ink-muted)] transition-colors">
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <!-- DASHBOARD -->
+        <div data-panel="dashboard" class="mt-6">
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Áreas de atuação</p>
+              <p data-stat="areas-total" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Áreas ativas</p>
+              <p data-stat="areas-ativas" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Profissionais ativos</p>
+              <p data-stat="profissionais-ativos" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Artigos publicados</p>
+              <p data-stat="artigos-publicados" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Artigos em rascunho</p>
+              <p data-stat="artigos-rascunho" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Solicitações novas</p>
+              <p data-stat="solicitacoes-novas" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Perguntas no FAQ</p>
+              <p data-stat="faq-total" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+            <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
+              <p class="text-xs text-[var(--ink-muted)]">Conteúdo em destaque</p>
+              <p data-stat="conteudo-destaque" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
+            </div>
+          </div>
+          <div class="mt-4 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm text-[var(--ink-muted)]">
+            Em um projeto real, esta área também mostraria visualizações e solicitações com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esse indicador não é simulado aqui para não apresentar números fictícios como se fossem reais.
+          </div>
+        </div>
+
+        <!-- ÁREAS DE ATUAÇÃO -->
+        <div data-panel="areas" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-[var(--ink)]">Áreas de atuação</h2>
+            <button type="button" data-action="toggle-area-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+              <Icon name="check" class="h-4 w-4" />
+              Nova área
+            </button>
+          </div>
+
+          <form data-area-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Título
+              <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Ícone
+              <select name="icon" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
+                {iconOptions.map((i) => <option value={i}>{i}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Descrição curta
+              <input type="text" name="shortDescription" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Descrição completa
+              <textarea name="description" rows="3" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <div class="flex items-center gap-4 sm:col-span-2">
+              <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+                <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+                Ativa
+              </label>
+              <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+                <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                Destacar na home
+              </label>
+            </div>
+            <div class="sm:col-span-2">
+              <p class="mb-1.5 text-sm font-medium text-[var(--ink)]">Profissionais associados</p>
+              <div data-area-professional-checkboxes class="grid max-h-40 grid-cols-2 gap-1.5 overflow-y-auto rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3"></div>
+            </div>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar área</button>
+              <button type="button" data-action="cancel-area-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[680px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Área</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium">Destaque</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-area-table-body class="text-[var(--ink)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PROFISSIONAIS -->
+        <div data-panel="profissionais" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-[var(--ink)]">Profissionais</h2>
+            <button type="button" data-action="toggle-professional-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+              <Icon name="check" class="h-4 w-4" />
+              Novo profissional
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">Nomes, fotos e formações devem permanecer sempre fictícios e claramente demonstrativos — nunca dados de pessoas reais.</p>
+
+          <form data-professional-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="slug" />
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome
+              <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Cargo
+              <input type="text" name="role" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Área principal
+              <select name="mainArea" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
+                {seedAreas.map((a) => <option value={a.slug}>{a.title}</option>)}
+              </select>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Resumo profissional
+              <textarea name="summary" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Idiomas (separados por vírgula)
+              <input type="text" name="languages" placeholder="Português, Inglês" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Formação demonstrativa (separada por vírgula)
+              <input type="text" name="education" placeholder="Instituição fictícia — curso" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Nota de registro (sempre demonstrativa)
+              <input type="text" name="registrationNote" placeholder="Registro profissional demonstrativo" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Foto (URL)
+              <input type="url" name="photo" placeholder="https://…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
+              <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Ativo (visível no site)
+            </label>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar profissional</button>
+              <button type="button" data-action="cancel-professional-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[680px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Profissional</th>
+                  <th class="px-4 py-3 font-medium">Área principal</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-professional-table-body class="text-[var(--ink)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CONTEÚDOS -->
+        <div data-panel="conteudos" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-[var(--ink)]">Conteúdos</h2>
+            <button type="button" data-action="toggle-article-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+              <Icon name="check" class="h-4 w-4" />
+              Novo conteúdo
+            </button>
+          </div>
+
+          <form data-article-form class="mt-4 hidden grid-cols-1 gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <input type="hidden" name="slug" />
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Título
+                  <input type="text" name="title" required data-af="title" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Categoria
+                  <input type="text" name="category" data-af="category" placeholder="Empresas, Contratos, Trabalho…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Autor (fictício)
+                  <input type="text" name="author" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Data (demonstrativa)
+                  <input type="date" name="date" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Tempo de leitura (min)
+                  <input type="number" name="readTimeMinutes" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)]">
+                  Status
+                  <select name="status" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
+                    <option value="draft">Rascunho</option>
+                    <option value="published">Publicado</option>
+                  </select>
+                </label>
+                <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
+                  <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
+                  Destacar
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Imagem (URL)
+                  <input type="url" name="image" placeholder="https://…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Resumo
+                  <textarea name="summary" rows="2" data-af="summary" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+                </label>
+                <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+                  Conteúdo (um parágrafo por linha)
+                  <textarea name="content" rows="6" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+                </label>
+              </div>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar conteúdo</button>
+                <button type="button" data-action="cancel-article-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+              <div class="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+                <p data-preview="category" class="text-xs font-medium uppercase tracking-wide text-[var(--accent)]">Categoria</p>
+                <h3 data-preview="title" class="mt-1 text-base font-semibold text-[var(--ink)]">Título do conteúdo</h3>
+                <p data-preview="summary" class="mt-2 text-xs text-[var(--ink-muted)]"></p>
+              </div>
+              <p class="mt-2 text-xs text-[var(--ink-muted)]">Aviso fixo exibido junto ao conteúdo público: "{config.demonstrativeDisclaimer}"</p>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Conteúdo</th>
+                  <th class="px-4 py-3 font-medium">Categoria</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-article-table-body class="text-[var(--ink)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SOLICITAÇÕES -->
+        <div data-panel="solicitacoes" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Solicitações demonstrativas</h2>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">Nenhum dado real ou sensível — apenas registros fictícios para demonstrar o fluxo de atendimento.</p>
+          <div class="mt-4 space-y-3" data-requests-list></div>
+        </div>
+
+        <!-- FAQ -->
+        <div data-panel="faq" class="mt-6 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold text-[var(--ink)]">Perguntas frequentes</h2>
+            <button type="button" data-action="toggle-faq-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+              <Icon name="check" class="h-4 w-4" />
+              Nova pergunta
+            </button>
+          </div>
+
+          <form data-faq-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6">
+            <input type="hidden" name="id" />
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Pergunta
+              <input type="text" name="question" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Resposta
+              <textarea name="answer" rows="3" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <div class="flex items-center gap-4">
+              <label class="block text-sm font-medium text-[var(--ink)]">
+                Ordem
+                <input type="number" name="order" min="1" class="mt-1.5 w-24 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+              </label>
+              <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
+                <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
+                Ativa
+              </label>
+            </div>
+            <div class="flex gap-3">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar pergunta</button>
+              <button type="button" data-action="cancel-faq-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+            </div>
+          </form>
+
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[560px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Pergunta</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-faq-table-body class="text-[var(--ink)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BANNERS -->
+        <div data-panel="banners" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Banners e hero</h2>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">Uma faixa de aviso opcional exibida no topo do site público, abaixo do menu. Apenas um banner ativo por vez (o de menor ordem).</p>
+          <form data-banner-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <input type="hidden" name="id" />
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Texto do banner
+              <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Ordem
+              <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
+              <input type="checkbox" name="active" class="h-4 w-4 rounded accent-[var(--accent)]" />
+              Ativo
+            </label>
+            <div class="flex gap-3 sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar banner</button>
+              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+            </div>
+          </form>
+          <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
+            <table class="w-full min-w-[560px] border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+                  <th class="px-4 py-3 font-medium">Banner</th>
+                  <th class="px-4 py-3 font-medium">Ordem</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody data-banner-table-body class="text-[var(--ink)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div data-panel="config" class="mt-6 hidden">
+          <h2 class="text-lg font-semibold text-[var(--ink)]">Configurações</h2>
+          <form data-settings-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Nome do escritório
+              <input type="text" name="companyName" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Subtítulo
+              <input type="text" name="subtitle" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              WhatsApp (demonstrativo)
+              <input type="text" name="whatsapp" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Telefone
+              <input type="text" name="phone" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              E-mail
+              <input type="email" name="email" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Endereço
+              <input type="text" name="address" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Horário de atendimento
+              <input type="text" name="hours" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              Instagram (URL)
+              <input type="text" name="instagram" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)]">
+              LinkedIn (URL)
+              <input type="text" name="linkedin" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Texto institucional
+              <textarea name="institutionalText" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Aviso demonstrativo (rodapé e conteúdos)
+              <textarea name="demonstrativeDisclaimer" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Texto do rodapé
+              <input type="text" name="footerText" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+            </label>
+            <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
+              Mensagem padrão do WhatsApp
+              <textarea name="defaultWhatsappMessage" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
+            </label>
+            <div class="sm:col-span-2">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
+                Salvar configurações
+              </button>
+              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">Configurações salvas neste navegador.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</ShowcaseLayout>
+
+<script define:vars={{ seedAreas, seedProfessionals, seedArticles, seedFaq, seedBanners, seedRequests, seedSettings }}>
+  const STORAGE_KEY = "vallora-advocacia-admin-v1";
+  const AUTH_KEY = "vallora-advocacia-admin-authed";
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  }
+  function slugify(text) {
+    return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  function loadState() {
+    const seed = {
+      areas: seedAreas,
+      professionals: seedProfessionals,
+      articles: seedArticles,
+      faq: seedFaq,
+      banners: seedBanners,
+      requests: seedRequests,
+      settings: seedSettings,
+    };
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) return { ...seed, ...JSON.parse(raw) };
+    } catch {}
+    saveState(seed);
+    return seed;
+  }
+  function saveState(next) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {}
+  }
+
+  let state = loadState();
+  const pendingDeletes = new Set();
+
+  // --- Login ---
+  const loginGate = document.querySelector("[data-login-gate]");
+  const adminContent = document.querySelector("[data-admin-content]");
+  const loginForm = document.querySelector("[data-login-form]");
+  function unlock() {
+    loginGate.classList.add("hidden");
+    adminContent.classList.remove("hidden");
+    try { window.sessionStorage.setItem(AUTH_KEY, "1"); } catch {}
+  }
+  loginForm.addEventListener("submit", (e) => { e.preventDefault(); unlock(); });
+  try { if (window.sessionStorage.getItem(AUTH_KEY) === "1") unlock(); } catch {}
+
+  // --- Tabs ---
+  const tabButtons = Array.from(document.querySelectorAll("[data-tab-button]"));
+  const panels = Array.from(document.querySelectorAll("[data-panel]"));
+  function activateTab(id) {
+    tabButtons.forEach((btn) => {
+      const active = btn.dataset.tabButton === id;
+      btn.classList.toggle("bg-[var(--primary)]", active);
+      btn.classList.toggle("text-[var(--primary-ink)]", active);
+      btn.classList.toggle("border-transparent", active);
+      btn.classList.toggle("text-[var(--ink-muted)]", !active);
+    });
+    panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.panel !== id));
+  }
+  tabButtons.forEach((btn) => btn.addEventListener("click", () => activateTab(btn.dataset.tabButton)));
+  activateTab("dashboard");
+
+  // --- Dashboard ---
+  function renderDashboard() {
+    document.querySelector('[data-stat="areas-total"]').textContent = String(state.areas.length);
+    document.querySelector('[data-stat="areas-ativas"]').textContent = String(state.areas.filter((a) => a.active).length);
+    document.querySelector('[data-stat="profissionais-ativos"]').textContent = String(state.professionals.filter((p) => p.active).length);
+    document.querySelector('[data-stat="artigos-publicados"]').textContent = String(state.articles.filter((a) => a.status === "published").length);
+    document.querySelector('[data-stat="artigos-rascunho"]').textContent = String(state.articles.filter((a) => a.status === "draft").length);
+    document.querySelector('[data-stat="solicitacoes-novas"]').textContent = String(state.requests.filter((r) => r.status === "novo").length);
+    document.querySelector('[data-stat="faq-total"]').textContent = String(state.faq.length);
+    document.querySelector('[data-stat="conteudo-destaque"]').textContent = String(state.articles.filter((a) => a.featured).length + state.areas.filter((a) => a.featured).length);
+  }
+
+  function areaTitle(slug) {
+    return state.areas.find((a) => a.slug === slug)?.title ?? slug;
+  }
+
+  // ============ ÁREAS ============
+  const areaForm = document.querySelector("[data-area-form]");
+  const areaTableBody = document.querySelector("[data-area-table-body]");
+  const areaProfessionalCheckboxes = document.querySelector("[data-area-professional-checkboxes]");
+
+  function renderAreaProfessionalCheckboxes(checkedSlugs) {
+    const checked = new Set(checkedSlugs || []);
+    areaProfessionalCheckboxes.innerHTML = "";
+    state.professionals.forEach((p) => {
+      const label = document.createElement("label");
+      label.className = "flex items-center gap-1.5 text-xs text-[var(--ink)]";
+      label.innerHTML = `<input type="checkbox" value="${p.slug}" ${checked.has(p.slug) ? "checked" : ""} class="h-3.5 w-3.5 rounded accent-[var(--accent)]" /> ${escapeHtml(p.name)}`;
+      areaProfessionalCheckboxes.appendChild(label);
+    });
+  }
+  function showAreaForm() {
+    areaForm.classList.remove("hidden");
+    areaForm.classList.add("grid");
+    areaForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideAreaForm() {
+    areaForm.classList.add("hidden");
+    areaForm.classList.remove("grid");
+    areaForm.reset();
+    areaForm.querySelector('[name="slug"]').value = "";
+  }
+  document.querySelector('[data-action="toggle-area-form"]').addEventListener("click", () => {
+    areaForm.reset();
+    areaForm.querySelector('[name="slug"]').value = "";
+    renderAreaProfessionalCheckboxes([]);
+    showAreaForm();
+  });
+  document.querySelector('[data-action="cancel-area-form"]').addEventListener("click", hideAreaForm);
+
+  function renderAreas() {
+    const list = [...state.areas].sort((a, b) => a.order - b.order);
+    areaTableBody.innerHTML = "";
+    list.forEach((area) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-[var(--ink)]">${escapeHtml(area.title)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(area.shortDescription || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${area.order}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-area-toggle-featured="${area.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${area.featured ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${area.featured ? "Em destaque" : "Padrão"}</button>
+        </td>
+        <td class="px-4 py-3">
+          <button type="button" data-area-toggle="${area.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${area.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${area.active ? "Ativa" : "Oculta"}</button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-area-edit="${area.slug}" class="mr-2 text-xs font-semibold text-[var(--primary)] hover:underline">Editar</button>
+          <button type="button" data-area-delete="${area.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>`;
+      areaTableBody.appendChild(row);
+    });
+  }
+  areaForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(areaForm);
+    const existingSlug = String(data.get("slug") || "");
+    const title = String(data.get("title") || "").trim();
+    const relatedProfessionalSlugs = Array.from(areaProfessionalCheckboxes.querySelectorAll('input[type="checkbox"]:checked')).map((el) => el.value);
+    const payload = {
+      title,
+      shortDescription: String(data.get("shortDescription") || ""),
+      description: String(data.get("description") || ""),
+      icon: String(data.get("icon") || "briefcase"),
+      order: Number(data.get("order") || state.areas.length + 1),
+      active: data.get("active") === "on",
+      featured: data.get("featured") === "on",
+      relatedProfessionalSlugs,
+    };
+    if (existingSlug) {
+      const idx = state.areas.findIndex((a) => a.slug === existingSlug);
+      if (idx >= 0) state.areas[idx] = { ...state.areas[idx], ...payload, slug: existingSlug };
+    } else {
+      state.areas.push({ ...payload, slug: slugify(title) });
+    }
+    saveState(state);
+    renderAreas();
+    renderDashboard();
+    hideAreaForm();
+  });
+  areaTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-area-toggle");
+    if (toggle) {
+      const a = state.areas.find((x) => x.slug === toggle);
+      if (a) a.active = !a.active;
+      saveState(state); renderAreas(); renderDashboard(); return;
+    }
+    const toggleFeatured = target.getAttribute("data-area-toggle-featured");
+    if (toggleFeatured) {
+      const a = state.areas.find((x) => x.slug === toggleFeatured);
+      if (a) a.featured = !a.featured;
+      saveState(state); renderAreas(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-area-edit");
+    if (edit) {
+      const a = state.areas.find((x) => x.slug === edit);
+      if (!a) return;
+      areaForm.querySelector('[name="slug"]').value = a.slug;
+      areaForm.querySelector('[name="title"]').value = a.title;
+      areaForm.querySelector('[name="icon"]').value = a.icon;
+      areaForm.querySelector('[name="order"]').value = String(a.order);
+      areaForm.querySelector('[name="shortDescription"]').value = a.shortDescription || "";
+      areaForm.querySelector('[name="description"]').value = a.description || "";
+      areaForm.querySelector('[name="active"]').checked = Boolean(a.active);
+      areaForm.querySelector('[name="featured"]').checked = Boolean(a.featured);
+      renderAreaProfessionalCheckboxes(a.relatedProfessionalSlugs || []);
+      showAreaForm();
+      return;
+    }
+    const del = target.getAttribute("data-area-delete");
+    if (del) {
+      const key = `area-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.areas = state.areas.filter((x) => x.slug !== del);
+      saveState(state); renderAreas(); renderDashboard();
+    }
+  });
+
+  // ============ PROFISSIONAIS ============
+  const professionalForm = document.querySelector("[data-professional-form]");
+  const professionalTableBody = document.querySelector("[data-professional-table-body]");
+  function showProfessionalForm() {
+    professionalForm.classList.remove("hidden");
+    professionalForm.classList.add("grid");
+    professionalForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideProfessionalForm() {
+    professionalForm.classList.add("hidden");
+    professionalForm.classList.remove("grid");
+    professionalForm.reset();
+    professionalForm.querySelector('[name="slug"]').value = "";
+  }
+  document.querySelector('[data-action="toggle-professional-form"]').addEventListener("click", () => {
+    professionalForm.reset();
+    professionalForm.querySelector('[name="slug"]').value = "";
+    showProfessionalForm();
+  });
+  document.querySelector('[data-action="cancel-professional-form"]').addEventListener("click", hideProfessionalForm);
+
+  function renderProfessionals() {
+    const list = [...state.professionals].sort((a, b) => a.order - b.order);
+    professionalTableBody.innerHTML = "";
+    list.forEach((p) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-[var(--ink)]">${escapeHtml(p.name)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(p.role || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${escapeHtml(areaTitle(p.mainArea))}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-professional-toggle="${p.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${p.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${p.active ? "Ativo" : "Arquivado"}</button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-professional-edit="${p.slug}" class="mr-2 text-xs font-semibold text-[var(--primary)] hover:underline">Editar</button>
+          <button type="button" data-professional-delete="${p.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>`;
+      professionalTableBody.appendChild(row);
+    });
+  }
+  professionalForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(professionalForm);
+    const existingSlug = String(data.get("slug") || "");
+    const name = String(data.get("name") || "").trim();
+    const payload = {
+      name,
+      role: String(data.get("role") || ""),
+      mainArea: String(data.get("mainArea") || ""),
+      summary: String(data.get("summary") || ""),
+      languages: String(data.get("languages") || "").split(",").map((s) => s.trim()).filter(Boolean),
+      education: String(data.get("education") || "").split(",").map((s) => s.trim()).filter(Boolean),
+      registrationNote: String(data.get("registrationNote") || "Registro profissional demonstrativo"),
+      photo: String(data.get("photo") || "") || undefined,
+      order: Number(data.get("order") || state.professionals.length + 1),
+      active: data.get("active") === "on",
+    };
+    if (existingSlug) {
+      const idx = state.professionals.findIndex((p) => p.slug === existingSlug);
+      if (idx >= 0) state.professionals[idx] = { ...state.professionals[idx], ...payload, slug: existingSlug };
+    } else {
+      state.professionals.push({ ...payload, slug: slugify(name) });
+    }
+    saveState(state);
+    renderProfessionals();
+    renderDashboard();
+    hideProfessionalForm();
+  });
+  professionalTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-professional-toggle");
+    if (toggle) {
+      const p = state.professionals.find((x) => x.slug === toggle);
+      if (p) p.active = !p.active;
+      saveState(state); renderProfessionals(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-professional-edit");
+    if (edit) {
+      const p = state.professionals.find((x) => x.slug === edit);
+      if (!p) return;
+      professionalForm.querySelector('[name="slug"]').value = p.slug;
+      professionalForm.querySelector('[name="name"]').value = p.name;
+      professionalForm.querySelector('[name="role"]').value = p.role || "";
+      professionalForm.querySelector('[name="mainArea"]').value = p.mainArea;
+      professionalForm.querySelector('[name="order"]').value = String(p.order);
+      professionalForm.querySelector('[name="summary"]').value = p.summary || "";
+      professionalForm.querySelector('[name="languages"]').value = (p.languages || []).join(", ");
+      professionalForm.querySelector('[name="education"]').value = (p.education || []).join(", ");
+      professionalForm.querySelector('[name="registrationNote"]').value = p.registrationNote || "";
+      professionalForm.querySelector('[name="photo"]').value = p.photo || "";
+      professionalForm.querySelector('[name="active"]').checked = Boolean(p.active);
+      showProfessionalForm();
+      return;
+    }
+    const del = target.getAttribute("data-professional-delete");
+    if (del) {
+      const key = `prof-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.professionals = state.professionals.filter((x) => x.slug !== del);
+      saveState(state); renderProfessionals(); renderDashboard();
+    }
+  });
+
+  // ============ CONTEÚDOS ============
+  const articleForm = document.querySelector("[data-article-form]");
+  const articleTableBody = document.querySelector("[data-article-table-body]");
+  function showArticleForm() {
+    articleForm.classList.remove("hidden");
+    articleForm.classList.add("grid");
+    updateArticlePreview();
+    articleForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideArticleForm() {
+    articleForm.classList.add("hidden");
+    articleForm.classList.remove("grid");
+    articleForm.reset();
+    articleForm.querySelector('[name="slug"]').value = "";
+  }
+  function updateArticlePreview() {
+    const get = (name) => articleForm.querySelector(`[name="${name}"]`)?.value || "";
+    document.querySelector('[data-preview="title"]').textContent = get("title") || "Título do conteúdo";
+    document.querySelector('[data-preview="category"]').textContent = get("category") || "Categoria";
+    document.querySelector('[data-preview="summary"]').textContent = get("summary");
+  }
+  ["title", "category", "summary"].forEach((field) => {
+    articleForm.querySelector(`[data-af="${field}"]`)?.addEventListener("input", updateArticlePreview);
+  });
+  document.querySelector('[data-action="toggle-article-form"]').addEventListener("click", () => {
+    articleForm.reset();
+    articleForm.querySelector('[name="slug"]').value = "";
+    showArticleForm();
+  });
+  document.querySelector('[data-action="cancel-article-form"]').addEventListener("click", hideArticleForm);
+
+  function renderArticles() {
+    const list = [...state.articles].sort((a, b) => (a.date < b.date ? 1 : -1));
+    articleTableBody.innerHTML = "";
+    list.forEach((article) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      const statusLabel = article.status === "published" ? "Publicado" : "Rascunho";
+      row.innerHTML = `
+        <td class="px-4 py-3"><p class="font-semibold text-[var(--ink)]">${escapeHtml(article.title)}</p><p class="text-xs text-[var(--ink-muted)]">${escapeHtml(article.author || "")}</p></td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${escapeHtml(article.category || "")}</td>
+        <td class="px-4 py-3">
+          <button type="button" data-article-toggle-status="${article.slug}" class="rounded-full px-3 py-1 text-xs font-semibold ${article.status === "published" ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${statusLabel}</button>
+        </td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-article-edit="${article.slug}" class="mr-2 text-xs font-semibold text-[var(--primary)] hover:underline">Editar</button>
+          <button type="button" data-article-delete="${article.slug}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>`;
+      articleTableBody.appendChild(row);
+    });
+  }
+  articleForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(articleForm);
+    const existingSlug = String(data.get("slug") || "");
+    const title = String(data.get("title") || "").trim();
+    const payload = {
+      title,
+      summary: String(data.get("summary") || ""),
+      category: String(data.get("category") || ""),
+      author: String(data.get("author") || ""),
+      date: String(data.get("date") || new Date().toISOString().slice(0, 10)),
+      image: String(data.get("image") || "") || undefined,
+      readTimeMinutes: Number(data.get("readTimeMinutes") || 5),
+      status: String(data.get("status") || "draft"),
+      featured: data.get("featured") === "on",
+      content: String(data.get("content") || "").split("\n").map((l) => l.trim()).filter(Boolean),
+    };
+    if (existingSlug) {
+      const idx = state.articles.findIndex((a) => a.slug === existingSlug);
+      if (idx >= 0) state.articles[idx] = { ...state.articles[idx], ...payload, slug: existingSlug };
+    } else {
+      state.articles.push({ ...payload, slug: slugify(title) });
+    }
+    saveState(state);
+    renderArticles();
+    renderDashboard();
+    hideArticleForm();
+  });
+  articleTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggleStatus = target.getAttribute("data-article-toggle-status");
+    if (toggleStatus) {
+      const a = state.articles.find((x) => x.slug === toggleStatus);
+      if (a) a.status = a.status === "published" ? "draft" : "published";
+      saveState(state); renderArticles(); renderDashboard(); return;
+    }
+    const edit = target.getAttribute("data-article-edit");
+    if (edit) {
+      const a = state.articles.find((x) => x.slug === edit);
+      if (!a) return;
+      articleForm.querySelector('[name="slug"]').value = a.slug;
+      articleForm.querySelector('[name="title"]').value = a.title;
+      articleForm.querySelector('[name="category"]').value = a.category || "";
+      articleForm.querySelector('[name="author"]').value = a.author || "";
+      articleForm.querySelector('[name="date"]').value = (a.date || "").slice(0, 10);
+      articleForm.querySelector('[name="readTimeMinutes"]').value = String(a.readTimeMinutes || 5);
+      articleForm.querySelector('[name="status"]').value = a.status || "draft";
+      articleForm.querySelector('[name="featured"]').checked = Boolean(a.featured);
+      articleForm.querySelector('[name="image"]').value = a.image || "";
+      articleForm.querySelector('[name="summary"]').value = a.summary || "";
+      articleForm.querySelector('[name="content"]').value = (a.content || []).join("\n");
+      showArticleForm();
+      return;
+    }
+    const del = target.getAttribute("data-article-delete");
+    if (del) {
+      const key = `article-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.articles = state.articles.filter((x) => x.slug !== del);
+      saveState(state); renderArticles(); renderDashboard();
+    }
+  });
+
+  // ============ SOLICITAÇÕES ============
+  const requestsList = document.querySelector("[data-requests-list]");
+  const statusOptions = ["novo", "em análise", "retorno solicitado", "concluído", "arquivado"];
+  function renderRequests() {
+    requestsList.innerHTML = "";
+    [...state.requests].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).forEach((req) => {
+      const card = document.createElement("div");
+      card.className = "rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4";
+      card.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p class="font-semibold text-[var(--ink)]">${escapeHtml(req.name)}</p>
+            <p class="text-xs text-[var(--ink-muted)]">${escapeHtml(req.phone)} · ${escapeHtml(req.email)} · ${escapeHtml(req.city || "")}</p>
+            <p class="mt-1 text-sm text-[var(--ink)]">Área: <strong>${escapeHtml(req.area || "")}</strong> · ${escapeHtml(req.personType || "")}</p>
+            <p class="text-xs text-[var(--ink-muted)]">Preferência de contato: ${escapeHtml(req.contactPreference || "—")}</p>
+            <p class="mt-2 text-sm text-[var(--ink-muted)]">${escapeHtml(req.description || "")}</p>
+            <p class="mt-1 text-xs text-[var(--ink-muted)]/60">${escapeHtml(req.createdAt)}</p>
+          </div>
+          <select data-req-status="${req.id}" class="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--ink)] outline-none">
+            ${statusOptions.map((s) => `<option value="${s}" ${s === req.status ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </div>
+        <label class="mt-3 block text-xs font-medium text-[var(--ink-muted)]">
+          Observações internas
+          <textarea data-req-notes="${req.id}" rows="2" class="mt-1 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">${escapeHtml(req.notes || "")}</textarea>
+        </label>
+      `;
+      requestsList.appendChild(card);
+    });
+  }
+  requestsList.addEventListener("change", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLSelectElement)) return;
+    const id = target.getAttribute("data-req-status");
+    if (id) {
+      const r = state.requests.find((x) => x.id === id);
+      if (r) r.status = target.value;
+      saveState(state); renderDashboard();
+    }
+  });
+  requestsList.addEventListener("blur", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLTextAreaElement)) return;
+    const id = target.getAttribute("data-req-notes");
+    if (id) {
+      const r = state.requests.find((x) => x.id === id);
+      if (r) r.notes = target.value;
+      saveState(state);
+    }
+  }, true);
+
+  // ============ FAQ ============
+  const faqForm = document.querySelector("[data-faq-form]");
+  const faqTableBody = document.querySelector("[data-faq-table-body]");
+  function showFaqForm() {
+    faqForm.classList.remove("hidden");
+    faqForm.classList.add("grid");
+    faqForm.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  function hideFaqForm() {
+    faqForm.classList.add("hidden");
+    faqForm.classList.remove("grid");
+    faqForm.reset();
+    faqForm.querySelector('[name="id"]').value = "";
+  }
+  document.querySelector('[data-action="toggle-faq-form"]').addEventListener("click", () => {
+    faqForm.reset();
+    faqForm.querySelector('[name="id"]').value = "";
+    showFaqForm();
+  });
+  document.querySelector('[data-action="cancel-faq-form"]').addEventListener("click", hideFaqForm);
+
+  function renderFaq() {
+    const list = [...state.faq].sort((a, b) => a.order - b.order);
+    faqTableBody.innerHTML = "";
+    list.forEach((item) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3 font-semibold text-[var(--ink)]">${escapeHtml(item.question)}</td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${item.order}</td>
+        <td class="px-4 py-3"><button type="button" data-faq-toggle="${item.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${item.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${item.active ? "Ativa" : "Oculta"}</button></td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-faq-edit="${item.id}" class="mr-2 text-xs font-semibold text-[var(--primary)] hover:underline">Editar</button>
+          <button type="button" data-faq-delete="${item.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>`;
+      faqTableBody.appendChild(row);
+    });
+  }
+  faqForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(faqForm);
+    const existingId = String(data.get("id") || "");
+    const payload = {
+      question: String(data.get("question") || "").trim(),
+      answer: String(data.get("answer") || ""),
+      order: Number(data.get("order") || state.faq.length + 1),
+      active: data.get("active") === "on",
+    };
+    if (existingId) {
+      const idx = state.faq.findIndex((f) => f.id === existingId);
+      if (idx >= 0) state.faq[idx] = { ...state.faq[idx], ...payload, id: existingId };
+    } else {
+      state.faq.push({ ...payload, id: `faq-${Date.now()}` });
+    }
+    saveState(state); renderFaq(); renderDashboard(); hideFaqForm();
+  });
+  faqTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-faq-toggle");
+    if (toggle) {
+      const f = state.faq.find((x) => x.id === toggle);
+      if (f) f.active = !f.active;
+      saveState(state); renderFaq(); return;
+    }
+    const edit = target.getAttribute("data-faq-edit");
+    if (edit) {
+      const f = state.faq.find((x) => x.id === edit);
+      if (!f) return;
+      faqForm.querySelector('[name="id"]').value = f.id;
+      faqForm.querySelector('[name="question"]').value = f.question;
+      faqForm.querySelector('[name="answer"]').value = f.answer;
+      faqForm.querySelector('[name="order"]').value = String(f.order);
+      faqForm.querySelector('[name="active"]').checked = Boolean(f.active);
+      showFaqForm();
+      return;
+    }
+    const del = target.getAttribute("data-faq-delete");
+    if (del) {
+      const key = `faq-del-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.faq = state.faq.filter((x) => x.id !== del);
+      saveState(state); renderFaq(); renderDashboard();
+    }
+  });
+
+  // ============ BANNERS ============
+  const bannerForm = document.querySelector("[data-banner-form]");
+  const bannerTableBody = document.querySelector("[data-banner-table-body]");
+  function renderBanners() {
+    bannerTableBody.innerHTML = "";
+    [...state.banners].sort((a, b) => a.order - b.order).forEach((banner) => {
+      const row = document.createElement("tr");
+      row.className = "border-b border-[var(--border)] last:border-0";
+      row.innerHTML = `
+        <td class="px-4 py-3 font-semibold text-[var(--ink)]">${escapeHtml(banner.title)}</td>
+        <td class="px-4 py-3 text-[var(--ink-muted)]">${banner.order}</td>
+        <td class="px-4 py-3"><button type="button" data-banner-toggle="${banner.id}" class="rounded-full px-3 py-1 text-xs font-semibold ${banner.active ? "bg-[var(--accent)]/20 text-[var(--accent)]" : "border border-[var(--border)] text-[var(--ink-muted)]"}">${banner.active ? "Ativo" : "Pausado"}</button></td>
+        <td class="px-4 py-3 text-right">
+          <button type="button" data-banner-edit="${banner.id}" class="mr-2 text-xs font-semibold text-[var(--primary)] hover:underline">Editar</button>
+          <button type="button" data-banner-delete="${banner.id}" class="text-xs font-semibold text-[var(--ink-muted)] hover:text-red-500">Remover</button>
+        </td>`;
+      bannerTableBody.appendChild(row);
+    });
+  }
+  bannerForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(bannerForm);
+    const existingId = String(data.get("id") || "");
+    const payload = {
+      title: String(data.get("title") || "").trim(),
+      order: Number(data.get("order") || state.banners.length + 1),
+      active: data.get("active") === "on",
+    };
+    if (existingId) {
+      const idx = state.banners.findIndex((b) => b.id === existingId);
+      if (idx >= 0) state.banners[idx] = { ...state.banners[idx], ...payload, id: existingId };
+    } else {
+      state.banners.push({ ...payload, id: `banner-${Date.now()}` });
+    }
+    saveState(state); renderBanners(); bannerForm.reset(); bannerForm.querySelector('[name="id"]').value = "";
+  });
+  document.querySelector('[data-action="cancel-banner-form"]').addEventListener("click", () => {
+    bannerForm.reset(); bannerForm.querySelector('[name="id"]').value = "";
+  });
+  bannerTableBody.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const toggle = target.getAttribute("data-banner-toggle");
+    if (toggle) {
+      const b = state.banners.find((x) => x.id === toggle);
+      if (b) b.active = !b.active;
+      saveState(state); renderBanners(); return;
+    }
+    const edit = target.getAttribute("data-banner-edit");
+    if (edit) {
+      const b = state.banners.find((x) => x.id === edit);
+      if (!b) return;
+      bannerForm.querySelector('[name="id"]').value = b.id;
+      bannerForm.querySelector('[name="title"]').value = b.title;
+      bannerForm.querySelector('[name="order"]').value = String(b.order);
+      bannerForm.querySelector('[name="active"]').checked = Boolean(b.active);
+      bannerForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    const del = target.getAttribute("data-banner-delete");
+    if (del) {
+      const key = `banner-${del}`;
+      if (!pendingDeletes.has(key)) {
+        pendingDeletes.add(key); target.textContent = "Confirmar?"; target.classList.add("text-red-500");
+        setTimeout(() => pendingDeletes.delete(key), 4000); return;
+      }
+      pendingDeletes.delete(key);
+      state.banners = state.banners.filter((x) => x.id !== del);
+      saveState(state); renderBanners();
+    }
+  });
+
+  // ============ CONFIGURAÇÕES ============
+  const settingsForm = document.querySelector("[data-settings-form]");
+  function loadSettingsForm() {
+    Object.entries(state.settings).forEach(([key, value]) => {
+      const field = settingsForm.querySelector(`[name="${key}"]`);
+      if (field) field.value = value;
+    });
+  }
+  settingsForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(settingsForm);
+    Object.keys(state.settings).forEach((key) => {
+      state.settings[key] = String(data.get(key) || "");
+    });
+    saveState(state);
+    settingsForm.querySelector("[data-settings-feedback]")?.classList.remove("hidden");
+    window.setTimeout(() => settingsForm.querySelector("[data-settings-feedback]")?.classList.add("hidden"), 3000);
+  });
+
+  // ============ RESET ============
+  document.querySelector('[data-action="reset-all"]').addEventListener("click", () => {
+    if (!confirm("Restaurar todos os dados originais? Isso apaga as alterações feitas neste navegador.")) return;
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch {}
+    window.location.reload();
+  });
+
+  // --- Init ---
+  renderDashboard();
+  renderAreas();
+  renderProfessionals();
+  renderArticles();
+  renderRequests();
+  renderFaq();
+  renderBanners();
+  loadSettingsForm();
+</script>

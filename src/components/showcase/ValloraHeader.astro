@@ -1,0 +1,88 @@
+---
+// Header próprio da Vallora Advocacia — barra vítrea em grafite/vinho com
+// linha dourada discreta na base, ganha fundo mais opaco e sombra ao rolar.
+// Não reaproveita a composição dos headers de outros modelos.
+import type { NavItem } from "../../config/showcases/types";
+import Icon from "../ui/Icon.astro";
+import MobileMenu from "./MobileMenu.astro";
+
+interface Props {
+  nav: NavItem[];
+  ctaLabel: string;
+  ctaHref: string;
+}
+const { nav, ctaLabel, ctaHref } = Astro.props;
+---
+
+<header
+  data-vl-header
+  class="sticky top-0 z-50 border-b border-[#C7A35A]/15 bg-[#211C1D]/92 backdrop-blur-md transition-colors duration-300"
+  style="--header-h: 84px"
+>
+  <div class="mx-auto flex h-[84px] max-w-[1400px] items-center gap-6 px-6 sm:px-8">
+    <a href="/modelos/advocacia" class="flex shrink-0 items-center" aria-label="Vallora Advocacia — início">
+      <slot name="logo" />
+    </a>
+
+    <nav class="ml-4 hidden lg:block" aria-label="Navegação principal">
+      <ul class="flex items-center gap-7">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                data-vl-nav-link
+                class="relative inline-block py-1 text-[0.83rem] font-medium tracking-wide text-[#F5F0E8]/80 transition-colors hover:text-[#E2C98C]"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2">
+      <a
+        href={ctaHref}
+        data-vl-header-cta
+        class="hidden items-center gap-2 rounded-full border border-[#C7A35A]/60 px-5 py-2.5 text-sm font-semibold text-[#E2C98C] transition-colors hover:border-[#E2C98C] hover:bg-[#C7A35A]/10 lg:inline-flex"
+      >
+        {ctaLabel}
+      </a>
+
+      <button
+        id="menu-toggle"
+        type="button"
+        data-vl-menu-toggle
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[#F5F0E8] hover:bg-white/10 lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menu"
+      >
+        <Icon name="menu" class="h-6 w-6" data-icon="menu" />
+        <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu nav={nav} ctaLabel={ctaLabel} ctaHref={ctaHref} />
+
+<style>
+  [data-vl-header].is-scrolled {
+    background: #211c1d;
+    border-bottom-color: rgba(199, 163, 90, 0.25);
+    box-shadow: 0 10px 40px -20px rgba(0, 0, 0, 0.6);
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-vl-header]");
+  function onScroll() {
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 16);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

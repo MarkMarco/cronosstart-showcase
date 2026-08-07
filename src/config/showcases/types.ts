@@ -65,7 +65,9 @@ export type IconName =
   | "package"
   | "truck"
   | "filter"
-  | "scale";
+  | "scale"
+  | "landmark"
+  | "book-open";
 
 export interface ShowcaseTheme {
   /** Cor de fundo principal (claro ou escuro, depende do segmento) */
@@ -512,6 +514,70 @@ export interface ScheduleFormContent {
   periods: string[];
 }
 
+/**
+ * Tipos exclusivos do modelo Vallora Advocacia (escritório de advocacia
+ * fictício). Pensados para este segmento — não reaproveitar como genéricos
+ * de "serviço" a menos que outro modelo jurídico surja no futuro.
+ */
+export interface PracticeArea {
+  slug: string;
+  title: string;
+  shortDescription: string;
+  description: string;
+  icon: IconName;
+  featured?: boolean;
+  relatedProfessionalSlugs?: string[];
+  relatedArticleSlugs?: string[];
+  order: number;
+  active: boolean;
+}
+
+export interface LegalProfessional {
+  slug: string;
+  name: string;
+  role: string;
+  mainArea: string;
+  summary: string;
+  languages: string[];
+  /** Formação fictícia e claramente demonstrativa (nunca instituições reais associadas a um profissional real). */
+  education: string[];
+  /** Texto no lugar de um número de registro real, ex.: "Registro profissional demonstrativo". */
+  registrationNote?: string;
+  photo?: string;
+  photoAlt?: string;
+  active: boolean;
+  order: number;
+}
+
+export interface LegalArticle {
+  slug: string;
+  title: string;
+  summary: string;
+  category: string;
+  author: string;
+  /** Data demonstrativa (não precisa refletir a data real de publicação). */
+  date: string;
+  image?: string;
+  imageAlt?: string;
+  readTimeMinutes: number;
+  content: string[];
+  relatedSlugs?: string[];
+  featured?: boolean;
+  status: "published" | "draft";
+}
+
+export interface InstitutionalPillar {
+  title: string;
+  description: string;
+  icon: IconName;
+}
+
+export interface LegalContactFormContent {
+  areaOptions: string[];
+  personTypes: string[];
+  contactPreferences: string[];
+}
+
 export interface SectionsEnabled {
   about?: boolean;
   process?: boolean;
@@ -589,4 +655,11 @@ export interface ShowcaseConfig {
   specialties?: SpecialtyItem[];
   beforeAfter?: BeforeAfterItem[];
   scheduleForm?: ScheduleFormContent;
+  practiceAreas?: PracticeArea[];
+  legalProfessionals?: LegalProfessional[];
+  legalArticles?: LegalArticle[];
+  institutionalPillars?: InstitutionalPillar[];
+  legalContactForm?: LegalContactFormContent;
+  /** Aviso de modelo demonstrativo específico do segmento (ex.: jurídico), exibido perto do formulário/artigos. */
+  demonstrativeDisclaimer?: string;
 }

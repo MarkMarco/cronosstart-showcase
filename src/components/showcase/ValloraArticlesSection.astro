@@ -1,0 +1,68 @@
+---
+// Conteúdos demonstrativos — artigos fictícios com categoria, autor,
+// data e tempo de leitura, sempre com o aviso de conteúdo não substitui
+// orientação jurídica individualizada.
+import SectionHeader from "../ui/SectionHeader.astro";
+import Icon from "../ui/Icon.astro";
+import type { LegalArticle } from "../../config/showcases/types";
+
+interface Props {
+  id?: string;
+  articles: LegalArticle[];
+}
+const { id, articles } = Astro.props;
+const published = articles.filter((a) => a.status === "published");
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
+}
+---
+
+<section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
+  <div class="mx-auto max-w-[1300px]">
+    <SectionHeader
+      eyebrow="Conteúdos"
+      title="Conteúdo jurídico demonstrativo"
+      description="Textos fictícios, de caráter informativo e geral — não constituem orientação jurídica individualizada."
+    />
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        published.map((article, i) => (
+          <a
+            href={`/modelos/advocacia/conteudos/${article.slug}`}
+            data-animate
+            data-article-card={article.slug}
+            style={`transition-delay:${i * 50}ms`}
+            class="group flex flex-col overflow-hidden rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)] transition-shadow hover:shadow-[0_25px_50px_-25px_rgba(74,15,29,0.25)]"
+          >
+            <div class="relative aspect-[16/10] overflow-hidden">
+              {article.image ? (
+                <img src={article.image} alt={article.imageAlt ?? article.title} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+              ) : (
+                <div class="flex h-full w-full items-center justify-center bg-[var(--primary)]/10 text-[var(--primary)]">
+                  <Icon name="book-open" class="h-8 w-8" />
+                </div>
+              )}
+              <span class="absolute left-3 top-3 rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
+                {article.category}
+              </span>
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-base font-semibold leading-snug text-[var(--ink)] group-hover:text-[var(--primary)]">{article.title}</h3>
+              <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-[var(--ink-muted)]">{article.summary}</p>
+              <div class="mt-4 flex items-center justify-between border-t border-[var(--border)] pt-3 text-xs text-[var(--ink-muted)]">
+                <span>{article.author} · {formatDate(article.date)}</span>
+                <span class="flex items-center gap-1"><Icon name="clock" class="h-3.5 w-3.5" />{article.readTimeMinutes} min</span>
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <p class="mt-10 text-center text-xs text-[var(--ink-muted)]">
+      Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.
+    </p>
+  </div>
+</section>

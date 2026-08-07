@@ -1,0 +1,160 @@
+---
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/inter";
+import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
+import ValloraLogo from "../../../components/logos/ValloraLogo.astro";
+import ValloraHeader from "../../../components/showcase/ValloraHeader.astro";
+import ValloraFooter from "../../../components/showcase/ValloraFooter.astro";
+import ValloraHero from "../../../components/showcase/ValloraHero.astro";
+import ValloraInstitutionalSection from "../../../components/showcase/ValloraInstitutionalSection.astro";
+import ValloraPracticeAreasSection from "../../../components/showcase/ValloraPracticeAreasSection.astro";
+import ValloraProfessionalsSection from "../../../components/showcase/ValloraProfessionalsSection.astro";
+import GhostNumberProcessSection from "../../../components/showcase/GhostNumberProcessSection.astro";
+import ValloraArticlesSection from "../../../components/showcase/ValloraArticlesSection.astro";
+import ValloraContactSection from "../../../components/showcase/ValloraContactSection.astro";
+import FAQSection from "../../../components/showcase/FAQSection.astro";
+import { valloraAdvocaciaConfig as config, practiceAreas, legalProfessionals, institutionalPillars } from "../../../config/showcases/advocacia";
+
+const breadcrumbStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "CronosStart", item: "https://modelos.cronosstart.com.br/" },
+    { "@type": "ListItem", position: 2, name: "Modelos", item: "https://modelos.cronosstart.com.br/modelos" },
+    { "@type": "ListItem", position: 3, name: "Vallora Advocacia", item: "https://modelos.cronosstart.com.br/modelos/advocacia" },
+  ],
+};
+const serviceStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "Modelo de site para escritório de advocacia com áreas de atuação, conteúdos jurídicos e painel administrativo",
+  provider: { "@type": "Organization", name: "CronosStart", url: "https://modelos.cronosstart.com.br/" },
+  areaServed: "BR",
+};
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: config.faq!.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
+};
+const webPageStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: config.seo.title,
+  description: config.seo.description,
+  url: "https://modelos.cronosstart.com.br/modelos/advocacia",
+};
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [breadcrumbStructuredData, serviceStructuredData, faqStructuredData, webPageStructuredData],
+};
+---
+
+<ShowcaseLayout config={config} structuredData={structuredData}>
+  <ValloraHeader slot="header-override" nav={config.nav} ctaLabel="Solicitar atendimento" ctaHref="#contato">
+    <ValloraLogo slot="logo" tone="light" />
+  </ValloraHeader>
+  <ValloraFooter slot="footer-override" nav={config.nav} contact={config.contact} areas={practiceAreas} />
+
+  <div data-vl-banner-slot class="hidden border-b border-[#C7A35A]/20 bg-[#211C1D] px-6 py-2.5 text-center text-xs font-medium text-[#E2C98C]"></div>
+
+  <ValloraHero
+    eyebrow={config.hero.eyebrow ?? ""}
+    headline={config.hero.headline}
+    subheadline={config.hero.subheadline}
+    ctaPrimaryLabel={config.hero.ctaPrimaryLabel}
+    ctaPrimaryHref="#contato"
+    ctaSecondaryLabel={config.hero.ctaSecondaryLabel ?? "Conhecer áreas de atuação"}
+    ctaSecondaryHref="#areas"
+    image="/images/showcases/advocacia/hero-v2.jpg"
+    imageAlt="Galeria de colunas clássicas em mármore com luz quente — ambiente demonstrativo do escritório fictício Vallora Advocacia"
+    areas={practiceAreas}
+  />
+
+  <ValloraInstitutionalSection
+    id="escritorio"
+    title="Uma atuação pensada para reduzir incerteza, não apenas responder perguntas"
+    paragraphs={[
+      "A Vallora nasceu da ideia de que boa parte dos conflitos jurídicos poderia ser evitada com orientação clara desde o início — não apenas resolvida depois que já se tornaram um problema.",
+      "A equipe fictícia reúne diferentes áreas de atuação para que empresas, famílias e profissionais tenham um único ponto de contato, com comunicação direta sobre cada etapa do caso.",
+    ]}
+    image="/images/showcases/advocacia/institucional.jpg"
+    imageAlt="Biblioteca com estantes de livros — ambiente demonstrativo"
+    pillars={institutionalPillars}
+  />
+
+  <ValloraPracticeAreasSection id="areas" areas={practiceAreas} professionals={legalProfessionals} ctaHref="#contato" />
+
+  <ValloraProfessionalsSection id="profissionais" professionals={legalProfessionals} areas={practiceAreas} ctaHref="#contato" />
+
+  <GhostNumberProcessSection
+    id="atuacao"
+    eyebrow="Forma de atuação"
+    title="Como funciona o acompanhamento de um caso"
+    description="Um fluxo simples e transparente, do primeiro contato às atualizações de andamento."
+    steps={config.process!}
+  />
+
+  <ValloraArticlesSection id="conteudos" articles={config.legalArticles!} />
+
+  {config.faq && (
+    <FAQSection id="faq" eyebrow="Perguntas frequentes" title="Dúvidas sobre o atendimento" description="Antes de solicitar atendimento, veja as perguntas mais comuns sobre este modelo." items={config.faq} elevated />
+  )}
+
+  <ValloraContactSection id="contato" content={config.legalContactForm!} contact={config.contact} />
+</ShowcaseLayout>
+
+<style>
+  :global(section[id]) {
+    scroll-margin-top: 96px;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "vallora-advocacia-admin-v1";
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const state = JSON.parse(raw);
+
+      if (Array.isArray(state.areas)) {
+        document.querySelectorAll<HTMLElement>("[data-area-card]").forEach((card) => {
+          const slug = card.dataset.areaCard;
+          const override = state.areas.find((a: any) => a.slug === slug);
+          if (override && !override.active) card.remove();
+        });
+      }
+
+      if (Array.isArray(state.professionals)) {
+        document.querySelectorAll<HTMLElement>("[data-professional-card]").forEach((card) => {
+          const slug = card.dataset.professionalCard;
+          const override = state.professionals.find((p: any) => p.slug === slug);
+          if (override && !override.active) card.remove();
+        });
+      }
+
+      if (Array.isArray(state.articles)) {
+        document.querySelectorAll<HTMLElement>("[data-article-card]").forEach((card) => {
+          const slug = card.dataset.articleCard;
+          const override = state.articles.find((a: any) => a.slug === slug);
+          if (override && override.status !== "published") card.remove();
+        });
+      }
+
+      if (Array.isArray(state.banners)) {
+        const active = state.banners.filter((b: any) => b.active).sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))[0];
+        const slot = document.querySelector<HTMLElement>("[data-vl-banner-slot]");
+        if (active && slot) {
+          slot.textContent = active.title;
+          slot.classList.remove("hidden");
+        }
+      }
+    }
+  } catch {
+    // localStorage indisponível — mantém o conteúdo estático padrão
+  }
+</script>
