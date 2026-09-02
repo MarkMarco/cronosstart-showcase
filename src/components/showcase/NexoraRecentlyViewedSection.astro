@@ -1,15 +1,17 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // "Vistos recentemente" — vitrine horizontal client-side (localStorage),
 // oculta por completo enquanto não houver histórico nesta sessão/navegador.
 interface Props {
   id?: string;
 }
-const { id } = Astro.props;
+const { id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} data-recently-viewed-section class="hidden border-b border-white/[0.06] bg-[var(--surface)] px-6 py-12">
   <div class="mx-auto max-w-[1400px]">
-    <p class="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vistos recentemente</p>
+    <p class="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Vistos recentemente")}</p>
     <div data-recently-viewed-list class="flex gap-4 overflow-x-auto pb-1"></div>
   </div>
 </section>

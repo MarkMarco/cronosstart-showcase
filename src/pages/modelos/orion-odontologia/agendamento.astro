@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -7,10 +8,11 @@ import ScheduleFormSection from "../../../components/showcase/ScheduleFormSectio
 import LocationHoursSection from "../../../components/showcase/LocationHoursSection.astro";
 import { orionOdontologiaConfig as config } from "../../../config/showcases/orion-odontologia";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Agendamento — Orion Odontologia (modelo demonstrativo)",
   description: "Agende sua avaliação na Orion Odontologia. Modelo demonstrativo da CronosStart.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>

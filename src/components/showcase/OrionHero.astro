@@ -1,6 +1,8 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 
+const locale = getLocale(Astro.url);
 interface Stat {
   value: string;
   label: string;
@@ -33,7 +35,7 @@ const {
   imageAlt,
   stats,
   ratingBadge,
-} = Astro.props;
+} = localizeDeep(Astro.props, locale);
 ---
 
 <section class="relative overflow-hidden bg-[var(--surface)]">

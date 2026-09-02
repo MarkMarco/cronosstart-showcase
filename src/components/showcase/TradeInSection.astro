@@ -1,11 +1,13 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { TradeInContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: TradeInContent;
   id?: string;
 }
-const { content, id } = Astro.props;
+const { content, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">

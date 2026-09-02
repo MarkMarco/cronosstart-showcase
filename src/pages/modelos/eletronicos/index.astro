@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/plus-jakarta-sans";
 import "@fontsource-variable/jetbrains-mono";
 import "@fontsource-variable/inter";
@@ -20,6 +21,7 @@ import FAQSection from "../../../components/showcase/FAQSection.astro";
 import NexoraProductModal from "../../../components/showcase/NexoraProductModal.astro";
 import NexoraCompareBar from "../../../components/showcase/NexoraCompareBar.astro";
 import NexoraCartDrawer from "../../../components/showcase/NexoraCartDrawer.astro";
+const locale = getLocale(Astro.url);
 import {
   nexoraTechConfig as config,
   categories,
@@ -42,7 +44,7 @@ const launchComplementary = ["nexora-vision-x1", "velstra-curve-34u", "nexora-ho
 const offerPrimary = products.find((p) => p.slug === "nexora-vision-lite")!;
 const offerComplementary = products.filter((p) => p.offerActive && p.slug !== offerPrimary.slug).slice(0, 4);
 
-const breadcrumbStructuredData = {
+const breadcrumbStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
@@ -50,15 +52,15 @@ const breadcrumbStructuredData = {
     { "@type": "ListItem", position: 2, name: "Modelos", item: "https://modelos.cronosstart.com.br/modelos" },
     { "@type": "ListItem", position: 3, name: "Nexora Tech", item: "https://modelos.cronosstart.com.br/modelos/eletronicos" },
   ],
-};
-const serviceStructuredData = {
+}, locale);
+const serviceStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "Service",
   serviceType: "Modelo de site para loja de eletrônicos com catálogo, comparador de produtos e painel administrativo",
   provider: { "@type": "Organization", name: "CronosStart", url: "https://modelos.cronosstart.com.br/" },
   areaServed: "BR",
-};
-const faqStructuredData = {
+}, locale);
+const faqStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: config.faq!.map((item) => ({
@@ -66,11 +68,11 @@ const faqStructuredData = {
     name: item.question,
     acceptedAnswer: { "@type": "Answer", text: item.answer },
   })),
-};
-const structuredData = {
+}, locale);
+const structuredData = localizeDeep({
   "@context": "https://schema.org",
   "@graph": [breadcrumbStructuredData, serviceStructuredData, faqStructuredData],
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={config} structuredData={structuredData}>
@@ -110,7 +112,7 @@ const structuredData = {
   <NexoraQuoteFormSection id="orcamento" cta={config.contactCta} contact={config.contact} />
 
   {config.faq && (
-    <FAQSection id="faq" eyebrow="Dúvidas frequentes" title="Perguntas frequentes" description="Tudo o que costuma ser perguntado antes de fechar um pedido." items={config.faq} elevated />
+    <FAQSection id="faq" eyebrow="Dúvidas frequentes" title={t(locale, "Perguntas frequentes")} description="Tudo o que costuma ser perguntado antes de fechar um pedido." items={config.faq} elevated />
   )}
 
   <NexoraProductModal products={products} categories={categories} accents={categoryAccents} whatsappNumber={config.contact.whatsappNumber} />

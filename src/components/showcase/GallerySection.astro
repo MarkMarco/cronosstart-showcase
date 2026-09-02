@@ -1,8 +1,10 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import SectionHeader from "../ui/SectionHeader.astro";
 import type { GalleryImage } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -10,7 +12,7 @@ interface Props {
   images: GalleryImage[];
   id?: string;
 }
-const { eyebrow, title, description, images, id } = Astro.props;
+const { eyebrow, title, description, images, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">

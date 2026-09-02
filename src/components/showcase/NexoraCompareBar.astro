@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Comparador de produtos — uma das funcionalidades centrais do modelo.
 // Barra flutuante (tray) quando há itens selecionados + modal com tabela de
 // especificações lado a lado. Recusa produtos de categorias diferentes e
@@ -6,12 +7,13 @@
 import Icon from "../ui/Icon.astro";
 import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   products: CatalogProduct[];
   categories: CatalogCategory[];
   accents: Record<string, string>;
 }
-const { products, categories, accents } = Astro.props;
+const { products, categories, accents } = localizeDeep(Astro.props, locale);
 
 const compareData = products.map((p) => ({
   slug: p.slug,
@@ -32,7 +34,7 @@ const categoryNameBySlug = Object.fromEntries(categories.map((c) => [c.slug, c.n
 
 <script type="application/json" id="nx-compare-data" set:html={JSON.stringify({ products: compareData, categoryNames: categoryNameBySlug, accents })} />
 
-<!-- Tray flutuante -->
+
 <div
   data-compare-tray
   class="fixed inset-x-0 bottom-0 z-[95] hidden translate-y-full border-t border-white/10 bg-[#0d1220]/95 px-4 py-3 shadow-[0_-20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur transition-transform duration-300 sm:px-6"
@@ -54,7 +56,7 @@ const categoryNameBySlug = Object.fromEntries(categories.map((c) => [c.slug, c.n
   </div>
 </div>
 
-<!-- Modal de comparação -->
+
 <div data-compare-modal class="fixed inset-0 z-[110] hidden" role="dialog" aria-modal="true" aria-labelledby="nx-compare-title">
   <div data-compare-backdrop class="absolute inset-0 bg-black/70 opacity-0 transition-opacity duration-300"></div>
   <div class="relative flex h-full items-center justify-center p-4 sm:p-6">

@@ -1,6 +1,8 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "./Icon.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   href: string;
   variant?: "primary" | "secondary" | "ghost";
@@ -9,16 +11,16 @@ interface Props {
   showArrow?: boolean;
 }
 
-const { href, variant = "primary", class: className = "", external = false, showArrow = false } = Astro.props;
+const { href, variant = "primary", class: className = "", external = false, showArrow = false } = localizeDeep(Astro.props, locale);
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] px-6 py-3 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2";
+  t(locale, "inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] px-6 py-3 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2");
 
-const variants = {
+const variants = localizeDeep({
   primary: "bg-[var(--primary)] text-[var(--primary-ink)] shadow-sm hover:opacity-90",
   secondary: "border border-[var(--border)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)]",
   ghost: "text-[var(--ink)] hover:text-[var(--accent)]",
-};
+}, locale);
 ---
 
 <a

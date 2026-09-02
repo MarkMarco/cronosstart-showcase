@@ -1,7 +1,9 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { PropertySearchContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   headline: string;
@@ -13,7 +15,7 @@ interface Props {
   searchTargetId: string;
 }
 const { eyebrow, headline, highlight, subheadline, ctaPrimaryLabel, ctaPrimaryHref, search, searchTargetId } =
-  Astro.props;
+  localizeDeep(Astro.props, locale);
 ---
 
 <section class="relative overflow-hidden bg-[var(--primary)] pb-16 pt-16 sm:pb-20 sm:pt-20">
@@ -53,7 +55,7 @@ const { eyebrow, headline, highlight, subheadline, ctaPrimaryLabel, ctaPrimaryHr
     data-property-search
     class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_25px_60px_rgba(0,0,0,0.22)] sm:p-6"
   >
-    <div class="flex flex-wrap gap-2" role="group" aria-label="Tipo de operação">
+    <div class="flex flex-wrap gap-2" role="group" aria-label={t(locale, "Tipo de operação")}>
       {
         search.operationOptions.map((op, index) => (
           <button
@@ -70,7 +72,7 @@ const { eyebrow, headline, highlight, subheadline, ctaPrimaryLabel, ctaPrimaryHr
 
     <div class="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
       <label class="block text-left text-xs font-medium text-[var(--ink-muted)]">
-        Região
+        {t(locale, "Região")}
         <select
           name="region"
           class="mt-1 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
@@ -81,7 +83,7 @@ const { eyebrow, headline, highlight, subheadline, ctaPrimaryLabel, ctaPrimaryHr
         </select>
       </label>
       <label class="block text-left text-xs font-medium text-[var(--ink-muted)]">
-        Tipo de imóvel
+        {t(locale, "Tipo de imóvel")}
         <select
           name="type"
           class="mt-1 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
@@ -96,10 +98,10 @@ const { eyebrow, headline, highlight, subheadline, ctaPrimaryLabel, ctaPrimaryHr
         class="inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 sm:mt-[1.375rem]"
       >
         <Icon name="search" class="h-4 w-4" />
-        Buscar
+        {t(locale, "Buscar")}
       </button>
     </div>
-    <p class="mt-3 text-left text-[0.7rem] text-[var(--ink-muted)]">Busca demonstrativa, apenas para fins de portfólio.</p>
+    <p class="mt-3 text-left text-[0.7rem] text-[var(--ink-muted)]">{t(locale, "Busca demonstrativa, apenas para fins de portfólio.")}</p>
   </form>
 </div>
 

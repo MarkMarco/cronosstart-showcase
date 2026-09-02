@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Header próprio da Nexora Tech — visual "console técnico": barra vítrea
 // escura, busca inline, contadores de favoritos/comparação/carrinho e menu
 // com categorias. Não reaproveita a composição do MaisonLumeHeader.
@@ -6,12 +7,13 @@ import type { NavItem } from "../../config/showcases/types";
 import Icon from "../ui/Icon.astro";
 import MobileMenu from "./MobileMenu.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   ctaLabel: string;
   ctaHref: string;
 }
-const { nav, ctaLabel, ctaHref } = Astro.props;
+const { nav, ctaLabel, ctaHref } = localizeDeep(Astro.props, locale);
 ---
 
 <header
@@ -20,17 +22,17 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
   style="--header-h: 72px"
 >
   <div class="mx-auto flex h-[72px] max-w-[1400px] items-center gap-3 px-5 sm:px-6">
-    <a href="/modelos/eletronicos" class="flex shrink-0 items-center" aria-label="Nexora Tech — início">
+    <a href={localizedPath("/modelos/eletronicos", locale)} class="flex shrink-0 items-center" aria-label={t(locale, "Nexora Tech — início")}>
       <slot name="logo" />
     </a>
 
-    <nav class="hidden xl:block" aria-label="Navegação principal">
+    <nav class="hidden xl:block" aria-label={t(locale, "Navegação principal")}>
       <ul class="flex items-center gap-6">
         {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, locale)}
                 class="relative inline-block py-1 text-[0.85rem] font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
               >
                 {item.label}
@@ -46,8 +48,8 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <input
         type="search"
         data-header-search-input
-        placeholder="Buscar produtos, marcas..."
-        aria-label="Buscar no catálogo Nexora Tech"
+        placeholder={t(locale, "Buscar produtos, marcas...")}
+        aria-label={t(locale, "Buscar no catálogo Nexora Tech")}
         class="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none placeholder:text-[var(--ink-muted)] transition-colors focus:border-[var(--accent)]/60 focus:bg-white/[0.06]"
       />
     </div>
@@ -56,7 +58,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-header-search-mobile
-        aria-label="Buscar no catálogo"
+        aria-label={t(locale, "Buscar no catálogo")}
         class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)] sm:hidden"
       >
         <Icon name="search" class="h-5 w-5" />
@@ -65,7 +67,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-open-drawer="compare"
-        aria-label="Ver comparação de produtos"
+        aria-label={t(locale, "Ver comparação de produtos")}
         class="relative hidden h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)] sm:inline-flex"
       >
         <Icon name="scale" class="h-5 w-5" />
@@ -78,7 +80,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-open-drawer="favorites"
-        aria-label="Ver favoritos"
+        aria-label={t(locale, "Ver favoritos")}
         class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)]"
       >
         <Icon name="heart" class="h-5 w-5" />
@@ -91,7 +93,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-open-drawer="cart"
-        aria-label="Ver carrinho"
+        aria-label={t(locale, "Ver carrinho")}
         class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-white/[0.06] hover:text-[var(--ink)]"
       >
         <Icon name="cart" class="h-5 w-5" />
@@ -115,7 +117,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
         class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink)] hover:bg-white/[0.06] xl:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Abrir menu"
+        aria-label={t(locale, "Abrir menu")}
       >
         <Icon name="menu" class="h-6 w-6" data-icon="menu" />
         <Icon name="close" class="hidden h-6 w-6" data-icon="close" />
@@ -129,8 +131,8 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <input
         type="search"
         data-header-search-input-mobile
-        placeholder="Buscar produtos, marcas..."
-        aria-label="Buscar no catálogo Nexora Tech"
+        placeholder={t(locale, "Buscar produtos, marcas...")}
+        aria-label={t(locale, "Buscar no catálogo Nexora Tech")}
         class="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none placeholder:text-[var(--ink-muted)] focus:border-[var(--accent)]/60"
       />
     </div>

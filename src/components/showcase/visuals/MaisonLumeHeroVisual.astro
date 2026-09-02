@@ -1,11 +1,13 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 // Composição editorial em camadas (sem fotos reais) para o hero da Maison
 // Lume — segue o mesmo princípio de ilustração CSS/SVG já usado em
 // AccountingHeroVisual/HorizonteHeroVisual, adaptado para um mood board de
 // produto em vez de um diagrama de linhas.
 import ProductVisual from "../ProductVisual.astro";
 import Icon from "../../ui/Icon.astro";
----
+
+const locale = getLocale(Astro.url);---
 
 <div class="relative mx-auto aspect-square w-full max-w-md">
   <div class="absolute inset-x-6 inset-y-2 overflow-hidden rounded-[var(--radius-card)] shadow-[0_30px_60px_-20px_rgba(43,38,33,0.25)]">
@@ -22,6 +24,6 @@ import Icon from "../../ui/Icon.astro";
 
   <div class="absolute bottom-2 right-2 flex items-center gap-2 rounded-full bg-[var(--surface)] px-4 py-2 shadow-md">
     <Icon name="sparkle" class="h-4 w-4 text-[var(--accent)]" />
-    <span class="text-xs font-medium text-[var(--ink)]">17 peças no catálogo</span>
+    <span class="text-xs font-medium text-[var(--ink)]">{t(locale, "17 peças no catálogo")}</span>
   </div>
 </div>

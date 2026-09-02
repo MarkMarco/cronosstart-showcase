@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Card padrão para uso dentro de CardGrid. Estrutura fixa (altura uniforme,
 // conteúdo em flex-column, CTA sempre ancorado no final) — apenas a
 // aparência muda entre variantes, nunca a distribuição na grade.
@@ -8,15 +10,15 @@ interface Props {
   class?: string;
   "data-vehicle-slug"?: string;
 }
-const { variant = "standard", animateDelay = 0, class: className = "", ...rest } = Astro.props;
+const { variant = "standard", animateDelay = 0, class: className = "", ...rest } = localizeDeep(Astro.props, locale);
 
-const variantClass: Record<string, string> = {
+const variantClass: Record<string, string> = localizeDeep({
   standard:
     "border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)]/40 hover:shadow-[0_10px_28px_rgba(20,33,61,0.08)]",
   featured: "text-white shadow-[0_10px_28px_rgba(20,33,61,0.18)]",
   outlined: "border-2 border-[var(--primary)] bg-[var(--surface)]",
   dark: "text-white shadow-[0_10px_28px_rgba(20,33,61,0.18)]",
-};
+}, locale);
 
 const variantBg =
   variant === "featured" ? "background: var(--primary);" : variant === "dark" ? "background: var(--ink);" : "";

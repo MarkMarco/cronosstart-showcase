@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
@@ -8,16 +10,17 @@ import ContactFormModal from "../components/vitrine/ContactFormModal.astro";
 import AstroAssistant from "../components/vitrine/AstroAssistant.astro";
 import SEOHead from "../components/seo/SEOHead.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   title: string;
   description: string;
 }
-const { title, description } = Astro.props;
+const { title, description } = localizeDeep(Astro.props, locale);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html
-  lang="pt-BR"
+  lang={locale}
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
@@ -30,6 +33,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LocaleSwitcher />
     <SiteHeader />
 
     <main class="px-6 py-16 sm:py-24">

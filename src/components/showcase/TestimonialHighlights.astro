@@ -1,15 +1,17 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import SectionHeader from "../ui/SectionHeader.astro";
 import type { Testimonial } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
   items: Testimonial[];
 }
-const { eyebrow, title, description, items } = Astro.props;
+const { eyebrow, title, description, items } = localizeDeep(Astro.props, locale);
 
 const initialsOf = (name: string) =>
   name
@@ -65,7 +67,7 @@ const initialsOf = (name: string) =>
     </div>
 
     <p class="mt-6 text-center text-xs text-[var(--ink-muted)]">
-      Depoimentos ilustrativos, criados para fins de demonstração deste modelo.
+      {t(locale, "Depoimentos ilustrativos, criados para fins de demonstração deste modelo.")}
     </p>
   </div>
 </section>

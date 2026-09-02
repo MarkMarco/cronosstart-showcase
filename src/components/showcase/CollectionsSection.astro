@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Coleções em carrossel editorial — setas customizadas + scroll-snap, sem
 // barra de rolagem nativa visível (evita o problema de card órfão quando a
 // quantidade de itens não divide bem em colunas, e reforça a leitura editorial).
@@ -6,11 +7,12 @@ import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import type { CatalogCollection } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   collections: CatalogCollection[];
 }
-const { id, collections } = Astro.props;
+const { id, collections } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-24">
@@ -18,14 +20,14 @@ const { id, collections } = Astro.props;
     <div class="flex flex-wrap items-end justify-between gap-4">
       <SectionHeader
         eyebrow="Coleções"
-        title="Cinco identidades, um mesmo cuidado"
+        title={t(locale, "Cinco identidades, um mesmo cuidado")}
         description="Cada coleção reúne peças com a mesma linguagem visual, para compor ambientes coerentes do início ao fim."
       />
       <div class="hidden gap-2 sm:flex">
-        <button type="button" data-collections-prev aria-label="Coleção anterior" class="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+        <button type="button" data-collections-prev aria-label={t(locale, "Coleção anterior")} class="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
           <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
         </button>
-        <button type="button" data-collections-next aria-label="Próxima coleção" class="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+        <button type="button" data-collections-next aria-label={t(locale, "Próxima coleção")} class="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
           <Icon name="arrow-right" class="h-4 w-4" />
         </button>
       </div>
@@ -37,7 +39,7 @@ const { id, collections } = Astro.props;
     data-collections-track
     tabindex="0"
     role="region"
-    aria-label="Carrossel de coleções — use as setas do teclado para navegar"
+    aria-label={t(locale, "Carrossel de coleções — use as setas do teclado para navegar")}
     class="ml-scrollbar-hidden -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
   >
       {
@@ -62,14 +64,14 @@ const { id, collections } = Astro.props;
               <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />
               {collection.featured && (
                 <span class="absolute left-3 top-3 rounded-full bg-[var(--primary)] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
-                  Em destaque
+                  {t(locale, "Em destaque")}
                 </span>
               )}
               <div class="absolute inset-x-0 bottom-0 p-5">
                 <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white">{collection.name}</h3>
                 <p class="mt-1 line-clamp-2 text-sm leading-relaxed text-white/80">{collection.description}</p>
                 <span class="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-white">
-                  Ver peças da coleção
+                  {t(locale, "Ver peças da coleção")}
                   <Icon name="arrow-right" class="h-4 w-4" />
                 </span>
               </div>

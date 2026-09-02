@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -7,10 +8,12 @@ import Icon from "../../../components/ui/Icon.astro";
 import FinancingSimulator from "../../../components/showcase/FinancingSimulator.astro";
 import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const localizedConfig = localizeDeep(config, locale);
+const seo = localizeDeep({
   title: "Financiamento — Aurum Motors (modelo demonstrativo)",
   description: "Simule o financiamento do seu próximo veículo na Aurum Motors. Modelo demonstrativo da CronosStart.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -19,20 +22,20 @@ const seo = {
 
   <section class="bg-[var(--surface)] px-6 pb-8 pt-14 sm:pt-20">
     <div class="mx-auto max-w-6xl">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Financiamento</p>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Financiamento")}</p>
       <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">
-        {config.financing?.title ?? "Financiamento sob medida"}
+        {localizedConfig.financing?.title ?? t(locale, "Financiamento sob medida")}
       </h1>
-      <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">{config.financing?.description}</p>
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">{localizedConfig.financing?.description}</p>
     </div>
   </section>
 
   <section class="bg-[var(--surface)] px-6 pb-16 sm:pb-20">
     <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.1fr]">
       <div>
-        {config.financing?.plans && (
+        {localizedConfig.financing?.plans && (
           <div class="space-y-4">
-            {config.financing.plans.map((plan) => (
+            {localizedConfig.financing.plans.map((plan) => (
               <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-5">
                 <h3 class="text-base font-semibold text-[var(--ink)]">{plan.label}</h3>
                 <p class="mt-1.5 text-sm leading-relaxed text-[var(--ink-muted)]">{plan.description}</p>

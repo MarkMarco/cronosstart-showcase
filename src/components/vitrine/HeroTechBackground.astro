@@ -1,6 +1,8 @@
 ---
-const clockCenter = { x: 170, y: 610 };
-const clockRadii = { outer: 148, mid: 110, inner: 74 };
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
+const clockCenter = localizeDeep({ x: 170, y: 610 }, locale);
+const clockRadii = localizeDeep({ outer: 148, mid: 110, inner: 74 }, locale);
 
 const ticks = Array.from({ length: 12 }, (_, i) => {
   const angle = (i / 12) * Math.PI * 2;
@@ -14,7 +16,7 @@ const ticks = Array.from({ length: 12 }, (_, i) => {
   };
 });
 
-const circuits = [
+const circuits = localizeDeep([
   { id: "circuit-l1", d: "M -20 160 L 110 160 L 110 70 L 260 70" },
   { id: "circuit-l2", d: "M -20 360 L 70 360 L 70 470 L 210 470 L 210 540" },
   { id: "circuit-l3", d: "M -20 640 L 130 640 L 130 560" },
@@ -26,9 +28,9 @@ const circuits = [
   // Pequeno detalhe adicionado no canto superior esquerdo, para equilibrar
   // com o lado direito (mais carregado por cards, watermark e glow).
   { id: "circuit-tl-detail", d: "M 24 14 L 24 48 L 78 48" },
-];
+], locale);
 
-const nodes = [
+const nodes = localizeDeep([
   { cx: 110, cy: 70, breathe: true, breatheDelay: "0s" },
   { cx: 210, cy: 540 },
   { cx: 130, cy: 640 },
@@ -36,15 +38,15 @@ const nodes = [
   { cx: 1170, cy: 500 },
   { cx: 1310, cy: 660 },
   { cx: 78, cy: 48, breathe: true, breatheDelay: "-2.4s" },
-];
+], locale);
 
-const pulses = [
+const pulses = localizeDeep([
   { pathId: "circuit-l1", dur: "7s", begin: "0s" },
   { pathId: "circuit-r2", dur: "9s", begin: "-3s" },
   { pathId: "circuit-l3", dur: "6.5s", begin: "-1.5s" },
   { pathId: "circuit-r1", dur: "8s", begin: "-5s" },
   { pathId: "circuit-l2", dur: "10s", begin: "-2s", small: true },
-];
+], locale);
 ---
 
 <div class="hero-tech-bg pointer-events-none absolute inset-0 overflow-hidden" data-hero-tech aria-hidden="true">
@@ -54,7 +56,7 @@ const pulses = [
     preserveAspectRatio="xMidYMid slice"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <!-- Circuitos digitais -->
+    
     <g class="tech-layer tech-layer-circuits" data-depth="10">
       {
         circuits.map((c) => (
@@ -85,7 +87,7 @@ const pulses = [
       }
     </g>
 
-    <!-- Relógio abstrato -->
+    
     <g class="tech-layer tech-layer-clock" data-depth="16">
       <g transform={`translate(${clockCenter.x} ${clockCenter.y})`}>
         <circle r={clockRadii.outer} class="clock-ring clock-ring-outer" />
@@ -120,10 +122,10 @@ const pulses = [
       </g>
     </g>
 
-    <!-- Símbolos tecnológicos discretos -->
+    
     <g class="tech-layer tech-layer-symbols" data-depth="24">
       <text x="70" y="240" class="tech-symbol tech-symbol-code" style="animation-delay: 0ms; animation-duration: 11s;">
-        &lt;/&gt;
+        {t(locale, "&lt;/&gt;")}
       </text>
       <text
         x="1300"

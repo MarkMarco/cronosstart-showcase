@@ -1,10 +1,12 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Assistente visual da CronosStart — substitui o botão flutuante genérico de WhatsApp.
 // Estrutura pensada para no futuro evoluir para um chatbot/FAQ/qualificação de leads
 // com IA, sem precisar refazer o widget: hoje o painel só oferece 3 ações fixas.
 import Icon from "../ui/Icon.astro";
 import { buildWhatsappLink } from "../../config/company";
 
+const locale = getLocale(Astro.url);
 const whatsappHref = buildWhatsappLink(
   "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre a criação do meu site."
 );
@@ -16,7 +18,7 @@ const whatsappHref = buildWhatsappLink(
   class="astro-assistant fixed z-40 flex flex-col items-end gap-3 transition-opacity duration-300"
   style="right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));"
 >
-  <!-- Balão de apresentação — some sozinho após a 1ª sessão (sessionStorage) -->
+  
   <div
     id="astro-greeting"
     class="astro-greeting astro-glass hidden max-w-[17.5rem] rounded-2xl p-4 pr-9 text-left sm:max-w-[19rem]"
@@ -25,7 +27,7 @@ const whatsappHref = buildWhatsappLink(
     <button
       type="button"
       id="astro-greeting-close"
-      aria-label="Fechar mensagem"
+      aria-label={t(locale, "Fechar mensagem")}
       class="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white"
     >
       <Icon name="close" class="h-3.5 w-3.5" />
@@ -43,21 +45,20 @@ const whatsappHref = buildWhatsappLink(
         />
       </picture>
       <p class="text-sm leading-snug text-white/85">
-        Olá! Eu sou o <strong class="text-white">Astro</strong>, assistente da CronosStart. Posso ajudar com seu
-        site?
+        {t(locale, "Olá! Eu sou o")} <strong class="text-white">{t(locale, "Astro")}</strong>{t(locale, ", assistente da CronosStart. Posso ajudar com seu\n        site?")}
       </p>
     </div>
   </div>
 
-  <!-- Painel de ações -->
+  
   <div
     id="astro-panel"
     class="astro-panel astro-glass hidden w-[16.5rem] origin-bottom-right rounded-2xl p-2 sm:w-64"
   >
     <p class="px-3 pb-1.5 pt-1.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-white/70">
-      Como posso ajudar?
+      {t(locale, "Como posso ajudar?")}
     </p>
-    <div role="menu" aria-label="Ações do assistente Astro" class="flex flex-col gap-0.5">
+    <div role="menu" aria-label={t(locale, "Ações do assistente Astro")} class="flex flex-col gap-0.5">
     <button
       type="button"
       role="menuitem"
@@ -66,15 +67,15 @@ const whatsappHref = buildWhatsappLink(
       class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
     >
       <Icon name="sparkle" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
-      Quero criar meu site
+      {t(locale, "Quero criar meu site")}
     </button>
     <a
-      href="/#modelos"
+      href={localizedPath("/#modelos", locale)}
       role="menuitem"
       class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
     >
       <Icon name="layers" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
-      Ver modelos
+      {t(locale, "Ver modelos")}
     </a>
     <a
       href={whatsappHref}
@@ -85,19 +86,19 @@ const whatsappHref = buildWhatsappLink(
       class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
     >
       <Icon name="whatsapp" class="h-4 w-4 shrink-0 text-[#25D366] transition-transform duration-200 group-hover/item:translate-x-0.5" />
-      Falar no WhatsApp
+      {t(locale, "Falar no WhatsApp")}
     </a>
     </div>
   </div>
 
-  <!-- Botão flutuante -->
+  
   <button
     type="button"
     id="astro-trigger"
     aria-haspopup="true"
     aria-expanded="false"
     aria-controls="astro-panel"
-    aria-label="Abrir assistente Astro da CronosStart"
+    aria-label={t(locale, "Abrir assistente Astro da CronosStart")}
     class="astro-trigger relative flex items-center justify-center rounded-full backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
   >
     <span class="astro-glow pointer-events-none absolute inset-0 rounded-full" aria-hidden="true"></span>

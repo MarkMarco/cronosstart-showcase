@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // "Encontre por categoria" — vitrine editorial assimétrica, não uma grade
 // uniforme de cards clonados. Três hierarquias:
 //   Linha 1 — 3 cards grandes (Smartphones, Notebooks, Gamer)
@@ -13,18 +14,19 @@ import NexoraProductVisual from "./NexoraProductVisual.astro";
 import { categoryRenderVariant, productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
 import type { CatalogCategory, CatalogProduct } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   categories: CatalogCategory[];
   products: CatalogProduct[];
   accents: Record<string, string>;
 }
-const { id, categories, products } = Astro.props;
+const { id, categories, products } = localizeDeep(Astro.props, locale);
 
 // Paleta própria desta seção — deliberadamente distinta do mapa global
 // categoryAccents (que segue em uso inalterado no resto do site) para dar a
 // cada categoria uma identidade cromática mais expressiva só nesta vitrine.
-const tileAccents: Record<string, string> = {
+const tileAccents: Record<string, string> = localizeDeep({
   smartphones: "#3b82f6",
   notebooks: "#22d3ee",
   computadores: "#8b5cf6",
@@ -34,7 +36,7 @@ const tileAccents: Record<string, string> = {
   "casa-inteligente": "#10b981",
   gamer: "#d946ef",
   ofertas: "#f97316",
-};
+}, locale);
 
 function featuredProductFor(slug: string): CatalogProduct | undefined {
   const inCategory = products.filter((p) => p.category === slug && p.available);
@@ -48,8 +50,8 @@ function firstSpec(product?: CatalogProduct): string | undefined {
 }
 
 const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
-const largeSlugs = ["smartphones", "notebooks", "gamer"];
-const mediumSlugs = ["computadores", "monitores", "audio", "acessorios"];
+const largeSlugs = localizeDeep(["smartphones", "notebooks", "gamer"], locale);
+const mediumSlugs = localizeDeep(["computadores", "monitores", "audio", "acessorios"], locale);
 
 const largeCards = largeSlugs.map((slug) => categoryBySlug.get(slug)!).filter(Boolean);
 const mediumCards = mediumSlugs.map((slug) => categoryBySlug.get(slug)!).filter(Boolean);
@@ -63,11 +65,11 @@ const offerPrimary = offerProducts
 const offerDiscount = offerPrimary?.previousPrice ? Math.round((1 - offerPrimary.price / offerPrimary.previousPrice) * 100) : null;
 const offerCount = products.filter((p) => p.offerActive).length;
 
-const badges: Record<string, string> = {
+const badges: Record<string, string> = localizeDeep({
   smartphones: "Mais procurado",
   gamer: "Setup completo",
   "casa-inteligente": "Conectado",
-};
+}, locale);
 
 function countFor(slug: string) {
   return products.filter((p) => p.category === slug).length;
@@ -87,14 +89,14 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
 <section id={id} class="border-b border-white/[0.06] bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
   <div class="mx-auto max-w-[1400px]">
     <div class="mb-10 max-w-xl" data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Categorias</p>
-      <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">Encontre por categoria</h2>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Categorias")}</p>
+      <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Encontre por categoria")}</h2>
       <p class="mt-3 text-base leading-relaxed text-[var(--ink-muted)]">
-        Do bolso à mesa de trabalho — navegue pelo catálogo demonstrativo da Nexora Tech por tipo de produto.
+        {t(locale, "Do bolso à mesa de trabalho — navegue pelo catálogo demonstrativo da Nexora Tech por tipo de produto.")}
       </p>
     </div>
 
-    <!-- Linha 1 — categorias principais (cards grandes) -->
+    
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-12">
       {
         largeCards.map((cat, i) => {
@@ -148,7 +150,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
                 <div class="mt-2 flex items-center justify-between">
                   <span class="text-xs text-white/60">{countFor(cat.slug)} produtos</span>
                   <span class="inline-flex items-center gap-1.5 text-sm font-semibold" style={`color: ${accent};`}>
-                    Explorar
+                    {t(locale, "Explorar")}
                     <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
                   </span>
                 </div>
@@ -159,7 +161,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
       }
     </div>
 
-    <!-- Linha 2 — categorias de apoio (cards médios) -->
+    
     <div class="mt-4 grid grid-cols-1 gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-12">
       {
         mediumCards.map((cat, i) => {
@@ -198,7 +200,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
                 <div class="flex items-center justify-between">
                   <span class="text-[0.7rem] text-white/60">{countFor(cat.slug)} produtos</span>
                   <span class="inline-flex items-center gap-1 text-xs font-semibold" style={`color: ${accent};`}>
-                    Ver
+                    {t(locale, "Ver")}
                     <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-3 w-3" /></span>
                   </span>
                 </div>
@@ -209,7 +211,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
       }
     </div>
 
-    <!-- Linha 3 — cards amplos (Casa inteligente + Ofertas como campanha) -->
+    
     <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 sm:mt-5">
       {(() => {
         const accent = tileAccents["casa-inteligente"];
@@ -248,7 +250,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
               <div class="mt-1.5 flex items-center justify-between">
                 <span class="text-xs text-white/60">{countFor("casa-inteligente")} produtos</span>
                 <span class="inline-flex items-center gap-1.5 text-sm font-semibold" style={`color: ${accent};`}>
-                  Explorar
+                  {t(locale, "Explorar")}
                   <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
                 </span>
               </div>
@@ -275,7 +277,7 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
         <div class="relative z-10 flex items-start justify-between p-5">
           <span class="inline-flex items-center gap-1.5 rounded-full bg-[var(--tile-accent)] px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-[#2a0f00]">
             <Icon name="zap" class="h-3.5 w-3.5" />
-            Campanha ativa
+            {t(locale, "Campanha ativa")}
           </span>
           {offerDiscount && (
             <span class="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-white backdrop-blur">
@@ -285,12 +287,12 @@ function cardVisual(product: CatalogProduct | undefined, slug: string, accent: s
         </div>
 
         <div class="relative z-10 flex flex-col gap-1.5 p-5 pt-10">
-          <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white">Ofertas</h3>
-          <p class="line-clamp-1 text-sm text-white/75">Economia demonstrativa por tempo limitado em produtos selecionados.</p>
+          <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white">{t(locale, "Ofertas")}</h3>
+          <p class="line-clamp-1 text-sm text-white/75">{t(locale, "Economia demonstrativa por tempo limitado em produtos selecionados.")}</p>
           <div class="mt-1.5 flex items-center justify-between">
             <span class="text-xs text-white/70">{offerCount} produtos em oferta</span>
             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-white">
-              Ver ofertas
+              {t(locale, "Ver ofertas")}
               <span class="nx-cat-arrow inline-flex"><Icon name="arrow-right" class="h-4 w-4" /></span>
             </span>
           </div>

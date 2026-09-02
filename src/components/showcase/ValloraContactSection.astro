@@ -1,90 +1,92 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Atendimento — formulário demonstrativo (não envia dados) + painel de
 // contato com WhatsApp, telefone, e-mail, endereço e horário fictícios.
 import Icon from "../ui/Icon.astro";
 import type { LegalContactFormContent, ShowcaseContact } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   content: LegalContactFormContent;
   contact: ShowcaseContact;
 }
-const { id, content, contact } = Astro.props;
+const { id, content, contact } = localizeDeep(Astro.props, locale);
 const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 ---
 
 <section id={id} class="bg-[#120F10] px-6 py-16 sm:py-24">
   <div class="mx-auto grid max-w-[1300px] gap-10 lg:grid-cols-[0.85fr_1.15fr]">
     <div data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#E2C98C]">Atendimento</p>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#E2C98C]">{t(locale, "Atendimento")}</p>
       <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[#F5F0E8] sm:text-4xl">
-        Vamos entender o seu caso
+        {t(locale, "Vamos entender o seu caso")}
       </h2>
       <p class="mt-4 text-sm leading-relaxed text-[#F5F0E8]/65 sm:text-base">
-        Preencha o formulário demonstrativo ou fale diretamente pelo WhatsApp fictício abaixo. Nenhuma informação enviada aqui gera vínculo profissional real.
+        {t(locale, "Preencha o formulário demonstrativo ou fale diretamente pelo WhatsApp fictício abaixo. Nenhuma informação enviada aqui gera vínculo profissional real.")}
       </p>
 
       <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5">
         <Icon name="whatsapp" class="h-4 w-4" />
-        Falar pelo WhatsApp (demonstrativo)
+        {t(locale, "Falar pelo WhatsApp (demonstrativo)")}
       </a>
 
       <ul class="mt-8 space-y-3 border-t border-[#F5F0E8]/12 pt-6 text-sm text-[#F5F0E8]/70">
         <li class="flex items-center gap-2.5"><Icon name="phone" class="h-4 w-4 shrink-0 text-[#C7A35A]" />{contact.phone}</li>
         <li class="flex items-center gap-2.5"><Icon name="mail" class="h-4 w-4 shrink-0 text-[#C7A35A]" />{contact.email}</li>
-        <li class="flex items-center gap-2.5"><Icon name="map-pin" class="h-4 w-4 shrink-0 text-[#C7A35A]" />{contact.city}/{contact.state} — atendimento presencial e online</li>
+        <li class="flex items-center gap-2.5"><Icon name="map-pin" class="h-4 w-4 shrink-0 text-[#C7A35A]" />{contact.city}/{contact.state} — {t(locale, "atendimento presencial e online")}</li>
         {contact.hours && <li class="flex items-center gap-2.5"><Icon name="clock" class="h-4 w-4 shrink-0 text-[#C7A35A]" />{contact.hours}</li>}
       </ul>
     </div>
 
     <form data-vl-contact-form data-animate style="transition-delay: 80ms" class="rounded-[1.5rem] border border-[#F5F0E8]/10 bg-[#1a1214] p-6 sm:p-8">
       <p class="mb-5 text-center text-xs font-medium uppercase tracking-wide text-[#F5F0E8]/45">
-        Formulário demonstrativo — não envia dados reais
+        {t(locale, "Formulário demonstrativo — não envia dados reais")}
       </p>
       <div class="grid gap-4 sm:grid-cols-2">
         <label class="block text-sm font-medium text-[#F5F0E8] sm:col-span-2">
-          Nome
+          {t(locale, "Nome")}
           <input type="text" name="name" required class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]" />
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          Telefone
+          {t(locale, "Telefone")}
           <input type="tel" name="phone" required placeholder="(00) 00000-0000" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]" />
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          E-mail
+          {t(locale, "E-mail")}
           <input type="email" name="email" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]" />
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          Cidade
+          {t(locale, "Cidade")}
           <input type="text" name="city" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]" />
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          Tipo
+          {t(locale, "Tipo")}
           <select name="personType" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]">
             {content.personTypes.map((t) => <option value={t}>{t}</option>)}
           </select>
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          Área de interesse
+          {t(locale, "Área de interesse")}
           <select name="area" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]">
             {content.areaOptions.map((a) => <option value={a}>{a}</option>)}
           </select>
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8]">
-          Preferência de contato
+          {t(locale, "Preferência de contato")}
           <select name="contactPreference" class="mt-1.5 w-full rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]">
             {content.contactPreferences.map((c) => <option value={c}>{c}</option>)}
           </select>
         </label>
         <label class="block text-sm font-medium text-[#F5F0E8] sm:col-span-2">
-          Descreva brevemente o seu caso
+          {t(locale, "Descreva brevemente o seu caso")}
           <textarea name="description" rows="3" class="mt-1.5 w-full resize-none rounded-xl border border-[#F5F0E8]/15 bg-[#120F10] px-4 py-2.5 text-sm text-[#F5F0E8] outline-none focus:border-[#C7A35A]"></textarea>
         </label>
         <button type="submit" class="inline-flex items-center justify-center rounded-full bg-[#C7A35A] px-6 py-3 text-sm font-semibold text-[#211C1D] transition-transform hover:-translate-y-0.5 sm:col-span-2">
-          Solicitar atendimento
+          {t(locale, "Solicitar atendimento")}
         </button>
         <p data-vl-contact-feedback role="status" class="hidden text-center text-sm font-medium text-[#E2C98C] sm:col-span-2">
-          Solicitação de demonstração recebida — nenhum dado foi enviado de verdade. O envio de um formulário real não cria vínculo profissional ou relação advogado-cliente.
+          {t(locale, "Solicitação de demonstração recebida — nenhum dado foi enviado de verdade. O envio de um formulário real não cria vínculo profissional ou relação advogado-cliente.")}
         </p>
       </div>
     </form>

@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Grade reutilizável para seções baseadas em cards. Garante 1 coluna no
 // celular, 2 no tablet e um número configurável no desktop — evitando que
 // cada seção precise de ajustes manuais de largura para não deixar cards
@@ -15,22 +17,22 @@ interface Props {
   tabletCols?: 1 | 2 | 3 | 4;
   class?: string;
 }
-const { cols = 3, tabletCols, class: className = "" } = Astro.props;
+const { cols = 3, tabletCols, class: className = "" } = localizeDeep(Astro.props, locale);
 
 const effectiveTablet = tabletCols ?? Math.min(cols, 2);
 
-const tabletClassMap: Record<number, string> = {
+const tabletClassMap: Record<number, string> = localizeDeep({
   1: "",
   2: "sm:grid-cols-2",
   3: "sm:grid-cols-3",
   4: "sm:grid-cols-4",
-};
+}, locale);
 
-const desktopClassMap: Record<number, string> = {
+const desktopClassMap: Record<number, string> = localizeDeep({
   2: "lg:grid-cols-2",
   3: "lg:grid-cols-3",
   4: "lg:grid-cols-4",
-};
+}, locale);
 ---
 
 <div class={`grid gap-5 ${tabletClassMap[effectiveTablet]} ${desktopClassMap[cols]} ${className}`}>

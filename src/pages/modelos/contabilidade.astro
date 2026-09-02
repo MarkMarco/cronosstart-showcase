@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
@@ -14,7 +15,8 @@ import TestimonialsSection from "../../components/showcase/TestimonialsSection.a
 import FAQSection from "../../components/showcase/FAQSection.astro";
 import ContactSection from "../../components/showcase/ContactSection.astro";
 import { contabilidadeConfig as config } from "../../config/showcases/contabilidade";
----
+
+const locale = getLocale(Astro.url);---
 
 <ShowcaseLayout config={config}>
   <AtlasLogo slot="header-logo" />
@@ -38,7 +40,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     <ServicesSection
       id="servicos"
       eyebrow="Serviços"
-      title="Tudo o que a sua empresa precisa em um só lugar"
+      title={t(locale, "Tudo o que a sua empresa precisa em um só lugar")}
       description="Da escrituração ao planejamento tributário, uma rotina contábil completa e organizada."
       items={config.services}
     />
@@ -48,7 +50,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
     <BenefitsSection
       id="solucoes"
       eyebrow="Soluções"
-      title="Soluções pensadas para cada fase do seu negócio"
+      title={t(locale, "Soluções pensadas para cada fase do seu negócio")}
       description="Menos burocracia, mais previsibilidade — em qualquer estágio da empresa."
       items={config.benefits}
     />
@@ -61,7 +63,7 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
   {config.sections.process && config.process && (
     <ProcessSection
       eyebrow="Como funciona"
-      title="Etapas do atendimento"
+      title={t(locale, "Etapas do atendimento")}
       description="Um processo claro, do diagnóstico ao acompanhamento mensal."
       steps={config.process}
     />
@@ -70,13 +72,13 @@ import { contabilidadeConfig as config } from "../../config/showcases/contabilid
   {config.sections.testimonials && config.testimonials && (
     <TestimonialsSection
       eyebrow="Depoimentos"
-      title="Quem já organizou a contabilidade com a Atlas"
+      title={t(locale, "Quem já organizou a contabilidade com a Atlas")}
       items={config.testimonials}
     />
   )}
 
   {config.sections.faq && config.faq && (
-    <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
+    <FAQSection id="duvidas" eyebrow="Dúvidas" title={t(locale, "Perguntas frequentes")} items={config.faq} />
   )}
 
   <ContactSection id="contato" cta={config.contactCta} contact={config.contact} />

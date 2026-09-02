@@ -1,11 +1,13 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import { deliveryEstimate } from "../../config/deliveryTimeline";
 
+const locale = getLocale(Astro.url);
 const hasEstimate = deliveryEstimate.minDays !== null && deliveryEstimate.maxDays !== null;
-const primaryText = hasEstimate
+const primaryText = t(locale, hasEstimate
   ? `Entrega estimada entre ${deliveryEstimate.minDays} e ${deliveryEstimate.maxDays} dias úteis.`
-  : "A maioria dos sites institucionais pode ser entregue dentro do prazo definido na proposta, após o recebimento e a aprovação de todos os conteúdos.";
+  : "A maioria dos sites institucionais pode ser entregue dentro do prazo definido na proposta, após o recebimento e a aprovação de todos os conteúdos.");
 ---
 
 <section class="bg-[var(--surface)] px-6 pb-20 sm:pb-28">
@@ -21,13 +23,13 @@ const primaryText = hasEstimate
         <Icon name="clock" class="h-5 w-5" />
       </span>
       <div>
-        <h3 class="text-base font-semibold text-white">Prazo estimado</h3>
+        <h3 class="text-base font-semibold text-white">{t(locale, "Prazo estimado")}</h3>
         <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{primaryText}</p>
         <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">
-          Projetos com catálogo, painel administrativo, agendamento ou integrações podem exigir prazo adicional.
+          {t(locale, "Projetos com catálogo, painel administrativo, agendamento ou integrações podem exigir prazo adicional.")}
         </p>
         <p class="mt-3 text-xs text-white/40">
-          O prazo começa após a aprovação do escopo e o recebimento dos materiais necessários.
+          {t(locale, "O prazo começa após a aprovação do escopo e o recebimento dos materiais necessários.")}
         </p>
       </div>
     </div>

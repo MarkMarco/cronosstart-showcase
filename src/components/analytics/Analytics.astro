@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Integração central com o Google Analytics 4. Só carrega o script do GA quando a
 // variável de ambiente PUBLIC_GA_MEASUREMENT_ID está configurada — sem ID fictício
 // no código e sem erro/bloqueio quando a variável está ausente.

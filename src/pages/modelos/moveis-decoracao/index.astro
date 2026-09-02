@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/fraunces";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -19,6 +20,7 @@ import FAQSection from "../../../components/showcase/FAQSection.astro";
 import ProductModal from "../../../components/showcase/ProductModal.astro";
 import { maisonLumeConfig as config, categories, collections, ambientes, products } from "../../../config/showcases/moveis-decoracao";
 
+const locale = getLocale(Astro.url);
 const featuredProducts = products.filter((p) => p.featured);
 const offerProducts = products.filter((p) => p.offerActive);
 const heroProduct = products.find((p) => p.slug === "sofa-modular-aurora")!;
@@ -71,7 +73,7 @@ function formatBRL(value: number) {
   <FeaturedProductsSection
     id="destaques"
     eyebrow="Selecionados para você"
-    title="Produtos em destaque"
+    title={t(locale, "Produtos em destaque")}
     description="Uma curadoria de peças que resumem o espírito da Maison Lume — do sofá ao objeto de decoração."
     products={featuredProducts}
     categories={categories}
@@ -93,7 +95,7 @@ function formatBRL(value: number) {
     <FAQSection
       id="faq"
       eyebrow="Dúvidas frequentes"
-      title="Perguntas frequentes"
+      title={t(locale, "Perguntas frequentes")}
       description="Tudo o que costuma ser perguntado antes de fechar um pedido."
       items={config.faq}
       elevated

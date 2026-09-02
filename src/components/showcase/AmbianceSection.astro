@@ -1,6 +1,8 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { GalleryImage } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -8,7 +10,7 @@ interface Props {
   images: GalleryImage[];
   id?: string;
 }
-const { eyebrow, title, paragraphs, images, id } = Astro.props;
+const { eyebrow, title, paragraphs, images, id } = localizeDeep(Astro.props, locale);
 const [primary, secondary] = images;
 ---
 

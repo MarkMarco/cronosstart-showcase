@@ -1,6 +1,8 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   title: string;
   description: string;
@@ -8,7 +10,7 @@ interface Props {
   buttonHref: string;
   id?: string;
 }
-const { title, description, buttonLabel, buttonHref, id } = Astro.props;
+const { title, description, buttonLabel, buttonHref, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="relative overflow-hidden bg-[var(--primary)] px-6 py-16 sm:py-20">

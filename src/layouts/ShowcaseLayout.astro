@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import ShowcaseHeader from "../components/showcase/ShowcaseHeader.astro";
 import ShowcaseFooter from "../components/showcase/ShowcaseFooter.astro";
@@ -8,32 +10,33 @@ import SEOHead from "../components/seo/SEOHead.astro";
 import Analytics from "../components/analytics/Analytics.astro";
 import type { ShowcaseConfig } from "../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   config: ShowcaseConfig;
   /** JSON-LD adicional (BreadcrumbList, Service, FAQPage etc.). Opcional — não altera modelos que não o definem. */
   structuredData?: Record<string, unknown>;
 }
-const { config, structuredData } = Astro.props;
+const { config, structuredData } = localizeDeep(Astro.props, locale);
 
-const t = config.theme;
+const theme = config.theme;
 const cssVars = [
-  `--surface:${t.surface}`,
-  `--surface-alt:${t.surfaceAlt}`,
-  `--ink:${t.ink}`,
-  `--ink-muted:${t.inkMuted}`,
-  `--primary:${t.primary}`,
-  `--primary-ink:${t.primaryInk}`,
-  `--accent:${t.accent}`,
-  `--border:${t.border}`,
-  `--font-heading:${t.fontHeading}`,
-  `--font-body:${t.fontBody}`,
-  `--radius-card:${t.radiusCard}`,
+  `--surface:${theme.surface}`,
+  `--surface-alt:${theme.surfaceAlt}`,
+  `--ink:${theme.ink}`,
+  `--ink-muted:${theme.inkMuted}`,
+  `--primary:${theme.primary}`,
+  `--primary-ink:${theme.primaryInk}`,
+  `--accent:${theme.accent}`,
+  `--border:${theme.border}`,
+  `--font-heading:${theme.fontHeading}`,
+  `--font-body:${theme.fontBody}`,
+  `--radius-card:${theme.radiusCard}`,
 ].join(";");
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<html lang="pt-BR" style={cssVars}>
+<html lang={locale} style={cssVars}>
   <head>
     <SEOHead
       title={config.seo.title}
@@ -47,6 +50,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <Analytics />
   </head>
   <body class="flex min-h-screen flex-col bg-[var(--surface)] text-[var(--ink)]">
+    <LocaleSwitcher />
     {
       Astro.slots.has("header-override") ? (
         <slot name="header-override" />

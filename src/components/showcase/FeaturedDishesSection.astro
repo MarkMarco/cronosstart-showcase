@@ -1,10 +1,12 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import CardGrid from "./CardGrid.astro";
 import GridCard from "./GridCard.astro";
 import type { DishItem } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -12,7 +14,7 @@ interface Props {
   items: DishItem[];
   id?: string;
 }
-const { eyebrow, title, description, items, id } = Astro.props;
+const { eyebrow, title, description, items, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
@@ -51,7 +53,7 @@ const { eyebrow, title, description, items, id } = Astro.props;
               href="#reservas"
               class="inline-flex items-center gap-1.5 px-6 pb-6 text-xs font-semibold text-[var(--accent)]"
             >
-              Reservar para provar
+              {t(locale, "Reservar para provar")}
               <Icon name="arrow-right" class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </a>
           </GridCard>

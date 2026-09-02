@@ -1,34 +1,36 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import type { CatalogAmbiente, CatalogProduct } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   ambientes: CatalogAmbiente[];
   products: CatalogProduct[];
 }
-const { id, ambientes, products } = Astro.props;
+const { id, ambientes, products } = localizeDeep(Astro.props, locale);
 
 function countFor(slug: string) {
   return products.filter((p) => p.ambiente === slug).length;
 }
 
-const spanClasses = [
+const spanClasses = localizeDeep([
   "sm:col-span-2 lg:col-span-2 lg:row-span-2",
   "",
   "",
   "",
   "",
   "sm:col-span-2 lg:col-span-4",
-];
+], locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
   <div class="mx-auto max-w-[1400px]">
     <SectionHeader
       eyebrow="Ambientes"
-      title="Inspirações completas por ambiente"
+      title={t(locale, "Inspirações completas por ambiente")}
       description="Composições pensadas para inspirar — cada ambiente reúne peças do catálogo que combinam entre si."
     />
 

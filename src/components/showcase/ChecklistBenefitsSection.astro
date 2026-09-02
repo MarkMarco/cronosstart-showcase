@@ -1,7 +1,9 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { BenefitItem } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -9,7 +11,7 @@ interface Props {
   items: BenefitItem[];
   id?: string;
 }
-const { eyebrow, title, description, items, id } = Astro.props;
+const { eyebrow, title, description, items, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">

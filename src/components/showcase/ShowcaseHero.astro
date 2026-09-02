@@ -1,7 +1,9 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { HeroChip } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   variant?: "split" | "centered";
   background?: "surface" | "surface-alt";
@@ -17,8 +19,8 @@ interface Props {
 }
 
 const {
-  variant = "split",
-  background = "surface",
+  variant = t(locale, "split"),
+  background = t(locale, "surface"),
   eyebrow,
   headline,
   highlight,
@@ -28,7 +30,7 @@ const {
   ctaSecondaryLabel,
   ctaSecondaryHref,
   chips,
-} = Astro.props;
+} = localizeDeep(Astro.props, locale);
 
 const bgClass = background === "surface-alt" ? "bg-[var(--surface-alt)]" : "bg-[var(--surface)]";
 ---

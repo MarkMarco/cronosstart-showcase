@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
@@ -12,7 +13,8 @@ import TeamSection from "../../components/showcase/TeamSection.astro";
 import AsymmetricTestimonials from "../../components/showcase/AsymmetricTestimonials.astro";
 import PropertyLeadFormSection from "../../components/showcase/PropertyLeadFormSection.astro";
 import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria";
----
+
+const locale = getLocale(Astro.url);---
 
 <ShowcaseLayout config={config}>
   <VerticeLogo slot="header-logo" />
@@ -35,7 +37,7 @@ import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria"
     <PropertyListingsSection
       id="imoveis"
       eyebrow="Imóveis"
-      title="Imóveis em destaque"
+      title={t(locale, "Imóveis em destaque")}
       description="Uma seleção de imóveis para compra e aluguel — atualizada com curadoria, não em lote."
       items={config.properties}
     />
@@ -49,7 +51,7 @@ import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria"
     <GhostNumberProcessSection
       id="como-funciona"
       eyebrow="Processo"
-      title="Como funciona o atendimento"
+      title={t(locale, "Como funciona o atendimento")}
       description="Do primeiro contato à entrega das chaves, com acompanhamento em cada etapa."
       steps={config.process}
     />
@@ -58,14 +60,14 @@ import { imobiliariaConfig as config } from "../../config/showcases/imobiliaria"
   {config.sections.team && config.team && (
     <TeamSection
       eyebrow="Corretores"
-      title="Quem vai te acompanhar"
+      title={t(locale, "Quem vai te acompanhar")}
       description="Corretores demonstrativos, cada um com uma especialidade dentro da carteira da Vértice."
       items={config.team}
     />
   )}
 
   {config.sections.testimonials && config.testimonials && (
-    <AsymmetricTestimonials eyebrow="Depoimentos" title="Quem já fechou negócio com a Vértice" items={config.testimonials} />
+    <AsymmetricTestimonials eyebrow="Depoimentos" title={t(locale, "Quem já fechou negócio com a Vértice")} items={config.testimonials} />
   )}
 
   {config.propertyLeadForm && (

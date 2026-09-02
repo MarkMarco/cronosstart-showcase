@@ -1,10 +1,12 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   whatsappNumber: string;
 }
-const { whatsappNumber } = Astro.props;
+const { whatsappNumber } = localizeDeep(Astro.props, locale);
 ---
 
 <div id="shopping-drawer" class="fixed inset-0 z-[110] hidden">
@@ -24,20 +26,20 @@ const { whatsappNumber } = Astro.props;
           data-drawer-tab="cart"
           class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
         >
-          Carrinho
+          {t(locale, "Carrinho")}
         </button>
         <button
           type="button"
           data-drawer-tab="favorites"
           class="rounded-full px-4 py-1.5 text-sm font-semibold transition-colors"
         >
-          Favoritos
+          {t(locale, "Favoritos")}
         </button>
       </div>
       <button
         type="button"
         data-drawer-close
-        aria-label="Fechar"
+        aria-label={t(locale, "Fechar")}
         class="flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
       >
         <Icon name="close" class="h-4 w-4" />
@@ -52,14 +54,14 @@ const { whatsappNumber } = Astro.props;
             <Icon name="cart" class="h-5 w-5" />
           </div>
           <p class="mx-auto mt-3 max-w-[220px] text-sm text-[var(--ink-muted)]">
-            Seu carrinho está vazio. Explore o catálogo e adicione peças que combinam com você.
+            {t(locale, "Seu carrinho está vazio. Explore o catálogo e adicione peças que combinam com você.")}
           </p>
           <button
             type="button"
             data-cart-explore
             class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
           >
-            Explorar catálogo
+            {t(locale, "Explorar catálogo")}
             <Icon name="arrow-right" class="h-3.5 w-3.5" />
           </button>
           <div data-cart-suggestions class="mt-6 space-y-2 text-left"></div>
@@ -68,15 +70,15 @@ const { whatsappNumber } = Astro.props;
       <div data-drawer-panel-content="favorites" class="hidden">
         <ul data-favorites-list class="space-y-3"></ul>
         <p data-favorites-empty class="hidden py-12 text-center text-sm text-[var(--ink-muted)]">
-          Você ainda não favoritou nenhuma peça. Toque no coração de um produto para guardá-lo aqui.
+          {t(locale, "Você ainda não favoritou nenhuma peça. Toque no coração de um produto para guardá-lo aqui.")}
         </p>
       </div>
     </div>
 
     <div data-drawer-footer="cart" class="border-t border-[var(--border)] px-5 py-4">
       <div class="flex items-center justify-between text-sm">
-        <span class="text-[var(--ink-muted)]">Subtotal demonstrativo</span>
-        <span data-cart-subtotal class="text-lg font-semibold text-[var(--ink)]">R$ 0,00</span>
+        <span class="text-[var(--ink-muted)]">{t(locale, "Subtotal demonstrativo")}</span>
+        <span data-cart-subtotal class="text-lg font-semibold text-[var(--ink)]">{t(locale, "R$ 0,00")}</span>
       </div>
       <a
         data-cart-whatsapp
@@ -85,10 +87,10 @@ const { whatsappNumber } = Astro.props;
         class="mt-3 flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
       >
         <Icon name="whatsapp" class="h-4 w-4" />
-        Enviar lista pelo WhatsApp
+        {t(locale, "Enviar lista pelo WhatsApp")}
       </a>
       <p class="mt-2 text-center text-xs text-[var(--ink-muted)]">
-        Carrinho demonstrativo — valores e disponibilidade confirmados por um consultor, sem pagamento online.
+        {t(locale, "Carrinho demonstrativo — valores e disponibilidade confirmados por um consultor, sem pagamento online.")}
       </p>
     </div>
   </div>

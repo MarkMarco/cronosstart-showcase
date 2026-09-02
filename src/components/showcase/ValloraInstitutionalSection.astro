@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Seção "Escritório" — posicionamento institucional em 3 pilares, com
 // fotografia editorial e composição própria (nunca linguagem de "melhor
 // escritório" ou promessas de resultado).
@@ -6,6 +7,7 @@ import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import type { InstitutionalPillar } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   title: string;
@@ -14,7 +16,7 @@ interface Props {
   imageAlt: string;
   pillars: InstitutionalPillar[];
 }
-const { id, title, paragraphs, image, imageAlt, pillars } = Astro.props;
+const { id, title, paragraphs, image, imageAlt, pillars } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
@@ -23,8 +25,8 @@ const { id, title, paragraphs, image, imageAlt, pillars } = Astro.props;
       <div data-animate class="relative overflow-hidden rounded-[1.5rem]">
         <img src={image} alt={imageAlt} class="aspect-[4/5] w-full object-cover" loading="lazy" decoding="async" />
         <div class="absolute inset-x-6 bottom-6 rounded-2xl border border-[#C7A35A]/25 bg-[#120F10]/85 p-5 backdrop-blur-sm">
-          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E2C98C]">Escritório fictício</p>
-          <p class="mt-1.5 text-sm leading-relaxed text-[#F5F0E8]/80">Ambiente demonstrativo, usado apenas para compor a identidade visual deste modelo.</p>
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[#E2C98C]">{t(locale, "Escritório fictício")}</p>
+          <p class="mt-1.5 text-sm leading-relaxed text-[#F5F0E8]/80">{t(locale, "Ambiente demonstrativo, usado apenas para compor a identidade visual deste modelo.")}</p>
         </div>
       </div>
 

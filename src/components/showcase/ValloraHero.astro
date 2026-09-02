@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Hero exclusivo da Vallora Advocacia — arquitetura clássica (colunas/mármore)
 // em tela cheia, com camadas de profundidade (overlay vinho + brilho dourado +
 // vinheta), uma balança da justiça (foto recortada, tratada em tom dourado)
@@ -7,6 +8,7 @@ import Icon from "../ui/Icon.astro";
 import ValloraLogo from "../logos/ValloraLogo.astro";
 import type { PracticeArea } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow: string;
   headline: string;
@@ -19,7 +21,7 @@ interface Props {
   imageAlt: string;
   areas: PracticeArea[];
 }
-const { eyebrow, headline, subheadline, ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref, image, imageAlt, areas } = Astro.props;
+const { eyebrow, headline, subheadline, ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref, image, imageAlt, areas } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="relative isolate overflow-hidden bg-[#120F10]">
@@ -59,7 +61,7 @@ const { eyebrow, headline, subheadline, ctaPrimaryLabel, ctaPrimaryHref, ctaSeco
   <div class="relative mx-auto flex min-h-[88vh] max-w-[1300px] flex-col justify-end px-6 pb-16 pt-14 sm:px-8 sm:pb-20 sm:pt-16">
     <span class="mb-10 inline-flex w-fit items-center gap-2.5 rounded-full border border-[#C7A35A]/50 bg-[#120F10]/60 px-4 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-[#E2C98C] shadow-[0_0_24px_-6px_rgba(199,163,90,0.45)] backdrop-blur-sm">
       <Icon name="sparkle" class="h-3.5 w-3.5" />
-      Modelo demonstrativo do portfólio CronosStart
+      {t(locale, "Modelo demonstrativo do portfólio CronosStart")}
     </span>
 
     <div class="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
@@ -92,7 +94,7 @@ const { eyebrow, headline, subheadline, ctaPrimaryLabel, ctaPrimaryHref, ctaSeco
 
       <div class="animate-hero-in relative overflow-hidden rounded-2xl border border-[#C7A35A]/25 bg-[#150c10]/55 p-5 backdrop-blur-[2px] lg:p-6" style="animation-delay: 140ms">
         <span class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#C7A35A]/70 to-transparent" aria-hidden="true" />
-        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#E2C98C]/80">Principais áreas</p>
+        <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#E2C98C]/80">{t(locale, "Principais áreas")}</p>
         <ul class="mt-3 grid grid-cols-2 gap-x-6 gap-y-3">
           {
             areas.slice(0, 6).map((area) => (

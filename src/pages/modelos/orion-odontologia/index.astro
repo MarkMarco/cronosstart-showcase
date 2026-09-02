@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -15,6 +16,7 @@ import FAQSection from "../../../components/showcase/FAQSection.astro";
 import ClosingCtaSection from "../../../components/showcase/ClosingCtaSection.astro";
 import { orionOdontologiaConfig as config } from "../../../config/showcases/orion-odontologia";
 
+const locale = getLocale(Astro.url);
 const featuredTeam = (config.team ?? []).slice(0, 3);
 const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value, label: stat.label }));
 ---
@@ -51,7 +53,7 @@ const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value
     <SpecialtiesSection
       id="especialidades"
       eyebrow="O que tratamos"
-      title="Especialidades"
+      title={t(locale, "Especialidades")}
       description="Seis frentes de atuação, coordenadas em um único plano de tratamento."
       items={config.specialties}
     />
@@ -60,7 +62,7 @@ const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value
   {config.sections.team && featuredTeam.length > 0 && (
     <DentistTeamSection
       eyebrow="Quem cuida de você"
-      title="Equipe"
+      title={t(locale, "Equipe")}
       description="Especialistas dedicados a cada etapa do seu tratamento."
       items={featuredTeam}
     />
@@ -69,7 +71,7 @@ const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value
   {config.sections.beforeAfter && config.beforeAfter && (
     <BeforeAfterSection
       eyebrow="Resultados"
-      title="Antes e depois"
+      title={t(locale, "Antes e depois")}
       description="Uma prévia de como apresentaríamos transformações reais de pacientes nesta seção."
       items={config.beforeAfter}
     />
@@ -87,7 +89,7 @@ const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value
   {config.sections.process && config.process && (
     <ProcessSection
       eyebrow="Como funciona"
-      title="Do primeiro contato ao pós-tratamento"
+      title={t(locale, "Do primeiro contato ao pós-tratamento")}
       description="Um processo estruturado para que você saiba exatamente o que esperar."
       steps={config.process}
     />
@@ -96,14 +98,14 @@ const heroStats = (config.about?.stats ?? []).map((stat) => ({ value: stat.value
   {config.sections.testimonials && config.testimonials && (
     <TestimonialsSection
       eyebrow="Depoimentos"
-      title="Quem já passou pela Orion"
+      title={t(locale, "Quem já passou pela Orion")}
       description="Experiências de pacientes atendidos pela nossa equipe."
       items={config.testimonials}
     />
   )}
 
   {config.sections.faq && config.faq && (
-    <FAQSection eyebrow="Dúvidas frequentes" title="Perguntas frequentes" items={config.faq} />
+    <FAQSection eyebrow="Dúvidas frequentes" title={t(locale, "Perguntas frequentes")} items={config.faq} />
   )}
 
   <ClosingCtaSection

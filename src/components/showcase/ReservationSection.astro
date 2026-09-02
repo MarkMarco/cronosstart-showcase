@@ -1,19 +1,21 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { CtaBand } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   cta: CtaBand;
   id?: string;
 }
-const { cta, id } = Astro.props;
+const { cta, id } = localizeDeep(Astro.props, locale);
 
-const timeSlots = ["12:00", "12:30", "13:00", "19:00", "19:30", "20:00", "20:30", "21:00"];
-const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pessoas"];
+const timeSlots = localizeDeep(["12:00", "12:30", "13:00", "19:00", "19:30", "20:00", "20:30", "21:00"], locale);
+const partySizes = localizeDeep(["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pessoas"], locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
   <div class="mx-auto max-w-xl text-center" data-animate>
-    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Reservas</p>
+    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Reservas")}</p>
     <h2 class="font-[var(--font-heading)] text-3xl font-medium tracking-tight text-[var(--ink)] sm:text-4xl">
       {cta.title}
     </h2>
@@ -27,11 +29,11 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
     class="mx-auto mt-10 max-w-2xl rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 shadow-sm sm:p-8"
   >
     <p class="mb-5 text-center text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">
-      Formulário demonstrativo — não envia dados
+      {t(locale, "Formulário demonstrativo — não envia dados")}
     </p>
     <div class="grid gap-4 sm:grid-cols-2">
       <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-        Nome
+        {t(locale, "Nome")}
         <input
           type="text"
           name="name"
@@ -40,7 +42,7 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        WhatsApp
+        {t(locale, "WhatsApp")}
         <input
           type="tel"
           name="whatsapp"
@@ -50,7 +52,7 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        E-mail
+        {t(locale, "E-mail")}
         <input
           type="email"
           name="email"
@@ -58,13 +60,13 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        Data
+        {t(locale, "Data")}
         <input
           type="text"
           inputmode="numeric"
           name="date"
           required
-          placeholder="dd/mm/aaaa"
+          placeholder={t(locale, "dd/mm/aaaa")}
           pattern="\d{2}/\d{2}/\d{4}"
           maxlength="10"
           data-date-input
@@ -72,7 +74,7 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        Horário
+        {t(locale, "Horário")}
         <select
           name="time"
           required
@@ -84,7 +86,7 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         </select>
       </label>
       <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-        Número de pessoas
+        {t(locale, "Número de pessoas")}
         <select
           name="partySize"
           required
@@ -96,11 +98,11 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         </select>
       </label>
       <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-        Observações
+        {t(locale, "Observações")}
         <textarea
           name="notes"
           rows="3"
-          placeholder="Alguma preferência ou ocasião especial?"
+          placeholder={t(locale, "Alguma preferência ou ocasião especial?")}
           class="mt-1.5 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/15"
         ></textarea>
       </label>
@@ -111,7 +113,7 @@ const partySizes = ["1–2 pessoas", "3–4 pessoas", "5–6 pessoas", "7+ pesso
         {cta.buttonLabel}
       </button>
       <p data-reservation-feedback role="status" class="hidden text-center text-sm font-medium text-[var(--accent)] sm:col-span-2">
-        Reserva de demonstração recebida — nenhum dado foi enviado de verdade.
+        {t(locale, "Reserva de demonstração recebida — nenhum dado foi enviado de verdade.")}
       </p>
     </div>
   </form>

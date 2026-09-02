@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -6,6 +7,7 @@ import AurumLogo from "../../../components/logos/AurumLogo.astro";
 import VehicleCard from "../../../components/showcase/VehicleCard.astro";
 import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
 
+const locale = getLocale(Astro.url);
 const vehicles = config.vehicles ?? [];
 
 const priceBucket = (price: string) => {
@@ -15,10 +17,10 @@ const priceBucket = (price: string) => {
   return "Acima de R$ 400 mil";
 };
 
-const seo = {
+const seo = localizeDeep({
   title: "Estoque — Aurum Motors (modelo demonstrativo)",
   description: "Estoque completo de veículos seminovos selecionados da Aurum Motors, com filtro demonstrativo por categoria, faixa de preço e marca.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -27,10 +29,10 @@ const seo = {
 
   <section class="bg-[var(--surface)] px-6 pb-8 pt-14 sm:pt-20">
     <div class="mx-auto max-w-6xl">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Estoque</p>
-      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Estoque completo</h1>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Estoque")}</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "Estoque completo")}</h1>
       <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">
-        {vehicles.length} veículos selecionados. Use os filtros abaixo para encontrar o seu.
+        {vehicles.length} {t(locale, "veículos selecionados. Use os filtros abaixo para encontrar o seu.")}
       </p>
     </div>
   </section>
@@ -42,7 +44,7 @@ const seo = {
         class="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-5 sm:grid-cols-3 sm:p-6"
       >
         <label class="block text-left text-xs font-medium text-[var(--ink-muted)]">
-          Categoria
+          {t(locale, "Categoria")}
           <select
             name="category"
             data-filter="category"
@@ -52,7 +54,7 @@ const seo = {
           </select>
         </label>
         <label class="block text-left text-xs font-medium text-[var(--ink-muted)]">
-          Faixa de preço
+          {t(locale, "Faixa de preço")}
           <select
             name="price"
             data-filter="price"
@@ -62,7 +64,7 @@ const seo = {
           </select>
         </label>
         <label class="block text-left text-xs font-medium text-[var(--ink-muted)]">
-          Marca
+          {t(locale, "Marca")}
           <select
             name="brand"
             data-filter="brand"
@@ -74,7 +76,7 @@ const seo = {
       </form>
 
       <p data-stock-empty class="mt-8 hidden text-center text-sm text-[var(--ink-muted)]">
-        Nenhum veículo encontrado para esses filtros.
+        {t(locale, "Nenhum veículo encontrado para esses filtros.")}
       </p>
 
       <div data-stock-grid class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -1,20 +1,22 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
 import ValloraLogo from "../../../components/logos/ValloraLogo.astro";
 import Icon from "../../../components/ui/Icon.astro";
 import { valloraAdvocaciaConfig as config, practiceAreas, legalProfessionals, legalArticles } from "../../../config/showcases/advocacia";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Painel administrativo — Vallora Advocacia (modelo demonstrativo)",
   description: "Painel administrativo demonstrativo de áreas de atuação, profissionais, conteúdos e solicitações da Vallora Advocacia.",
-};
+}, locale);
 
-const seedAreas = practiceAreas.map((a) => ({ ...a }));
-const seedProfessionals = legalProfessionals.map((p) => ({ ...p }));
-const seedArticles = legalArticles.map((a) => ({ ...a }));
-const seedFaq = (config.faq ?? []).map((f, i) => ({ id: `faq-${i + 1}`, question: f.question, answer: f.answer, order: i + 1, active: true }));
+const seedAreas = localizeDeep(practiceAreas.map((a) => ({ ...a })), locale);
+const seedProfessionals = localizeDeep(legalProfessionals.map((p) => ({ ...p })), locale);
+const seedArticles = localizeDeep(legalArticles.map((a) => ({ ...a })), locale);
+const seedFaq = localizeDeep((config.faq ?? []).map((f, i) => ({ id: `faq-${i + 1}`, question: f.question, answer: f.answer, order: i + 1, active: true })), locale);
 
-const seedBanners = [
+const seedBanners = localizeDeep([
   {
     id: "banner-1",
     title: "Modelo demonstrativo — conteúdos jurídicos atualizados mensalmente",
@@ -27,9 +29,9 @@ const seedBanners = [
     active: false,
     order: 2,
   },
-];
+], locale);
 
-const seedRequests = [
+const seedRequests = localizeDeep([
   {
     id: "req-1",
     name: "Camila Bezerra",
@@ -100,9 +102,9 @@ const seedRequests = [
     notes: "",
     createdAt: "2026-05-02",
   },
-];
+], locale);
 
-const seedSettings = {
+const seedSettings = localizeDeep({
   companyName: config.company.name,
   subtitle: config.company.segment,
   whatsapp: config.contact.whatsappNumber,
@@ -116,11 +118,11 @@ const seedSettings = {
   footerText: "Modelo demonstrativo desenvolvido pela CronosStart.",
   demonstrativeDisclaimer: config.demonstrativeDisclaimer ?? "",
   defaultWhatsappMessage: config.contact.whatsappMessage,
-};
+}, locale);
 
-const iconOptions = ["briefcase", "scale", "users", "trending-up", "file-check", "heart", "shield-check", "home", "landmark", "book-open", "sparkle"];
+const iconOptions = localizeDeep(["briefcase", "scale", "users", "trending-up", "file-check", "heart", "shield-check", "home", "landmark", "book-open", "sparkle"], locale);
 
-const tabs = [
+const tabs = localizeDeep([
   { id: "dashboard", label: "Dashboard" },
   { id: "areas", label: "Áreas de atuação" },
   { id: "profissionais", label: "Profissionais" },
@@ -129,7 +131,7 @@ const tabs = [
   { id: "faq", label: "FAQ" },
   { id: "banners", label: "Banners e hero" },
   { id: "config", label: "Configurações" },
-];
+], locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -142,37 +144,37 @@ const tabs = [
         <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
           <Icon name="key" class="h-6 w-6" />
         </span>
-        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-[var(--ink)]">Acesso restrito</h1>
-        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Vallora Advocacia</p>
+        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-[var(--ink)]">{t(locale, "Acesso restrito")}</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">{t(locale, "Painel administrativo demonstrativo — Vallora Advocacia")}</p>
         <form data-login-form class="mt-8 space-y-3 text-left">
           <label class="block text-sm font-medium text-[var(--ink)]">
-            E-mail
+            {t(locale, "E-mail")}
             <input type="email" value="admin@vallora-advocacia-demo.com.br" readonly class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
           </label>
           <label class="block text-sm font-medium text-[var(--ink)]">
-            Senha
+            {t(locale, "Senha")}
             <input type="password" value="demonstracao" readonly class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
           </label>
           <button type="submit" class="!mt-6 w-full rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
-            Entrar no painel
+            {t(locale, "Entrar no painel")}
           </button>
-          <p class="text-center text-xs text-[var(--ink-muted)]">Acesso demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.</p>
+          <p class="text-center text-xs text-[var(--ink-muted)]">{t(locale, "Acesso demonstrativo — campos pré-preenchidos, qualquer clique em \"Entrar\" libera o acesso.")}</p>
         </form>
       </div>
 
       <div data-admin-content class="hidden">
         <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-[var(--ink)]">
-          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.
+          <strong class="font-semibold">{t(locale, "Ambiente de demonstração.")}</strong> {t(locale, "As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.")}
         </div>
 
         <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
-            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Vallora Advocacia</h1>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Painel administrativo")}</p>
+            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "Vallora Advocacia")}</h1>
           </div>
           <button type="button" data-action="reset-all" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
             <Icon name="refresh" class="h-4 w-4" />
-            Restaurar dados originais
+            {t(locale, "Restaurar dados originais")}
           </button>
         </div>
 
@@ -184,100 +186,100 @@ const tabs = [
           ))}
         </div>
 
-        <!-- DASHBOARD -->
+        
         <div data-panel="dashboard" class="mt-6">
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Áreas de atuação</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Áreas de atuação")}</p>
               <p data-stat="areas-total" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Áreas ativas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Áreas ativas")}</p>
               <p data-stat="areas-ativas" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Profissionais ativos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Profissionais ativos")}</p>
               <p data-stat="profissionais-ativos" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Artigos publicados</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Artigos publicados")}</p>
               <p data-stat="artigos-publicados" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
             </div>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Artigos em rascunho</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Artigos em rascunho")}</p>
               <p data-stat="artigos-rascunho" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Solicitações novas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Solicitações novas")}</p>
               <p data-stat="solicitacoes-novas" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Perguntas no FAQ</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Perguntas no FAQ")}</p>
               <p data-stat="faq-total" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
             <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Conteúdo em destaque</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Conteúdo em destaque")}</p>
               <p data-stat="conteudo-destaque" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
             </div>
           </div>
           <div class="mt-4 rounded-2xl border border-dashed border-[var(--border)] p-4 text-sm text-[var(--ink-muted)]">
-            Em um projeto real, esta área também mostraria visualizações e solicitações com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esse indicador não é simulado aqui para não apresentar números fictícios como se fossem reais.
+            {t(locale, "Em um projeto real, esta área também mostraria visualizações e solicitações com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esse indicador não é simulado aqui para não apresentar números fictícios como se fossem reais.")}
           </div>
         </div>
 
-        <!-- ÁREAS DE ATUAÇÃO -->
+        
         <div data-panel="areas" class="mt-6 hidden">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-[var(--ink)]">Áreas de atuação</h2>
+            <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Áreas de atuação")}</h2>
             <button type="button" data-action="toggle-area-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
               <Icon name="check" class="h-4 w-4" />
-              Nova área
+              {t(locale, "Nova área")}
             </button>
           </div>
 
           <form data-area-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
             <input type="hidden" name="slug" />
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Título
+              {t(locale, "Título")}
               <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Ícone
+              {t(locale, "Ícone")}
               <select name="icon" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
                 {iconOptions.map((i) => <option value={i}>{i}</option>)}
               </select>
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Descrição curta
+              {t(locale, "Descrição curta")}
               <input type="text" name="shortDescription" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Descrição completa
+              {t(locale, "Descrição completa")}
               <textarea name="description" rows="3" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <div class="flex items-center gap-4 sm:col-span-2">
               <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
                 <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-                Ativa
+                {t(locale, "Ativa")}
               </label>
               <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
                 <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                Destacar na home
+                {t(locale, "Destacar na home")}
               </label>
             </div>
             <div class="sm:col-span-2">
-              <p class="mb-1.5 text-sm font-medium text-[var(--ink)]">Profissionais associados</p>
+              <p class="mb-1.5 text-sm font-medium text-[var(--ink)]">{t(locale, "Profissionais associados")}</p>
               <div data-area-professional-checkboxes class="grid max-h-40 grid-cols-2 gap-1.5 overflow-y-auto rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3"></div>
             </div>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar área</button>
-              <button type="button" data-action="cancel-area-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">{t(locale, "Salvar área")}</button>
+              <button type="button" data-action="cancel-area-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">{t(locale, "Cancelar")}</button>
             </div>
           </form>
 
@@ -285,11 +287,11 @@ const tabs = [
             <table class="w-full min-w-[680px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Área</th>
-                  <th class="px-4 py-3 font-medium">Ordem</th>
-                  <th class="px-4 py-3 font-medium">Destaque</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Área")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Ordem")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Destaque")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-area-table-body class="text-[var(--ink)]"></tbody>
@@ -297,64 +299,64 @@ const tabs = [
           </div>
         </div>
 
-        <!-- PROFISSIONAIS -->
+        
         <div data-panel="profissionais" class="mt-6 hidden">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-[var(--ink)]">Profissionais</h2>
+            <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Profissionais")}</h2>
             <button type="button" data-action="toggle-professional-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
               <Icon name="check" class="h-4 w-4" />
-              Novo profissional
+              {t(locale, "Novo profissional")}
             </button>
           </div>
-          <p class="mt-1 text-xs text-[var(--ink-muted)]">Nomes, fotos e formações devem permanecer sempre fictícios e claramente demonstrativos — nunca dados de pessoas reais.</p>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">{t(locale, "Nomes, fotos e formações devem permanecer sempre fictícios e claramente demonstrativos — nunca dados de pessoas reais.")}</p>
 
           <form data-professional-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
             <input type="hidden" name="slug" />
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Nome
+              {t(locale, "Nome")}
               <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Cargo
+              {t(locale, "Cargo")}
               <input type="text" name="role" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Área principal
+              {t(locale, "Área principal")}
               <select name="mainArea" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
                 {seedAreas.map((a) => <option value={a.slug}>{a.title}</option>)}
               </select>
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Resumo profissional
+              {t(locale, "Resumo profissional")}
               <textarea name="summary" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Idiomas (separados por vírgula)
-              <input type="text" name="languages" placeholder="Português, Inglês" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Idiomas (separados por vírgula)")}
+              <input type="text" name="languages" placeholder={t(locale, "Português, Inglês")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Formação demonstrativa (separada por vírgula)
-              <input type="text" name="education" placeholder="Instituição fictícia — curso" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Formação demonstrativa (separada por vírgula)")}
+              <input type="text" name="education" placeholder={t(locale, "Instituição fictícia — curso")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Nota de registro (sempre demonstrativa)
-              <input type="text" name="registrationNote" placeholder="Registro profissional demonstrativo" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Nota de registro (sempre demonstrativa)")}
+              <input type="text" name="registrationNote" placeholder={t(locale, "Registro profissional demonstrativo")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Foto (URL)
-              <input type="url" name="photo" placeholder="https://…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Foto (URL)")}
+              <input type="url" name="photo" placeholder={t(locale, "https://…")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="flex items-center gap-2 text-sm font-medium text-[var(--ink)]">
               <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Ativo (visível no site)
+              {t(locale, "Ativo (visível no site)")}
             </label>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar profissional</button>
-              <button type="button" data-action="cancel-professional-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">{t(locale, "Salvar profissional")}</button>
+              <button type="button" data-action="cancel-professional-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">{t(locale, "Cancelar")}</button>
             </div>
           </form>
 
@@ -362,10 +364,10 @@ const tabs = [
             <table class="w-full min-w-[680px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Profissional</th>
-                  <th class="px-4 py-3 font-medium">Área principal</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Profissional")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Área principal")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-professional-table-body class="text-[var(--ink)]"></tbody>
@@ -373,13 +375,13 @@ const tabs = [
           </div>
         </div>
 
-        <!-- CONTEÚDOS -->
+        
         <div data-panel="conteudos" class="mt-6 hidden">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-[var(--ink)]">Conteúdos</h2>
+            <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Conteúdos")}</h2>
             <button type="button" data-action="toggle-article-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
               <Icon name="check" class="h-4 w-4" />
-              Novo conteúdo
+              {t(locale, "Novo conteúdo")}
             </button>
           </div>
 
@@ -388,62 +390,62 @@ const tabs = [
               <input type="hidden" name="slug" />
               <div class="grid gap-4 sm:grid-cols-2">
                 <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                  Título
+                  {t(locale, "Título")}
                   <input type="text" name="title" required data-af="title" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)]">
-                  Categoria
-                  <input type="text" name="category" data-af="category" placeholder="Empresas, Contratos, Trabalho…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                  {t(locale, "Categoria")}
+                  <input type="text" name="category" data-af="category" placeholder={t(locale, "Empresas, Contratos, Trabalho…")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)]">
-                  Autor (fictício)
+                  {t(locale, "Autor (fictício)")}
                   <input type="text" name="author" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)]">
-                  Data (demonstrativa)
+                  {t(locale, "Data (demonstrativa)")}
                   <input type="date" name="date" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)]">
-                  Tempo de leitura (min)
+                  {t(locale, "Tempo de leitura (min)")}
                   <input type="number" name="readTimeMinutes" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)]">
-                  Status
+                  {t(locale, "Status")}
                   <select name="status" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]">
-                    <option value="draft">Rascunho</option>
-                    <option value="published">Publicado</option>
+                    <option value="draft">{t(locale, "Rascunho")}</option>
+                    <option value="published">{t(locale, "Publicado")}</option>
                   </select>
                 </label>
                 <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
                   <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                  Destacar
+                  {t(locale, "Destacar")}
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                  Imagem (URL)
-                  <input type="url" name="image" placeholder="https://…" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
+                  {t(locale, "Imagem (URL)")}
+                  <input type="url" name="image" placeholder={t(locale, "https://…")} class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                  Resumo
+                  {t(locale, "Resumo")}
                   <textarea name="summary" rows="2" data-af="summary" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
                 </label>
                 <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                  Conteúdo (um parágrafo por linha)
+                  {t(locale, "Conteúdo (um parágrafo por linha)")}
                   <textarea name="content" rows="6" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
                 </label>
               </div>
               <div class="mt-5 flex flex-wrap gap-3">
-                <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar conteúdo</button>
-                <button type="button" data-action="cancel-article-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+                <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">{t(locale, "Salvar conteúdo")}</button>
+                <button type="button" data-action="cancel-article-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]">{t(locale, "Cancelar")}</button>
               </div>
             </div>
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">{t(locale, "Pré-visualização")}</p>
               <div class="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
-                <p data-preview="category" class="text-xs font-medium uppercase tracking-wide text-[var(--accent)]">Categoria</p>
-                <h3 data-preview="title" class="mt-1 text-base font-semibold text-[var(--ink)]">Título do conteúdo</h3>
+                <p data-preview="category" class="text-xs font-medium uppercase tracking-wide text-[var(--accent)]">{t(locale, "Categoria")}</p>
+                <h3 data-preview="title" class="mt-1 text-base font-semibold text-[var(--ink)]">{t(locale, "Título do conteúdo")}</h3>
                 <p data-preview="summary" class="mt-2 text-xs text-[var(--ink-muted)]"></p>
               </div>
-              <p class="mt-2 text-xs text-[var(--ink-muted)]">Aviso fixo exibido junto ao conteúdo público: "{config.demonstrativeDisclaimer}"</p>
+              <p class="mt-2 text-xs text-[var(--ink-muted)]">{t(locale, "Aviso fixo exibido junto ao conteúdo público:")} "{t(locale, config.demonstrativeDisclaimer ?? "Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.")}"</p>
             </div>
           </form>
 
@@ -451,10 +453,10 @@ const tabs = [
             <table class="w-full min-w-[720px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Conteúdo</th>
-                  <th class="px-4 py-3 font-medium">Categoria</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Conteúdo")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Categoria")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-article-table-body class="text-[var(--ink)]"></tbody>
@@ -462,46 +464,46 @@ const tabs = [
           </div>
         </div>
 
-        <!-- SOLICITAÇÕES -->
+        
         <div data-panel="solicitacoes" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-[var(--ink)]">Solicitações demonstrativas</h2>
-          <p class="mt-1 text-xs text-[var(--ink-muted)]">Nenhum dado real ou sensível — apenas registros fictícios para demonstrar o fluxo de atendimento.</p>
+          <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Solicitações demonstrativas")}</h2>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">{t(locale, "Nenhum dado real ou sensível — apenas registros fictícios para demonstrar o fluxo de atendimento.")}</p>
           <div class="mt-4 space-y-3" data-requests-list></div>
         </div>
 
-        <!-- FAQ -->
+        
         <div data-panel="faq" class="mt-6 hidden">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-[var(--ink)]">Perguntas frequentes</h2>
+            <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Perguntas frequentes")}</h2>
             <button type="button" data-action="toggle-faq-form" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
               <Icon name="check" class="h-4 w-4" />
-              Nova pergunta
+              {t(locale, "Nova pergunta")}
             </button>
           </div>
 
           <form data-faq-form class="mt-4 hidden grid-cols-1 gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6">
             <input type="hidden" name="id" />
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Pergunta
+              {t(locale, "Pergunta")}
               <input type="text" name="question" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Resposta
+              {t(locale, "Resposta")}
               <textarea name="answer" rows="3" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <div class="flex items-center gap-4">
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Ordem
+                {t(locale, "Ordem")}
                 <input type="number" name="order" min="1" class="mt-1.5 w-24 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
               </label>
               <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
                 <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-                Ativa
+                {t(locale, "Ativa")}
               </label>
             </div>
             <div class="flex gap-3">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar pergunta</button>
-              <button type="button" data-action="cancel-faq-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">{t(locale, "Salvar pergunta")}</button>
+              <button type="button" data-action="cancel-faq-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">{t(locale, "Cancelar")}</button>
             </div>
           </form>
 
@@ -509,10 +511,10 @@ const tabs = [
             <table class="w-full min-w-[560px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Pergunta</th>
-                  <th class="px-4 py-3 font-medium">Ordem</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Pergunta")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Ordem")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-faq-table-body class="text-[var(--ink)]"></tbody>
@@ -520,37 +522,37 @@ const tabs = [
           </div>
         </div>
 
-        <!-- BANNERS -->
+        
         <div data-panel="banners" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-[var(--ink)]">Banners e hero</h2>
-          <p class="mt-1 text-xs text-[var(--ink-muted)]">Uma faixa de aviso opcional exibida no topo do site público, abaixo do menu. Apenas um banner ativo por vez (o de menor ordem).</p>
+          <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Banners e hero")}</h2>
+          <p class="mt-1 text-xs text-[var(--ink-muted)]">{t(locale, "Uma faixa de aviso opcional exibida no topo do site público, abaixo do menu. Apenas um banner ativo por vez (o de menor ordem).")}</p>
           <form data-banner-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
             <input type="hidden" name="id" />
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Texto do banner
+              {t(locale, "Texto do banner")}
               <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
               <input type="checkbox" name="active" class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Ativo
+              {t(locale, "Ativo")}
             </label>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">Salvar banner</button>
-              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)]">{t(locale, "Salvar banner")}</button>
+              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)]">{t(locale, "Cancelar")}</button>
             </div>
           </form>
           <div class="mt-6 overflow-x-auto rounded-2xl border border-[var(--border)]">
             <table class="w-full min-w-[560px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Banner</th>
-                  <th class="px-4 py-3 font-medium">Ordem</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Banner")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Ordem")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-banner-table-body class="text-[var(--ink)]"></tbody>
@@ -558,67 +560,67 @@ const tabs = [
           </div>
         </div>
 
-        <!-- CONFIGURAÇÕES -->
+        
         <div data-panel="config" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-[var(--ink)]">Configurações</h2>
+          <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Configurações")}</h2>
           <form data-settings-form class="mt-4 grid gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:grid-cols-2">
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Nome do escritório
+              {t(locale, "Nome do escritório")}
               <input type="text" name="companyName" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Subtítulo
+              {t(locale, "Subtítulo")}
               <input type="text" name="subtitle" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              WhatsApp (demonstrativo)
+              {t(locale, "WhatsApp (demonstrativo)")}
               <input type="text" name="whatsapp" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Telefone
+              {t(locale, "Telefone")}
               <input type="text" name="phone" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              E-mail
+              {t(locale, "E-mail")}
               <input type="email" name="email" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Endereço
+              {t(locale, "Endereço")}
               <input type="text" name="address" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Horário de atendimento
+              {t(locale, "Horário de atendimento")}
               <input type="text" name="hours" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              Instagram (URL)
+              {t(locale, "Instagram (URL)")}
               <input type="text" name="instagram" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)]">
-              LinkedIn (URL)
+              {t(locale, "LinkedIn (URL)")}
               <input type="text" name="linkedin" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Texto institucional
+              {t(locale, "Texto institucional")}
               <textarea name="institutionalText" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Aviso demonstrativo (rodapé e conteúdos)
+              {t(locale, "Aviso demonstrativo (rodapé e conteúdos)")}
               <textarea name="demonstrativeDisclaimer" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Texto do rodapé
+              {t(locale, "Texto do rodapé")}
               <input type="text" name="footerText" class="mt-1.5 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-              Mensagem padrão do WhatsApp
+              {t(locale, "Mensagem padrão do WhatsApp")}
               <textarea name="defaultWhatsappMessage" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <div class="sm:col-span-2">
               <button type="submit" class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5">
-                Salvar configurações
+                {t(locale, "Salvar configurações")}
               </button>
-              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">Configurações salvas neste navegador.</p>
+              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">{t(locale, "Configurações salvas neste navegador.")}</p>
             </div>
           </form>
         </div>

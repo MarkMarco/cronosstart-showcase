@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Logo demonstrativo do Essenza Restaurante. Para substituir por um logo
 // definitivo do cliente, basta trocar o conteúdo deste componente (ou
 // apontar os slots "header-logo"/"footer-logo" em modelos/restaurante.astro
@@ -7,7 +9,7 @@ interface Props {
   variant?: "full" | "mark";
   class?: string;
 }
-const { variant = "full", class: className = "" } = Astro.props;
+const { variant = "full", class: className = "" } = localizeDeep(Astro.props, locale);
 ---
 
 <span class={`inline-flex items-center gap-3 ${className}`}>
@@ -21,10 +23,10 @@ const { variant = "full", class: className = "" } = Astro.props;
   {variant === "full" && (
     <span class="leading-tight">
       <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-tight text-[var(--ink)]">
-        Essenza
+        {t(locale, "Essenza")}
       </span>
       <span class="block -mt-1 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-[var(--ink-muted)]">
-        Restaurante
+        {t(locale, "Restaurante")}
       </span>
     </span>
   )}

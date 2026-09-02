@@ -1,7 +1,9 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import { homeFaq, type FaqEntry } from "../../config/faq";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   eyebrow?: string;
@@ -13,13 +15,13 @@ interface Props {
 }
 
 const {
-  id = "faq",
-  eyebrow = "FAQ",
-  title = "Dúvidas frequentes",
-  description = "Respostas diretas sobre domínio, hospedagem, suporte e desenvolvimento.",
-  items = homeFaq,
-  groupName = "home-faq",
-} = Astro.props;
+  id = t(locale, "faq"),
+  eyebrow = t(locale, "FAQ"),
+  title = t(locale, "Dúvidas frequentes"),
+  description = t(locale, "Respostas diretas sobre domínio, hospedagem, suporte e desenvolvimento."),
+  items = localizeDeep(homeFaq, locale),
+  groupName = t(locale, "home-faq"),
+} = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-20 sm:py-28">

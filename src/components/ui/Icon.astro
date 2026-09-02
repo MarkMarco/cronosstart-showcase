@@ -1,12 +1,14 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { IconName } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   name: IconName;
   class?: string;
 }
 
-const { name, class: className = "h-5 w-5" } = Astro.props;
+const { name, class: className = "h-5 w-5" } = localizeDeep(Astro.props, locale);
 ---
 
 <svg

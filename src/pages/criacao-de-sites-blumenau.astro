@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
@@ -14,16 +16,17 @@ import Icon from "../components/ui/Icon.astro";
 import { showcaseRegistry } from "../config/showcases";
 import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
 
-const title = "Criação de Sites em Blumenau | CronosStart";
+const locale = getLocale(Astro.url);
+const title = t(locale, "Criação de Sites em Blumenau | CronosStart");
 const description =
-  "Criação de sites profissionais em Blumenau para pequenas empresas, com domínio, hospedagem, WhatsApp, personalização e suporte técnico.";
+  t(locale, "Criação de sites profissionais em Blumenau para pequenas empresas, com domínio, hospedagem, WhatsApp, personalização e suporte técnico.");
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const whatsappBlumenau = buildWhatsappLink(
   "Olá! Vi a página de criação de sites em Blumenau da CronosStart e gostaria de saber mais sobre um site para minha empresa."
 );
 
-const audiences = [
+const audiences = localizeDeep([
   {
     icon: "briefcase" as const,
     title: "Pequenas empresas e autônomos",
@@ -44,9 +47,9 @@ const audiences = [
     title: "Empresas de todo o Brasil e LATAM",
     description: "Atendimento remoto para empresas fora de Blumenau, com o mesmo processo e acompanhamento.",
   },
-];
+], locale);
 
-const siteTypes = [
+const siteTypes = localizeDeep([
   {
     icon: "sparkle" as const,
     title: "Sites institucionais",
@@ -67,9 +70,9 @@ const siteTypes = [
     title: "Sites com painel administrativo",
     description: "Para quem precisa atualizar conteúdo, catálogo ou agenda sem depender de terceiros a cada mudança.",
   },
-];
+], locale);
 
-const included = [
+const included = localizeDeep([
   { icon: "key" as const, label: "Domínio registrado em nome do cliente" },
   { icon: "layers" as const, label: "Hospedagem configurada" },
   { icon: "shield-check" as const, label: "Certificado SSL" },
@@ -77,16 +80,16 @@ const included = [
   { icon: "arrow-right" as const, label: "Publicação do site" },
   { icon: "message-circle" as const, label: "Suporte após o lançamento" },
   { icon: "sliders" as const, label: "Personalização conforme a identidade da empresa" },
-];
+], locale);
 
-const steps = [
+const steps = localizeDeep([
   { title: "Conversa inicial", description: "Entendemos seu negócio, seu público e o que você precisa apresentar no site." },
   { title: "Estrutura e proposta", description: "Definimos o tipo de site mais adequado e o escopo do projeto." },
   { title: "Desenvolvimento e personalização", description: "Construímos o site com sua identidade — cores, textos e imagens." },
   { title: "Publicação e suporte", description: "Colocamos o site no ar, com domínio e hospedagem configurados, e seguimos disponíveis para suporte." },
-];
+], locale);
 
-const faqItems = [
+const faqItems = localizeDeep([
   {
     question: "Vocês atendem presencialmente em Blumenau?",
     answer:
@@ -117,9 +120,9 @@ const faqItems = [
     answer:
       "Sim. O tipo de suporte e a quantidade de alterações incluídas dependem do plano contratado.",
   },
-];
+], locale);
 
-const structuredData = {
+const structuredData = localizeDeep({
   "@context": "https://schema.org",
   "@graph": [
     ...homeStructuredData["@graph"],
@@ -152,11 +155,11 @@ const structuredData = {
       })),
     },
   ],
-};
+}, locale);
 ---
 
 <html
-  lang="pt-BR"
+  lang={locale}
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
@@ -174,10 +177,11 @@ const structuredData = {
     <Analytics />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LocaleSwitcher />
     <SiteHeader />
 
     <main>
-      <!-- Hero -->
+      
       <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div
           class="pointer-events-none absolute -left-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
@@ -188,14 +192,13 @@ const structuredData = {
         <div class="relative mx-auto max-w-4xl text-center">
           <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
             <Icon name="map-pin" class="h-4 w-4" />
-            Blumenau e região
+            {t(locale, "Blumenau e região")}
           </p>
           <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
-            Criação de sites profissionais em Blumenau
+            {t(locale, "Criação de sites profissionais em Blumenau")}
           </h1>
           <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
-            Sites institucionais, landing pages, catálogos e sites com painel administrativo para pequenas empresas
-            de Blumenau e região — com domínio, hospedagem, integração com WhatsApp e suporte técnico.
+            {t(locale, "Sites institucionais, landing pages, catálogos e sites com painel administrativo para pequenas empresas\n            de Blumenau e região — com domínio, hospedagem, integração com WhatsApp e suporte técnico.")}
           </p>
 
           <div class="mt-9 flex flex-wrap justify-center gap-4">
@@ -206,7 +209,7 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
             >
-              Solicitar orçamento
+              {t(locale, "Solicitar orçamento")}
             </button>
             <a
               href={whatsappBlumenau}
@@ -216,18 +219,18 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
             >
               <Icon name="whatsapp" class="h-4 w-4" />
-              Falar no WhatsApp
+              {t(locale, "Falar no WhatsApp")}
             </a>
           </div>
         </div>
       </section>
 
-      <!-- Para quais empresas -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Para quem é indicado</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Empresas que atendemos em Blumenau e além</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Para quem é indicado")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Empresas que atendemos em Blumenau e além")}</h2>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {
@@ -248,12 +251,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Tipos de sites -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Tipos de projeto</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Tipos de sites que desenvolvemos</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Tipos de projeto")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Tipos de sites que desenvolvemos")}</h2>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {
@@ -274,12 +277,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- O que está incluído -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que está incluído</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Serviço completo")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "O que está incluído")}</h2>
           </div>
           <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
             {
@@ -294,14 +297,14 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Modelos demonstrativos relacionados -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-[92rem]">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Portfólio de modelos</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Modelos demonstrativos por segmento</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Portfólio de modelos")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Modelos demonstrativos por segmento")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Cada demonstração é uma proposta visual completa, que pode ser personalizada para sua empresa.
+              {t(locale, "Cada demonstração é uma proposta visual completa, que pode ser personalizada para sua empresa.")}
             </p>
           </div>
           <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -310,12 +313,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Como funciona -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-5xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Do primeiro contato ao site no ar</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Como funciona")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Do primeiro contato ao site no ar")}</h2>
           </div>
           <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {
@@ -331,29 +334,29 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- FAQ específico -->
+      
       <FAQSection
         id="faq-blumenau"
         eyebrow="Dúvidas"
-        title="Perguntas frequentes sobre sites em Blumenau"
+        title={t(locale, "Perguntas frequentes sobre sites em Blumenau")}
         description="Respostas diretas para quem está avaliando criar um site em Blumenau e região."
         items={faqItems}
         groupName="blumenau-faq"
       />
 
-      <!-- CTA final -->
+      
       <section class="relative overflow-hidden px-6 py-16 sm:py-24">
         <div class="relative mx-auto max-w-4xl">
           <div
             class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center sm:px-16 sm:py-20"
             style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
           >
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Vamos conversar?")}</p>
             <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Sua empresa em Blumenau pronta para estar no digital
+              {t(locale, "Sua empresa em Blumenau pronta para estar no digital")}
             </h2>
             <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
-              Conte sua ideia e ajudamos a definir a melhor estrutura para o site da sua empresa.
+              {t(locale, "Conte sua ideia e ajudamos a definir a melhor estrutura para o site da sua empresa.")}
             </p>
             <div class="mt-9 flex flex-wrap justify-center gap-4">
               <button
@@ -363,7 +366,7 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
               >
-                Solicitar orçamento
+                {t(locale, "Solicitar orçamento")}
               </button>
               <a
                 href={whatsappBlumenau}
@@ -373,18 +376,17 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />
-                Falar no WhatsApp
+                {t(locale, "Falar no WhatsApp")}
               </a>
             </div>
 
             <p class="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-white/40">
-              Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
-              os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a>,
-              <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a> e as páginas de
-              <a href="/sites-para-pequenas-empresas" class="underline underline-offset-2 hover:text-white">sites para pequenas empresas</a>,
-              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a> e
-              <a href="/sites-para-imobiliarias" class="underline underline-offset-2 hover:text-white">sites para imobiliárias</a> e a de
-              <a href="/sites-para-restaurantes" class="underline underline-offset-2 hover:text-white">sites para restaurantes</a>.
+              {t(locale, "Veja também nossos")} <a href={localizedPath("/#modelos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "modelos demonstrativos")}</a>{t(locale, ",\n              os")} <a href={localizedPath("/#planos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "planos disponíveis")}</a>,
+              <a href={localizedPath("/#como-funciona", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "como funciona o projeto")}</a> {t(locale, "e as páginas de")}
+              <a href={localizedPath("/sites-para-pequenas-empresas", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites para pequenas empresas")}</a>,
+              <a href={localizedPath("/sites-com-painel-administrativo", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites com painel administrativo")}</a> {t(locale, "e")}
+              <a href={localizedPath("/sites-para-imobiliarias", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites para imobiliárias")}</a> {t(locale, "e a de")}
+              <a href={localizedPath("/sites-para-restaurantes", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites para restaurantes")}</a>.
             </p>
           </div>
         </div>

@@ -1,20 +1,22 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
 import NexoraLogo from "../../../components/logos/NexoraLogo.astro";
 import Icon from "../../../components/ui/Icon.astro";
 import { nexoraTechConfig as config, categories, brands, products, kits } from "../../../config/showcases/nexora-tech";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Painel administrativo — Nexora Tech (modelo demonstrativo)",
   description: "Painel administrativo demonstrativo de catálogo, comparador, kits e ofertas da Nexora Tech.",
-};
+}, locale);
 
-const seedProducts = products.map((p) => ({ ...p, archived: false }));
-const seedCategories = categories.map((c) => ({ ...c }));
-const seedBrands = brands.map((b) => ({ ...b }));
-const seedKits = kits.map((k) => ({ ...k }));
+const seedProducts = localizeDeep(products.map((p) => ({ ...p, archived: false })), locale);
+const seedCategories = localizeDeep(categories.map((c) => ({ ...c })), locale);
+const seedBrands = localizeDeep(brands.map((b) => ({ ...b })), locale);
+const seedKits = localizeDeep(kits.map((k) => ({ ...k })), locale);
 
-const seedBanners = [
+const seedBanners = localizeDeep([
   {
     id: "banner-1",
     title: "Nexora Vision X1 chegou",
@@ -37,9 +39,9 @@ const seedBanners = [
     startDate: "",
     endDate: "",
   },
-];
+], locale);
 
-const seedRequests = [
+const seedRequests = localizeDeep([
   {
     id: "req-1", name: "Marina Souza", phone: "(11) 98888-2345", email: "marina@exemplo.com",
     interest: "Nexora Vision X1", category: "Smartphones", usage: "Uso geral", budget: "R$ 3.000 a R$ 8.000",
@@ -64,9 +66,9 @@ const seedRequests = [
     message: "Pedido finalizado na loja física.", contactPreference: "WhatsApp",
     status: "concluído", notes: "Cliente satisfeito.", createdAt: "2026-06-28",
   },
-];
+], locale);
 
-const seedSettings = {
+const seedSettings = localizeDeep({
   companyName: config.company.name,
   whatsapp: config.contact.whatsappNumber,
   phone: config.contact.phone,
@@ -80,12 +82,12 @@ const seedSettings = {
   institutionalText: config.company.description,
   footerText: "Modelo demonstrativo desenvolvido pela CronosStart.",
   defaultWhatsappMessage: config.contact.whatsappMessage,
-};
+}, locale);
 
-const iconOptions = ["smartphone", "laptop", "cpu", "monitor", "headphones", "package", "wifi", "gamepad", "zap", "sparkle"];
+const iconOptions = localizeDeep(["smartphone", "laptop", "cpu", "monitor", "headphones", "package", "wifi", "gamepad", "zap", "sparkle"], locale);
 const categoryOptions = categories.filter((c) => c.slug !== "ofertas");
 
-const tabs = [
+const tabs = localizeDeep([
   { id: "dashboard", label: "Dashboard" },
   { id: "produtos", label: "Produtos" },
   { id: "categorias", label: "Categorias" },
@@ -95,7 +97,7 @@ const tabs = [
   { id: "banners", label: "Banners" },
   { id: "solicitacoes", label: "Solicitações" },
   { id: "config", label: "Configurações" },
-];
+], locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -108,37 +110,37 @@ const tabs = [
         <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/15 text-[var(--accent)]">
           <Icon name="key" class="h-6 w-6" />
         </span>
-        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">Acesso restrito</h1>
-        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Nexora Tech</p>
+        <h1 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">{t(locale, "Acesso restrito")}</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">{t(locale, "Painel administrativo demonstrativo — Nexora Tech")}</p>
         <form data-login-form class="mt-8 space-y-3 text-left">
           <label class="block text-sm font-medium text-white">
-            E-mail
+            {t(locale, "E-mail")}
             <input type="email" value="admin@nexoratech-demo.com.br" readonly class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
           </label>
           <label class="block text-sm font-medium text-white">
-            Senha
+            {t(locale, "Senha")}
             <input type="password" value="demonstracao" readonly class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-[var(--ink-muted)] outline-none" />
           </label>
           <button type="submit" class="!mt-6 w-full rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
-            Entrar no painel
+            {t(locale, "Entrar no painel")}
           </button>
-          <p class="text-center text-xs text-[var(--ink-muted)]">Acesso demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.</p>
+          <p class="text-center text-xs text-[var(--ink-muted)]">{t(locale, "Acesso demonstrativo — campos pré-preenchidos, qualquer clique em \"Entrar\" libera o acesso.")}</p>
         </form>
       </div>
 
       <div data-admin-content class="hidden">
         <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-white">
-          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.
+          <strong class="font-semibold">{t(locale, "Ambiente de demonstração.")}</strong> {t(locale, "As alterações abaixo ficam salvas apenas neste navegador (localStorage) e se refletem no site público enquanto você navegar neste mesmo navegador e dispositivo.")}
         </div>
 
         <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
-            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">Nexora Tech</h1>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Painel administrativo")}</p>
+            <h1 class="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Nexora Tech")}</h1>
           </div>
           <button type="button" data-action="reset-all" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
             <Icon name="refresh" class="h-4 w-4" />
-            Restaurar dados originais
+            {t(locale, "Restaurar dados originais")}
           </button>
         </div>
 
@@ -150,251 +152,251 @@ const tabs = [
           ))}
         </div>
 
-        <!-- DASHBOARD -->
+        
         <div data-panel="dashboard" class="mt-6">
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Total de produtos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Total de produtos")}</p>
               <p data-stat="total-produtos" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Produtos ativos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Produtos ativos")}</p>
               <p data-stat="produtos-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Lançamentos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Lançamentos")}</p>
               <p data-stat="lancamentos" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Em oferta</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Em oferta")}</p>
               <p data-stat="em-oferta" class="mt-1 text-2xl font-semibold text-[#f59e0b]">0</p>
             </div>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Indisponíveis</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Indisponíveis")}</p>
               <p data-stat="indisponiveis" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Categorias ativas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Categorias ativas")}</p>
               <p data-stat="categorias-ativas" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Marcas ativas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Marcas ativas")}</p>
               <p data-stat="marcas-ativas" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Kits ativos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Kits ativos")}</p>
               <p data-stat="kits-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Banners ativos</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Banners ativos")}</p>
               <p data-stat="banners-ativos" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Solicitações novas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Solicitações novas")}</p>
               <p data-stat="solicitacoes-novas" class="mt-1 text-2xl font-semibold text-white">0</p>
             </div>
             <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p class="text-xs text-[var(--ink-muted)]">Comparações demonstrativas</p>
+              <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Comparações demonstrativas")}</p>
               <p class="mt-1 text-2xl font-semibold text-white">—</p>
             </div>
           </div>
           <div class="mt-4 rounded-2xl border border-dashed border-white/15 p-4 text-sm text-[var(--ink-muted)]">
-            Em um projeto real, esta área também mostraria produtos mais visualizados e carrinhos/contatos demonstrativos com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esses indicadores não são simulados aqui para não apresentar números fictícios como se fossem reais.
+            {t(locale, "Em um projeto real, esta área também mostraria produtos mais visualizados e carrinhos/contatos demonstrativos com base em tráfego real. Como este é um modelo demonstrativo sem tráfego real, esses indicadores não são simulados aqui para não apresentar números fictícios como se fossem reais.")}
           </div>
         </div>
 
-        <!-- PRODUTOS -->
+        
         <div data-panel="produtos" class="mt-6 hidden">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold text-white">Produtos</h2>
+            <h2 class="text-lg font-semibold text-white">{t(locale, "Produtos")}</h2>
             <button type="button" data-action="toggle-product-form" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
               <Icon name="check" class="h-4 w-4" />
-              Adicionar produto
+              {t(locale, "Adicionar produto")}
             </button>
           </div>
 
           <div class="mt-4 grid gap-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:grid-cols-[1.3fr_1fr_1fr_auto]">
             <label class="block text-xs font-medium text-[var(--ink-muted)]">
-              Buscar
-              <input type="text" data-p-search placeholder="Nome ou SKU..." class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Buscar")}
+              <input type="text" data-p-search placeholder={t(locale, "Nome ou SKU...")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-xs font-medium text-[var(--ink-muted)]">
-              Categoria
+              {t(locale, "Categoria")}
               <select data-p-filter-category class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]">
-                <option value="">Todas</option>
+                <option value="">{t(locale, "Todas")}</option>
                 {categoryOptions.map((c) => <option value={c.slug}>{c.name}</option>)}
               </select>
             </label>
             <label class="block text-xs font-medium text-[var(--ink-muted)]">
-              Status
+              {t(locale, "Status")}
               <select data-p-filter-status class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3.5 py-2 text-sm text-white outline-none focus:border-[var(--accent)]">
-                <option value="">Todos</option>
-                <option value="disponivel">Disponível</option>
-                <option value="indisponivel">Indisponível</option>
+                <option value="">{t(locale, "Todos")}</option>
+                <option value="disponivel">{t(locale, "Disponível")}</option>
+                <option value="indisponivel">{t(locale, "Indisponível")}</option>
               </select>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium text-[var(--ink-muted)] sm:pt-4">
               <input type="checkbox" data-p-show-archived class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Arquivados
+              {t(locale, "Arquivados")}
             </label>
           </div>
 
           <form data-product-form class="mt-6 hidden grid-cols-1 gap-6 rounded-2xl border border-white/10 bg-white/[0.02] p-6 lg:grid-cols-[1.3fr_1fr]">
             <div>
-              <h3 data-product-form-title class="text-base font-semibold text-white">Novo produto</h3>
+              <h3 data-product-form-title class="text-base font-semibold text-white">{t(locale, "Novo produto")}</h3>
               <input type="hidden" name="id" />
               <div class="mt-4 grid gap-4 sm:grid-cols-2">
                 <label class="block text-sm font-medium text-white sm:col-span-2">
-                  Nome
+                  {t(locale, "Nome")}
                   <input type="text" name="name" data-pf="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  SKU
+                  {t(locale, "SKU")}
                   <input type="text" name="sku" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Marca
+                  {t(locale, "Marca")}
                   <select name="brand" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
                     {seedBrands.map((b) => <option value={b.slug}>{b.name}</option>)}
                   </select>
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Categoria
+                  {t(locale, "Categoria")}
                   <select name="category" data-pf="category" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
                     {categoryOptions.map((c) => <option value={c.slug}>{c.name}</option>)}
                   </select>
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Subcategoria
+                  {t(locale, "Subcategoria")}
                   <input type="text" name="subcategory" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Preço (R$)
+                  {t(locale, "Preço (R$)")}
                   <input type="number" name="price" data-pf="price" required min="0" step="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Preço anterior (oferta)
+                  {t(locale, "Preço anterior (oferta)")}
                   <input type="number" name="previousPrice" min="0" step="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
                   <input type="checkbox" name="offerActive" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                  Oferta ativa
+                  {t(locale, "Oferta ativa")}
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Oferta válida até
+                  {t(locale, "Oferta válida até")}
                   <input type="date" name="offerEndsAt" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Estoque demonstrativo
+                  {t(locale, "Estoque demonstrativo")}
                   <input type="number" name="stockQty" min="0" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Garantia demonstrativa
-                  <input type="text" name="warranty" placeholder="Ex.: 12 meses" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                  {t(locale, "Garantia demonstrativa")}
+                  <input type="text" name="warranty" placeholder={t(locale, "Ex.: 12 meses")} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Ícone
+                  {t(locale, "Ícone")}
                   <select name="icon" data-pf="icon" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
                     {iconOptions.map((i) => <option value={i}>{i}</option>)}
                   </select>
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Cores (separadas por vírgula)
-                  <input type="text" name="colors" placeholder="Preto espacial, Prata" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                  {t(locale, "Cores (separadas por vírgula)")}
+                  <input type="text" name="colors" placeholder={t(locale, "Preto espacial, Prata")} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Materiais (separados por vírgula)
+                  {t(locale, "Materiais (separados por vírgula)")}
                   <input type="text" name="materials" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Dimensões
+                  {t(locale, "Dimensões")}
                   <input type="text" name="dimensions" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Selo (opcional)
-                  <input type="text" name="badge" placeholder="Ex.: Destaque" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                  {t(locale, "Selo (opcional)")}
+                  <input type="text" name="badge" placeholder={t(locale, "Ex.: Destaque")} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <label class="block text-sm font-medium text-white">
-                  Ordem de exibição
+                  {t(locale, "Ordem de exibição")}
                   <input type="number" name="displayOrder" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
                 </label>
                 <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
                   <label class="flex items-center gap-2 text-sm font-medium text-white">
                     <input type="checkbox" name="available" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-                    Disponível
+                    {t(locale, "Disponível")}
                   </label>
                   <label class="flex items-center gap-2 text-sm font-medium text-white">
                     <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                    Destaque
+                    {t(locale, "Destaque")}
                   </label>
                   <label class="flex items-center gap-2 text-sm font-medium text-white">
                     <input type="checkbox" name="isNew" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                    Lançamento
+                    {t(locale, "Lançamento")}
                   </label>
                 </div>
                 <label class="block text-sm font-medium text-white sm:col-span-2">
-                  Especificações (uma por linha, "chave: valor")
+                  {t(locale, "Especificações (uma por linha, \"chave: valor\")")}
                   <textarea name="specs" rows="4" placeholder={"processador: Nexora N3\nmemoria: 8GB RAM"} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
-                  <span class="mt-1 block text-xs text-[var(--ink-muted)]">Estrutura livre — categorias diferentes podem usar campos diferentes.</span>
+                  <span class="mt-1 block text-xs text-[var(--ink-muted)]">{t(locale, "Estrutura livre — categorias diferentes podem usar campos diferentes.")}</span>
                 </label>
                 <div class="sm:col-span-2">
-                  <p class="text-sm font-medium text-white">Imagens do produto (opcional)</p>
-                  <p class="mt-1 text-xs text-[var(--ink-muted)]">Cole a URL de uma foto real para cada campo. Campos vazios continuam usando o render vetorial premium da categoria — nada é obrigatório.</p>
+                  <p class="text-sm font-medium text-white">{t(locale, "Imagens do produto (opcional)")}</p>
+                  <p class="mt-1 text-xs text-[var(--ink-muted)]">{t(locale, "Cole a URL de uma foto real para cada campo. Campos vazios continuam usando o render vetorial premium da categoria — nada é obrigatório.")}</p>
                   <div class="mt-2 grid gap-3 sm:grid-cols-2">
                     <label class="block text-xs font-medium text-white">
-                      Imagem principal
-                      <input type="url" name="imageMain" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                      {t(locale, "Imagem principal")}
+                      <input type="url" name="imageMain" placeholder={t(locale, "https://…")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
                     </label>
                     <label class="block text-xs font-medium text-white">
-                      Fundo limpo
-                      <input type="url" name="imageClean" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                      {t(locale, "Fundo limpo")}
+                      <input type="url" name="imageClean" placeholder={t(locale, "https://…")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
                     </label>
                     <label class="block text-xs font-medium text-white">
-                      Segundo ângulo
-                      <input type="url" name="imageAngle2" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                      {t(locale, "Segundo ângulo")}
+                      <input type="url" name="imageAngle2" placeholder={t(locale, "https://…")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
                     </label>
                     <label class="block text-xs font-medium text-white">
-                      Detalhe de acabamento
-                      <input type="url" name="imageDetail" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                      {t(locale, "Detalhe de acabamento")}
+                      <input type="url" name="imageDetail" placeholder={t(locale, "https://…")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
                     </label>
                     <label class="block text-xs font-medium text-white">
-                      Em contexto de uso
-                      <input type="url" name="imageContext" placeholder="https://…" class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
+                      {t(locale, "Em contexto de uso")}
+                      <input type="url" name="imageContext" placeholder={t(locale, "https://…")} class="mt-1 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-3 py-2 text-sm text-white outline-none focus:border-[var(--accent)]" />
                     </label>
                   </div>
                 </div>
                 <label class="block text-sm font-medium text-white sm:col-span-2">
-                  Descrição
+                  {t(locale, "Descrição")}
                   <textarea name="description" rows="3" data-pf="description" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
                 </label>
               </div>
               <div class="mt-5 flex flex-wrap gap-3">
                 <button type="submit" class="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
-                  Publicar produto
+                  {t(locale, "Publicar produto")}
                 </button>
-                <button type="button" data-action="duplicate-current" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">Duplicar</button>
-                <button type="button" data-action="cancel-product-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+                <button type="button" data-action="duplicate-current" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">{t(locale, "Duplicar")}</button>
+                <button type="button" data-action="cancel-product-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm font-semibold text-white">{t(locale, "Cancelar")}</button>
               </div>
             </div>
 
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">{t(locale, "Pré-visualização")}</p>
               <div class="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-[var(--surface)]">
                 <div data-preview="visual" class="relative flex aspect-square items-center justify-center bg-[#0d1220]">
                   <Icon name="smartphone" data-preview="icon" class="h-14 w-14 text-white/60" />
                 </div>
                 <div class="p-5">
-                  <p data-preview="taxonomy" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Categoria</p>
-                  <h3 data-preview="name" class="mt-1 text-base font-semibold text-white">Nome do produto</h3>
-                  <p data-preview="price" class="mt-3 font-[var(--font-heading)] text-xl font-semibold text-white">R$ 0</p>
+                  <p data-preview="taxonomy" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Categoria")}</p>
+                  <h3 data-preview="name" class="mt-1 text-base font-semibold text-white">{t(locale, "Nome do produto")}</h3>
+                  <p data-preview="price" class="mt-3 font-[var(--font-heading)] text-xl font-semibold text-white">{t(locale, "R$ 0")}</p>
                   <p data-preview="description" class="mt-2 text-xs text-[var(--ink-muted)]"></p>
                 </div>
               </div>
-              <p class="mt-2 text-xs text-[var(--ink-muted)]">Assim o card aparecerá no catálogo público, antes de publicar.</p>
+              <p class="mt-2 text-xs text-[var(--ink-muted)]">{t(locale, "Assim o card aparecerá no catálogo público, antes de publicar.")}</p>
             </div>
           </form>
 
@@ -402,60 +404,60 @@ const tabs = [
             <table class="w-full min-w-[860px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Produto</th>
-                  <th class="px-4 py-3 font-medium">Categoria</th>
-                  <th class="px-4 py-3 font-medium">Preço</th>
-                  <th class="px-4 py-3 font-medium">Disponibilidade</th>
-                  <th class="px-4 py-3 font-medium">Destaque</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Produto")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Categoria")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Preço")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Disponibilidade")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Destaque")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-product-table-body class="text-white"></tbody>
             </table>
           </div>
-          <p data-product-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">Nenhum produto encontrado para esses filtros.</p>
+          <p data-product-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">{t(locale, "Nenhum produto encontrado para esses filtros.")}</p>
         </div>
 
-        <!-- CATEGORIAS -->
+        
         <div data-panel="categorias" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Categorias</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Categorias")}</h2>
           <form data-category-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
             <input type="hidden" name="slug" />
             <label class="block text-sm font-medium text-white">
-              Nome
+              {t(locale, "Nome")}
               <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Ícone
+              {t(locale, "Ícone")}
               <select name="icon" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]">
                 {iconOptions.map((i) => <option value={i}>{i}</option>)}
               </select>
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Descrição
+              {t(locale, "Descrição")}
               <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
               <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Ativa
+              {t(locale, "Ativa")}
             </label>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar categoria</button>
-              <button type="button" data-action="cancel-category-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">{t(locale, "Salvar categoria")}</button>
+              <button type="button" data-action="cancel-category-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">{t(locale, "Cancelar")}</button>
             </div>
           </form>
           <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
             <table class="w-full min-w-[600px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Categoria</th>
-                  <th class="px-4 py-3 font-medium">Produtos</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Categoria")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Produtos")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-category-table-body class="text-white"></tbody>
@@ -463,36 +465,36 @@ const tabs = [
           </div>
         </div>
 
-        <!-- MARCAS -->
+        
         <div data-panel="marcas" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Marcas fictícias</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Marcas fictícias")}</h2>
           <form data-brand-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
             <input type="hidden" name="slug" />
             <label class="block text-sm font-medium text-white">
-              Nome
+              {t(locale, "Nome")}
               <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
               <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Ativa
+              {t(locale, "Ativa")}
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Descrição
+              {t(locale, "Descrição")}
               <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar marca</button>
-              <button type="button" data-action="cancel-brand-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">{t(locale, "Salvar marca")}</button>
+              <button type="button" data-action="cancel-brand-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">{t(locale, "Cancelar")}</button>
             </div>
           </form>
           <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
             <table class="w-full min-w-[560px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Marca</th>
-                  <th class="px-4 py-3 font-medium">Produtos</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Marca")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Produtos")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-brand-table-body class="text-white"></tbody>
@@ -500,54 +502,54 @@ const tabs = [
           </div>
         </div>
 
-        <!-- KITS -->
+        
         <div data-panel="kits" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Kits e combinações</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Kits e combinações")}</h2>
           <form data-kit-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
             <input type="hidden" name="slug" />
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Nome
+              {t(locale, "Nome")}
               <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Descrição
+              {t(locale, "Descrição")}
               <input type="text" name="description" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Economia demonstrativa
+              {t(locale, "Economia demonstrativa")}
               <input type="text" name="savingsLabel" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <div class="sm:col-span-2">
-              <p class="mb-1.5 text-sm font-medium text-white">Produtos do kit</p>
+              <p class="mb-1.5 text-sm font-medium text-white">{t(locale, "Produtos do kit")}</p>
               <div data-kit-product-checkboxes class="grid max-h-56 grid-cols-2 gap-1.5 overflow-y-auto rounded-lg border border-white/10 bg-[var(--surface)] p-3 sm:grid-cols-3"></div>
             </div>
             <label class="block text-sm font-medium text-white">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <div class="flex items-center gap-4 self-end pb-2.5">
               <label class="flex items-center gap-2 text-sm font-medium text-white">
                 <input type="checkbox" name="active" checked class="h-4 w-4 rounded accent-[var(--accent)]" />
-                Ativo
+                {t(locale, "Ativo")}
               </label>
               <label class="flex items-center gap-2 text-sm font-medium text-white">
                 <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--accent)]" />
-                Destaque
+                {t(locale, "Destaque")}
               </label>
             </div>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar kit</button>
-              <button type="button" data-action="cancel-kit-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">{t(locale, "Salvar kit")}</button>
+              <button type="button" data-action="cancel-kit-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">{t(locale, "Cancelar")}</button>
             </div>
           </form>
           <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
             <table class="w-full min-w-[640px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Kit</th>
-                  <th class="px-4 py-3 font-medium">Itens</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Kit")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Itens")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-kit-table-body class="text-white"></tbody>
@@ -555,78 +557,78 @@ const tabs = [
           </div>
         </div>
 
-        <!-- OFERTAS -->
+        
         <div data-panel="ofertas" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Ofertas</h2>
-          <p class="mt-1 text-sm text-[var(--ink-muted)]">Ofertas são definidas diretamente no cadastro do produto (preço anterior + oferta ativa). Aqui você acompanha e encerra rapidamente.</p>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Ofertas")}</h2>
+          <p class="mt-1 text-sm text-[var(--ink-muted)]">{t(locale, "Ofertas são definidas diretamente no cadastro do produto (preço anterior + oferta ativa). Aqui você acompanha e encerra rapidamente.")}</p>
           <div class="mt-4 overflow-x-auto rounded-2xl border border-white/10">
             <table class="w-full min-w-[720px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Produto</th>
-                  <th class="px-4 py-3 font-medium">Preço anterior</th>
-                  <th class="px-4 py-3 font-medium">Preço atual</th>
-                  <th class="px-4 py-3 font-medium">Validade</th>
-                  <th class="px-4 py-3 font-medium">Estoque</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Produto")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Preço anterior")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Preço atual")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Validade")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Estoque")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-offers-table-body class="text-white"></tbody>
             </table>
           </div>
-          <p data-offers-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">Nenhuma oferta ativa no momento.</p>
+          <p data-offers-empty class="hidden mt-6 text-center text-sm text-[var(--ink-muted)]">{t(locale, "Nenhuma oferta ativa no momento.")}</p>
         </div>
 
-        <!-- BANNERS -->
+        
         <div data-panel="banners" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Banners do topo</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Banners do topo")}</h2>
           <form data-banner-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
             <input type="hidden" name="id" />
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Título
+              {t(locale, "Título")}
               <input type="text" name="title" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Subtítulo
+              {t(locale, "Subtítulo")}
               <input type="text" name="subtitle" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Texto do CTA
+              {t(locale, "Texto do CTA")}
               <input type="text" name="ctaLabel" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Link do CTA
-              <input type="text" name="ctaHref" placeholder="#ofertas" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
+              {t(locale, "Link do CTA")}
+              <input type="text" name="ctaHref" placeholder={t(locale, "#ofertas")} class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Início
+              {t(locale, "Início")}
               <input type="date" name="startDate" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Fim
+              {t(locale, "Fim")}
               <input type="date" name="endDate" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Ordem
+              {t(locale, "Ordem")}
               <input type="number" name="order" min="1" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-white">
               <input type="checkbox" name="active" class="h-4 w-4 rounded accent-[var(--accent)]" />
-              Ativo
+              {t(locale, "Ativo")}
             </label>
             <div class="flex gap-3 sm:col-span-2">
-              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">Salvar banner</button>
-              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">Cancelar</button>
+              <button type="submit" class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">{t(locale, "Salvar banner")}</button>
+              <button type="button" data-action="cancel-banner-form" class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white">{t(locale, "Cancelar")}</button>
             </div>
           </form>
           <div class="mt-6 overflow-x-auto rounded-2xl border border-white/10">
             <table class="w-full min-w-[640px] border-collapse text-left text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.02] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                  <th class="px-4 py-3 font-medium">Banner</th>
-                  <th class="px-4 py-3 font-medium">Vigência</th>
-                  <th class="px-4 py-3 font-medium">Status</th>
-                  <th class="px-4 py-3 font-medium text-right">Ações</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Banner")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Vigência")}</th>
+                  <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                  <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
                 </tr>
               </thead>
               <tbody data-banner-table-body class="text-white"></tbody>
@@ -634,73 +636,73 @@ const tabs = [
           </div>
         </div>
 
-        <!-- SOLICITAÇÕES -->
+        
         <div data-panel="solicitacoes" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Solicitações demonstrativas</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Solicitações demonstrativas")}</h2>
           <div class="mt-4 space-y-3" data-requests-list></div>
         </div>
 
-        <!-- CONFIGURAÇÕES -->
+        
         <div data-panel="config" class="mt-6 hidden">
-          <h2 class="text-lg font-semibold text-white">Configurações</h2>
+          <h2 class="text-lg font-semibold text-white">{t(locale, "Configurações")}</h2>
           <form data-settings-form class="mt-4 grid gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:grid-cols-2">
             <label class="block text-sm font-medium text-white">
-              Nome da empresa
+              {t(locale, "Nome da empresa")}
               <input type="text" name="companyName" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              WhatsApp (demonstrativo)
+              {t(locale, "WhatsApp (demonstrativo)")}
               <input type="text" name="whatsapp" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Telefone
+              {t(locale, "Telefone")}
               <input type="text" name="phone" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              E-mail
+              {t(locale, "E-mail")}
               <input type="email" name="email" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Endereço
+              {t(locale, "Endereço")}
               <input type="text" name="address" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Horário de atendimento
+              {t(locale, "Horário de atendimento")}
               <input type="text" name="hours" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Instagram (URL)
+              {t(locale, "Instagram (URL)")}
               <input type="text" name="instagram" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white">
-              Facebook (URL)
+              {t(locale, "Facebook (URL)")}
               <input type="text" name="facebook" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Informações de entrega
+              {t(locale, "Informações de entrega")}
               <textarea name="deliveryInfo" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Informações de garantia
+              {t(locale, "Informações de garantia")}
               <textarea name="warrantyInfo" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Texto institucional
+              {t(locale, "Texto institucional")}
               <textarea name="institutionalText" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Texto do rodapé
+              {t(locale, "Texto do rodapé")}
               <input type="text" name="footerText" class="mt-1.5 w-full rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]" />
             </label>
             <label class="block text-sm font-medium text-white sm:col-span-2">
-              Mensagem padrão do WhatsApp
+              {t(locale, "Mensagem padrão do WhatsApp")}
               <textarea name="defaultWhatsappMessage" rows="2" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-[var(--surface)] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]"></textarea>
             </label>
             <div class="sm:col-span-2">
               <button type="submit" class="inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
-                Salvar configurações
+                {t(locale, "Salvar configurações")}
               </button>
-              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">Configurações salvas neste navegador.</p>
+              <p data-settings-feedback role="status" class="mt-2 hidden text-sm font-medium text-[var(--accent)]">{t(locale, "Configurações salvas neste navegador.")}</p>
             </div>
           </form>
         </div>

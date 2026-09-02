@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   image: string;
   imageAlt: string;
@@ -22,7 +24,7 @@ const {
   ctaPrimaryHref,
   ctaSecondaryLabel,
   ctaSecondaryHref,
-} = Astro.props;
+} = localizeDeep(Astro.props, locale);
 ---
 
 <section class="relative isolate overflow-hidden">

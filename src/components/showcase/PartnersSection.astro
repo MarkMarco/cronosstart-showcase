@@ -1,9 +1,11 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   title?: string;
   partners: string[];
 }
-const { title = "Seguradoras parceiras", partners } = Astro.props;
+const { title = "Seguradoras parceiras", partners } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="border-y border-[var(--border)] bg-[var(--surface)] px-6 py-10">
@@ -19,7 +21,7 @@ const { title = "Seguradoras parceiras", partners } = Astro.props;
       }
     </div>
     <p class="mt-4 text-center text-xs text-[var(--ink-muted)]">
-      Nomes fictícios, usados apenas para demonstração — sem relação com seguradoras reais.
+      {t(locale, "Nomes fictícios, usados apenas para demonstração — sem relação com seguradoras reais.")}
     </p>
   </div>
 </section>

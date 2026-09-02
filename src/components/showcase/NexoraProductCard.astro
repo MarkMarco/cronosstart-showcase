@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Card de produto da Nexora Tech — mais "vivo" que o da Maison Lume: visual
 // técnico com glow, ações rápidas no hover (favoritar, comparar, adicionar
 // ao carrinho) e specs em chips, não apenas texto corrido.
@@ -8,13 +9,14 @@ import { colorToHex } from "../../utils/colorSwatches";
 import { productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
 import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   product: CatalogProduct;
   category?: CatalogCategory;
   accent: string;
   index?: number;
 }
-const { product, category, accent, index = 0 } = Astro.props;
+const { product, category, accent, index = 0 } = localizeDeep(Astro.props, locale);
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -58,7 +60,7 @@ const discountPct =
 
     <div class="absolute left-3 top-3 z-10 flex flex-col gap-1.5">
       {product.isNew && (
-        <span class="rounded-full bg-white/95 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-[#0a0e16]">Lançamento</span>
+        <span class="rounded-full bg-white/95 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-[#0a0e16]">{t(locale, "Lançamento")}</span>
       )}
       {product.offerActive && (
         <span class="rounded-full bg-[#f59e0b] px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-[#1a1200]">
@@ -66,7 +68,7 @@ const discountPct =
         </span>
       )}
       {!product.isNew && !product.offerActive && product.featured && (
-        <span class="rounded-full border border-white/25 bg-black/40 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-white backdrop-blur">Destaque</span>
+        <span class="rounded-full border border-white/25 bg-black/40 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-wide text-white backdrop-blur">{t(locale, "Destaque")}</span>
       )}
     </div>
 
@@ -94,7 +96,7 @@ const discountPct =
 
     {!product.available && (
       <div class="absolute inset-x-3 bottom-3 z-10 rounded-lg bg-black/60 px-3 py-1.5 text-center text-[0.65rem] font-semibold uppercase tracking-wide text-white backdrop-blur">
-        Indisponível
+        {t(locale, "Indisponível")}
       </div>
     )}
 
@@ -145,7 +147,7 @@ const discountPct =
     </div>
 
     <button type="button" data-open-product={product.slug} class="mt-3 inline-flex items-center gap-1.5 border-t border-white/10 pt-3 text-xs font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
-      Ver detalhes
+      {t(locale, "Ver detalhes")}
       <Icon name="arrow-right" class="h-3 w-3" />
     </button>
   </div>

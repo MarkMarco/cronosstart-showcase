@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Logo fictício da Vallora Advocacia — monograma "V" sobre moldura
 // geométrica (escudo sutil) com uma linha horizontal fina evocando,
 // de forma discreta, o fiel de uma balança — sem usar o ícone genérico
@@ -9,7 +11,7 @@ interface Props {
   tone?: "dark" | "light";
   class?: string;
 }
-const { variant = "horizontal", tone = "dark", class: className = "" } = Astro.props;
+const { variant = "horizontal", tone = "dark", class: className = "" } = localizeDeep(Astro.props, locale);
 
 const shieldStroke = tone === "light" ? "#E2C98C" : "#4A0F1D";
 const monogramFill = tone === "light" ? "#F5F0E8" : "#4A0F1D";
@@ -37,10 +39,10 @@ const subColor = tone === "light" ? "#E2C98C" : "#C7A35A";
   {variant === "horizontal" && (
     <span class="leading-tight">
       <span class="block text-xl font-semibold tracking-tight" style={`color:${nameColor}; font-family: var(--font-heading);`}>
-        Vallora
+        {t(locale, "Vallora")}
       </span>
       <span class="block -mt-1 text-[0.62rem] font-medium uppercase tracking-[0.32em]" style={`color:${subColor}`}>
-        Advocacia
+        {t(locale, "Advocacia")}
       </span>
     </span>
   )}

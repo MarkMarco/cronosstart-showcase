@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -6,10 +7,12 @@ import OrionLogo from "../../../components/logos/OrionLogo.astro";
 import Icon from "../../../components/ui/Icon.astro";
 import { orionOdontologiaConfig as config } from "../../../config/showcases/orion-odontologia";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const localizedConfig = localizeDeep(config, locale);
+const seo = localizeDeep({
   title: "Especialidades — Orion Odontologia (modelo demonstrativo)",
   description: "Conheça as especialidades da Orion Odontologia: implantodontia, estética, ortodontia, reabilitação oral, odontopediatria e prevenção.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -18,10 +21,10 @@ const seo = {
 
   <section class="bg-[var(--surface)] px-6 pb-8 pt-14 sm:pt-20">
     <div class="mx-auto max-w-6xl">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">Especialidades</p>
-      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">O que tratamos</h1>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">{t(locale, "Especialidades")}</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "O que tratamos")}</h1>
       <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">
-        Seis frentes de atuação sob um único plano coordenado, para que você não precise ser encaminhado para vários lugares.
+        {t(locale, "Seis frentes de atuação sob um único plano coordenado, para que você não precise ser encaminhado para vários lugares.")}
       </p>
     </div>
   </section>
@@ -29,7 +32,7 @@ const seo = {
   <section class="bg-[var(--surface)] px-6 pb-16 sm:pb-20">
     <div class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2">
       {
-        (config.specialties ?? []).map((item) => (
+        (localizedConfig.specialties ?? []).map((item) => (
           <div class="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface-alt)] p-7">
             <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
               <Icon name={item.icon} class="h-5 w-5" />

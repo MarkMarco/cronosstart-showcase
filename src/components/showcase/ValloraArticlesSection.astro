@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Conteúdos demonstrativos — artigos fictícios com categoria, autor,
 // data e tempo de leitura, sempre com o aviso de conteúdo não substitui
 // orientação jurídica individualizada.
@@ -6,11 +7,12 @@ import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import type { LegalArticle } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   articles: LegalArticle[];
 }
-const { id, articles } = Astro.props;
+const { id, articles } = localizeDeep(Astro.props, locale);
 const published = articles.filter((a) => a.status === "published");
 
 function formatDate(iso: string) {
@@ -22,7 +24,7 @@ function formatDate(iso: string) {
   <div class="mx-auto max-w-[1300px]">
     <SectionHeader
       eyebrow="Conteúdos"
-      title="Conteúdo jurídico demonstrativo"
+      title={t(locale, "Conteúdo jurídico demonstrativo")}
       description="Textos fictícios, de caráter informativo e geral — não constituem orientação jurídica individualizada."
     />
 
@@ -62,7 +64,7 @@ function formatDate(iso: string) {
     </div>
 
     <p class="mt-10 text-center text-xs text-[var(--ink-muted)]">
-      Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.
+      {t(locale, "Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.")}
     </p>
   </div>
 </section>

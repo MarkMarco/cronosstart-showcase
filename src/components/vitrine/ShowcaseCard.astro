@@ -1,12 +1,14 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { ShowcaseSummary } from "../../config/showcases";
 
+const locale = getLocale(Astro.url);
 interface Props {
   item: ShowcaseSummary;
   index?: number;
 }
-const { item, index = 0 } = Astro.props;
+const { item, index = 0 } = localizeDeep(Astro.props, locale);
 
 function hexToRgbTriplet(hex: string): string {
   const clean = hex.replace("#", "");
@@ -39,7 +41,7 @@ const cardStyle = [
 ].join("; ");
 
 const screenshotBase = `/images/showcases/${item.slug}/screenshot`;
-const demoHref = `/modelos/${item.slug}`;
+const demoHref = localizedPath(`/modelos/${item.slug}`, locale);
 ---
 
 <article data-animate data-tilt-card class="showcase-card group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.03]" style={cardStyle}>
@@ -51,7 +53,7 @@ const demoHref = `/modelos/${item.slug}`;
     item.premium && (
       <span class="absolute right-4 top-4 z-20 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/80 backdrop-blur">
         <Icon name="sparkle" class="h-3 w-3 text-[var(--card-accent)]" />
-        Premium
+        {t(locale, "Premium")}
       </span>
     )
   }
@@ -72,7 +74,7 @@ const demoHref = `/modelos/${item.slug}`;
           <source srcset={`${screenshotBase}.webp`} type="image/webp" />
           <img
             src={`${screenshotBase}.jpg`}
-            alt={`Captura de tela real da demonstração ${item.companyName}`}
+            alt={`${t(locale, "Captura de tela real da demonstração")} ${item.companyName}`}
             width="960"
             height="600"
             loading="lazy"
@@ -101,21 +103,21 @@ const demoHref = `/modelos/${item.slug}`;
         item.available ? (
           <a
             href={demoHref}
-            aria-label={`Ver demonstração de ${item.companyName}`}
+            aria-label={`${t(locale, "Ver demonstração de")} ${item.companyName}`}
             class="btn-demo group/btn inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0a0e1a] transition-all hover:-translate-y-0.5"
           >
-            Ver demonstração
+            {t(locale, "Ver demonstração")}
             <Icon name="arrow-right" class="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1" />
           </a>
         ) : (
           <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/50">
-            Em breve
+            {t(locale, "Em breve")}
           </span>
         )
       }
       <span class="personalizavel-tag inline-flex items-center gap-1 text-xs text-white/40">
         <Icon name="check" class="h-3.5 w-3.5 text-[var(--card-accent)]" />
-        Personalizável
+        {t(locale, "Personalizável")}
       </span>
     </div>
 
@@ -126,7 +128,7 @@ const demoHref = `/modelos/${item.slug}`;
       data-contact-origin={`card-${item.slug}`}
       class="btn-lead group/link mt-4 inline-flex items-center gap-1.5 border-t border-white/10 pt-3.5 text-xs font-medium text-white/45 transition-colors"
     >
-      Quero um site como este
+      {t(locale, "Quero um site como este")}
       <Icon name="arrow-right" class="h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
     </button>
   </div>

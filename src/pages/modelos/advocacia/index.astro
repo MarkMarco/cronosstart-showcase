@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -15,7 +16,8 @@ import ValloraContactSection from "../../../components/showcase/ValloraContactSe
 import FAQSection from "../../../components/showcase/FAQSection.astro";
 import { valloraAdvocaciaConfig as config, practiceAreas, legalProfessionals, institutionalPillars } from "../../../config/showcases/advocacia";
 
-const breadcrumbStructuredData = {
+const locale = getLocale(Astro.url);
+const breadcrumbStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
@@ -23,15 +25,15 @@ const breadcrumbStructuredData = {
     { "@type": "ListItem", position: 2, name: "Modelos", item: "https://modelos.cronosstart.com.br/modelos" },
     { "@type": "ListItem", position: 3, name: "Vallora Advocacia", item: "https://modelos.cronosstart.com.br/modelos/advocacia" },
   ],
-};
-const serviceStructuredData = {
+}, locale);
+const serviceStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "Service",
   serviceType: "Modelo de site para escritório de advocacia com áreas de atuação, conteúdos jurídicos e painel administrativo",
   provider: { "@type": "Organization", name: "CronosStart", url: "https://modelos.cronosstart.com.br/" },
   areaServed: "BR",
-};
-const faqStructuredData = {
+}, locale);
+const faqStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: config.faq!.map((item) => ({
@@ -39,18 +41,18 @@ const faqStructuredData = {
     name: item.question,
     acceptedAnswer: { "@type": "Answer", text: item.answer },
   })),
-};
-const webPageStructuredData = {
+}, locale);
+const webPageStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "WebPage",
   name: config.seo.title,
   description: config.seo.description,
   url: "https://modelos.cronosstart.com.br/modelos/advocacia",
-};
-const structuredData = {
+}, locale);
+const structuredData = localizeDeep({
   "@context": "https://schema.org",
   "@graph": [breadcrumbStructuredData, serviceStructuredData, faqStructuredData, webPageStructuredData],
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={config} structuredData={structuredData}>
@@ -76,7 +78,7 @@ const structuredData = {
 
   <ValloraInstitutionalSection
     id="escritorio"
-    title="Uma atuação pensada para reduzir incerteza, não apenas responder perguntas"
+    title={t(locale, "Uma atuação pensada para reduzir incerteza, não apenas responder perguntas")}
     paragraphs={[
       "A Vallora nasceu da ideia de que boa parte dos conflitos jurídicos poderia ser evitada com orientação clara desde o início — não apenas resolvida depois que já se tornaram um problema.",
       "A equipe fictícia reúne diferentes áreas de atuação para que empresas, famílias e profissionais tenham um único ponto de contato, com comunicação direta sobre cada etapa do caso.",
@@ -93,7 +95,7 @@ const structuredData = {
   <GhostNumberProcessSection
     id="atuacao"
     eyebrow="Forma de atuação"
-    title="Como funciona o acompanhamento de um caso"
+    title={t(locale, "Como funciona o acompanhamento de um caso")}
     description="Um fluxo simples e transparente, do primeiro contato às atualizações de andamento."
     steps={config.process!}
   />
@@ -101,7 +103,7 @@ const structuredData = {
   <ValloraArticlesSection id="conteudos" articles={config.legalArticles!} />
 
   {config.faq && (
-    <FAQSection id="faq" eyebrow="Perguntas frequentes" title="Dúvidas sobre o atendimento" description="Antes de solicitar atendimento, veja as perguntas mais comuns sobre este modelo." items={config.faq} elevated />
+    <FAQSection id="faq" eyebrow="Perguntas frequentes" title={t(locale, "Dúvidas sobre o atendimento")} description="Antes de solicitar atendimento, veja as perguntas mais comuns sobre este modelo." items={config.faq} elevated />
   )}
 
   <ValloraContactSection id="contato" content={config.legalContactForm!} contact={config.contact} />

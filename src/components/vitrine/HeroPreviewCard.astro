@@ -1,13 +1,15 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import { logoBySlug } from "../../config/showcases/logos";
 import type { ShowcaseSummary } from "../../config/showcases";
 
+const locale = getLocale(Astro.url);
 interface Props {
   item: ShowcaseSummary;
   class?: string;
   logoScale?: string;
 }
-const { item, class: className = "", logoScale = "scale-100" } = Astro.props;
+const { item, class: className = "", logoScale = "scale-100" } = localizeDeep(Astro.props, locale);
 const ModelLogo = logoBySlug[item.slug as keyof typeof logoBySlug];
 
 const vars = `--primary:${item.primary}; --accent:${item.accent};`;
@@ -15,8 +17,8 @@ const bg = `background: radial-gradient(140% 150% at 20% 0%, color-mix(in srgb, 
 ---
 
 <a
-  href={`/modelos/${item.slug}`}
-  aria-label={`Ver demonstração de ${item.companyName}`}
+  href={localizedPath(`/modelos/${item.slug}`, locale)}
+  aria-label={`${t(locale, "Ver demonstração de")} ${item.companyName}`}
   class={`group block overflow-hidden rounded-2xl border border-white/10 shadow-[0_30px_60px_-25px_rgba(0,0,0,0.55)] transition-all duration-500 hover:-translate-y-1 hover:border-white/25 ${className}`}
   style={`${vars} ${bg}`}
 >

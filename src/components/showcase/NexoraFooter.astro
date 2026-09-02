@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Footer próprio da Nexora Tech — visual gráfico/técnico distinto do
 // footer editorial da Maison Lume (gradiente grafite/azul, grid técnico).
 import Icon from "../ui/Icon.astro";
@@ -6,12 +7,13 @@ import NexoraLogo from "../logos/NexoraLogo.astro";
 import { company as cronosStart } from "../../config/company";
 import type { NavItem, ShowcaseContact, CatalogCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   contact: ShowcaseContact;
   categories: CatalogCategory[];
 }
-const { nav, contact, categories } = Astro.props;
+const { nav, contact, categories } = localizeDeep(Astro.props, locale);
 const year = new Date().getFullYear();
 const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 ---
@@ -28,38 +30,38 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
       <div>
         <NexoraLogo />
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/50">
-          Loja fictícia de eletrônicos e tecnologia — modelo demonstrativo do portfólio da CronosStart.
+          {t(locale, "Loja fictícia de eletrônicos e tecnologia — modelo demonstrativo do portfólio da CronosStart.")}
         </p>
         <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-semibold text-white transition-transform hover:-translate-y-0.5">
           <Icon name="whatsapp" class="h-4 w-4" />
-          Falar pelo WhatsApp
+          {t(locale, "Falar pelo WhatsApp")}
         </a>
       </div>
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">Navegação</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">{t(locale, "Navegação")}</h3>
         <ul class="mt-3 space-y-2">
           {nav.map((item) => (
-            <li><a href={item.href} class="text-sm text-white/50 hover:text-white">{item.label}</a></li>
+            <li><a href={localizedPath(item.href, locale)} class="text-sm text-white/50 hover:text-white">{item.label}</a></li>
           ))}
         </ul>
       </div>
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">Categorias</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">{t(locale, "Categorias")}</h3>
         <ul class="mt-3 space-y-2">
           {categories.filter((c) => c.slug !== "ofertas").slice(0, 6).map((c) => (
             <li><a href={`#catalogo?categoria=${c.slug}`} data-category-link={c.slug} class="text-sm text-white/50 hover:text-white">{c.name}</a></li>
           ))}
         </ul>
-        <a href="/" class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] hover:underline">
-          Quero um projeto assim
+        <a href={localizedPath("/", locale)} class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--accent)] hover:underline">
+          {t(locale, "Quero um projeto assim")}
           <Icon name="arrow-right" class="h-3.5 w-3.5" />
         </a>
       </div>
 
       <div>
-        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">Contato</h3>
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-white/80">{t(locale, "Contato")}</h3>
         <ul class="mt-3 space-y-2 text-sm text-white/50">
           <li class="flex items-center gap-2"><Icon name="map-pin" class="h-4 w-4 shrink-0" />{contact.city}/{contact.state}</li>
           <li class="flex items-center gap-2"><Icon name="mail" class="h-4 w-4 shrink-0" />{contact.email}</li>
@@ -67,21 +69,21 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           {contact.hours && <li class="flex items-center gap-2"><Icon name="clock" class="h-4 w-4 shrink-0" />{contact.hours}</li>}
         </ul>
         <div class="mt-3 flex items-center gap-3">
-          {contact.instagram && <a href={contact.instagram} aria-label="Instagram" class="text-white/50 hover:text-white"><Icon name="instagram" class="h-5 w-5" /></a>}
-          {contact.facebook && <a href={contact.facebook} aria-label="Facebook" class="text-white/50 hover:text-white"><Icon name="facebook" class="h-5 w-5" /></a>}
+          {contact.instagram && <a href={contact.instagram} aria-label={t(locale, "Instagram")} class="text-white/50 hover:text-white"><Icon name="instagram" class="h-5 w-5" /></a>}
+          {contact.facebook && <a href={contact.facebook} aria-label={t(locale, "Facebook")} class="text-white/50 hover:text-white"><Icon name="facebook" class="h-5 w-5" /></a>}
         </div>
-        <a href="/modelos/eletronicos/admin" class="mt-4 inline-block text-xs text-white/35 hover:text-white/60">
-          Acesso administrativo (demonstrativo)
+        <a href={localizedPath("/modelos/eletronicos/admin", locale)} class="mt-4 inline-block text-xs text-white/35 hover:text-white/60">
+          {t(locale, "Acesso administrativo (demonstrativo)")}
         </a>
       </div>
     </div>
 
     <div class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
-      <p>© {year} Nexora Tech. Empresa fictícia usada apenas como demonstração.</p>
+      <p>© {year} Nexora Tech. {t(locale, "Empresa fictícia usada apenas como demonstração.")}</p>
       <p>
-        Modelo demonstrativo desenvolvido pela{" "}
+        {t(locale, "Modelo demonstrativo desenvolvido pela")}{" "}
         <a href={cronosStart.website} target="_blank" rel="noopener noreferrer" class="font-medium text-white/55 hover:text-white">
-          CronosStart
+          {t(locale, "CronosStart")}
         </a>
       </p>
     </div>

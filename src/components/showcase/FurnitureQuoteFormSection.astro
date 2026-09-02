@@ -1,13 +1,15 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { CtaBand, ShowcaseContact } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   cta: CtaBand;
   contact: ShowcaseContact;
   id?: string;
 }
-const { cta, contact, id } = Astro.props;
+const { cta, contact, id } = localizeDeep(Astro.props, locale);
 const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 ---
 
@@ -52,10 +54,10 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
         class="mt-6 inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
       >
         <Icon name="whatsapp" class="h-5 w-5" />
-        Falar pelo WhatsApp
+        {t(locale, "Falar pelo WhatsApp")}
       </a>
       <p class="mt-2 text-xs text-[var(--ink-muted)]">
-        Número de WhatsApp fictício ({contact.whatsappNumber}), apenas para demonstração.
+        {t(locale, "Número de WhatsApp fictício")} ({contact.whatsappNumber}), {t(locale, "apenas para demonstração.")}
       </p>
     </div>
 
@@ -66,11 +68,11 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
       class="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm sm:p-7"
     >
       <p class="mb-5 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">
-        Formulário demonstrativo — não envia dados
+        {t(locale, "Formulário demonstrativo — não envia dados")}
       </p>
       <div class="grid gap-4 sm:grid-cols-2">
         <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-          Nome
+          {t(locale, "Nome")}
           <input
             type="text"
             name="name"
@@ -79,7 +81,7 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           />
         </label>
         <label class="block text-sm font-medium text-[var(--ink)]">
-          Telefone
+          {t(locale, "Telefone")}
           <input
             type="tel"
             name="phone"
@@ -89,7 +91,7 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           />
         </label>
         <label class="block text-sm font-medium text-[var(--ink)]">
-          E-mail
+          {t(locale, "E-mail")}
           <input
             type="email"
             name="email"
@@ -98,16 +100,16 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           />
         </label>
         <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-          Produto ou ambiente de interesse
+          {t(locale, "Produto ou ambiente de interesse")}
           <input
             type="text"
             name="interest"
-            placeholder="Ex.: Sofá Modular Aurora, ou Sala contemporânea"
+            placeholder={t(locale, "Ex.: Sofá Modular Aurora, ou Sala contemporânea")}
             class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
           />
         </label>
         <label class="block text-sm font-medium text-[var(--ink)]">
-          Cidade
+          {t(locale, "Cidade")}
           <input
             type="text"
             name="city"
@@ -115,18 +117,18 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           />
         </label>
         <label class="block text-sm font-medium text-[var(--ink)]">
-          Preferência de contato
+          {t(locale, "Preferência de contato")}
           <select
             name="contactPreference"
             class="mt-1.5 w-full rounded-[var(--radius-control)] border border-[var(--border)] bg-[var(--surface-alt)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10"
           >
-            <option>WhatsApp</option>
-            <option>E-mail</option>
-            <option>Telefone</option>
+            <option>{t(locale, "WhatsApp")}</option>
+            <option>{t(locale, "E-mail")}</option>
+            <option>{t(locale, "Telefone")}</option>
           </select>
         </label>
         <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-          Mensagem
+          {t(locale, "Mensagem")}
           <textarea
             name="message"
             rows="3"
@@ -140,7 +142,7 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           {cta.buttonLabel}
         </button>
         <p data-furniture-quote-feedback role="status" class="hidden text-sm font-medium text-[var(--accent)] sm:col-span-2">
-          Mensagem de demonstração — nenhum dado foi enviado.
+          {t(locale, "Mensagem de demonstração — nenhum dado foi enviado.")}
         </p>
       </div>
     </form>

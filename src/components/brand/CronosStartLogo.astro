@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   class?: string;
   imgClass?: string;
@@ -6,7 +8,7 @@ interface Props {
   /** "sm" para usos pequenos (header, rodapé, badge do hero, até ~56px de altura); "lg" para o watermark decorativo do hero (até ~640px de largura). */
   size?: "sm" | "lg";
 }
-const { class: className = "", imgClass = "h-12 w-auto sm:h-14", priority = false, size = "sm" } = Astro.props;
+const { class: className = "", imgClass = "h-12 w-auto sm:h-14", priority = false, size = "sm" } = localizeDeep(Astro.props, locale);
 
 const dimensions = size === "lg" ? { width: 640, height: 513 } : { width: 210, height: 168 };
 const suffix = size === "lg" ? "-lg" : "-sm";

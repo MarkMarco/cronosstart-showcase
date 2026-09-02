@@ -1,13 +1,15 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { ShowcaseContact } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   contact: ShowcaseContact;
   /** "neutral" usa fundo grafite com verde só no hover — opcional, não altera o padrão dos outros modelos. */
   variant?: "green" | "neutral";
 }
-const { contact, variant = "green" } = Astro.props;
+const { contact, variant = "green" } = localizeDeep(Astro.props, locale);
 const href = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 const variantClass =
   variant === "neutral"

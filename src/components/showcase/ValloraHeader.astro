@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Header próprio da Vallora Advocacia — barra vítrea em grafite/vinho com
 // linha dourada discreta na base, ganha fundo mais opaco e sombra ao rolar.
 // Não reaproveita a composição dos headers de outros modelos.
@@ -6,12 +7,13 @@ import type { NavItem } from "../../config/showcases/types";
 import Icon from "../ui/Icon.astro";
 import MobileMenu from "./MobileMenu.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   ctaLabel: string;
   ctaHref: string;
 }
-const { nav, ctaLabel, ctaHref } = Astro.props;
+const { nav, ctaLabel, ctaHref } = localizeDeep(Astro.props, locale);
 ---
 
 <header
@@ -20,17 +22,17 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
   style="--header-h: 84px"
 >
   <div class="mx-auto flex h-[84px] max-w-[1400px] items-center gap-6 px-6 sm:px-8">
-    <a href="/modelos/advocacia" class="flex shrink-0 items-center" aria-label="Vallora Advocacia — início">
+    <a href={localizedPath("/modelos/advocacia", locale)} class="flex shrink-0 items-center" aria-label={t(locale, "Vallora Advocacia — início")}>
       <slot name="logo" />
     </a>
 
-    <nav class="ml-4 hidden lg:block" aria-label="Navegação principal">
+    <nav class="ml-4 hidden lg:block" aria-label={t(locale, "Navegação principal")}>
       <ul class="flex items-center gap-7">
         {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, locale)}
                 data-vl-nav-link
                 class="relative inline-block py-1 text-[0.83rem] font-medium tracking-wide text-[#F5F0E8]/80 transition-colors hover:text-[#E2C98C]"
               >
@@ -58,7 +60,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
         class="inline-flex h-10 w-10 items-center justify-center rounded-full text-[#F5F0E8] hover:bg-white/10 lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Abrir menu"
+        aria-label={t(locale, "Abrir menu")}
       >
         <Icon name="menu" class="h-6 w-6" data-icon="menu" />
         <Icon name="close" class="hidden h-6 w-6" data-icon="close" />

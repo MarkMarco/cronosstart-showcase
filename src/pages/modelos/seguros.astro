@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import "@fontsource-variable/sora";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
@@ -15,7 +16,8 @@ import TestimonialHighlights from "../../components/showcase/TestimonialHighligh
 import FAQSection from "../../components/showcase/FAQSection.astro";
 import QuoteFormSection from "../../components/showcase/QuoteFormSection.astro";
 import { segurosConfig as config } from "../../config/showcases/seguros";
----
+
+const locale = getLocale(Astro.url);---
 
 <ShowcaseLayout config={config}>
   <HorizonteLogo slot="header-logo" />
@@ -41,7 +43,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     <PlansShowcaseSection
       id="seguros"
       eyebrow="Seguros"
-      title="Coberturas pensadas para cada momento"
+      title={t(locale, "Coberturas pensadas para cada momento")}
       description="Compare as opções abaixo e encontre a proteção certa para você, sua família ou o seu negócio."
       items={config.services}
     />
@@ -55,7 +57,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     <ChecklistBenefitsSection
       id="por-que-escolher"
       eyebrow="Por que escolher a Horizonte"
-      title="Contratar um seguro sem complicação"
+      title={t(locale, "Contratar um seguro sem complicação")}
       description="Menos burocracia e mais clareza, do primeiro contato ao momento em que você mais precisa."
       items={config.benefits}
     />
@@ -65,7 +67,7 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
     <AlternatingProcessSection
       id="como-funciona"
       eyebrow="Como funciona"
-      title="Da cotação ao acompanhamento"
+      title={t(locale, "Da cotação ao acompanhamento")}
       description="Um processo simples, pensado para tirar dúvidas antes de qualquer contratação."
       steps={config.process}
     />
@@ -80,13 +82,13 @@ import { segurosConfig as config } from "../../config/showcases/seguros";
   {config.sections.testimonials && config.testimonials && (
     <TestimonialHighlights
       eyebrow="Depoimentos"
-      title="Quem já contou com a Horizonte"
+      title={t(locale, "Quem já contou com a Horizonte")}
       items={config.testimonials}
     />
   )}
 
   {config.sections.faq && config.faq && (
-    <FAQSection id="duvidas" eyebrow="Dúvidas" title="Perguntas frequentes" items={config.faq} />
+    <FAQSection id="duvidas" eyebrow="Dúvidas" title={t(locale, "Perguntas frequentes")} items={config.faq} />
   )}
 
   {config.quoteForm && (

@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../../layouts/ShowcaseLayout.astro";
@@ -7,6 +8,7 @@ import Icon from "../../../../components/ui/Icon.astro";
 import { valloraAdvocaciaConfig as config, legalArticles } from "../../../../config/showcases/advocacia";
 import type { LegalArticle } from "../../../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 export function getStaticPaths() {
   return legalArticles
     .filter((a) => a.status === "published")
@@ -16,12 +18,12 @@ export function getStaticPaths() {
 interface Props {
   article: LegalArticle;
 }
-const { article } = Astro.props;
+const { article } = localizeDeep(Astro.props, locale);
 
-const seo = {
-  title: `${article.title} — Vallora Advocacia (conteúdo demonstrativo)`,
+const seo = localizeDeep({
+  title: `${article.title} — Vallora Advocacia (${t(locale, "conteúdo demonstrativo")})`,
   description: article.summary,
-};
+}, locale);
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" });
@@ -29,9 +31,10 @@ function formatDate(iso: string) {
 
 const related = (article.relatedSlugs ?? [])
   .map((slug) => legalArticles.find((a) => a.slug === slug && a.status === "published"))
-  .filter(Boolean) as LegalArticle[];
+  .filter(Boolean)
+  .map((item) => localizeDeep(item, locale)) as LegalArticle[];
 
-const articleStructuredData = {
+const articleStructuredData = localizeDeep({
   "@context": "https://schema.org",
   "@type": "Article",
   headline: article.title,
@@ -39,7 +42,7 @@ const articleStructuredData = {
   datePublished: article.date,
   author: { "@type": "Person", name: article.author },
   publisher: { "@type": "Organization", name: "Vallora Advocacia" },
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }} structuredData={articleStructuredData}>
@@ -48,9 +51,9 @@ const articleStructuredData = {
 
   <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
     <div class="mx-auto max-w-3xl">
-      <a href="/modelos/advocacia#conteudos" class="inline-flex items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--primary)]">
+      <a href={localizedPath("/modelos/advocacia#conteudos", locale)} class="inline-flex items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--primary)]">
         <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
-        Voltar aos conteúdos
+        {t(locale, "Voltar aos conteúdos")}
       </a>
 
       <span class="mt-6 inline-flex items-center rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]">
@@ -76,20 +79,20 @@ const articleStructuredData = {
       </div>
 
       <p class="mt-8 rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 text-xs leading-relaxed text-[var(--ink-muted)]">
-        Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.
+        {t(locale, "Conteúdo demonstrativo e informativo. Não substitui orientação jurídica individualizada.")}
       </p>
 
       <a
-        href="/modelos/advocacia#contato"
+        href={localizedPath("/modelos/advocacia#contato", locale)}
         class="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
       >
-        Solicitar atendimento sobre este tema
+        {t(locale, "Solicitar atendimento sobre este tema")}
         <Icon name="arrow-right" class="h-4 w-4" />
       </a>
 
       {related.length > 0 && (
         <div class="mt-14 border-t border-[var(--border)] pt-8">
-          <h2 class="text-lg font-semibold text-[var(--ink)]">Conteúdos relacionados</h2>
+          <h2 class="text-lg font-semibold text-[var(--ink)]">{t(locale, "Conteúdos relacionados")}</h2>
           <div class="mt-5 grid gap-4 sm:grid-cols-2">
             {related.map((r) => (
               <a href={`/modelos/advocacia/conteudos/${r.slug}`} class="rounded-xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 transition-colors hover:border-[var(--accent)]">

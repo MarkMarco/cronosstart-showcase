@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Visual de produto da Nexora Tech. Prioriza fotografia curada (`photoSrc`)
 // quando disponível; caso contrário recorre ao render vetorial premium por
 // tipo de dispositivo (ver src/utils/nexoraProductRender.ts) — nunca ao
@@ -6,6 +7,7 @@
 // src/config/showcases/nexora-tech.ts sobre a estratégia de imagens.
 import { renderVisualHTML, type RenderVariant, type RenderMood } from "../../utils/nexoraProductRender";
 
+const locale = getLocale(Astro.url);
 interface Props {
   variant: RenderVariant;
   accent: string;
@@ -14,7 +16,7 @@ interface Props {
   photoAlt?: string;
   class?: string;
 }
-const { variant, accent, mood = "studio", photoSrc, photoAlt = "", class: className = "" } = Astro.props;
+const { variant, accent, mood = "studio", photoSrc, photoAlt = "", class: className = "" } = localizeDeep(Astro.props, locale);
 
 const markup = photoSrc ? "" : renderVisualHTML({ variant, accent, mood });
 ---

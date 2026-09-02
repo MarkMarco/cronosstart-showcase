@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Carrossel premium do portfólio de modelos: substitui a antiga grade estática.
 // Um card ativo em destaque no centro, vizinhos parcialmente visíveis nas
 // laterais (efeito coverflow via scroll nativo + transform), setas, dots e
@@ -9,10 +10,11 @@ import Icon from "../ui/Icon.astro";
 import ShowcaseCard from "./ShowcaseCard.astro";
 import type { ShowcaseSummary } from "../../config/showcases";
 
+const locale = getLocale(Astro.url);
 interface Props {
   items: ShowcaseSummary[];
 }
-const { items } = Astro.props;
+const { items } = localizeDeep(Astro.props, locale);
 
 function hexToRgbTriplet(hex: string): string {
   const clean = hex.replace("#", "");
@@ -41,7 +43,7 @@ function hexToRgbTriplet(hex: string): string {
       <button
         type="button"
         data-carousel-prev
-        aria-label="Modelo anterior"
+        aria-label={t(locale, "Modelo anterior")}
         class="carousel-arrow absolute left-1 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:pointer-events-none disabled:opacity-30 sm:flex md:left-2"
       >
         <Icon name="arrow-right" class="h-4 w-4 rotate-180" />
@@ -49,7 +51,7 @@ function hexToRgbTriplet(hex: string): string {
       <button
         type="button"
         data-carousel-next
-        aria-label="Próximo modelo"
+        aria-label={t(locale, "Próximo modelo")}
         class="carousel-arrow absolute right-1 top-1/2 z-20 hidden -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:pointer-events-none disabled:opacity-30 sm:flex md:right-2"
       >
         <Icon name="arrow-right" class="h-4 w-4" />
@@ -60,7 +62,7 @@ function hexToRgbTriplet(hex: string): string {
         tabindex="0"
         role="region"
         aria-roledescription="carrossel"
-        aria-label="Modelos disponíveis para demonstração — use as setas do teclado para navegar"
+        aria-label={t(locale, "Modelos disponíveis para demonstração — use as setas do teclado para navegar")}
         class="carousel-track no-scrollbar flex list-none snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth py-4 pl-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] sm:gap-6"
       >
         {
@@ -80,7 +82,7 @@ function hexToRgbTriplet(hex: string): string {
     </div>
 
     <div class="mt-8 flex flex-col items-center gap-3">
-      <div data-carousel-dots role="tablist" aria-label="Selecionar modelo" class="flex items-center gap-2">
+      <div data-carousel-dots role="tablist" aria-label={t(locale, "Selecionar modelo")} class="flex items-center gap-2">
         {
           items.map((item, index) => (
             <button

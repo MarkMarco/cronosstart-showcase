@@ -1,14 +1,17 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import { pricingTiers } from "../../config/pricing";
 import { buildWhatsappLink } from "../../config/company";
 
+const locale = getLocale(Astro.url);
+const localizedPricingTiers = localizeDeep(pricingTiers, locale);
 // Mensagem do WhatsApp varia por plano — mantém o texto dos planos (pricing.ts) intocado.
-const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
+const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = localizeDeep({
   essencial: "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre o plano Site Essencial.",
   profissional: "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre o plano Site Profissional.",
   "sob-medida": "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre um Projeto Sob Medida.",
-};
+}, locale);
 ---
 
 <section id="planos" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
@@ -21,16 +24,16 @@ const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
 
   <div class="relative mx-auto max-w-6xl">
     <div class="mx-auto max-w-2xl text-center" data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Planos e investimento</p>
-      <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Um plano para cada momento do seu negócio</h2>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Planos e investimento")}</p>
+      <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Um plano para cada momento do seu negócio")}</h2>
       <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-        Estrutura, personalização e recursos técnicos ajustados ao que sua empresa precisa agora.
+        {t(locale, "Estrutura, personalização e recursos técnicos ajustados ao que sua empresa precisa agora.")}
       </p>
     </div>
 
     <div class="mt-14 grid gap-6 lg:grid-cols-3">
       {
-        pricingTiers.map((tier, index) => (
+        localizedPricingTiers.map((tier, index) => (
           <div
             data-animate
             style={`transition-delay: ${index * 80}ms`}
@@ -45,14 +48,14 @@ const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
                 class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-white"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%);"
               >
-                Mais escolhido
+                {t(locale, "Mais escolhido")}
               </span>
             )}
 
             <h3 class="text-lg font-semibold text-white">{tier.name}</h3>
             <p class="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{tier.description}</p>
 
-            <p class="mt-6 text-sm font-semibold text-[var(--accent)]">{tier.price ?? "Investimento conforme o projeto"}</p>
+            <p class="mt-6 text-sm font-semibold text-[var(--accent)]">{tier.price ?? t(locale, "Investimento conforme o projeto")}</p>
 
             <ul class="mt-5 flex-1 space-y-2.5">
               {tier.features.map((feature) => (
@@ -72,19 +75,19 @@ const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
                 class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 10px 25px -8px rgba(47,95,209,0.55);"
               >
-                Solicitar proposta
+                {t(locale, "Solicitar proposta")}
               </button>
               <a
                 href={buildWhatsappLink(WHATSAPP_MESSAGE_BY_SLUG[tier.slug])}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Falar no WhatsApp sobre o plano ${tier.name}`}
+                aria-label={`${t(locale, "Falar no WhatsApp sobre o plano")} ${tier.name}`}
                 data-ga-origin={`planos-${tier.slug}`}
                 data-ga-plan={tier.name}
                 class="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />
-                Falar no WhatsApp
+                {t(locale, "Falar no WhatsApp")}
               </a>
             </div>
           </div>
@@ -93,7 +96,7 @@ const WHATSAPP_MESSAGE_BY_SLUG: Record<string, string> = {
     </div>
 
     <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-white/40" data-animate>
-      Os recursos, prazos e valores dependem da estrutura e das funcionalidades de cada projeto.
+      {t(locale, "Os recursos, prazos e valores dependem da estrutura e das funcionalidades de cada projeto.")}
     </p>
   </div>
 </section>

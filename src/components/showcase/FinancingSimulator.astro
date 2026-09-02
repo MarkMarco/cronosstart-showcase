@@ -1,13 +1,15 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { VehicleItem } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   vehicles: VehicleItem[];
 }
-const { vehicles } = Astro.props;
+const { vehicles } = localizeDeep(Astro.props, locale);
 
 const priceOf = (price: string) => Number(price.replace(/[^\d]/g, ""));
-const installmentOptions = [12, 24, 36, 48, 60];
+const installmentOptions = localizeDeep([12, 24, 36, 48, 60], locale);
 ---
 
 <div
@@ -17,7 +19,7 @@ const installmentOptions = [12, 24, 36, 48, 60];
 >
   <div class="grid gap-4 sm:grid-cols-2">
     <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-      Veículo
+      {t(locale, "Veículo")}
       <select
         data-field="vehicle"
         class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
@@ -27,7 +29,7 @@ const installmentOptions = [12, 24, 36, 48, 60];
     </label>
 
     <label class="block text-sm font-medium text-[var(--ink)]">
-      Entrada
+      {t(locale, "Entrada")}
       <div class="mt-1.5 flex items-center gap-3">
         <input type="range" data-field="down" min="10" max="70" step="5" value="20" class="w-full accent-[var(--primary)]" />
         <span data-field="down-value" class="w-12 shrink-0 text-right text-sm font-semibold text-[var(--ink)]">20%</span>
@@ -35,7 +37,7 @@ const installmentOptions = [12, 24, 36, 48, 60];
     </label>
 
     <label class="block text-sm font-medium text-[var(--ink)]">
-      Parcelas
+      {t(locale, "Parcelas")}
       <select
         data-field="installments"
         class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
@@ -47,20 +49,20 @@ const installmentOptions = [12, 24, 36, 48, 60];
 
   <div class="mt-6 grid gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:grid-cols-3">
     <div>
-      <p class="text-xs text-[var(--ink-muted)]">Valor financiado</p>
+      <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Valor financiado")}</p>
       <p data-result="financed" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--ink)]">—</p>
     </div>
     <div>
-      <p class="text-xs text-[var(--ink-muted)]">Parcela estimada</p>
+      <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Parcela estimada")}</p>
       <p data-result="installment" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--accent)]">—</p>
     </div>
     <div>
-      <p class="text-xs text-[var(--ink-muted)]">Entrada estimada</p>
+      <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Entrada estimada")}</p>
       <p data-result="down" class="mt-1 font-[var(--font-heading)] text-lg font-semibold text-[var(--ink)]">—</p>
     </div>
   </div>
   <p class="mt-4 text-xs text-[var(--ink-muted)]">
-    Simulação demonstrativa com taxa ilustrativa de 1,9% a.m. — não representa uma oferta real de crédito.
+    {t(locale, "Simulação demonstrativa com taxa ilustrativa de 1,9% a.m. — não representa uma oferta real de crédito.")}
   </p>
 </div>
 

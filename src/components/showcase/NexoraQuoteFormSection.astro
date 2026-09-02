@@ -1,13 +1,15 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { CtaBand, ShowcaseContact } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   cta: CtaBand;
   contact: ShowcaseContact;
 }
-const { id, cta, contact } = Astro.props;
+const { id, cta, contact } = localizeDeep(Astro.props, locale);
 const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 ---
 
@@ -25,78 +27,78 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
 
       <a href={whatsappHref} target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5">
         <Icon name="whatsapp" class="h-5 w-5" />
-        Falar pelo WhatsApp
+        {t(locale, "Falar pelo WhatsApp")}
       </a>
-      <p class="mt-2 text-xs text-[var(--ink-muted)]">Número de WhatsApp fictício ({contact.whatsappNumber}), apenas para demonstração.</p>
+      <p class="mt-2 text-xs text-[var(--ink-muted)]">{t(locale, "Número de WhatsApp fictício")} ({contact.whatsappNumber}), {t(locale, "apenas para demonstração.")}</p>
     </div>
 
     <form data-nx-quote-form data-animate style="transition-delay: 80ms" class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-7">
-      <p class="mb-5 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Formulário demonstrativo — não envia dados</p>
+      <p class="mb-5 text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Formulário demonstrativo — não envia dados")}</p>
       <div class="grid gap-4 sm:grid-cols-2">
         <label class="block text-sm font-medium text-white sm:col-span-2">
-          Nome
+          {t(locale, "Nome")}
           <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
         </label>
         <label class="block text-sm font-medium text-white">
-          Telefone
+          {t(locale, "Telefone")}
           <input type="tel" name="phone" required placeholder="(00) 00000-0000" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
         </label>
         <label class="block text-sm font-medium text-white">
-          E-mail
+          {t(locale, "E-mail")}
           <input type="email" name="email" required class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
         </label>
         <label class="block text-sm font-medium text-white">
-          Cidade
+          {t(locale, "Cidade")}
           <input type="text" name="city" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
         </label>
         <label class="block text-sm font-medium text-white">
-          Categoria de interesse
+          {t(locale, "Categoria de interesse")}
           <select name="category" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60">
-            <option>Smartphones</option>
-            <option>Notebooks</option>
-            <option>Computadores</option>
-            <option>Monitores</option>
-            <option>Áudio</option>
-            <option>Acessórios</option>
-            <option>Casa inteligente</option>
-            <option>Gamer</option>
-            <option>Não sei ainda</option>
+            <option>{t(locale, "Smartphones")}</option>
+            <option>{t(locale, "Notebooks")}</option>
+            <option>{t(locale, "Computadores")}</option>
+            <option>{t(locale, "Monitores")}</option>
+            <option>{t(locale, "Áudio")}</option>
+            <option>{t(locale, "Acessórios")}</option>
+            <option>{t(locale, "Casa inteligente")}</option>
+            <option>{t(locale, "Gamer")}</option>
+            <option>{t(locale, "Não sei ainda")}</option>
           </select>
         </label>
         <label class="block text-sm font-medium text-white sm:col-span-2">
-          Produto, kit ou comparação de interesse
-          <input type="text" name="interest" data-quote-interest placeholder="Ex.: Nexora Vision X1, ou Kit Setup Gamer" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
+          {t(locale, "Produto, kit ou comparação de interesse")}
+          <input type="text" name="interest" data-quote-interest placeholder={t(locale, "Ex.: Nexora Vision X1, ou Kit Setup Gamer")} class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60" />
         </label>
         <label class="block text-sm font-medium text-white">
-          Perfil de uso
+          {t(locale, "Perfil de uso")}
           <select name="usage" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60">
-            <option>Trabalho</option>
-            <option>Estudo</option>
-            <option>Jogos</option>
-            <option>Criação de conteúdo</option>
-            <option>Casa inteligente</option>
-            <option>Uso geral</option>
+            <option>{t(locale, "Trabalho")}</option>
+            <option>{t(locale, "Estudo")}</option>
+            <option>{t(locale, "Jogos")}</option>
+            <option>{t(locale, "Criação de conteúdo")}</option>
+            <option>{t(locale, "Casa inteligente")}</option>
+            <option>{t(locale, "Uso geral")}</option>
           </select>
         </label>
         <label class="block text-sm font-medium text-white">
-          Orçamento aproximado
+          {t(locale, "Orçamento aproximado")}
           <select name="budget" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60">
-            <option>Até R$ 1.000</option>
-            <option>R$ 1.000 a R$ 3.000</option>
-            <option>R$ 3.000 a R$ 8.000</option>
-            <option>Acima de R$ 8.000</option>
+            <option>{t(locale, "Até R$ 1.000")}</option>
+            <option>{t(locale, "R$ 1.000 a R$ 3.000")}</option>
+            <option>{t(locale, "R$ 3.000 a R$ 8.000")}</option>
+            <option>{t(locale, "Acima de R$ 8.000")}</option>
           </select>
         </label>
         <label class="block text-sm font-medium text-white sm:col-span-2">
-          Mensagem
+          {t(locale, "Mensagem")}
           <textarea name="message" rows="3" class="mt-1.5 w-full resize-none rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60"></textarea>
         </label>
         <label class="block text-sm font-medium text-white sm:col-span-2">
-          Preferência de contato
+          {t(locale, "Preferência de contato")}
           <select name="contactPreference" class="mt-1.5 w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none focus:border-[var(--accent)]/60">
-            <option>WhatsApp</option>
-            <option>E-mail</option>
-            <option>Telefone</option>
+            <option>{t(locale, "WhatsApp")}</option>
+            <option>{t(locale, "E-mail")}</option>
+            <option>{t(locale, "Telefone")}</option>
           </select>
         </label>
         <button
@@ -107,7 +109,7 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
           {cta.buttonLabel}
         </button>
         <p data-nx-quote-feedback role="status" class="hidden text-sm font-medium text-[var(--accent)] sm:col-span-2">
-          Mensagem de demonstração — nenhum dado foi enviado.
+          {t(locale, "Mensagem de demonstração — nenhum dado foi enviado.")}
         </p>
       </div>
     </form>

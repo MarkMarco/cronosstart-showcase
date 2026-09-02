@@ -1,12 +1,14 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { ProtectionPickerContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: ProtectionPickerContent;
   id?: string;
 }
-const { content, id } = Astro.props;
+const { content, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">

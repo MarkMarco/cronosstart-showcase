@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -7,7 +9,7 @@ interface Props {
   class?: string;
 }
 
-const { eyebrow, title, description, align = "left", class: className = "" } = Astro.props;
+const { eyebrow, title, description, align = "left", class: className = "" } = localizeDeep(Astro.props, locale);
 const alignClass = align === "center" ? "text-center mx-auto" : "text-left";
 ---
 

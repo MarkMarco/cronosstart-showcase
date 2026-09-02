@@ -1,11 +1,13 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { HighlightBandContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: HighlightBandContent;
 }
-const { content } = Astro.props;
+const { content } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="bg-[var(--primary)] px-6 py-16 sm:py-20">

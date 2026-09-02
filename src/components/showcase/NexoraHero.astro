@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Hero técnico da Nexora Tech — composição assimétrica com "painel de
 // especificações" anotado ao redor do visual do produto em destaque, não um
 // banner estático. Distinto da composição editorial da Maison Lume.
@@ -7,12 +8,13 @@ import NexoraProductVisual from "./NexoraProductVisual.astro";
 import { productRenderVariant, moodForCategory } from "../../utils/nexoraProductRender";
 import type { CatalogProduct } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   product: CatalogProduct;
   accent: string;
   complementary: { product: CatalogProduct; accent: string }[];
 }
-const { product, accent, complementary } = Astro.props;
+const { product, accent, complementary } = localizeDeep(Astro.props, locale);
 const visualVariant = productRenderVariant(product);
 const visualMood = moodForCategory(product.category);
 const photoSrc = product.images?.main;
@@ -39,7 +41,7 @@ const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 4);
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={`background: ${accent};`} />
           <span class="relative inline-flex h-1.5 w-1.5 rounded-full" style={`background: ${accent};`} />
         </span>
-        <span class="text-xs font-medium text-[var(--ink-muted)]">Lançamento Nexora — modelo demonstrativo</span>
+        <span class="text-xs font-medium text-[var(--ink-muted)]">{t(locale, "Lançamento Nexora — modelo demonstrativo")}</span>
       </div>
 
       <h1 class="text-balance font-[var(--font-heading)] text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
@@ -50,7 +52,7 @@ const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 4);
       </p>
 
       <div class="mt-7 flex flex-wrap items-baseline gap-2.5">
-        <span class="text-xs uppercase tracking-wide text-[var(--ink-muted)]">A partir de</span>
+        <span class="text-xs uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "A partir de")}</span>
         <span class="font-[var(--font-heading)] text-3xl font-semibold text-white">{formatBRL(product.price)}</span>
       </div>
       <p class="mt-1 text-sm text-[var(--ink-muted)]">ou 10x de {formatBRL(product.price / 10)} (demonstrativo)</p>
@@ -62,21 +64,21 @@ const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 4);
           class="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
           style={`background: linear-gradient(135deg, var(--primary) 0%, ${accent} 100%);`}
         >
-          Ver detalhes
+          {t(locale, "Ver detalhes")}
           <Icon name="arrow-right" class="h-4 w-4" />
         </button>
         <a
           href="#lancamentos"
           class="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/30"
         >
-          Explorar lançamentos
+          {t(locale, "Explorar lançamentos")}
         </a>
       </div>
 
       {
         complementary.length > 0 && (
           <div class="mt-9 flex items-center gap-3">
-            <span class="text-xs text-[var(--ink-muted)]">Combina com</span>
+            <span class="text-xs text-[var(--ink-muted)]">{t(locale, "Combina com")}</span>
             <div class="flex -space-x-2">
               {complementary.map((c) => (
                 <button
@@ -101,7 +103,7 @@ const quickSpecs = Object.entries(product.specs ?? {}).slice(0, 4);
       }
 
       <p class="mt-8 text-xs text-[var(--ink-muted)]">
-        Produto, preço e disponibilidade fictícios — modelo demonstrativo do portfólio CronosStart.
+        {t(locale, "Produto, preço e disponibilidade fictícios — modelo demonstrativo do portfólio CronosStart.")}
       </p>
     </div>
 

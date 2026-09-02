@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
@@ -12,16 +14,17 @@ import Analytics from "../components/analytics/Analytics.astro";
 import Icon from "../components/ui/Icon.astro";
 import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
 
-const title = "Sites para Imobiliárias e Corretores | CronosStart";
+const locale = getLocale(Astro.url);
+const title = t(locale, "Sites para Imobiliárias e Corretores | CronosStart");
 const description =
-  "Criamos sites para imobiliárias e corretores com catálogo de imóveis, filtros, integração com WhatsApp, painel administrativo e estrutura personalizada.";
+  t(locale, "Criamos sites para imobiliárias e corretores com catálogo de imóveis, filtros, integração com WhatsApp, painel administrativo e estrutura personalizada.");
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const whatsappImoveis = buildWhatsappLink(
   "Olá! Vi a página de sites para imobiliárias da CronosStart e gostaria de saber mais sobre um site para a minha imobiliária."
 );
 
-const problems = [
+const problems = localizeDeep([
   { icon: "refresh" as const, title: "Imóveis desatualizados", description: "Anúncios vendidos ou alugados que continuam aparecendo, gerando contato por algo que não existe mais." },
   { icon: "layers" as const, title: "Dificuldade para apresentar o catálogo", description: "Sem uma estrutura própria, fica difícil organizar imóveis por tipo, região ou faixa de valor." },
   { icon: "compare" as const, title: "Dependência exclusiva de portais", description: "Portais ajudam na divulgação, mas não substituem uma vitrine própria que a imobiliária controla." },
@@ -29,40 +32,40 @@ const problems = [
   { icon: "sparkle" as const, title: "Ausência de identidade própria", description: "Perfis genéricos em portais não transmitem a identidade e a credibilidade da imobiliária." },
   { icon: "maximize" as const, title: "Site antigo ou ruim no celular", description: "A maior parte de quem busca imóvel navega pelo celular — um site que não se adapta bem afasta interessados." },
   { icon: "settings" as const, title: "Depender do desenvolvedor a cada mudança", description: "Atualizar preço, disponibilidade ou fotos não deveria exigir abrir um chamado toda vez." },
-];
+], locale);
 
-const catalogFeatures = [
+const catalogFeatures = localizeDeep([
   { icon: "file-check" as const, title: "Catálogo de imóveis", description: "Todos os imóveis organizados em um só lugar, com fotos, valores e informações." },
   { icon: "home" as const, title: "Página individual de cada imóvel", description: "Cada imóvel com sua própria página, com fotos, descrição, localização e formulário de interesse." },
   { icon: "search" as const, title: "Filtros de busca", description: "Filtros por tipo, região e valor para o visitante encontrar rapidamente o que procura." },
   { icon: "star" as const, title: "Imóveis em destaque", description: "Destaque para os imóveis prioritários da imobiliária na página inicial." },
   { icon: "key" as const, title: "Venda e locação", description: "Estrutura preparada para imóveis à venda e para locação, com identificação clara de cada operação." },
   { icon: "map-pin" as const, title: "Localização e mapas", description: "Localização de cada imóvel apresentada de forma clara, quando fizer sentido para o projeto." },
-];
+], locale);
 
-const panelFeatures = [
+const panelFeatures = localizeDeep([
   { icon: "settings" as const, label: "Atualização de preço e disponibilidade" },
   { icon: "camera" as const, label: "Atualização de fotos" },
   { icon: "layers" as const, label: "Atualização de informações e descrições" },
   { icon: "users" as const, label: "Cadastro e gestão de corretores" },
-];
+], locale);
 
-const included = [
+const included = localizeDeep([
   { icon: "key" as const, label: "Domínio" },
   { icon: "layers" as const, label: "Hospedagem" },
   { icon: "shield-check" as const, label: "Certificado SSL e suporte" },
   { icon: "maximize" as const, label: "Versão adaptada para celular" },
   { icon: "sliders" as const, label: "Personalização conforme a identidade da imobiliária" },
-];
+], locale);
 
-const steps = [
+const steps = localizeDeep([
   { title: "Entendemos o negócio", description: "Conversamos sobre o portfólio de imóveis, a região de atuação e como a imobiliária trabalha hoje." },
   { title: "Definimos catálogo e painel", description: "Estruturamos o catálogo, os filtros e o escopo do painel administrativo conforme a necessidade." },
   { title: "Desenvolvemos e personalizamos", description: "Construímos o site com a identidade da imobiliária — cores, textos, fotos e funcionalidades." },
   { title: "Publicamos e treinamos a equipe", description: "Colocamos o site no ar, orientamos o uso do painel e seguimos disponíveis para suporte." },
-];
+], locale);
 
-const faqItems = [
+const faqItems = localizeDeep([
   {
     question: "Por que uma imobiliária precisa de um site próprio, além dos portais?",
     answer:
@@ -92,9 +95,9 @@ const faqItems = [
     question: "O site funciona bem no celular?",
     answer: "Sim. Todos os sites são responsivos, se adaptando para funcionar bem em celular, tablet e computador.",
   },
-];
+], locale);
 
-const structuredData = {
+const structuredData = localizeDeep({
   "@context": "https://schema.org",
   "@graph": [
     ...homeStructuredData["@graph"],
@@ -127,11 +130,11 @@ const structuredData = {
       })),
     },
   ],
-};
+}, locale);
 ---
 
 <html
-  lang="pt-BR"
+  lang={locale}
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
@@ -149,10 +152,11 @@ const structuredData = {
     <Analytics />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LocaleSwitcher />
     <SiteHeader />
 
     <main>
-      <!-- Hero -->
+      
       <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div
           class="pointer-events-none absolute -right-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
@@ -163,14 +167,13 @@ const structuredData = {
         <div class="relative mx-auto max-w-4xl text-center">
           <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
             <Icon name="home" class="h-4 w-4" />
-            Para imobiliárias e corretores
+            {t(locale, "Para imobiliárias e corretores")}
           </p>
           <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
-            Sites profissionais para imobiliárias e corretores
+            {t(locale, "Sites profissionais para imobiliárias e corretores")}
           </h1>
           <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
-            Catálogo de imóveis, filtros de busca, integração com WhatsApp e painel administrativo para imobiliárias
-            e corretores que precisam apresentar imóveis e gerar contatos com uma estrutura própria.
+            {t(locale, "Catálogo de imóveis, filtros de busca, integração com WhatsApp e painel administrativo para imobiliárias\n            e corretores que precisam apresentar imóveis e gerar contatos com uma estrutura própria.")}
           </p>
 
           <div class="mt-9 flex flex-wrap justify-center gap-4">
@@ -182,7 +185,7 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
             >
-              Solicitar proposta
+              {t(locale, "Solicitar proposta")}
             </button>
             <a
               href={whatsappImoveis}
@@ -192,18 +195,18 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
             >
               <Icon name="whatsapp" class="h-4 w-4" />
-              Falar no WhatsApp
+              {t(locale, "Falar no WhatsApp")}
             </a>
           </div>
         </div>
       </section>
 
-      <!-- Problemas comuns do setor -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Situações comuns</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Problemas comuns do setor imobiliário</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Situações comuns")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Problemas comuns do setor imobiliário")}</h2>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {
@@ -224,12 +227,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Catálogo e páginas de imóveis -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Catálogo</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Catálogo e páginas de imóveis</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Catálogo")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Catálogo e páginas de imóveis")}</h2>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {
@@ -250,14 +253,14 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Painel administrativo -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Autonomia</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Painel administrativo</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Autonomia")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Painel administrativo")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Atualize os imóveis do seu site sem depender do desenvolvedor a cada mudança.
+              {t(locale, "Atualize os imóveis do seu site sem depender do desenvolvedor a cada mudança.")}
             </p>
           </div>
           <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
@@ -272,30 +275,28 @@ const structuredData = {
           </ul>
           <p class="mx-auto mt-6 max-w-xl text-center text-sm leading-relaxed text-white/40">
             As telas e permissões do painel são definidas conforme o escopo de cada projeto — veja também a página de{" "}
-            <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a>.
+            <a href={localizedPath("/sites-com-painel-administrativo", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites com painel administrativo")}</a>.
           </p>
         </div>
       </section>
 
-      <!-- WhatsApp e formulários -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Contato</p>
-          <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Integração com WhatsApp e formulário de interesse</h2>
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Contato")}</p>
+          <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Integração com WhatsApp e formulário de interesse")}</h2>
           <p class="mt-5 text-base leading-relaxed text-[var(--ink-muted)]">
-            Quem visita a página de um imóvel e se interessa deve conseguir falar com a imobiliária em poucos
-            cliques. Por isso, cada imóvel pode ter um caminho direto até o WhatsApp e um formulário de interesse,
-            evitando que o contato se perca entre canais diferentes.
+            {t(locale, "Quem visita a página de um imóvel e se interessa deve conseguir falar com a imobiliária em poucos\n            cliques. Por isso, cada imóvel pode ter um caminho direto até o WhatsApp e um formulário de interesse,\n            evitando que o contato se perca entre canais diferentes.")}
           </p>
         </div>
       </section>
 
-      <!-- O que está incluído -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que está incluído</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Serviço completo")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "O que está incluído")}</h2>
           </div>
           <ul class="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
             {
@@ -310,12 +311,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Demonstração Vértice Imóveis -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Demonstração</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Vértice Imóveis — modelo demonstrativo</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Demonstração")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Vértice Imóveis — modelo demonstrativo")}</h2>
           </div>
           <div class="mt-10 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.02]">
             <div class="grid gap-0 sm:grid-cols-2">
@@ -334,19 +335,17 @@ const structuredData = {
                 </picture>
               </div>
               <div class="flex flex-col justify-center p-7 sm:p-9">
-                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">Imobiliária</p>
-                <h3 class="mt-2 text-xl font-semibold text-white">Vértice Imóveis</h3>
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">{t(locale, "Imobiliária")}</p>
+                <h3 class="mt-2 text-xl font-semibold text-white">{t(locale, "Vértice Imóveis")}</h3>
                 <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-                  Modelo demonstrativo com catálogo de imóveis, busca por tipo e região, ficha de corretores e
-                  formulário de interesse. A Vértice Imóveis é um projeto fictício, usado apenas para apresentar
-                  visualmente as possibilidades de um site imobiliário — não representa uma empresa real.
+                  {t(locale, "Modelo demonstrativo com catálogo de imóveis, busca por tipo e região, ficha de corretores e\n                  formulário de interesse. A Vértice Imóveis é um projeto fictício, usado apenas para apresentar\n                  visualmente as possibilidades de um site imobiliário — não representa uma empresa real.")}
                 </p>
                 <div class="mt-6 flex flex-wrap gap-3">
                   <a
-                    href="/modelos/imobiliaria"
+                    href={localizedPath("/modelos/imobiliaria", locale)}
                     class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0a0e1a] transition-all hover:-translate-y-0.5"
                   >
-                    Ver demonstração para imobiliária
+                    {t(locale, "Ver demonstração para imobiliária")}
                     <Icon name="arrow-right" class="h-3.5 w-3.5" />
                   </a>
                   <button
@@ -356,7 +355,7 @@ const structuredData = {
                     data-contact-origin="sites-imobiliarias-demo"
                     class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   >
-                    Quero um site como este
+                    {t(locale, "Quero um site como este")}
                   </button>
                 </div>
               </div>
@@ -365,12 +364,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Como funciona -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-5xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Do primeiro contato ao site no ar</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Como funciona")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Do primeiro contato ao site no ar")}</h2>
           </div>
           <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {
@@ -386,29 +385,29 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- FAQ -->
+      
       <FAQSection
         id="faq-imobiliarias"
         eyebrow="Dúvidas"
-        title="Perguntas frequentes de imobiliárias e corretores"
+        title={t(locale, "Perguntas frequentes de imobiliárias e corretores")}
         description="Respostas diretas para quem está avaliando um site para o setor imobiliário."
         items={faqItems}
         groupName="imobiliarias-faq"
       />
 
-      <!-- CTA final -->
+      
       <section class="relative overflow-hidden px-6 py-16 sm:py-24">
         <div class="relative mx-auto max-w-4xl">
           <div
             class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center sm:px-16 sm:py-20"
             style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
           >
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Vamos conversar?")}</p>
             <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Sua imobiliária com uma vitrine própria
+              {t(locale, "Sua imobiliária com uma vitrine própria")}
             </h2>
             <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
-              Conte como sua imobiliária trabalha hoje e ajudamos a definir o catálogo e o painel ideais.
+              {t(locale, "Conte como sua imobiliária trabalha hoje e ajudamos a definir o catálogo e o painel ideais.")}
             </p>
             <div class="mt-9 flex flex-wrap justify-center gap-4">
               <button
@@ -419,7 +418,7 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
               >
-                Solicitar proposta
+                {t(locale, "Solicitar proposta")}
               </button>
               <a
                 href={whatsappImoveis}
@@ -429,24 +428,21 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />
-                Falar no WhatsApp
+                {t(locale, "Falar no WhatsApp")}
               </a>
             </div>
 
             <p class="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-white/40">
-              As funcionalidades apresentadas dependem do escopo de cada projeto e integrações externas precisam ser
-              analisadas caso a caso. Não há promessa de resultado ou posicionamento em buscadores. A Vértice Imóveis
-              é um modelo demonstrativo e não representa uma empresa real.
+              {t(locale, "As funcionalidades apresentadas dependem do escopo de cada projeto e integrações externas precisam ser\n              analisadas caso a caso. Não há promessa de resultado ou posicionamento em buscadores. A Vértice Imóveis\n              é um modelo demonstrativo e não representa uma empresa real.")}
             </p>
 
             <p class="mx-auto mt-6 max-w-lg text-xs leading-relaxed text-white/40">
-              Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
-              os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a>,
-              <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a> e as páginas de
-              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">painel administrativo</a>,
-              <a href="/sites-para-pequenas-empresas" class="underline underline-offset-2 hover:text-white">pequenas empresas</a> e
-              <a href="/criacao-de-sites-blumenau" class="underline underline-offset-2 hover:text-white">criação de sites em Blumenau</a> e a de
-              <a href="/sites-para-restaurantes" class="underline underline-offset-2 hover:text-white">sites para restaurantes</a>.
+              {t(locale, "Veja também nossos")} <a href={localizedPath("/#modelos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "modelos demonstrativos")}</a>{t(locale, ",\n              os")} <a href={localizedPath("/#planos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "planos disponíveis")}</a>,
+              <a href={localizedPath("/#como-funciona", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "como funciona o projeto")}</a> {t(locale, "e as páginas de")}
+              <a href={localizedPath("/sites-com-painel-administrativo", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "painel administrativo")}</a>,
+              <a href={localizedPath("/sites-para-pequenas-empresas", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "pequenas empresas")}</a> {t(locale, "e")}
+              <a href={localizedPath("/criacao-de-sites-blumenau", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "criação de sites em Blumenau")}</a> {t(locale, "e a de")}
+              <a href={localizedPath("/sites-para-restaurantes", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites para restaurantes")}</a>.
             </p>
           </div>
         </div>

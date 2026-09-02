@@ -1,23 +1,25 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { LocationContent, ShowcaseContact, ShowcaseCompany } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: LocationContent;
   contact: ShowcaseContact;
   company: ShowcaseCompany;
   id?: string;
 }
-const { content, contact, company, id } = Astro.props;
+const { content, contact, company, id } = localizeDeep(Astro.props, locale);
 const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
   <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center">
     <div data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Localização e horários</p>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Localização e horários")}</p>
       <h2 class="font-[var(--font-heading)] text-3xl font-medium tracking-tight text-[var(--ink)] sm:text-4xl">
-        Venha nos visitar
+        {t(locale, "Venha nos visitar")}
       </h2>
       <p class="mt-4 flex items-start gap-2.5 text-base text-[var(--ink-muted)]">
         <Icon name="map-pin" class="mt-0.5 h-5 w-5 shrink-0 text-[var(--accent)]" />
@@ -45,10 +47,10 @@ const whatsappHref = `https://wa.me/${contact.whatsappNumber}?text=${encodeURICo
         class="mt-7 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
       >
         <Icon name="whatsapp" class="h-5 w-5" />
-        Falar pelo WhatsApp
+        {t(locale, "Falar pelo WhatsApp")}
       </a>
       <p class="mt-2 text-xs text-[var(--ink-muted)]">
-        Número de WhatsApp fictício ({contact.whatsappNumber}), apenas para demonstração.
+        {t(locale, "Número de WhatsApp fictício")} ({contact.whatsappNumber}), {t(locale, "apenas para demonstração.")}
       </p>
     </div>
 

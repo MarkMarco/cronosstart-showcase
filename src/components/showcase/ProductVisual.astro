@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Placeholder visual (sem foto real) para produtos/categorias/coleções/
 // ambientes de qualquer modelo demonstrativo baseado em catálogo. Reaproveita
 // o mesmo princípio das ilustrações CSS/SVG já usadas em AccountingHeroVisual
@@ -6,15 +7,16 @@
 import Icon from "../ui/Icon.astro";
 import type { CatalogTone, IconName } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   tone: CatalogTone;
   icon: IconName;
   class?: string;
   iconClass?: string;
 }
-const { tone, icon, class: className = "", iconClass = "h-10 w-10" } = Astro.props;
+const { tone, icon, class: className = "", iconClass = "h-10 w-10" } = localizeDeep(Astro.props, locale);
 
-const toneGradient: Record<CatalogTone, string> = {
+const toneGradient: Record<CatalogTone, string> = localizeDeep({
   sand: "linear-gradient(145deg, #efe4d2 0%, #e2cfae 100%)",
   linen: "linear-gradient(145deg, #f4efe6 0%, #e6dccb 100%)",
   walnut: "linear-gradient(145deg, #cbb08c 0%, #8a6a49 100%)",
@@ -22,9 +24,9 @@ const toneGradient: Record<CatalogTone, string> = {
   stone: "linear-gradient(145deg, #d8d2c6 0%, #b6ac9a 100%)",
   clay: "linear-gradient(145deg, #d1a37e 0%, #a9784f 100%)",
   sage: "linear-gradient(145deg, #cbd3bf 0%, #a7b190 100%)",
-};
+}, locale);
 
-const toneInk: Record<CatalogTone, string> = {
+const toneInk: Record<CatalogTone, string> = localizeDeep({
   sand: "#5c4a30",
   linen: "#6b6153",
   walnut: "#f4ece0",
@@ -32,7 +34,7 @@ const toneInk: Record<CatalogTone, string> = {
   stone: "#5a5346",
   clay: "#4a2f1a",
   sage: "#3c4430",
-};
+}, locale);
 ---
 
 <div

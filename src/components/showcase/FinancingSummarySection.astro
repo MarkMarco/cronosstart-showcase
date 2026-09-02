@@ -1,12 +1,14 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { FinancingContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: FinancingContent;
   id?: string;
 }
-const { content, id } = Astro.props;
+const { content, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
@@ -19,7 +21,7 @@ const { content, id } = Astro.props;
       <p class="mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">{content.description}</p>
 
       <a
-        href="/modelos/aurum-motors/financiamento"
+        href={localizedPath("/modelos/aurum-motors/financiamento", locale)}
         class="mt-7 inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-7 py-3.5 text-sm font-semibold text-[var(--primary-ink)] shadow-sm transition-transform hover:-translate-y-0.5"
       >
         {content.ctaLabel}

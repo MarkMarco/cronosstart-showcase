@@ -1,4 +1,6 @@
 ---
+import { alternateLocalePath, getLocale, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   title: string;
   description: string;
@@ -11,10 +13,28 @@ interface Props {
   structuredData?: Record<string, unknown>;
 }
 
-const { title, description, canonicalURL, ogImage, ogImageAlt, robots, siteName, themeColor, structuredData } =
-  Astro.props;
+const { title, description, ogImage, ogImageAlt, robots, siteName, themeColor, structuredData } =
+  localizeDeep(Astro.props, locale);
 
 const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : undefined;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const alternateURL = new URL(alternateLocalePath(Astro.url.pathname), Astro.site);
+const ptURL = locale === "pt-BR" ? canonicalURL : alternateURL;
+const esURL = locale === "es" ? canonicalURL : alternateURL;
+const localizedStructuredData = structuredData
+  ? JSON.parse(JSON.stringify(structuredData), (key, value) => {
+      if (key === "inLanguage") return locale;
+      if (locale === "es" && typeof value === "string" && /^(?:name|headline|description|text|serviceType|articleSection)$/.test(key)) {
+        return t(locale, value);
+      }
+      if (locale === "es" && typeof value === "string" && value.startsWith(Astro.site?.origin ?? "https://cronosstart.com.br")) {
+        const parsed = new URL(value);
+        if (!parsed.pathname.startsWith("/es/")) parsed.pathname = `/es${parsed.pathname}`;
+        return parsed.toString();
+      }
+      return value;
+    })
+  : undefined;
 ---
 
 <meta charset="utf-8" />
@@ -26,6 +46,9 @@ const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : unde
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="canonical" href={canonicalURL} />
+<link rel="alternate" hreflang="pt-BR" href={ptURL} />
+<link rel="alternate" hreflang="es" href={esURL} />
+<link rel="alternate" hreflang="x-default" href={ptURL} />
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="generator" content={Astro.generator} />
@@ -34,7 +57,7 @@ const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : unde
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:locale" content="pt_BR" />
+<meta property="og:locale" content={locale === "es" ? "es_419" : "pt_BR"} />
 {siteName && <meta property="og:site_name" content={siteName} />}
 {absoluteOgImage && <meta property="og:image" content={absoluteOgImage} />}
 {absoluteOgImage && ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
@@ -44,4 +67,4 @@ const absoluteOgImage = ogImage ? new URL(ogImage, Astro.site).toString() : unde
 <meta name="twitter:description" content={description} />
 {absoluteOgImage && <meta name="twitter:image" content={absoluteOgImage} />}
 
-{structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+{localizedStructuredData && <script type="application/ld+json" set:html={JSON.stringify(localizedStructuredData)} />}

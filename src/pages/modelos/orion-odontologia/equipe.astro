@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -6,10 +7,11 @@ import OrionLogo from "../../../components/logos/OrionLogo.astro";
 import DentistTeamSection from "../../../components/showcase/DentistTeamSection.astro";
 import { orionOdontologiaConfig as config } from "../../../config/showcases/orion-odontologia";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Equipe — Orion Odontologia (modelo demonstrativo)",
   description: "Conheça a equipe multiespecialista da Orion Odontologia.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>
@@ -18,17 +20,17 @@ const seo = {
 
   <section class="bg-[var(--surface)] px-6 pb-8 pt-14 sm:pt-20">
     <div class="mx-auto max-w-6xl">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">Equipe</p>
-      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Quem cuida de você</h1>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">{t(locale, "Equipe")}</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "Quem cuida de você")}</h1>
       <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)]">
-        Especialistas de diferentes áreas, reunidos em um único plano de tratamento coordenado.
+        {t(locale, "Especialistas de diferentes áreas, reunidos em um único plano de tratamento coordenado.")}
       </p>
     </div>
   </section>
 
   {config.team && (
     <DentistTeamSection
-      title="Nossos especialistas"
+      title={t(locale, "Nossos especialistas")}
       description="Cada paciente é acompanhado pelo especialista mais adequado ao seu caso, com comunicação constante entre a equipe."
       items={config.team}
     />

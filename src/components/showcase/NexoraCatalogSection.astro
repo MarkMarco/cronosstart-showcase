@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Catálogo com busca, filtros rápidos, drawer de filtros avançados
 // (categoria, marca, preço, disponibilidade, oferta, lançamento,
 // conectividade, cor) e ordenação. Card editorial de encerramento aponta
@@ -8,6 +9,7 @@ import Icon from "../ui/Icon.astro";
 import NexoraProductCard from "./NexoraProductCard.astro";
 import type { CatalogProduct, CatalogCategory, CatalogBrand } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   products: CatalogProduct[];
@@ -15,42 +17,42 @@ interface Props {
   brands: CatalogBrand[];
   accents: Record<string, string>;
 }
-const { id, products, categories, brands, accents } = Astro.props;
+const { id, products, categories, brands, accents } = localizeDeep(Astro.props, locale);
 
 const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
 const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
 
-const connectivityOptions = ["5G", "Wi-Fi", "Bluetooth", "USB-C", "NFC", "HDMI"];
+const connectivityOptions = localizeDeep(["5G", "Wi-Fi", "Bluetooth", "USB-C", "NFC", "HDMI"], locale);
 const colorOptions = Array.from(new Set(products.flatMap((p) => p.colors))).sort();
 ---
 
 <section id={id} class="border-b border-white/[0.06] bg-[var(--surface)] px-6 py-16 sm:py-24">
   <div class="mx-auto max-w-[1400px]">
     <div class="mb-8 max-w-xl" data-animate>
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Catálogo completo</p>
-      <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">Todos os produtos</h2>
-      <p class="mt-3 text-base leading-relaxed text-[var(--ink-muted)]">Busque, filtre e compare o catálogo demonstrativo da Nexora Tech.</p>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Catálogo completo")}</p>
+      <h2 class="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Todos os produtos")}</h2>
+      <p class="mt-3 text-base leading-relaxed text-[var(--ink-muted)]">{t(locale, "Busque, filtre e compare o catálogo demonstrativo da Nexora Tech.")}</p>
     </div>
 
     <div data-catalog-controls class="rounded-2xl border border-white/10 bg-white/[0.02] p-3">
       <div class="flex flex-wrap items-center gap-2.5">
         <label class="relative min-w-[200px] flex-1">
-          <span class="sr-only">Buscar produto</span>
+          <span class="sr-only">{t(locale, "Buscar produto")}</span>
           <Icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-muted)]" />
           <input
             type="search"
             data-catalog-search
-            placeholder="Buscar por nome, marca..."
+            placeholder={t(locale, "Buscar por nome, marca...")}
             class="w-full rounded-full border border-white/10 bg-white/[0.03] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60"
           />
         </label>
 
         <select data-catalog-sort class="rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60">
-          <option value="relevance">Relevância</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="price-desc">Maior preço</option>
-          <option value="newest">Lançamentos</option>
-          <option value="popular">Mais procurados</option>
+          <option value="relevance">{t(locale, "Relevância")}</option>
+          <option value="price-asc">{t(locale, "Menor preço")}</option>
+          <option value="price-desc">{t(locale, "Maior preço")}</option>
+          <option value="newest">{t(locale, "Lançamentos")}</option>
+          <option value="popular">{t(locale, "Mais procurados")}</option>
         </select>
 
         <button
@@ -59,13 +61,13 @@ const colorOptions = Array.from(new Set(products.flatMap((p) => p.colors))).sort
           class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--accent)]/60"
         >
           <Icon name="filter" class="h-4 w-4" />
-          Filtros
+          {t(locale, "Filtros")}
           <span data-filter-count class="hidden h-4 min-w-4 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[0.6rem] font-bold text-[#04121a]">0</span>
         </button>
       </div>
 
       <div class="mt-3 flex flex-wrap gap-2 px-0.5">
-        <button type="button" data-quick-category="" class="quick-chip is-active rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-[var(--ink)]">Todas</button>
+        <button type="button" data-quick-category="" class="quick-chip is-active rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-[var(--ink)]">{t(locale, "Todas")}</button>
         {categories.filter((c) => c.active).sort((a, b) => a.order - b.order).map((c) => (
           <button type="button" data-quick-category={c.slug} class="quick-chip rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-[var(--ink-muted)] transition-colors hover:text-white">
             {c.name}
@@ -90,85 +92,85 @@ const colorOptions = Array.from(new Set(products.flatMap((p) => p.colors))).sort
         style="order: 999"
         class="col-span-2 flex flex-col items-start justify-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-6 lg:col-span-3 xl:col-span-4"
       >
-        <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white sm:text-2xl">Não sabe qual configuração escolher?</h3>
+        <h3 class="font-[var(--font-heading)] text-xl font-semibold text-white sm:text-2xl">{t(locale, "Não sabe qual configuração escolher?")}</h3>
         <p class="max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
-          Conte o que você vai fazer com o produto — trabalho, estudo, jogos ou criação — e veja sugestões demonstrativas.
+          {t(locale, "Conte o que você vai fazer com o produto — trabalho, estudo, jogos ou criação — e veja sugestões demonstrativas.")}
         </p>
         <a
           href="#assistente"
           class="mt-1 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
           style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);"
         >
-          Usar o assistente
+          {t(locale, "Usar o assistente")}
           <Icon name="arrow-right" class="h-4 w-4" />
         </a>
       </div>
     </div>
 
     <p data-catalog-empty class="mt-4 hidden rounded-2xl border border-dashed border-white/15 py-12 text-center text-sm text-[var(--ink-muted)]">
-      Nenhum produto encontrado com os filtros selecionados. Tente ajustar a busca ou limpar os filtros.
+      {t(locale, "Nenhum produto encontrado com os filtros selecionados. Tente ajustar a busca ou limpar os filtros.")}
     </p>
   </div>
 
-  <!-- Drawer de filtros avançados -->
-  <div data-filters-drawer class="pointer-events-none fixed inset-0 z-[105] hidden" role="dialog" aria-modal="true" aria-label="Filtros">
+  
+  <div data-filters-drawer class="pointer-events-none fixed inset-0 z-[105] hidden" role="dialog" aria-modal="true" aria-label={t(locale, "Filtros")}>
     <div data-filters-backdrop class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300" />
     <div
       data-filters-panel
       class="absolute right-0 top-0 flex h-full w-full max-w-sm translate-x-full flex-col border-l border-white/10 bg-[var(--surface)] shadow-2xl transition-transform duration-300"
     >
       <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
-        <h3 id="nx-filters-title" class="text-base font-semibold text-white">Filtros</h3>
-        <button type="button" data-close-filters aria-label="Fechar filtros" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-white/[0.06] hover:text-white">
+        <h3 id="nx-filters-title" class="text-base font-semibold text-white">{t(locale, "Filtros")}</h3>
+        <button type="button" data-close-filters aria-label={t(locale, "Fechar filtros")} class="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--ink-muted)] hover:bg-white/[0.06] hover:text-white">
           <Icon name="close" class="h-5 w-5" />
         </button>
       </div>
 
       <div class="flex-1 space-y-6 overflow-y-auto px-5 py-5">
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Categoria</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Categoria")}</label>
           <select data-catalog-category class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60">
-            <option value="">Todas</option>
+            <option value="">{t(locale, "Todas")}</option>
             {categories.filter((c) => c.active).map((c) => <option value={c.slug}>{c.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Marca</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Marca")}</label>
           <select data-catalog-brand class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60">
-            <option value="">Todas</option>
+            <option value="">{t(locale, "Todas")}</option>
             {brands.filter((b) => b.active).map((b) => <option value={b.slug}>{b.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Preço</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Preço")}</label>
           <select data-catalog-price class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--accent)]/60">
-            <option value="">Qualquer valor</option>
-            <option value="0-500">Até R$ 500</option>
-            <option value="500-1500">R$ 500 a R$ 1.500</option>
-            <option value="1500-5000">R$ 1.500 a R$ 5.000</option>
-            <option value="5000-999999">Acima de R$ 5.000</option>
+            <option value="">{t(locale, "Qualquer valor")}</option>
+            <option value="0-500">{t(locale, "Até R$ 500")}</option>
+            <option value="500-1500">{t(locale, "R$ 500 a R$ 1.500")}</option>
+            <option value="1500-5000">{t(locale, "R$ 1.500 a R$ 5.000")}</option>
+            <option value="5000-999999">{t(locale, "Acima de R$ 5.000")}</option>
           </select>
         </div>
 
         <div class="space-y-2.5">
           <label class="flex items-center gap-2.5 text-sm text-[var(--ink)]">
             <input type="checkbox" data-catalog-available class="h-4 w-4 rounded border-white/20 accent-[var(--accent)]" />
-            Somente disponíveis
+            {t(locale, "Somente disponíveis")}
           </label>
           <label class="flex items-center gap-2.5 text-sm text-[var(--ink)]">
             <input type="checkbox" data-catalog-offer class="h-4 w-4 rounded border-white/20 accent-[var(--accent)]" />
-            Somente em oferta
+            {t(locale, "Somente em oferta")}
           </label>
           <label class="flex items-center gap-2.5 text-sm text-[var(--ink)]">
             <input type="checkbox" data-catalog-launch class="h-4 w-4 rounded border-white/20 accent-[var(--accent)]" />
-            Somente lançamentos
+            {t(locale, "Somente lançamentos")}
           </label>
         </div>
 
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Conectividade</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Conectividade")}</label>
           <div class="flex flex-wrap gap-1.5">
             {connectivityOptions.map((opt) => (
               <button type="button" data-conn-toggle={opt} class="conn-chip rounded-full border border-white/10 px-2.5 py-1 text-xs text-[var(--ink-muted)] transition-colors hover:text-white">{opt}</button>
@@ -177,7 +179,7 @@ const colorOptions = Array.from(new Set(products.flatMap((p) => p.colors))).sort
         </div>
 
         <div>
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">Cor</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Cor")}</label>
           <div class="flex flex-wrap gap-1.5">
             {colorOptions.map((opt) => (
               <button type="button" data-color-toggle={opt} aria-label={opt} title={opt} class="color-chip h-7 w-7 rounded-full border-2 border-transparent" style={`background:${opt}`} />
@@ -188,7 +190,7 @@ const colorOptions = Array.from(new Set(products.flatMap((p) => p.colors))).sort
 
       <div class="border-t border-white/10 px-5 py-4">
         <button type="button" data-catalog-clear class="w-full rounded-full border border-white/10 py-2.5 text-sm font-semibold text-[var(--ink-muted)] transition-colors hover:border-white/25 hover:text-white">
-          Limpar todos os filtros
+          {t(locale, "Limpar todos os filtros")}
         </button>
       </div>
     </div>

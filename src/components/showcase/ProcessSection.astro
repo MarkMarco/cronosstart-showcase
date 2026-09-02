@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import type { ProcessStep } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
   steps: ProcessStep[];
 }
-const { eyebrow, title, description, steps } = Astro.props;
+const { eyebrow, title, description, steps } = localizeDeep(Astro.props, locale);
 
 const lineInset = 50 / steps.length;
 ---

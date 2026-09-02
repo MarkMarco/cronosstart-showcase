@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -6,14 +7,15 @@ import AurumLogo from "../../../components/logos/AurumLogo.astro";
 import Icon from "../../../components/ui/Icon.astro";
 import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Painel administrativo — Aurum Motors (modelo demonstrativo)",
   description: "Painel administrativo demonstrativo de gestão de estoque da Aurum Motors.",
-};
+}, locale);
 
 const priceOf = (price: string) => Number(price.replace(/[^\d]/g, ""));
 
-const seedVehicles = (config.vehicles ?? []).map((v) => ({
+const seedVehicles = localizeDeep((config.vehicles ?? []).map((v) => ({
   slug: v.slug,
   name: v.name,
   brand: v.brand,
@@ -30,7 +32,7 @@ const seedVehicles = (config.vehicles ?? []).map((v) => ({
   status: "ativo",
   archived: false,
   description: v.description ?? "",
-}));
+})), locale);
 
 const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith("Todas")) ?? [];
 ---
@@ -41,16 +43,16 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
 
   <section class="bg-[var(--surface)] px-6 pb-16 pt-14 sm:pt-20">
     <div class="mx-auto max-w-6xl">
-      <!-- Tela de login demonstrativa -->
+      
       <div data-login-gate class="mx-auto max-w-sm py-16 text-center">
         <span class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">
           <Icon name="key" class="h-6 w-6" />
         </span>
-        <h1 class="text-2xl font-semibold tracking-tight text-[var(--ink)]">Acesso restrito</h1>
-        <p class="mt-2 text-sm text-[var(--ink-muted)]">Painel administrativo demonstrativo — Aurum Motors</p>
+        <h1 class="text-2xl font-semibold tracking-tight text-[var(--ink)]">{t(locale, "Acesso restrito")}</h1>
+        <p class="mt-2 text-sm text-[var(--ink-muted)]">{t(locale, "Painel administrativo demonstrativo — Aurum Motors")}</p>
         <form data-login-form class="mt-8 space-y-3 text-left">
           <label class="block text-sm font-medium text-[var(--ink)]">
-            E-mail
+            {t(locale, "E-mail")}
             <input
               type="email"
               value="lojista@aurummotors-demo.com.br"
@@ -59,7 +61,7 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
             />
           </label>
           <label class="block text-sm font-medium text-[var(--ink)]">
-            Senha
+            {t(locale, "Senha")}
             <input
               type="password"
               value="demonstracao"
@@ -71,26 +73,24 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
             type="submit"
             class="!mt-6 w-full rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
           >
-            Entrar no painel
+            {t(locale, "Entrar no painel")}
           </button>
           <p class="text-center text-xs text-[var(--ink-muted)]">
-            Login demonstrativo — campos pré-preenchidos, qualquer clique em "Entrar" libera o acesso.
+            {t(locale, "Login demonstrativo — campos pré-preenchidos, qualquer clique em \"Entrar\" libera o acesso.")}
           </p>
         </form>
       </div>
 
-      <!-- Conteúdo do painel -->
+      
       <div data-admin-content class="hidden">
         <div class="rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-5 py-4 text-sm text-[var(--ink)]">
-          <strong class="font-semibold">Ambiente de demonstração.</strong> As alterações abaixo ficam salvas apenas
-          neste navegador (localStorage) e simulam a gestão real de estoque — elas se refletem no site público
-          (estoque, destaque na home e página do veículo) enquanto você navegar neste mesmo navegador.
+          <strong class="font-semibold">{t(locale, "Ambiente de demonstração.")}</strong> {t(locale, "As alterações abaixo ficam salvas apenas\n          neste navegador (localStorage) e simulam a gestão real de estoque — elas se refletem no site público\n          (estoque, destaque na home e página do veículo) enquanto você navegar neste mesmo navegador.")}
         </div>
 
         <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Painel administrativo</p>
-            <h1 class="mt-2 text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Gestão de estoque</h1>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Painel administrativo")}</p>
+            <h1 class="mt-2 text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "Gestão de estoque")}</h1>
           </div>
           <div class="flex flex-wrap gap-3">
             <button
@@ -99,7 +99,7 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
               class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
             >
               <Icon name="check" class="h-4 w-4" />
-              Adicionar veículo
+              {t(locale, "Adicionar veículo")}
             </button>
             <button
               type="button"
@@ -107,100 +107,100 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
               class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
             >
               <Icon name="refresh" class="h-4 w-4" />
-              Restaurar dados de demonstração
+              {t(locale, "Restaurar dados de demonstração")}
             </button>
           </div>
         </div>
 
-        <!-- Contador -->
+        
         <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-            <p class="text-xs text-[var(--ink-muted)]">Ativos</p>
+            <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Ativos")}</p>
             <p data-stat="ativo" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
           </div>
           <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-            <p class="text-xs text-[var(--ink-muted)]">Reservados</p>
+            <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Reservados")}</p>
             <p data-stat="reservado" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
           </div>
           <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-            <p class="text-xs text-[var(--ink-muted)]">Vendidos</p>
+            <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Vendidos")}</p>
             <p data-stat="vendido" class="mt-1 text-2xl font-semibold text-[var(--ink)]">0</p>
           </div>
           <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4">
-            <p class="text-xs text-[var(--ink-muted)]">Em destaque</p>
+            <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Em destaque")}</p>
             <p data-stat="featured" class="mt-1 text-2xl font-semibold text-[var(--accent)]">0</p>
           </div>
         </div>
 
-        <!-- Busca e filtros -->
+        
         <div class="mt-6 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-4 sm:grid-cols-[1.5fr_1fr_1fr_auto] sm:items-center">
           <label class="block text-xs font-medium text-[var(--ink-muted)]">
-            Buscar
+            {t(locale, "Buscar")}
             <input
               type="text"
               data-search
-              placeholder="Nome ou marca..."
+              placeholder={t(locale, "Nome ou marca...")}
               class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
             />
           </label>
           <label class="block text-xs font-medium text-[var(--ink-muted)]">
-            Status
+            {t(locale, "Status")}
             <select
               data-filter-status
               class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
             >
-              <option value="">Todos</option>
-              <option value="ativo">Ativo</option>
-              <option value="reservado">Reservado</option>
-              <option value="vendido">Vendido</option>
+              <option value="">{t(locale, "Todos")}</option>
+              <option value="ativo">{t(locale, "Ativo")}</option>
+              <option value="reservado">{t(locale, "Reservado")}</option>
+              <option value="vendido">{t(locale, "Vendido")}</option>
             </select>
           </label>
           <label class="block text-xs font-medium text-[var(--ink-muted)]">
-            Categoria
+            {t(locale, "Categoria")}
             <select
               data-filter-category
               class="mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
             >
-              <option value="">Todas</option>
+              <option value="">{t(locale, "Todas")}</option>
               {categories.map((category) => <option value={category}>{category}</option>)}
             </select>
           </label>
           <label class="flex items-center gap-2 text-xs font-medium text-[var(--ink-muted)] sm:pt-4">
             <input type="checkbox" data-show-archived class="h-4 w-4 rounded accent-[var(--primary)]" />
-            Mostrar arquivados
+            {t(locale, "Mostrar arquivados")}
           </label>
         </div>
 
-        <!-- Formulário + prévia -->
+        
         <form data-vehicle-form class="mt-6 hidden grid-cols-1 gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <h2 data-form-title class="text-base font-semibold text-[var(--ink)]">Novo veículo</h2>
+            <h2 data-form-title class="text-base font-semibold text-[var(--ink)]">{t(locale, "Novo veículo")}</h2>
             <input type="hidden" name="slug" />
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
               <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                Nome do veículo
+                {t(locale, "Nome do veículo")}
                 <input
                   type="text"
                   name="name"
                   data-preview-field="name"
                   required
-                  placeholder="Ex.: Porsche Cayenne S"
+                  placeholder={t(locale, "Ex.: Porsche Cayenne S")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Marca
+                {t(locale, "Marca")}
                 <input
                   type="text"
                   name="brand"
                   data-preview-field="brand"
                   required
-                  placeholder="Ex.: Porsche"
+                  placeholder={t(locale, "Ex.: Porsche")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Categoria
+                {t(locale, "Categoria")}
                 <select
                   name="category"
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
@@ -209,7 +209,7 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                 </select>
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Preço (R$)
+                {t(locale, "Preço (R$)")}
                 <input
                   type="number"
                   name="price"
@@ -217,12 +217,12 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                   required
                   min="0"
                   step="100"
-                  placeholder="Ex.: 349900"
+                  placeholder={t(locale, "Ex.: 349900")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Ano
+                {t(locale, "Ano")}
                 <input
                   type="number"
                   name="year"
@@ -230,24 +230,24 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                   required
                   min="1990"
                   max="2030"
-                  placeholder="Ex.: 2023"
+                  placeholder={t(locale, "Ex.: 2023")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Quilometragem
+                {t(locale, "Quilometragem")}
                 <input
                   type="number"
                   name="mileageKm"
                   data-preview-field="mileageKm"
                   required
                   min="0"
-                  placeholder="Ex.: 18500"
+                  placeholder={t(locale, "Ex.: 18500")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Câmbio
+                {t(locale, "Câmbio")}
                 <input
                   type="text"
                   name="transmission"
@@ -257,7 +257,7 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Combustível
+                {t(locale, "Combustível")}
                 <input
                   type="text"
                   name="fuel"
@@ -268,34 +268,34 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                 />
               </label>
               <label class="block text-sm font-medium text-[var(--ink)]">
-                Etiqueta (opcional)
+                {t(locale, "Etiqueta (opcional)")}
                 <input
                   type="text"
                   name="tag"
                   data-preview-field="tag"
-                  placeholder="Ex.: Selecionado"
+                  placeholder={t(locale, "Ex.: Selecionado")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
               </label>
               <label class="flex items-center gap-2 self-end pb-2.5 text-sm font-medium text-[var(--ink)]">
                 <input type="checkbox" name="featured" class="h-4 w-4 rounded accent-[var(--primary)]" />
-                Destacar na home
+                {t(locale, "Destacar na home")}
               </label>
               <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                Caminho da imagem
+                {t(locale, "Caminho da imagem")}
                 <input
                   type="text"
                   name="image"
                   data-preview-field="image"
-                  placeholder="/images/showcases/aurum-motors/vehicle-bmw-m340i.jpg"
+                  placeholder={t(locale, "/images/showcases/aurum-motors/vehicle-bmw-m340i.jpg")}
                   class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none focus:border-[var(--primary)]"
                 />
                 <span class="mt-1 block text-xs text-[var(--ink-muted)]">
-                  Use um caminho de imagem já existente em /images/showcases/aurum-motors/ — se deixar em branco, uma imagem padrão será usada.
+                  {t(locale, "Use um caminho de imagem já existente em /images/showcases/aurum-motors/ — se deixar em branco, uma imagem padrão será usada.")}
                 </span>
               </label>
               <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-                Descrição
+                {t(locale, "Descrição")}
                 <textarea
                   name="description"
                   rows="2"
@@ -308,20 +308,20 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                 type="submit"
                 class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
               >
-                Publicar veículo
+                {t(locale, "Publicar veículo")}
               </button>
               <button
                 type="button"
                 data-action="cancel-form"
                 class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--ink)]"
               >
-                Cancelar
+                {t(locale, "Cancelar")}
               </button>
             </div>
           </div>
 
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">Pré-visualização</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)]">{t(locale, "Pré-visualização")}</p>
             <div class="mt-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
               <div class="relative aspect-[4/3] overflow-hidden bg-[var(--surface-alt)]">
                 <img data-preview="image" src="" alt="" class="hidden h-full w-full object-cover" />
@@ -331,17 +331,17 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
                 <span data-preview="tag" class="absolute left-3 top-3 hidden rounded-full bg-[var(--primary)] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-[var(--primary-ink)]"></span>
               </div>
               <div class="p-5">
-                <p data-preview="brand" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">Marca</p>
-                <h3 data-preview="name" class="mt-1 text-base font-semibold text-[var(--ink)]">Nome do veículo</h3>
+                <p data-preview="brand" class="text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">{t(locale, "Marca")}</p>
+                <h3 data-preview="name" class="mt-1 text-base font-semibold text-[var(--ink)]">{t(locale, "Nome do veículo")}</h3>
                 <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-xs text-[var(--ink-muted)]">
                   <span data-preview="year">—</span>
                   <span data-preview="mileageKm">—</span>
                   <span data-preview="fuel">—</span>
                 </div>
-                <p data-preview="price" class="mt-4 font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)]">R$ 0</p>
+                <p data-preview="price" class="mt-4 font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)]">{t(locale, "R$ 0")}</p>
               </div>
             </div>
-            <p class="mt-2 text-xs text-[var(--ink-muted)]">Assim o card aparecerá no estoque público, antes de publicar.</p>
+            <p class="mt-2 text-xs text-[var(--ink-muted)]">{t(locale, "Assim o card aparecerá no estoque público, antes de publicar.")}</p>
           </div>
         </form>
 
@@ -349,19 +349,19 @@ const categories = config.vehicleSearch?.categories.filter((c) => !c.startsWith(
           <table class="w-full min-w-[820px] border-collapse text-left text-sm">
             <thead>
               <tr class="border-b border-[var(--border)] bg-[var(--surface-alt)] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-                <th class="px-4 py-3 font-medium">Veículo</th>
-                <th class="px-4 py-3 font-medium">Categoria</th>
-                <th class="px-4 py-3 font-medium">Preço</th>
-                <th class="px-4 py-3 font-medium">Status</th>
-                <th class="px-4 py-3 font-medium">Destaque</th>
-                <th class="px-4 py-3 font-medium text-right">Ações</th>
+                <th class="px-4 py-3 font-medium">{t(locale, "Veículo")}</th>
+                <th class="px-4 py-3 font-medium">{t(locale, "Categoria")}</th>
+                <th class="px-4 py-3 font-medium">{t(locale, "Preço")}</th>
+                <th class="px-4 py-3 font-medium">{t(locale, "Status")}</th>
+                <th class="px-4 py-3 font-medium">{t(locale, "Destaque")}</th>
+                <th class="px-4 py-3 font-medium text-right">{t(locale, "Ações")}</th>
               </tr>
             </thead>
             <tbody data-vehicle-table-body></tbody>
           </table>
         </div>
         <p data-empty-state class="mt-6 hidden text-center text-sm text-[var(--ink-muted)]">
-          Nenhum veículo encontrado para esses filtros.
+          {t(locale, "Nenhum veículo encontrado para esses filtros.")}
         </p>
       </div>
     </div>

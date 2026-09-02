@@ -1,15 +1,17 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // "Marcas em destaque" — reforça a leitura de loja multimarcas (não uma
 // página institucional de um único fabricante).
 import type { CatalogBrand, CatalogProduct } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   brands: CatalogBrand[];
   products: CatalogProduct[];
   accents: Record<string, string>;
 }
-const { id, brands, products, accents } = Astro.props;
+const { id, brands, products, accents } = localizeDeep(Astro.props, locale);
 
 const activeBrands = brands.filter((b) => b.active);
 function brandAccent(slug: string) {
@@ -23,9 +25,9 @@ function brandCount(slug: string) {
 
 <section id={id} class="border-b border-white/[0.06] bg-[var(--surface-alt)] px-6 py-14">
   <div class="mx-auto max-w-[1400px]">
-    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Marcas em destaque</p>
-    <h2 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white sm:text-3xl">Um catálogo multimarcas</h2>
-    <p class="mt-2 max-w-xl text-sm leading-relaxed text-[var(--ink-muted)]">Marcas fictícias próprias e parceiras, reunidas no mesmo catálogo demonstrativo.</p>
+    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Marcas em destaque")}</p>
+    <h2 class="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Um catálogo multimarcas")}</h2>
+    <p class="mt-2 max-w-xl text-sm leading-relaxed text-[var(--ink-muted)]">{t(locale, "Marcas fictícias próprias e parceiras, reunidas no mesmo catálogo demonstrativo.")}</p>
 
     <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
       {

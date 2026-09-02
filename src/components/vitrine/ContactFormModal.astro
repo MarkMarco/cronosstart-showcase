@@ -1,6 +1,10 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import { contactSegments, contactFormLimits, countryCodes } from "../../config/contactForm";
+
+const locale = getLocale(Astro.url);
+const localizedContactSegments = localizeDeep(contactSegments, locale);
 ---
 
 <div id="contact-form-modal" class="fixed inset-0 z-[100] hidden">
@@ -22,20 +26,19 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
       <button
         type="button"
         data-contact-form-close
-        aria-label="Fechar formulário"
+        aria-label={t(locale, "Fechar formulário")}
         class="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
       >
         <Icon name="close" class="h-4 w-4" />
       </button>
 
       <div class="cfm-scroll overflow-y-auto px-6 py-6 sm:px-8 sm:py-7">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">CronosStart</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "CronosStart")}</p>
         <h2 id="contact-form-title" class="cfm-title mt-1.5 text-2xl font-semibold tracking-tight text-white">
-          Conte-nos sobre seu projeto
+          {t(locale, "Conte-nos sobre seu projeto")}
         </h2>
         <p class="cfm-subtitle mt-1.5 text-sm leading-relaxed text-[var(--ink-muted)]">
-          Preencha os dados e entraremos em contato para conhecer sua empresa e construir uma solução
-          personalizada.
+          {t(locale, "Preencha os dados e entraremos em contato para conhecer sua empresa e construir uma solução\n          personalizada.")}
         </p>
 
         <p
@@ -46,30 +49,29 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
 
         <div data-contact-model-panel class="mt-3 hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
           <p class="text-sm text-white/80">
-            Referência visual selecionada: <span data-contact-model-name class="font-semibold text-white"></span>
+            {t(locale, "Referência visual selecionada:")} <span data-contact-model-name class="font-semibold text-white"></span>
           </p>
           <p class="mt-1.5 text-xs leading-relaxed text-white/40">
-            Usaremos este modelo apenas como ponto de partida. Cores, estrutura e funcionalidades poderão ser
-            totalmente personalizadas.
+            {t(locale, "Usaremos este modelo apenas como ponto de partida. Cores, estrutura e funcionalidades poderão ser\n            totalmente personalizadas.")}
           </p>
           <button
             type="button"
             data-contact-model-remove
             class="mt-2 text-xs font-medium text-white/50 underline transition-colors hover:text-white"
           >
-            Remover referência
+            {t(locale, "Remover referência")}
           </button>
         </div>
 
         <form data-contact-form novalidate class="cfm-form mt-4 flex flex-col gap-3">
           <div class="absolute left-[-9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
-            <label for="contact-empresa-site">Não preencha este campo</label>
+            <label for="contact-empresa-site">{t(locale, "Não preencha este campo")}</label>
             <input type="text" id="contact-empresa-site" name="empresa_site" tabindex={-1} autocomplete="off" />
           </div>
 
           <fieldset data-contact-form-fieldset class="cfm-fieldset flex flex-col gap-3 border-0 p-0">
             <div class="cfm-field">
-              <label for="contact-name" class="block text-xs font-medium text-white/60">Nome *</label>
+              <label for="contact-name" class="block text-xs font-medium text-white/60">{t(locale, "Nome *")}</label>
               <input
                 id="contact-name"
                 name="name"
@@ -77,19 +79,19 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
                 required
                 maxlength={contactFormLimits.nameMax}
                 class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-                placeholder="Seu nome"
+                placeholder={t(locale, "Seu nome")}
                 aria-describedby="contact-name-error"
               />
               <p id="contact-name-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
             </div>
 
             <div class="cfm-field">
-              <label for="contact-whatsapp" class="block text-xs font-medium text-white/60">WhatsApp com DDD *</label>
+              <label for="contact-whatsapp" class="block text-xs font-medium text-white/60">{t(locale, "WhatsApp com DDD *")}</label>
               <div class="mt-1.5 flex gap-2">
                 <select
                   id="contact-whatsapp-country"
                   name="whatsappCountry"
-                  aria-label="Código do país"
+                  aria-label={t(locale, "Código do país")}
                   class="cfm-control w-[6.5rem] shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-2 py-3 text-sm text-white focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                 >
                   {
@@ -116,20 +118,20 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
 
             <div class="cfm-field grid gap-3 sm:grid-cols-2">
               <div>
-                <label for="contact-email" class="block text-xs font-medium text-white/60">E-mail (opcional)</label>
+                <label for="contact-email" class="block text-xs font-medium text-white/60">{t(locale, "E-mail (opcional)")}</label>
                 <input
                   id="contact-email"
                   name="email"
                   type="email"
                   class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-                  placeholder="voce@empresa.com.br"
+                  placeholder={t(locale, "voce@empresa.com.br")}
                   aria-describedby="contact-email-error"
                 />
                 <p id="contact-email-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
               </div>
 
               <div>
-                <label for="contact-segment" class="block text-xs font-medium text-white/60">Segmento da empresa *</label>
+                <label for="contact-segment" class="block text-xs font-medium text-white/60">{t(locale, "Segmento da empresa *")}</label>
                 <select
                   id="contact-segment"
                   name="segment"
@@ -137,9 +139,9 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
                   class="cfm-control mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   aria-describedby="contact-segment-error"
                 >
-                  <option value="" selected style="background-color:#0a0e1a; color:#f3f6fb;">Selecione um segmento</option>
+                  <option value="" selected style="background-color:#0a0e1a; color:#f3f6fb;">{t(locale, "Selecione um segmento")}</option>
                   {
-                    contactSegments.map((segment) => (
+                    localizedContactSegments.map((segment) => (
                       <option value={segment} style="background-color:#0a0e1a; color:#f3f6fb;">
                         {segment}
                       </option>
@@ -152,7 +154,7 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
 
             <div class="cfm-field">
               <label for="contact-description" class="block text-xs font-medium text-white/60">
-                O que você gostaria de ter no seu site? *
+                {t(locale, "O que você gostaria de ter no seu site? *")}
               </label>
               <textarea
                 id="contact-description"
@@ -161,7 +163,7 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
                 rows={3}
                 maxlength={contactFormLimits.descriptionMax}
                 class="cfm-control cfm-textarea mt-1.5 w-full resize-none rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-                placeholder="Conte o que sua empresa faz, o que gostaria de apresentar no site e quais recursos considera importantes. Não precisa ter tudo definido — ajudamos você nessa etapa."
+                placeholder={t(locale, "Conte o que sua empresa faz, o que gostaria de apresentar no site e quais recursos considera importantes. Não precisa ter tudo definido — ajudamos você nessa etapa.")}
                 aria-describedby="contact-description-error"
               ></textarea>
               <p id="contact-description-error" class="mt-1 hidden text-xs text-red-400" role="alert"></p>
@@ -182,16 +184,16 @@ import { contactSegments, contactFormLimits, countryCodes } from "../../config/c
             style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
           >
             <span data-contact-form-spinner class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
-            <span data-contact-form-submit-label>Solicitar contato</span>
+            <span data-contact-form-submit-label>{t(locale, "Solicitar contato")}</span>
           </button>
 
           <p class="text-center text-xs leading-relaxed text-white/40">
-            Ao enviar, você autoriza o uso destes dados exclusivamente para retorno do seu contato. Consulte nossa{" "}
+            {t(locale, "Ao enviar, você autoriza o uso destes dados exclusivamente para retorno do seu contato. Consulte nossa")}{" "}
             <a
-              href="/politica-de-privacidade"
+              href={localizedPath("/politica-de-privacidade", locale)}
               class="font-medium text-white/80 underline underline-offset-2 transition-colors hover:text-white"
             >
-              Política de Privacidade
+              {t(locale, "Política de Privacidade")}
             </a>.
           </p>
         </form>

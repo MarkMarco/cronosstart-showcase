@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import "@fontsource-variable/fraunces";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../layouts/ShowcaseLayout.astro";
@@ -13,7 +14,8 @@ import InstagramSection from "../../components/showcase/InstagramSection.astro";
 import LocationHoursSection from "../../components/showcase/LocationHoursSection.astro";
 import ReservationSection from "../../components/showcase/ReservationSection.astro";
 import { restauranteConfig as config } from "../../config/showcases/restaurante";
----
+
+const locale = getLocale(Astro.url);---
 
 <ShowcaseLayout config={config}>
   <EssenzaLogo slot="header-logo" />
@@ -46,7 +48,7 @@ import { restauranteConfig as config } from "../../config/showcases/restaurante"
     <FeaturedDishesSection
       id="cardapio"
       eyebrow="Pratos em destaque"
-      title="O que não pode faltar na sua visita"
+      title={t(locale, "O que não pode faltar na sua visita")}
       description="Uma seleção dos pratos mais pedidos da casa, preparados com ingredientes selecionados."
       items={config.dishes}
     />
@@ -55,7 +57,7 @@ import { restauranteConfig as config } from "../../config/showcases/restaurante"
   {config.sections.menu && config.menu && (
     <MenuPreviewSection
       eyebrow="Cardápio"
-      title="Cardápio resumido"
+      title={t(locale, "Cardápio resumido")}
       description="Uma prévia do nosso cardápio — sugestões por categoria, direto ao ponto."
       categories={config.menu}
     />
@@ -65,7 +67,7 @@ import { restauranteConfig as config } from "../../config/showcases/restaurante"
     <GallerySection
       id="galeria"
       eyebrow="Galeria"
-      title="Um pouco do nosso ambiente"
+      title={t(locale, "Um pouco do nosso ambiente")}
       description="Fotos do salão, dos bastidores e dos pratos que saem da nossa cozinha."
       images={config.gallery}
     />
@@ -74,7 +76,7 @@ import { restauranteConfig as config } from "../../config/showcases/restaurante"
   {config.sections.reviews && config.testimonials && (
     <ReviewsSection
       eyebrow="Avaliações"
-      title="Quem já esteve no Essenza"
+      title={t(locale, "Quem já esteve no Essenza")}
       description="Comentários de clientes sobre a experiência no restaurante."
       items={config.testimonials}
     />

@@ -1,9 +1,11 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   variant?: "full" | "mark";
   class?: string;
 }
-const { variant = "full", class: className = "" } = Astro.props;
+const { variant = "full", class: className = "" } = localizeDeep(Astro.props, locale);
 ---
 
 <span class={`inline-flex items-center gap-2.5 ${className}`}>
@@ -21,10 +23,10 @@ const { variant = "full", class: className = "" } = Astro.props;
   {variant === "full" && (
     <span class="leading-tight">
       <span class="block font-[var(--font-heading)] text-xl font-semibold tracking-tight text-[var(--ink)]">
-        Nexora<span class="text-[var(--accent)]">Tech</span>
+        {t(locale, "Nexora")}<span class="text-[var(--accent)]">{t(locale, "Tech")}</span>
       </span>
       <span class="block -mt-1 text-[0.6rem] font-medium uppercase tracking-[0.22em] text-[var(--ink-muted)]">
-        Eletrônicos &amp; tecnologia
+        {t(locale, "Eletrônicos &amp; tecnologia")}
       </span>
     </span>
   )}

@@ -1,19 +1,21 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { NavItem } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   ctaLabel: string;
   ctaHref: string;
 }
-const { nav, ctaLabel, ctaHref } = Astro.props;
+const { nav, ctaLabel, ctaHref } = localizeDeep(Astro.props, locale);
 ---
 
 <div
   id="mobile-menu"
   class="fixed inset-x-0 top-[var(--header-h,64px)] z-40 hidden origin-top border-b border-[var(--border)] bg-[var(--surface)] px-6 py-6 shadow-lg lg:hidden"
   role="dialog"
-  aria-label="Menu de navegação"
+  aria-label={t(locale, "Menu de navegação")}
 >
   <nav>
     <ul class="flex flex-col gap-1">
@@ -21,7 +23,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
         nav.map((item) => (
           <li>
             <a
-              href={item.href}
+              href={localizedPath(item.href, locale)}
               class="block rounded-[var(--radius-control)] px-3 py-3 text-base font-medium text-[var(--ink)] hover:bg-[var(--surface-alt)]"
               data-mobile-link
             >
@@ -33,7 +35,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
     </ul>
   </nav>
   <a
-    href={ctaHref}
+    href={localizedPath(ctaHref, locale)}
     class="mt-4 flex items-center justify-center rounded-[var(--radius-control)] bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)]"
     data-mobile-link
   >

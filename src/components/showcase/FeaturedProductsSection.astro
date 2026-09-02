@@ -1,9 +1,11 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import CardGrid from "./CardGrid.astro";
 import ProductCard from "./ProductCard.astro";
 import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   eyebrow?: string;
@@ -14,7 +16,7 @@ interface Props {
   collections: CatalogCollection[];
   ambientes: CatalogAmbiente[];
 }
-const { id, eyebrow, title, description, products, categories, collections, ambientes } = Astro.props;
+const { id, eyebrow, title, description, products, categories, collections, ambientes } = localizeDeep(Astro.props, locale);
 
 const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
 const collectionBySlug = new Map(collections.map((c) => [c.slug, c]));

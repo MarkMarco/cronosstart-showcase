@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import Icon from "../../ui/Icon.astro";
 
+const locale = getLocale(Astro.url);
 // Composição radial própria: um centro de proteção conectando pessoas,
 // patrimônio e empresa. Evita repetir o painel de documentos usado na Atlas.
-const nodes = [
+const nodes = localizeDeep([
   { label: "Automóvel", icon: "car" as const, top: "10%", left: "18%" },
   { label: "Residencial", icon: "home" as const, top: "8%", left: "78%" },
   { label: "Empresarial", icon: "briefcase" as const, top: "78%", left: "14%" },
   { label: "Vida", icon: "heart" as const, top: "80%", left: "76%" },
-];
+], locale);
 ---
 
 <div class="relative mx-auto h-[420px] w-full max-w-lg sm:h-[460px]" aria-hidden="true">
@@ -32,7 +34,7 @@ const nodes = [
       <path d="M7 25.5C11 18 16 14.5 20 14.5C24 14.5 29 18 33 25.5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9" />
       <circle cx="20" cy="26" r="3.4" fill="var(--accent)" />
     </svg>
-    <span class="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/85">Proteção</span>
+    <span class="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white/85">{t(locale, "Proteção")}</span>
   </div>
 
   {

@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { NavItem } from "../../config/showcases/types";
 import Icon from "../ui/Icon.astro";
 import MobileMenu from "./MobileMenu.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   ctaLabel: string;
   ctaHref: string;
 }
-const { nav, ctaLabel, ctaHref } = Astro.props;
+const { nav, ctaLabel, ctaHref } = localizeDeep(Astro.props, locale);
 ---
 
 <header
@@ -17,17 +19,17 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
   style="--header-h: 76px"
 >
   <div class="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between gap-4 px-6">
-    <a href="/" class="flex shrink-0 items-center" aria-label="Página inicial">
+    <a href={localizedPath("/", locale)} class="flex shrink-0 items-center" aria-label={t(locale, "Página inicial")}>
       <slot name="logo" />
     </a>
 
-    <nav class="hidden lg:block" aria-label="Navegação principal">
+    <nav class="hidden lg:block" aria-label={t(locale, "Navegação principal")}>
       <ul class="flex items-center gap-7">
         {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, locale)}
                 class="relative inline-block py-1 text-sm font-medium text-[var(--ink-muted)] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-[var(--accent)] after:transition-all after:duration-200 hover:text-[var(--ink)] hover:after:w-full"
               >
                 {item.label}
@@ -42,7 +44,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-header-search
-        aria-label="Buscar no catálogo"
+        aria-label={t(locale, "Buscar no catálogo")}
         class="hidden h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)] sm:inline-flex"
       >
         <Icon name="search" class="h-5 w-5" />
@@ -51,7 +53,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-open-drawer="favorites"
-        aria-label="Ver favoritos"
+        aria-label={t(locale, "Ver favoritos")}
         class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
       >
         <Icon name="heart" class="h-5 w-5" />
@@ -64,7 +66,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
       <button
         type="button"
         data-open-drawer="cart"
-        aria-label="Ver carrinho"
+        aria-label={t(locale, "Ver carrinho")}
         class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--surface-alt)] hover:text-[var(--ink)]"
       >
         <Icon name="cart" class="h-5 w-5" />
@@ -87,7 +89,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
         class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Abrir menu"
+        aria-label={t(locale, "Abrir menu")}
       >
         <Icon name="menu" class="h-6 w-6" data-icon="menu" />
         <Icon name="close" class="hidden h-6 w-6" data-icon="close" />

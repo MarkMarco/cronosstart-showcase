@@ -1,7 +1,9 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 
-const deliverables = [
+const locale = getLocale(Astro.url);
+const deliverables = localizeDeep([
   {
     icon: "key" as const,
     title: "Domínio registrado e configurado",
@@ -22,7 +24,7 @@ const deliverables = [
     title: "Suporte e acompanhamento",
     description: "Acompanhamos atualizações, renovações e necessidades futuras conforme o serviço contratado.",
   },
-];
+], locale);
 ---
 
 <section id="servico-gerenciado" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-20 sm:py-28">
@@ -36,24 +38,23 @@ const deliverables = [
   <div class="relative mx-auto max-w-6xl">
     <div class="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-16">
       <div data-animate>
-        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Serviço completo</p>
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Serviço completo")}</p>
         <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Você cuida do seu negócio.<br class="hidden sm:block" /> Nós cuidamos do site.
+          {t(locale, "Você cuida do seu negócio.")}<br class="hidden sm:block" /> {t(locale, "Nós cuidamos do site.")}
         </h2>
         <p class="mt-5 text-base leading-relaxed text-[var(--ink-muted)]">
-          Não é necessário entender de domínio, hospedagem ou configurações técnicas. A CronosStart prepara,
-          publica e acompanha toda a estrutura necessária para manter sua empresa no digital.
+          {t(locale, "Não é necessário entender de domínio, hospedagem ou configurações técnicas. A CronosStart prepara,\n          publica e acompanha toda a estrutura necessária para manter sua empresa no digital.")}
         </p>
 
         <div class="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p class="flex items-start gap-2.5 text-sm leading-relaxed text-white/80">
             <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
-            O cliente é dono do domínio e do projeto, mas não precisa administrar a parte técnica.
+            {t(locale, "O cliente é dono do domínio e do projeto, mas não precisa administrar a parte técnica.")}
           </p>
         </div>
 
         <p class="mt-6 text-sm leading-relaxed text-white/40">
-          Plataformas oferecem ferramentas. A CronosStart entrega o serviço configurado, personalizado e acompanhado.
+          {t(locale, "Plataformas oferecem ferramentas. A CronosStart entrega o serviço configurado, personalizado e acompanhado.")}
         </p>
       </div>
 

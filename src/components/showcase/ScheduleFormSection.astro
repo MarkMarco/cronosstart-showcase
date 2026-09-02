@@ -1,19 +1,21 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { ScheduleFormContent } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   content: ScheduleFormContent;
   id?: string;
 }
-const { content, id } = Astro.props;
+const { content, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface)] px-6 py-16 sm:py-20">
   <div class="mx-auto max-w-xl text-center" data-animate>
-    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">Agendamento</p>
-    <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">Vamos agendar sua avaliação?</h2>
+    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">{t(locale, "Agendamento")}</p>
+    <h2 class="text-3xl font-semibold tracking-tight text-[var(--ink)] sm:text-4xl">{t(locale, "Vamos agendar sua avaliação?")}</h2>
     <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-      Conte um pouco sobre o que você procura — respondemos com um horário disponível.
+      {t(locale, "Conte um pouco sobre o que você procura — respondemos com um horário disponível.")}
     </p>
   </div>
 
@@ -24,11 +26,11 @@ const { content, id } = Astro.props;
     class="mx-auto mt-10 max-w-2xl rounded-2xl border border-[var(--border)] bg-[var(--surface-alt)] p-6 shadow-sm sm:p-8"
   >
     <p class="mb-5 text-center text-xs font-medium uppercase tracking-wide text-[var(--ink-muted)]">
-      Formulário demonstrativo — não envia dados
+      {t(locale, "Formulário demonstrativo — não envia dados")}
     </p>
     <div class="grid gap-4 sm:grid-cols-2">
       <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-        Nome
+        {t(locale, "Nome")}
         <input
           type="text"
           name="name"
@@ -37,7 +39,7 @@ const { content, id } = Astro.props;
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        WhatsApp
+        {t(locale, "WhatsApp")}
         <input
           type="tel"
           name="whatsapp"
@@ -47,7 +49,7 @@ const { content, id } = Astro.props;
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        E-mail
+        {t(locale, "E-mail")}
         <input
           type="email"
           name="email"
@@ -55,7 +57,7 @@ const { content, id } = Astro.props;
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)] sm:col-span-2">
-        Especialidade de interesse
+        {t(locale, "Especialidade de interesse")}
         <select
           name="specialty"
           class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/15"
@@ -64,12 +66,12 @@ const { content, id } = Astro.props;
         </select>
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        Data
+        {t(locale, "Data")}
         <input
           type="text"
           inputmode="numeric"
           name="date"
-          placeholder="dd/mm/aaaa"
+          placeholder={t(locale, "dd/mm/aaaa")}
           pattern="\d{2}/\d{2}/\d{4}"
           maxlength="10"
           data-date-input
@@ -77,7 +79,7 @@ const { content, id } = Astro.props;
         />
       </label>
       <label class="block text-sm font-medium text-[var(--ink)]">
-        Período preferido
+        {t(locale, "Período preferido")}
         <select
           name="period"
           class="mt-1.5 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm text-[var(--ink)] outline-none transition-shadow focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/15"
@@ -89,10 +91,10 @@ const { content, id } = Astro.props;
         type="submit"
         class="inline-flex items-center justify-center rounded-full bg-[var(--primary)] px-6 py-3 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 sm:col-span-2"
       >
-        Agendar avaliação
+        {t(locale, "Agendar avaliação")}
       </button>
       <p data-schedule-feedback role="status" class="hidden text-center text-sm font-medium text-[var(--primary)] sm:col-span-2">
-        Agendamento de demonstração recebido — nenhum dado foi enviado de verdade.
+        {t(locale, "Agendamento de demonstração recebido — nenhum dado foi enviado de verdade.")}
       </p>
     </div>
   </form>

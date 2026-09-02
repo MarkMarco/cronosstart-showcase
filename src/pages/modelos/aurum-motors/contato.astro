@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -7,10 +8,11 @@ import TestDriveFormSection from "../../../components/showcase/TestDriveFormSect
 import LocationHoursSection from "../../../components/showcase/LocationHoursSection.astro";
 import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
 
-const seo = {
+const locale = getLocale(Astro.url);
+const seo = localizeDeep({
   title: "Contato e test-drive — Aurum Motors (modelo demonstrativo)",
   description: "Agende um test-drive ou fale com a equipe da Aurum Motors. Modelo demonstrativo da CronosStart.",
-};
+}, locale);
 ---
 
 <ShowcaseLayout config={{ ...config, seo }}>

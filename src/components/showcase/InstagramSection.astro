@@ -1,12 +1,14 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import type { GalleryImage } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   handle: string;
   images: GalleryImage[];
 }
-const { handle, images } = Astro.props;
+const { handle, images } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
@@ -18,11 +20,11 @@ const { handle, images } = Astro.props;
         </span>
         <div>
           <p class="font-[var(--font-heading)] text-lg text-[var(--ink)]">{handle}</p>
-          <p class="text-xs text-[var(--ink-muted)]">Instagram demonstrativo — perfil fictício</p>
+          <p class="text-xs text-[var(--ink-muted)]">{t(locale, "Instagram demonstrativo — perfil fictício")}</p>
         </div>
       </div>
       <span class="rounded-full border border-[var(--border)] px-4 py-2 text-xs font-semibold text-[var(--ink-muted)]">
-        Seguir
+        {t(locale, "Seguir")}
       </span>
     </div>
 

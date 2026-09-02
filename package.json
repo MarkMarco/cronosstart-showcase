@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "dev:i18n": "astro dev",
+    "build": "astro build && node scripts/validate-i18n.mjs && node scripts/validate-structure.mjs && node scripts/validate-assets.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro"

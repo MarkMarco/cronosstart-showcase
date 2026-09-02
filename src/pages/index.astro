@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
@@ -21,27 +23,28 @@ import Icon from "../components/ui/Icon.astro";
 import { showcaseRegistry } from "../config/showcases";
 import { buildWhatsappLink, homeStructuredData } from "../config/company";
 
+const locale = getLocale(Astro.url);
 const heroBack = showcaseRegistry.find((item) => item.slug === "aurum-motors")!;
 const heroMiddle = showcaseRegistry.find((item) => item.slug === "restaurante")!;
 const heroFront = showcaseRegistry.find((item) => item.slug === "orion-odontologia")!;
 
-const trustChips = [
+const trustChips = localizeDeep([
   { icon: "sparkle" as const, label: "Sites personalizados" },
   { icon: "settings" as const, label: "Domínio e hospedagem" },
   { icon: "shield-check" as const, label: "Suporte e acompanhamento" },
   { icon: "layers" as const, label: "Modelos por segmento" },
-];
+], locale);
 
-const title = "CronosStart | Criação de Sites Profissionais";
+const title = t(locale, "CronosStart | Criação de Sites Profissionais");
 const description =
-  "Criamos sites profissionais e personalizados para empresas de todo o Brasil, com domínio, hospedagem, WhatsApp, suporte técnico e atendimento para América Latina.";
+  t(locale, "Criamos sites profissionais e personalizados para empresas de todo o Brasil, com domínio, hospedagem, WhatsApp, suporte técnico e atendimento para América Latina.");
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const whatsappGeneral = buildWhatsappLink(
-  "Olá! Vi o portfólio de modelos da CronosStart e gostaria de saber mais sobre um site para minha empresa."
+  t(locale, "Olá! Vi o portfólio de modelos da CronosStart e gostaria de saber mais sobre um site para minha empresa.")
 );
 
-const steps = [
+const steps = localizeDeep([
   {
     icon: "message-circle" as const,
     title: "Conhecemos seu negócio",
@@ -62,17 +65,17 @@ const steps = [
     title: "Publicamos e acompanhamos",
     description: "Colocamos o site no ar e permanecemos disponíveis para suporte.",
   },
-];
+], locale);
 
 const gridPatternStyle =
-  "background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%);";
+  t(locale, "background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%); -webkit-mask-image: radial-gradient(60% 55% at 50% 35%, black 0%, transparent 100%);");
 
 const ctaButtonStyle =
-  "background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);";
+  t(locale, "background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);");
 ---
 
 <html
-  lang="pt-BR"
+  lang={locale}
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
@@ -90,11 +93,12 @@ const ctaButtonStyle =
     <Analytics />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LocaleSwitcher />
     <LaunchIntroLoader />
     <SiteHeader />
 
     <main>
-      <!-- Hero -->
+      
       <section class="relative overflow-hidden">
         <div
           class="pointer-events-none absolute -left-32 -top-40 h-[28rem] w-[28rem] rounded-full opacity-30 blur-[100px] animate-float-slow"
@@ -119,7 +123,7 @@ const ctaButtonStyle =
 
         <div class="relative mx-auto max-w-7xl px-6 pb-20 pt-14 sm:pb-24 sm:pt-16">
           <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
-            <!-- Coluna de conteúdo -->
+            
             <div class="text-center lg:text-left">
               <div class="animate-hero-in mx-auto mb-6 flex justify-center lg:mx-0 lg:justify-start">
                 <CronosStartLogo imgClass="h-12 w-auto sm:h-14" priority />
@@ -130,15 +134,14 @@ const ctaButtonStyle =
                   <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style="background: var(--accent);"></span>
                   <span class="relative inline-flex h-1.5 w-1.5 rounded-full" style="background: var(--accent);"></span>
                 </span>
-                <span class="text-xs font-medium text-[var(--ink-muted)]">Modelos demonstrativos, prontos para personalizar</span>
+                <span class="text-xs font-medium text-[var(--ink-muted)]">{t(locale, "Modelos demonstrativos, prontos para personalizar")}</span>
               </div>
 
               <h1 class="animate-hero-in text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl" style="animation-delay: 60ms">
-                Sites profissionais <span class="text-[var(--accent)]">focados em resultados</span>
+                {t(locale, "Sites profissionais")} <span class="text-[var(--accent)]">{t(locale, "focados em resultados")}</span>
               </h1>
               <p class="animate-hero-in text-balance mx-auto mt-6 max-w-xl text-lg leading-relaxed text-[var(--ink-muted)] lg:mx-0" style="animation-delay: 120ms">
-                Desenvolvemos sites personalizados para fortalecer sua marca, gerar contatos e facilitar o
-                crescimento do seu negócio — com domínio, hospedagem e suporte.
+                {t(locale, "Desenvolvemos sites personalizados para fortalecer sua marca, gerar contatos e facilitar o\n                crescimento do seu negócio — com domínio, hospedagem e suporte.")}
               </p>
 
               <div class="animate-hero-in mt-9 flex flex-wrap justify-center gap-4 lg:justify-start" style="animation-delay: 180ms">
@@ -147,7 +150,7 @@ const ctaButtonStyle =
                   class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                   style={ctaButtonStyle}
                 >
-                  Explorar modelos
+                  {t(locale, "Explorar modelos")}
                   <Icon name="arrow-right" class="h-4 w-4" />
                 </a>
                 <button
@@ -156,7 +159,7 @@ const ctaButtonStyle =
                   data-contact-origin="hero"
                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
                 >
-                  Falar sobre meu projeto
+                  {t(locale, "Falar sobre meu projeto")}
                 </button>
               </div>
 
@@ -171,24 +174,24 @@ const ctaButtonStyle =
                 }
               </div>
 
-              <!-- Preview único e compacto, apenas em telas menores que lg -->
+              
               <div class="animate-hero-in mt-10 flex justify-center lg:hidden" style="animation-delay: 240ms">
                 <div class="relative w-full max-w-[220px]">
                   <HeroPreviewCard item={heroFront} class="aspect-[4/3] w-full" logoScale="scale-100" />
                   <span class="absolute -bottom-3 -right-3 inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/50 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-white/80 backdrop-blur">
                     <Icon name="check" class="h-3 w-3 text-[var(--accent)]" />
-                    Modelo real
+                    {t(locale, "Modelo real")}
                   </span>
                 </div>
               </div>
 
               <p class="animate-hero-in mt-8 flex items-center justify-center gap-2 text-sm text-[var(--ink-muted)] lg:justify-start" style="animation-delay: 260ms">
                 <Icon name="map-pin" class="h-4 w-4 text-[var(--accent)]" />
-                Atendimento em Blumenau, região, todo o Brasil e LATAM
+                {t(locale, "Atendimento em Blumenau, região, todo o Brasil e LATAM")}
               </p>
             </div>
 
-            <!-- Composição visual: prévias reais dos modelos, apenas em telas lg+ -->
+            
             <div class="animate-hero-in relative hidden h-[26rem] items-center justify-center lg:flex" style="animation-delay: 200ms">
               <div
                 class="pointer-events-none absolute h-72 w-72 rounded-full opacity-25 blur-[90px]"
@@ -215,7 +218,7 @@ const ctaButtonStyle =
 
                 <span class="absolute -top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-white/15 bg-black/50 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
                   <Icon name="check" class="h-3 w-3 text-[var(--accent)]" />
-                  Modelos profissionais &bull; Personalizáveis
+                  {t(locale, "Modelos profissionais &bull; Personalizáveis")}
                 </span>
               </div>
             </div>
@@ -223,41 +226,40 @@ const ctaButtonStyle =
         </div>
       </section>
 
-      <!-- Introdução dos modelos -->
+      
       <section id="modelos" class="scroll-mt-24 border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
         <div class="mx-auto max-w-6xl">
           <div class="grid items-center gap-8 lg:grid-cols-[1fr_auto]" data-animate>
             <div class="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-none lg:text-left">
-              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Portfólio de modelos</p>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Portfólio de modelos")}</p>
               <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl lg:text-4xl">
-                Modelos criados para diferentes negócios
+                {t(locale, "Modelos criados para diferentes negócios")}
               </h2>
               <p class="mt-4 max-w-xl text-base leading-relaxed text-[var(--ink-muted)] lg:mx-0">
-                Cada demonstração apresenta uma proposta visual completa para o segmento. Cores, textos,
-                funcionalidades e identidade podem ser personalizados para cada empresa.
+                {t(locale, "Cada demonstração apresenta uma proposta visual completa para o segmento. Cores, textos,\n                funcionalidades e identidade podem ser personalizados para cada empresa.")}
               </p>
             </div>
 
             <div class="mx-auto flex shrink-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 lg:mx-0">
               <span class="text-3xl font-bold text-[var(--accent)]">{String(showcaseRegistry.length).padStart(2, "0")}</span>
-              <span class="max-w-[8rem] text-xs leading-snug text-white/50">modelos disponíveis para demonstração</span>
+              <span class="max-w-[8rem] text-xs leading-snug text-white/50">{t(locale, "modelos disponíveis para demonstração")}</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Carrossel dos modelos -->
+      
       <section class="bg-[var(--surface-alt)] px-6 pb-20 pt-6 sm:pb-28">
         <ModelShowcaseCarousel items={showcaseRegistry} />
       </section>
 
-      <!-- Serviço gerenciado -->
+      
       <ManagedServiceSection />
 
-      <!-- Planos e investimento -->
+      
       <PricingSection />
 
-      <!-- Como funciona -->
+      
       <section id="como-funciona" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface)] px-6 py-20 sm:py-28">
         <div
           class="pointer-events-none absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.14] blur-[110px]"
@@ -267,10 +269,10 @@ const ctaButtonStyle =
 
         <div class="relative mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center" data-animate>
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
-            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Do primeiro contato ao site no ar</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Como funciona")}</p>
+            <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Do primeiro contato ao site no ar")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Um processo simples, transparente e personalizado para colocar sua empresa no digital.
+              {t(locale, "Um processo simples, transparente e personalizado para colocar sua empresa no digital.")}
             </p>
           </div>
 
@@ -335,13 +337,13 @@ const ctaButtonStyle =
         </div>
       </section>
 
-      <!-- Prazo estimado -->
+      
       <DeliveryTimeline />
 
-      <!-- Perguntas frequentes -->
+      
       <FAQSection />
 
-      <!-- Chamada final -->
+      
       <section id="contato" class="scroll-mt-24 relative overflow-hidden border-t border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="relative mx-auto max-w-5xl" data-animate>
           <div
@@ -374,15 +376,15 @@ const ctaButtonStyle =
             </div>
 
             <div class="relative">
-              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Seu projeto começa aqui</p>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Seu projeto começa aqui")}</p>
               <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Encontrou uma referência para o seu negócio?
+                {t(locale, "Encontrou uma referência para o seu negócio?")}
               </h2>
               <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
-                Podemos adaptar qualquer modelo para sua marca, seus serviços, seu público e suas necessidades.
+                {t(locale, "Podemos adaptar qualquer modelo para sua marca, seus serviços, seu público e suas necessidades.")}
               </p>
               <p class="mx-auto mt-2 max-w-md text-sm text-white/40">
-                Conte sua ideia e ajudamos a definir a melhor estrutura para sua empresa.
+                {t(locale, "Conte sua ideia e ajudamos a definir a melhor estrutura para sua empresa.")}
               </p>
               <div class="mt-9 flex flex-wrap justify-center gap-4">
                 <button
@@ -392,7 +394,7 @@ const ctaButtonStyle =
                   class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                   style={ctaButtonStyle}
                 >
-                  Solicitar orçamento
+                  {t(locale, "Solicitar orçamento")}
                 </button>
                 <a
                   href={whatsappGeneral}
@@ -402,7 +404,7 @@ const ctaButtonStyle =
                   class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
                 >
                   <Icon name="whatsapp" class="h-4 w-4" />
-                  Falar no WhatsApp
+                  {t(locale, "Falar no WhatsApp")}
                 </a>
               </div>
             </div>

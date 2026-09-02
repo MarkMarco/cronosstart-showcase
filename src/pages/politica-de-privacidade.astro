@@ -1,87 +1,74 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import LegalLayout from "../layouts/LegalLayout.astro";
 import { company } from "../config/company";
 
+const locale = getLocale(Astro.url);
 const lastUpdated = new Date().toLocaleDateString("pt-BR", { year: "numeric", month: "long", day: "numeric" });
 ---
 
 <LegalLayout
-  title="Política de Privacidade — CronosStart"
+  title={t(locale, "Política de Privacidade — CronosStart")}
   description="Como a CronosStart coleta, usa e protege os dados enviados pelo formulário de contato do site."
 >
-  <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Documento legal</p>
-  <h1 class="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Política de Privacidade</h1>
+  <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Documento legal")}</p>
+  <h1 class="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">{t(locale, "Política de Privacidade")}</h1>
   <p class="mt-3 text-sm text-white/40">Última atualização: {lastUpdated}</p>
 
   <div class="mt-10 space-y-9">
     <section>
-      <h2 class="text-lg font-semibold text-white">1. Quais dados coletamos</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "1. Quais dados coletamos")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Quando você preenche o formulário de contato do site, coletamos: nome, WhatsApp com DDD, e-mail (quando
-        informado), segmento da empresa, uma breve descrição do projeto e, quando aplicável, o modelo de
-        demonstração de seu interesse. Também registramos internamente a origem do contato (por exemplo, qual
-        botão ou seção do site foi usado) para entender melhor sua jornada e organizar nosso atendimento.
+        {t(locale, "Quando você preenche o formulário de contato do site, coletamos: nome, WhatsApp com DDD, e-mail (quando\n        informado), segmento da empresa, uma breve descrição do projeto e, quando aplicável, o modelo de\n        demonstração de seu interesse. Também registramos internamente a origem do contato (por exemplo, qual\n        botão ou seção do site foi usado) para entender melhor sua jornada e organizar nosso atendimento.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">2. Para que usamos esses dados</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "2. Para que usamos esses dados")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        O nome, telefone, e-mail, segmento e mensagem enviados são utilizados exclusivamente para retornar o seu
-        contato comercial: entender sua necessidade, apresentar um modelo ou proposta adequada e dar continuidade
-        à conversa sobre o seu projeto. Não utilizamos esses dados para nenhuma outra finalidade.
+        {t(locale, "O nome, telefone, e-mail, segmento e mensagem enviados são utilizados exclusivamente para retornar o seu\n        contato comercial: entender sua necessidade, apresentar um modelo ou proposta adequada e dar continuidade\n        à conversa sobre o seu projeto. Não utilizamos esses dados para nenhuma outra finalidade.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">3. Armazenamento e fornecedores técnicos</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "3. Armazenamento e fornecedores técnicos")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        O envio do formulário de contato é processado pelo Web3Forms, serviço técnico externo responsável por
-        encaminhar os dados preenchidos para o e-mail de atendimento da CronosStart. Esse fornecedor tem acesso
-        apenas ao necessário para viabilizar o envio da mensagem, e não utilizamos essas informações para nenhuma
-        finalidade além do retorno comercial descrito acima.
+        {t(locale, "O envio do formulário de contato é processado pelo Web3Forms, serviço técnico externo responsável por\n        encaminhar os dados preenchidos para o e-mail de atendimento da CronosStart. Esse fornecedor tem acesso\n        apenas ao necessário para viabilizar o envio da mensagem, e não utilizamos essas informações para nenhuma\n        finalidade além do retorno comercial descrito acima.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">4. Período de retenção</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "4. Período de retenção")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Mantemos os dados de contato pelo tempo necessário para conduzir o atendimento comercial e, quando houver
-        contratação, conforme as obrigações e prazos previstos no contrato firmado. Após esse período, os dados
-        podem ser removidos mediante solicitação ou por rotina de organização interna.
+        {t(locale, "Mantemos os dados de contato pelo tempo necessário para conduzir o atendimento comercial e, quando houver\n        contratação, conforme as obrigações e prazos previstos no contrato firmado. Após esse período, os dados\n        podem ser removidos mediante solicitação ou por rotina de organização interna.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">5. Como corrigir ou solicitar a exclusão dos seus dados</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "5. Como corrigir ou solicitar a exclusão dos seus dados")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Você pode solicitar a correção, atualização ou exclusão dos seus dados a qualquer momento, entrando em
-        contato pelo canal abaixo. Faremos o possível para atender à solicitação dentro de um prazo razoável.
+        {t(locale, "Você pode solicitar a correção, atualização ou exclusão dos seus dados a qualquer momento, entrando em\n        contato pelo canal abaixo. Faremos o possível para atender à solicitação dentro de um prazo razoável.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">6. Medidas de proteção</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "6. Medidas de proteção")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Adotamos medidas básicas e razoáveis de segurança para proteger os dados recebidos contra acessos não
-        autorizados, como o uso de conexões seguras (HTTPS) e acesso restrito às ferramentas onde os dados
-        transitam ou ficam armazenados.
+        {t(locale, "Adotamos medidas básicas e razoáveis de segurança para proteger os dados recebidos contra acessos não\n        autorizados, como o uso de conexões seguras (HTTPS) e acesso restrito às ferramentas onde os dados\n        transitam ou ficam armazenados.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">7. Seus direitos</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "7. Seus direitos")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Você tem o direito de saber quais dados seus mantemos, solicitar acesso, correção, portabilidade ou
-        exclusão, e de retirar o consentimento para o uso dos seus dados a qualquer momento, sem prejuízo de
-        atendimentos já em andamento.
+        {t(locale, "Você tem o direito de saber quais dados seus mantemos, solicitar acesso, correção, portabilidade ou\n        exclusão, e de retirar o consentimento para o uso dos seus dados a qualquer momento, sem prejuízo de\n        atendimentos já em andamento.")}
       </p>
     </section>
 
     <section>
-      <h2 class="text-lg font-semibold text-white">8. Canal de contato</h2>
+      <h2 class="text-lg font-semibold text-white">{t(locale, "8. Canal de contato")}</h2>
       <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-        Para qualquer dúvida ou solicitação relacionada a esta política, entre em contato pelo e-mail
+        {t(locale, "Para qualquer dúvida ou solicitação relacionada a esta política, entre em contato pelo e-mail")}
         <a href={`mailto:${company.email}`} class="text-[var(--accent)] underline hover:text-white">{company.email}</a>.
       </p>
     </section>

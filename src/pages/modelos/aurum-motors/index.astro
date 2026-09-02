@@ -1,4 +1,5 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../../i18n/index";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/inter";
 import ShowcaseLayout from "../../../layouts/ShowcaseLayout.astro";
@@ -12,6 +13,7 @@ import ProcessSection from "../../../components/showcase/ProcessSection.astro";
 import TestimonialsSection from "../../../components/showcase/TestimonialsSection.astro";
 import { aurumMotorsConfig as config } from "../../../config/showcases/aurum-motors";
 
+const locale = getLocale(Astro.url);
 const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
 ---
 
@@ -36,7 +38,7 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
   {config.sections.featuredVehicles && config.vehicles && (
     <FeaturedVehiclesSection
       eyebrow="Estoque selecionado"
-      title="Veículos em destaque"
+      title={t(locale, "Veículos em destaque")}
       description="Uma seleção do que há de mais procurado no estoque atual — cada unidade revisada e com procedência verificada."
       items={featuredVehicles}
     />
@@ -46,7 +48,7 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
     <DealerHighlightsSection
       id="diferenciais"
       eyebrow="Por que a Aurum"
-      title="Curadoria que se nota em cada detalhe"
+      title={t(locale, "Curadoria que se nota em cada detalhe")}
       description="Do processo de seleção à entrega, cada etapa existe para reduzir o risco de comprar um seminovo."
       items={config.dealerHighlights}
     />
@@ -59,7 +61,7 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
   {config.sections.process && config.process && (
     <ProcessSection
       eyebrow="Como funciona"
-      title="Do primeiro clique até as chaves na mão"
+      title={t(locale, "Do primeiro clique até as chaves na mão")}
       description="Um processo pensado para ser simples, transparente e sem surpresas."
       steps={config.process}
     />
@@ -68,7 +70,7 @@ const featuredVehicles = (config.vehicles ?? []).filter((v) => v.featured);
   {config.sections.testimonials && config.testimonials && (
     <TestimonialsSection
       eyebrow="Depoimentos"
-      title="Quem já comprou com a Aurum"
+      title={t(locale, "Quem já comprou com a Aurum")}
       description="Experiências de clientes que passaram pelo nosso processo de curadoria."
       items={config.testimonials}
     />

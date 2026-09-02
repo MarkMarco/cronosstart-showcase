@@ -1,15 +1,17 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import Icon from "../ui/Icon.astro";
 import SectionHeader from "../ui/SectionHeader.astro";
 import type { Testimonial } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
   items: Testimonial[];
 }
-const { eyebrow, title, description, items } = Astro.props;
+const { eyebrow, title, description, items } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="bg-[var(--surface)] px-6 py-16 sm:py-20">
@@ -43,7 +45,7 @@ const { eyebrow, title, description, items } = Astro.props;
     </div>
 
     <p class="mt-6 text-center text-xs text-[var(--ink-muted)]">
-      Avaliações ilustrativas, criadas para fins de demonstração deste modelo.
+      {t(locale, "Avaliações ilustrativas, criadas para fins de demonstração deste modelo.")}
     </p>
   </div>
 </section>

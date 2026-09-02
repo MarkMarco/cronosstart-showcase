@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import Icon from "../ui/Icon.astro";
 import type { CatalogProduct, CatalogCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   products: CatalogProduct[];
   categories: CatalogCategory[];
 }
-const { id, products, categories } = Astro.props;
+const { id, products, categories } = localizeDeep(Astro.props, locale);
 const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
 
 function formatBRL(value: number) {
@@ -25,7 +27,7 @@ const [main, ...rest] = [...products].sort((a, b) => (b.previousPrice ? savingsP
   <div class="mx-auto max-w-[1400px]">
     <SectionHeader
       eyebrow="Por tempo limitado"
-      title="Ofertas em destaque"
+      title={t(locale, "Ofertas em destaque")}
       description="Peças selecionadas com condição especial — válidas até a data indicada em cada item (dados demonstrativos)."
     />
 
@@ -65,7 +67,7 @@ const [main, ...rest] = [...products].sort((a, b) => (b.previousPrice ? savingsP
               data-open-product={main.slug}
               class="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-white px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
             >
-              Ver oferta
+              {t(locale, "Ver oferta")}
               <Icon name="arrow-right" class="h-4 w-4" />
             </button>
           </div>

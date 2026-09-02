@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 // Tira de acesso rápido às categorias, funciona como atalho de filtro para
 // a seção de catálogo (não é uma grade — 7 itens ficam melhor como pílulas
 // em linha do que forçados em colunas).
 import Icon from "../ui/Icon.astro";
 import type { CatalogCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   categories: CatalogCategory[];
 }
-const { categories } = Astro.props;
+const { categories } = localizeDeep(Astro.props, locale);
 ---
 
 <div class="-mx-6 flex gap-2.5 overflow-x-auto px-6 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">

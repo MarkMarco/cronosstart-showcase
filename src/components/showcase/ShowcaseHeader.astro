@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import type { NavItem } from "../../config/showcases/types";
 import Icon from "../ui/Icon.astro";
 import MobileMenu from "./MobileMenu.astro";
 
+const locale = getLocale(Astro.url);
 interface Props {
   nav: NavItem[];
   ctaLabel: string;
   ctaHref: string;
 }
-const { nav, ctaLabel, ctaHref } = Astro.props;
+const { nav, ctaLabel, ctaHref } = localizeDeep(Astro.props, locale);
 ---
 
 <header
@@ -16,17 +18,17 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
   style="--header-h: 72px"
 >
   <div class="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
-    <a href="/" class="flex items-center" aria-label="Página inicial">
+    <a href={localizedPath("/", locale)} class="flex items-center" aria-label={t(locale, "Página inicial")}>
       <slot name="logo" />
     </a>
 
-    <nav class="hidden lg:block" aria-label="Navegação principal">
+    <nav class="hidden lg:block" aria-label={t(locale, "Navegação principal")}>
       <ul class="flex items-center gap-7">
         {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={localizedPath(item.href, locale)}
                 class="relative inline-block py-1 text-sm font-medium text-[var(--ink-muted)] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-[var(--accent)] after:transition-all after:duration-200 hover:text-[var(--ink)] hover:after:w-full"
               >
                 {item.label}
@@ -39,7 +41,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
 
     <div class="flex items-center gap-3">
       <a
-        href={ctaHref}
+        href={localizedPath(ctaHref, locale)}
         class="hidden items-center rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5 lg:inline-flex"
       >
         {ctaLabel}
@@ -51,7 +53,7 @@ const { nav, ctaLabel, ctaHref } = Astro.props;
         class="inline-flex h-10 w-10 items-center justify-center rounded-[var(--radius-control)] text-[var(--ink)] hover:bg-[var(--surface-alt)] lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        aria-label="Abrir menu"
+        aria-label={t(locale, "Abrir menu")}
       >
         <Icon name="menu" class="h-6 w-6" data-icon="menu" />
         <Icon name="close" class="hidden h-6 w-6" data-icon="close" />

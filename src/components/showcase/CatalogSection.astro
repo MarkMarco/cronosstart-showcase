@@ -1,10 +1,12 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import CategoryQuickNav from "./CategoryQuickNav.astro";
 import ProductCard from "./ProductCard.astro";
 import Icon from "../ui/Icon.astro";
 import type { CatalogProduct, CatalogCategory, CatalogCollection, CatalogAmbiente } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   id?: string;
   products: CatalogProduct[];
@@ -13,7 +15,7 @@ interface Props {
   ambientes: CatalogAmbiente[];
   whatsappNumber: string;
 }
-const { id, products, categories, collections, ambientes, whatsappNumber } = Astro.props;
+const { id, products, categories, collections, ambientes, whatsappNumber } = localizeDeep(Astro.props, locale);
 
 const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
 const collectionBySlug = new Map(collections.map((c) => [c.slug, c]));
@@ -26,7 +28,7 @@ const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
   <div class="mx-auto max-w-[1400px]">
     <SectionHeader
       eyebrow="Catálogo completo"
-      title="Encontre a peça certa para o seu espaço"
+      title={t(locale, "Encontre a peça certa para o seu espaço")}
       description="Busque, filtre e ordene todo o catálogo demonstrativo da Maison Lume."
     />
 
@@ -37,58 +39,58 @@ const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
     <div data-catalog-controls class="mt-6 rounded-full border border-[var(--border)] bg-[var(--surface)] p-2 shadow-sm">
       <div class="flex flex-wrap items-center gap-2">
         <label class="relative min-w-[180px] flex-1">
-          <span class="sr-only">Buscar produto</span>
+          <span class="sr-only">{t(locale, "Buscar produto")}</span>
           <Icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-muted)]" />
           <input
             type="search"
             data-catalog-search
-            placeholder="Buscar por nome..."
+            placeholder={t(locale, "Buscar por nome...")}
             class="w-full rounded-full border-0 bg-[var(--surface-alt)] py-2.5 pl-9 pr-3 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30"
           />
         </label>
 
         <select data-catalog-category class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
-          <option value="">Categoria</option>
+          <option value="">{t(locale, "Categoria")}</option>
           {categories.map((c) => <option value={c.slug}>{c.name}</option>)}
         </select>
 
         <select data-catalog-collection class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
-          <option value="">Coleção</option>
+          <option value="">{t(locale, "Coleção")}</option>
           {collections.map((c) => <option value={c.slug}>{c.name}</option>)}
         </select>
 
         <select data-catalog-ambiente class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
-          <option value="">Ambiente</option>
+          <option value="">{t(locale, "Ambiente")}</option>
           {ambientes.map((a) => <option value={a.slug}>{a.name}</option>)}
         </select>
 
         <select data-catalog-price class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
-          <option value="">Preço</option>
-          <option value="0-1000">Até R$ 1.000</option>
-          <option value="1000-3000">R$ 1.000 a R$ 3.000</option>
-          <option value="3000-999999">Acima de R$ 3.000</option>
+          <option value="">{t(locale, "Preço")}</option>
+          <option value="0-1000">{t(locale, "Até R$ 1.000")}</option>
+          <option value="1000-3000">{t(locale, "R$ 1.000 a R$ 3.000")}</option>
+          <option value="3000-999999">{t(locale, "Acima de R$ 3.000")}</option>
         </select>
 
         <select data-catalog-sort class="rounded-full border-0 bg-[var(--surface-alt)] px-3.5 py-2.5 text-sm text-[var(--ink)] outline-none focus:ring-2 focus:ring-[var(--accent)]/30">
-          <option value="relevance">Relevância</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="price-desc">Maior preço</option>
-          <option value="name">Nome (A-Z)</option>
-          <option value="newest">Mais recentes</option>
+          <option value="relevance">{t(locale, "Relevância")}</option>
+          <option value="price-asc">{t(locale, "Menor preço")}</option>
+          <option value="price-desc">{t(locale, "Maior preço")}</option>
+          <option value="name">{t(locale, "Nome (A-Z)")}</option>
+          <option value="newest">{t(locale, "Mais recentes")}</option>
         </select>
       </div>
 
       <div class="mt-2 flex flex-wrap items-center gap-2 px-1">
         <label class="flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3.5 py-2 text-sm text-[var(--ink)]">
           <input type="checkbox" data-catalog-available class="h-4 w-4 rounded border-[var(--border)] accent-[var(--primary)]" />
-          Somente disponíveis
+          {t(locale, "Somente disponíveis")}
         </label>
         <label class="flex items-center gap-2 rounded-full bg-[var(--surface-alt)] px-3.5 py-2 text-sm text-[var(--ink)]">
           <input type="checkbox" data-catalog-offer class="h-4 w-4 rounded border-[var(--border)] accent-[var(--primary)]" />
-          Somente em oferta
+          {t(locale, "Somente em oferta")}
         </label>
         <button type="button" data-catalog-clear class="text-sm font-semibold text-[var(--ink-muted)] hover:text-[var(--accent)]">
-          Limpar filtros
+          {t(locale, "Limpar filtros")}
         </button>
       </div>
     </div>
@@ -114,9 +116,9 @@ const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
         style="order: 999"
         class="col-span-1 flex flex-col items-start justify-center gap-3 rounded-[var(--radius-card)] border border-dashed border-[var(--border)] bg-[var(--surface-alt)] p-6 sm:col-span-1 lg:col-span-1 xl:col-span-3"
       >
-        <h3 class="font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)] sm:text-2xl">Precisa de ajuda para escolher?</h3>
+        <h3 class="font-[var(--font-heading)] text-xl font-semibold text-[var(--ink)] sm:text-2xl">{t(locale, "Precisa de ajuda para escolher?")}</h3>
         <p class="max-w-md text-sm leading-relaxed text-[var(--ink-muted)]">
-          Um consultor Maison Lume pode te ajudar a montar a combinação certa para o seu espaço — ou, se já tiver itens no carrinho, é só enviar a lista pelo WhatsApp.
+          {t(locale, "Um consultor Maison Lume pode te ajudar a montar a combinação certa para o seu espaço — ou, se já tiver itens no carrinho, é só enviar a lista pelo WhatsApp.")}
         </p>
         <div class="mt-1 flex flex-wrap gap-3">
           <a
@@ -126,7 +128,7 @@ const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
             class="inline-flex items-center gap-2 rounded-[var(--radius-control)] bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-ink)] transition-transform hover:-translate-y-0.5"
           >
             <Icon name="whatsapp" class="h-4 w-4" />
-            Falar com um consultor
+            {t(locale, "Falar com um consultor")}
           </a>
           <button
             type="button"
@@ -134,14 +136,14 @@ const sorted = [...products].sort((a, b) => a.displayOrder - b.displayOrder);
             class="inline-flex items-center gap-2 rounded-[var(--radius-control)] border border-[var(--border)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
           >
             <Icon name="cart" class="h-4 w-4" />
-            Enviar carrinho pelo WhatsApp
+            {t(locale, "Enviar carrinho pelo WhatsApp")}
           </button>
         </div>
       </div>
     </div>
 
     <p data-catalog-empty class="hidden mt-4 rounded-[var(--radius-card)] border border-dashed border-[var(--border)] py-12 text-center text-sm text-[var(--ink-muted)]">
-      Nenhum produto encontrado com os filtros selecionados. Tente ajustar a busca ou limpar os filtros.
+      {t(locale, "Nenhum produto encontrado com os filtros selecionados. Tente ajustar a busca ou limpar os filtros.")}
     </p>
   </div>
 </section>

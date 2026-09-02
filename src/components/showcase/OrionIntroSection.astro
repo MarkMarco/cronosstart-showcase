@@ -1,4 +1,6 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
@@ -6,7 +8,7 @@ interface Props {
   quote: string;
   id?: string;
 }
-const { eyebrow, title, paragraphs, quote, id } = Astro.props;
+const { eyebrow, title, paragraphs, quote, id } = localizeDeep(Astro.props, locale);
 ---
 
 <section id={id} class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">

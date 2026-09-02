@@ -1,4 +1,6 @@
 ---
+import LocaleSwitcher from "../components/i18n/LocaleSwitcher.astro";
+import { getLocale, localizedPath, localizeDeep, t } from "../i18n/index";
 import "../styles/global.css";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
@@ -12,62 +14,63 @@ import Analytics from "../components/analytics/Analytics.astro";
 import Icon from "../components/ui/Icon.astro";
 import { buildWhatsappLink, homeStructuredData, ORGANIZATION_ID, SITE_URL } from "../config/company";
 
-const title = "Sites para Restaurantes, Bares e Delivery | CronosStart";
+const locale = getLocale(Astro.url);
+const title = t(locale, "Sites para Restaurantes, Bares e Delivery | CronosStart");
 const description =
-  "Criamos sites para restaurantes, bares e delivery com cardápio digital, WhatsApp, reservas, localização, painel administrativo e identidade personalizada.";
+  t(locale, "Criamos sites para restaurantes, bares e delivery com cardápio digital, WhatsApp, reservas, localização, painel administrativo e identidade personalizada.");
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const whatsappRestaurantes = buildWhatsappLink(
   "Olá! Vi a página de sites para restaurantes da CronosStart e gostaria de saber mais sobre um site para o meu negócio."
 );
 
-const problems = [
+const problems = localizeDeep([
   { icon: "flame" as const, title: "Cardápio difícil de encontrar", description: "Cardápio desatualizado ou espalhado entre fotos e legendas, sem um lugar único e fácil de consultar." },
   { icon: "instagram" as const, title: "Dependência de redes sociais e apps", description: "Boa parte da presença fica limitada ao perfil em rede social ou ao aplicativo de terceiros." },
   { icon: "clock" as const, title: "Informações difíceis de encontrar", description: "Cliente sem acesso rápido a horário de funcionamento, endereço e contato direto." },
   { icon: "sparkle" as const, title: "Dificuldade para se apresentar", description: "Sem um espaço próprio, fica difícil mostrar pratos, diferenciais e a identidade do lugar." },
-];
+], locale);
 
-const features = [
+const features = localizeDeep([
   { icon: "layers" as const, title: "Cardápio digital por categorias", description: "Pratos organizados em categorias, fáceis de navegar." },
   { icon: "whatsapp" as const, title: "Integração com WhatsApp", description: "Caminho direto para dúvidas, pedidos e reservas." },
   { icon: "calendar" as const, title: "Reservas ou solicitação de mesa", description: "Formulário para o cliente solicitar reserva com data e horário." },
   { icon: "map-pin" as const, title: "Localização, mapa e horário", description: "Endereço, mapa e horário de funcionamento em um só lugar." },
   { icon: "camera" as const, title: "Galeria de pratos e ambiente", description: "Fotos que mostram os pratos e a experiência do local." },
   { icon: "settings" as const, title: "Painel para atualizar pratos", description: "Atualização de pratos, preços e disponibilidade, conforme o projeto." },
-];
+], locale);
 
-const panelBlocks = [
+const panelBlocks = localizeDeep([
   { icon: "layers" as const, title: "Atualização de cardápio", description: "Adicionar, editar ou remover pratos e categorias." },
   { icon: "sliders" as const, title: "Controle de disponibilidade", description: "Marcar pratos como disponíveis ou esgotados." },
   { icon: "camera" as const, title: "Gestão de fotos e destaques", description: "Atualizar imagens e escolher pratos em destaque." },
   { icon: "users" as const, title: "Usuários e níveis de acesso", description: "Definir quem pode acessar e alterar cada parte do painel." },
-];
+], locale);
 
-const comparisonRows = [
+const comparisonRows = localizeDeep([
   { aspect: "Onde as informações ficam", platforms: "Espalhadas entre perfis e aplicativos", ownSite: "Reunidas em um só lugar" },
   { aspect: "Quem controla o conteúdo", platforms: "Regras e formato da plataforma", ownSite: "O próprio restaurante" },
   { aspect: "Cardápio sempre visível", platforms: "Depende do algoritmo ou do app", ownSite: "Sempre disponível no site" },
   { aspect: "Identidade e domínio próprios", platforms: "Perfil compartilhado com outros negócios", ownSite: "Domínio e visual próprios" },
-];
+], locale);
 
-const included = [
+const included = localizeDeep([
   { icon: "sparkle" as const, label: "Design personalizado" },
   { icon: "maximize" as const, label: "Versão adaptada para celular" },
   { icon: "key" as const, label: "Domínio e hospedagem" },
   { icon: "shield-check" as const, label: "SSL e publicação" },
   { icon: "whatsapp" as const, label: "Integração com WhatsApp e contatos" },
   { icon: "message-circle" as const, label: "Suporte após o lançamento" },
-];
+], locale);
 
-const steps = [
+const steps = localizeDeep([
   { title: "Entendimento do restaurante", description: "Conversamos sobre o cardápio, o estilo do local e como os clientes entram em contato hoje." },
   { title: "Definição do conteúdo", description: "Organizamos categorias, fotos e as funcionalidades que fazem sentido para o projeto." },
   { title: "Desenvolvimento e validação", description: "Construímos o site e revisamos juntos antes da publicação." },
   { title: "Publicação e suporte", description: "Colocamos o site no ar e seguimos disponíveis para suporte." },
-];
+], locale);
 
-const faqItems = [
+const faqItems = localizeDeep([
   {
     question: "Posso atualizar o cardápio sem pedir cada alteração?",
     answer:
@@ -97,9 +100,9 @@ const faqItems = [
     answer:
       "Não. O Essenza Restaurante é um modelo demonstrativo fictício, criado pela CronosStart para apresentar visualmente como um site para restaurantes pode funcionar — não é um cliente real.",
   },
-];
+], locale);
 
-const structuredData = {
+const structuredData = localizeDeep({
   "@context": "https://schema.org",
   "@graph": [
     ...homeStructuredData["@graph"],
@@ -132,11 +135,11 @@ const structuredData = {
       })),
     },
   ],
-};
+}, locale);
 ---
 
 <html
-  lang="pt-BR"
+  lang={locale}
   style="--surface:#070b16; --surface-alt:#0d1424; --ink:#f3f6fb; --ink-muted:rgba(243,246,251,0.62); --primary:#2f5fd1; --primary-ink:#ffffff; --accent:#38bdf8; --border:rgba(255,255,255,0.1); --font-heading:'Space Grotesk Variable', system-ui, sans-serif; --font-body:'Inter Variable', system-ui, sans-serif;"
 >
   <head>
@@ -154,10 +157,11 @@ const structuredData = {
     <Analytics />
   </head>
   <body class="min-h-screen bg-[var(--surface)] font-[var(--font-body)] text-[var(--ink)] antialiased">
+    <LocaleSwitcher />
     <SiteHeader />
 
     <main>
-      <!-- Hero -->
+      
       <section class="relative overflow-hidden border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div
           class="pointer-events-none absolute -left-32 -top-40 h-[24rem] w-[24rem] rounded-full opacity-25 blur-[100px]"
@@ -168,14 +172,13 @@ const structuredData = {
         <div class="relative mx-auto max-w-4xl text-center">
           <p class="mb-3 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
             <Icon name="flame" class="h-4 w-4" />
-            Para restaurantes, bares e delivery
+            {t(locale, "Para restaurantes, bares e delivery")}
           </p>
           <h1 class="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
-            Sites profissionais para restaurantes, bares e delivery
+            {t(locale, "Sites profissionais para restaurantes, bares e delivery")}
           </h1>
           <p class="text-balance mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[var(--ink-muted)]">
-            Cardápio digital, WhatsApp, reservas, localização e painel administrativo para restaurantes, bares,
-            cafés, lanchonetes, hamburguerias, pizzarias, confeitarias e negócios de delivery.
+            {t(locale, "Cardápio digital, WhatsApp, reservas, localização e painel administrativo para restaurantes, bares,\n            cafés, lanchonetes, hamburguerias, pizzarias, confeitarias e negócios de delivery.")}
           </p>
 
           <div class="mt-9 flex flex-wrap justify-center gap-4">
@@ -187,7 +190,7 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
             >
-              Solicitar proposta
+              {t(locale, "Solicitar proposta")}
             </button>
             <a
               href={whatsappRestaurantes}
@@ -197,18 +200,18 @@ const structuredData = {
               class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
             >
               <Icon name="whatsapp" class="h-4 w-4" />
-              Falar no WhatsApp
+              {t(locale, "Falar no WhatsApp")}
             </a>
           </div>
         </div>
       </section>
 
-      <!-- Problemas comuns (4 cards, 2x2) -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Situações comuns</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Problemas comuns do setor</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Situações comuns")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Problemas comuns do setor")}</h2>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2">
             {
@@ -229,15 +232,14 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Funcionalidades possíveis (6 cards, 3x2) -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Possibilidades</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Funcionalidades de um site para restaurantes</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Possibilidades")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Funcionalidades de um site para restaurantes")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              As funcionalidades dependem do escopo de cada projeto. Integrações com delivery, pagamentos, reservas
-              ou sistemas de gestão são analisadas individualmente.
+              {t(locale, "As funcionalidades dependem do escopo de cada projeto. Integrações com delivery, pagamentos, reservas\n              ou sistemas de gestão são analisadas individualmente.")}
             </p>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -259,19 +261,17 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Cardápio digital (texto + imagem, sem cards) -->
+      
       <section id="cardapio-digital" class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-6xl">
           <div class="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Cardápio digital</p>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Cardápio digital")}</p>
               <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                Um cardápio fácil de navegar, com a cara do seu restaurante
+                {t(locale, "Um cardápio fácil de navegar, com a cara do seu restaurante")}
               </h2>
               <p class="mt-5 text-base leading-relaxed text-[var(--ink-muted)]">
-                O cardápio pode apresentar categorias, pratos, descrições, preços, imagens, disponibilidade e itens
-                em destaque. Recursos como adicionais e observações por prato dependem do escopo do projeto — nem
-                todas essas funções estão incluídas em um plano básico.
+                {t(locale, "O cardápio pode apresentar categorias, pratos, descrições, preços, imagens, disponibilidade e itens\n                em destaque. Recursos como adicionais e observações por prato dependem do escopo do projeto — nem\n                todas essas funções estão incluídas em um plano básico.")}
               </p>
               <ul class="mt-6 space-y-2.5">
                 {
@@ -291,7 +291,7 @@ const structuredData = {
                 class="mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%);"
               >
-                Quero um cardápio assim
+                {t(locale, "Quero um cardápio assim")}
                 <Icon name="arrow-right" class="h-3.5 w-3.5" />
               </button>
             </div>
@@ -313,15 +313,14 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Painel administrativo (4 blocos, 2x2) -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Autonomia</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Painel administrativo</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Autonomia")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Painel administrativo")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Conforme o projeto, o restaurante pode atualizar pratos, preços, categorias, fotos, disponibilidade,
-              promoções, horários e informações de contato diretamente pelo painel.
+              {t(locale, "Conforme o projeto, o restaurante pode atualizar pratos, preços, categorias, fotos, disponibilidade,\n              promoções, horários e informações de contato diretamente pelo painel.")}
             </p>
           </div>
           <div class="mt-12 grid gap-5 sm:grid-cols-2">
@@ -341,29 +340,28 @@ const structuredData = {
             }
           </div>
           <p class="mx-auto mt-6 max-w-xl text-center text-sm leading-relaxed text-white/40">
-            Veja mais detalhes na página de <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">sites com painel administrativo</a>.
+            {t(locale, "Veja mais detalhes na página de")} <a href={localizedPath("/sites-com-painel-administrativo", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "sites com painel administrativo")}</a>.
           </p>
         </div>
       </section>
 
-      <!-- Site próprio e outras plataformas (tabela comparativa) -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Complementar, não substituto</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Site próprio e outras plataformas</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Complementar, não substituto")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Site próprio e outras plataformas")}</h2>
             <p class="mt-4 text-base leading-relaxed text-[var(--ink-muted)]">
-              Um site próprio não substitui Instagram, Google, WhatsApp ou aplicativos de delivery — ele centraliza
-              a presença digital do restaurante, reunindo o que hoje fica espalhado entre plataformas diferentes.
+              {t(locale, "Um site próprio não substitui Instagram, Google, WhatsApp ou aplicativos de delivery — ele centraliza\n              a presença digital do restaurante, reunindo o que hoje fica espalhado entre plataformas diferentes.")}
             </p>
           </div>
           <div class="mt-10 overflow-x-auto">
             <table class="mx-auto w-full max-w-2xl border-collapse overflow-hidden rounded-2xl border border-white/10 text-sm">
               <thead>
                 <tr class="border-b border-white/10 bg-white/[0.03] text-left text-xs font-semibold uppercase tracking-wide text-white/50">
-                  <th class="px-5 py-3.5 font-semibold">Aspecto</th>
-                  <th class="px-5 py-3.5 font-semibold">Redes sociais e apps</th>
-                  <th class="px-5 py-3.5 font-semibold text-[var(--accent)]">Site próprio</th>
+                  <th class="px-5 py-3.5 font-semibold">{t(locale, "Aspecto")}</th>
+                  <th class="px-5 py-3.5 font-semibold">{t(locale, "Redes sociais e apps")}</th>
+                  <th class="px-5 py-3.5 font-semibold text-[var(--accent)]">{t(locale, "Site próprio")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,12 +380,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Demonstração Essenza Restaurante (bloco único horizontal) -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Demonstração</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Essenza Restaurante — modelo demonstrativo</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Demonstração")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Essenza Restaurante — modelo demonstrativo")}</h2>
           </div>
           <div class="mt-10 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.02]">
             <div class="grid gap-0 sm:grid-cols-2">
@@ -406,20 +404,17 @@ const structuredData = {
                 </picture>
               </div>
               <div class="flex flex-col justify-center p-7 sm:p-9">
-                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">Restaurante</p>
-                <h3 class="mt-2 text-xl font-semibold text-white">Essenza Restaurante</h3>
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">{t(locale, "Restaurante")}</p>
+                <h3 class="mt-2 text-xl font-semibold text-white">{t(locale, "Essenza Restaurante")}</h3>
                 <p class="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-                  Modelo demonstrativo com cardápio organizado por categorias, pratos em destaque, galeria de fotos,
-                  localização, horários e reservas. O Essenza Restaurante é um projeto fictício, usado apenas para
-                  apresentar visualmente as possibilidades de um site para restaurantes — não representa um
-                  restaurante real.
+                  {t(locale, "Modelo demonstrativo com cardápio organizado por categorias, pratos em destaque, galeria de fotos,\n                  localização, horários e reservas. O Essenza Restaurante é um projeto fictício, usado apenas para\n                  apresentar visualmente as possibilidades de um site para restaurantes — não representa um\n                  restaurante real.")}
                 </p>
                 <div class="mt-6 flex flex-wrap gap-3">
                   <a
-                    href="/modelos/restaurante"
+                    href={localizedPath("/modelos/restaurante", locale)}
                     class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0a0e1a] transition-all hover:-translate-y-0.5"
                   >
-                    Ver demonstração para restaurante
+                    {t(locale, "Ver demonstração para restaurante")}
                     <Icon name="arrow-right" class="h-3.5 w-3.5" />
                   </a>
                   <button
@@ -429,7 +424,7 @@ const structuredData = {
                     data-contact-origin="sites-restaurantes-demo"
                     class="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   >
-                    Quero um site como este
+                    {t(locale, "Quero um site como este")}
                   </button>
                 </div>
               </div>
@@ -438,12 +433,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- O que a CronosStart entrega (lista em 2 colunas, sem cards) -->
+      
       <section class="border-b border-[var(--border)] bg-[var(--surface-alt)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Serviço completo</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">O que a CronosStart entrega</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Serviço completo")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "O que a CronosStart entrega")}</h2>
           </div>
           <div class="mx-auto mt-10 max-w-2xl divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/[0.02] sm:grid sm:grid-cols-2 sm:divide-y-0 sm:gap-x-6 sm:divide-x sm:divide-white/10">
             {
@@ -458,12 +453,12 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- Como funciona (4 etapas, 2x2) -->
+      
       <section class="border-b border-[var(--border)] px-6 py-16 sm:py-24">
         <div class="mx-auto max-w-4xl">
           <div class="mx-auto max-w-2xl text-center">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Como funciona</p>
-            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Do primeiro contato ao site no ar</h2>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">{t(locale, "Como funciona")}</p>
+            <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{t(locale, "Do primeiro contato ao site no ar")}</h2>
           </div>
           <ol class="mt-12 grid gap-6 sm:grid-cols-2">
             {
@@ -479,29 +474,29 @@ const structuredData = {
         </div>
       </section>
 
-      <!-- FAQ -->
+      
       <FAQSection
         id="faq-restaurantes"
         eyebrow="Dúvidas"
-        title="Perguntas frequentes de restaurantes e delivery"
+        title={t(locale, "Perguntas frequentes de restaurantes e delivery")}
         description="Respostas diretas para quem está avaliando um site para o setor de alimentação."
         items={faqItems}
         groupName="restaurantes-faq"
       />
 
-      <!-- CTA final -->
+      
       <section class="relative overflow-hidden px-6 py-16 sm:py-24">
         <div class="relative mx-auto max-w-4xl">
           <div
             class="relative overflow-hidden rounded-[2rem] border border-white/10 px-6 py-16 text-center sm:px-16 sm:py-20"
             style="background: linear-gradient(160deg, #0b1020 0%, #060911 55%, #0a0f1e 100%);"
           >
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">Vamos conversar?</p>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{t(locale, "Vamos conversar?")}</p>
             <h2 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Seu restaurante merece uma presença digital tão bem apresentada quanto o seu cardápio
+              {t(locale, "Seu restaurante merece uma presença digital tão bem apresentada quanto o seu cardápio")}
             </h2>
             <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-[var(--ink-muted)]">
-              Conte como o seu restaurante funciona hoje e ajudamos a definir o cardápio e as funcionalidades ideais.
+              {t(locale, "Conte como o seu restaurante funciona hoje e ajudamos a definir o cardápio e as funcionalidades ideais.")}
             </p>
             <div class="mt-9 flex flex-wrap justify-center gap-4">
               <button
@@ -512,7 +507,7 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                 style="background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 45%, var(--primary)) 100%); box-shadow: 0 12px 30px -8px rgba(47,95,209,0.6), inset 0 1px 0 rgba(255,255,255,0.25);"
               >
-                Solicitar proposta
+                {t(locale, "Solicitar proposta")}
               </button>
               <a
                 href={whatsappRestaurantes}
@@ -522,18 +517,17 @@ const structuredData = {
                 class="inline-flex items-center gap-2 rounded-full border border-white/15 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] active:translate-y-0 active:scale-[0.98]"
               >
                 <Icon name="whatsapp" class="h-4 w-4" />
-                Falar no WhatsApp
+                {t(locale, "Falar no WhatsApp")}
               </a>
             </div>
 
             <p class="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-white/40">
-              Veja também nossos <a href="/#modelos" class="underline underline-offset-2 hover:text-white">modelos demonstrativos</a>,
-              os <a href="/#planos" class="underline underline-offset-2 hover:text-white">planos disponíveis</a>,
-              <a href="/#como-funciona" class="underline underline-offset-2 hover:text-white">como funciona o projeto</a> e as páginas de
-              <a href="/sites-com-painel-administrativo" class="underline underline-offset-2 hover:text-white">painel administrativo</a>,
-              <a href="/sites-para-pequenas-empresas" class="underline underline-offset-2 hover:text-white">pequenas empresas</a>,
-              <a href="/sites-para-imobiliarias" class="underline underline-offset-2 hover:text-white">imobiliárias</a> e
-              <a href="/criacao-de-sites-blumenau" class="underline underline-offset-2 hover:text-white">criação de sites em Blumenau</a>.
+              {t(locale, "Veja também nossos")} <a href={localizedPath("/#modelos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "modelos demonstrativos")}</a>{t(locale, ",\n              os")} <a href={localizedPath("/#planos", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "planos disponíveis")}</a>,
+              <a href={localizedPath("/#como-funciona", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "como funciona o projeto")}</a> {t(locale, "e as páginas de")}
+              <a href={localizedPath("/sites-com-painel-administrativo", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "painel administrativo")}</a>,
+              <a href={localizedPath("/sites-para-pequenas-empresas", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "pequenas empresas")}</a>,
+              <a href={localizedPath("/sites-para-imobiliarias", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "imobiliárias")}</a> {t(locale, "e")}
+              <a href={localizedPath("/criacao-de-sites-blumenau", locale)} class="underline underline-offset-2 hover:text-white">{t(locale, "criação de sites em Blumenau")}</a>.
             </p>
           </div>
         </div>

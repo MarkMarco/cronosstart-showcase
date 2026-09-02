@@ -1,14 +1,16 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 import SectionHeader from "../ui/SectionHeader.astro";
 import type { MenuCategory } from "../../config/showcases/types";
 
+const locale = getLocale(Astro.url);
 interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
   categories: MenuCategory[];
 }
-const { eyebrow, title, description, categories } = Astro.props;
+const { eyebrow, title, description, categories } = localizeDeep(Astro.props, locale);
 ---
 
 <section class="bg-[var(--surface-alt)] px-6 py-16 sm:py-20">
@@ -40,7 +42,7 @@ const { eyebrow, title, description, categories } = Astro.props;
     </div>
 
     <p class="mt-8 text-center text-xs text-[var(--ink-muted)]">
-      Cardápio resumido e ilustrativo — sujeito a alterações conforme a temporada.
+      {t(locale, "Cardápio resumido e ilustrativo — sujeito a alterações conforme a temporada.")}
     </p>
   </div>
 </section>

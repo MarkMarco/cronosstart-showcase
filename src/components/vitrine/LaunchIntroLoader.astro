@@ -1,9 +1,19 @@
 ---
+import { getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
+const locale = getLocale(Astro.url);
 // Loader de introdução — mostra o símbolo (shield.png + foguete.png, ambos intactos)
 // com uma decolagem apenas do foguete ao concluir o carregamento, uma vez por sessão.
 ---
 
-<div id="launch-intro-panel" class="launch-panel fixed inset-0 z-[200] flex items-center justify-center px-6" style="--boost: 0; --arc-boost: 0.15;">
+<div
+  id="launch-intro-panel"
+  data-stage-connect={t(locale, "Conectando ideias...")}
+  data-stage-prepare={t(locale, "Preparando sua presença digital...")}
+  data-stage-adjust={t(locale, "Ajustando os últimos detalhes...")}
+  data-stage-ready={t(locale, "Pronto para decolar.")}
+  class="launch-panel fixed inset-0 z-[200] flex items-center justify-center px-6"
+  style="--boost: 0; --arc-boost: 0.15;"
+>
   <script is:inline>
     (function () {
       try {
@@ -24,7 +34,7 @@
 
   <div class="launch-glass absolute inset-0" aria-hidden="true"></div>
 
-  <!-- Fundo tecnológico — mesma linguagem visual do hero (circuitos, grid, pulsos), bem mais discreto -->
+  
   <div class="loader-tech-bg pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
     <div class="loader-grid absolute inset-0"></div>
     <svg
@@ -34,8 +44,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <!-- Gradientes que apagam gradualmente as espinhas ~300px antes do símbolo,
-             evitando a aparência de linha/mira atravessando o centro. -->
+        
         <linearGradient id="loader-spine-fade-l" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
           <stop offset="33%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
@@ -46,7 +55,7 @@
           <stop offset="67%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
           <stop offset="100%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
         </linearGradient>
-        <!-- Fade nas pontas dos arcos — brilho preservado no meio (mais próximo do centro) -->
+        
         <linearGradient id="loader-arc-fade" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 0" />
           <stop offset="30%" style="stop-color: var(--accent, #38bdf8); stop-opacity: 1" />
@@ -55,34 +64,32 @@
         </linearGradient>
       </defs>
 
-      <!-- Camada 2: circuitos estruturais — espinhas convergindo em direção ao centro,
-           com ramificações em ângulo reto, mais estrutura à esquerda, linhas mais
-           longas à direita; topo discreto, base com detalhe técnico + arcos. -->
+      
       <g class="loader-layer-structural">
-        <!-- Espinha esquerda: linha longa apontando para o símbolo, apaga gradualmente perto do centro -->
+        
         <path id="loader-spine-l" class="loader-circuit-path loader-circuit-spine loader-spine-left" d="M -20 452 L 430 452" fill="none" />
-        <!-- Ramificações à esquerda -->
+        
         <path id="loader-circuit-l1" class="loader-circuit-path" d="M -20 180 L 210 180 L 210 300 L 350 300" fill="none" />
         <path class="loader-circuit-path loader-circuit-minor" d="M -20 700 L 230 700 L 230 580 L 370 580" fill="none" />
         <path class="loader-circuit-path loader-circuit-minor" d="M 70 452 L 70 530 L 150 530" fill="none" />
 
-        <!-- Espinha direita: mais longa, equilibrando o lado esquerdo, também apaga perto do centro -->
+        
         <path id="loader-spine-r" class="loader-circuit-path loader-circuit-spine loader-spine-right" d="M 1460 452 L 1000 452" fill="none" />
         <path id="loader-circuit-r1" class="loader-circuit-path" d="M 1460 150 L 1250 150 L 1250 280 L 1110 280" fill="none" />
         <path class="loader-circuit-path loader-circuit-minor" d="M 1460 730 L 1230 730 L 1230 610 L 1090 610" fill="none" />
         <path class="loader-circuit-path loader-circuit-minor" d="M 1380 452 L 1380 370 L 1290 370" fill="none" />
 
-        <!-- Topo: poucos detalhes, bem discretos -->
+        
         <path class="loader-circuit-path loader-circuit-faint" d="M 630 8 L 630 55 L 745 55" fill="none" />
 
-        <!-- Base: detalhe técnico de baixa opacidade -->
+        
         <path class="loader-circuit-path loader-circuit-faint" d="M 705 892 L 705 825 L 830 825" fill="none" />
 
-        <!-- Pequenas ramificações discretas, sem aumentar a quantidade de linhas -->
+        
         <path class="loader-circuit-path loader-circuit-faint" d="M 350 300 L 390 300" fill="none" />
         <path class="loader-circuit-path loader-circuit-faint" d="M 1110 280 L 1070 280" fill="none" />
 
-        <!-- Nós nas extremidades: maiores/mais fortes nas espinhas, discretos nos ramos -->
+        
         <circle cx="430" cy="452" r="3.2" class="loader-circuit-node loader-node-major" />
         <circle cx="1000" cy="452" r="3.2" class="loader-circuit-node loader-node-major" />
         <circle cx="350" cy="300" r="2.2" class="loader-circuit-node" />
@@ -96,16 +103,15 @@
         <circle cx="230" cy="580" r="1.4" class="loader-circuit-node loader-node-faint" />
         <circle cx="1230" cy="610" r="1.4" class="loader-circuit-node loader-node-faint" />
 
-        <!-- Arcos sutis ao redor da área central, reforçando a convergência —
-             pontas esmaecidas via gradiente, brilho preservado próximo ao meio -->
+        
         <path id="loader-arc-l" class="loader-arc" d="M 560 250 A 260 260 0 0 0 470 590" fill="none" />
         <path id="loader-arc-r" class="loader-arc" d="M 880 250 A 260 260 0 0 1 970 590" fill="none" />
-        <!-- Glow dos arcos: sincronizado com o progresso (--arc-boost) -->
+        
         <path class="loader-arc-glow" d="M 560 250 A 260 260 0 0 0 470 590" fill="none" />
         <path class="loader-arc-glow" d="M 880 250 A 260 260 0 0 1 970 590" fill="none" />
       </g>
 
-      <!-- Camada 3: energia — poucos pulsos e nós com brilho -->
+      
       <g class="loader-layer-energy">
         <circle cx="430" cy="452" r="7" class="loader-node-glow" />
         <circle cx="1000" cy="452" r="7" class="loader-node-glow" />
@@ -133,7 +139,7 @@
           </animateMotion>
         </g>
 
-        <!-- Pulso convergente único — dispara só no instante de 100% (ignição) -->
+        
         <circle cx="430" cy="452" r="2" class="loader-converge-pulse loader-converge-pulse-l" />
         <circle cx="1000" cy="452" r="2" class="loader-converge-pulse loader-converge-pulse-r" />
       </g>
@@ -153,13 +159,13 @@
         class="launch-shield absolute inset-0 h-full w-full object-contain"
       />
 
-      <!-- Fumaça residual — permanece presa ao escudo depois que o foguete parte -->
+      
       <div class="shield-residual-smoke pointer-events-none absolute" aria-hidden="true">
         <span></span>
         <span></span>
       </div>
 
-      <!-- Conjunto que se move como um todo na decolagem: motor (chama/rastro/glow) + vapor de espera + foguete -->
+      
       <div id="rocket-assembly" class="rocket-assembly absolute">
         <div class="engine-fx pointer-events-none" aria-hidden="true">
           <span class="flame-glow"></span>
@@ -189,10 +195,10 @@
     </div>
 
     <p class="launch-wordmark mt-5 text-2xl font-bold uppercase tracking-[0.08em] text-white" style="font-family: var(--font-heading, 'Space Grotesk Variable', system-ui, sans-serif);">
-      CronosStart
+      {t(locale, "CronosStart")}
     </p>
     <p class="launch-slogan mt-1 text-xs font-semibold uppercase tracking-[0.16em]" style="color: var(--accent, #38bdf8);">
-      Presença digital para pequenas empresas
+      {t(locale, "Presença digital para pequenas empresas")}
     </p>
 
     <div class="mt-7 flex flex-col items-center gap-3">
@@ -200,7 +206,7 @@
         <div id="launch-bar-fill" class="h-full rounded-full" style="width: 0%; background: linear-gradient(90deg, var(--primary, #2f5fd1), var(--accent, #38bdf8));"></div>
       </div>
       <p id="launch-label" class="text-sm font-medium text-white/60">
-        <span id="launch-stage-text">Conectando ideias...</span> <span id="launch-percent">0</span>%
+        <span id="launch-stage-text">{t(locale, "Conectando ideias...")}</span> <span id="launch-percent">0</span>%
       </p>
     </div>
   </div>
@@ -761,16 +767,16 @@
     if (prefersReducedMotion) {
       barFill.style.width = "100%";
       percentLabel.textContent = "100";
-      stageTextEl.textContent = "Pronto para decolar.";
+      stageTextEl.textContent = panelEl.dataset.stageReady || "";
       window.setTimeout(reveal, 400);
       return;
     }
 
     function stageTextFor(p: number) {
-      if (p < 35) return "Conectando ideias...";
-      if (p < 70) return "Preparando sua presença digital...";
-      if (p < 100) return "Ajustando os últimos detalhes...";
-      return "Pronto para decolar.";
+      if (p < 35) return panelEl.dataset.stageConnect || "";
+      if (p < 70) return panelEl.dataset.stagePrepare || "";
+      if (p < 100) return panelEl.dataset.stageAdjust || "";
+      return panelEl.dataset.stageReady || "";
     }
 
     function easeOutCubic(t: number) {
