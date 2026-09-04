@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-const root = path.resolve("dist");
+const root = path.resolve("dist/client");
 async function listHtml(dir) {
   const files = [];
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {

@@ -1,0 +1,10 @@
+---
+// This SSR routing bridge makes the localized Studio visible to adapters that
+// only emit function routes for files known at build time. The middleware owns
+// the locale rewrite; this page intentionally contains no duplicated UI.
+export const prerender = false;
+const target = new URL(Astro.url.pathname.replace(/^\/es/, ""), Astro.url);
+for (const [key, value] of Astro.url.searchParams) target.searchParams.append(key, value);
+target.searchParams.set("lang", "es");
+return Astro.rewrite(target);
+---

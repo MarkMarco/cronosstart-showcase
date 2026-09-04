@@ -1,0 +1,15 @@
+---
+import StudioLayout from "../../layouts/StudioLayout.astro";
+import { isSupabaseConfigured, supabaseServer } from "../../lib/launch/supabase";
+import { safeStudioReturnTo } from "../../lib/launch/auth";
+import { st, studioLocale, studioPath } from "../../lib/launch/i18n";
+export const prerender = false;
+const locale=studioLocale(Astro.url.toString()); const tr=(value:string)=>st(locale,value);
+const returnTo=safeStudioReturnTo(Astro.url.searchParams.get("return_to"),locale);
+let validSession=false;
+if(isSupabaseConfigured()){const {data:{user}}=await supabaseServer(Astro.cookies).auth.getUser();validSession=Boolean(user);}
+const error=Astro.url.searchParams.get("error");
+const errorMessage=error==="password_mismatch"?tr("As senhas não coincidem."):error==="invalid_password"?tr("A nova senha deve ter pelo menos 8 caracteres."):error==="update_failed"?tr("Não foi possível atualizar a senha. Solicite um novo link e tente novamente."):error?tr("Este link é inválido ou expirou. Solicite uma nova recuperação."):"";
+const recovery=studioPath(locale,"/studio/recuperar-senha");
+---
+<StudioLayout title={tr("Criar nova senha")}><section class="mx-auto grid min-h-[calc(100vh-4rem)] max-w-xl place-items-center px-5 py-16"><div class="w-full rounded-3xl border border-white/10 bg-white/[.04] p-6 sm:p-8"><h1 class="text-3xl font-semibold">{tr("Criar nova senha")}</h1>{errorMessage&&<div role="alert" class="mt-5 rounded-xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-100">{errorMessage}</div>}{validSession&&!errorMessage?<form method="post" action="/api/launch/auth" class="mt-6 grid gap-4"><input type="hidden" name="intent" value="update_password"/><input type="hidden" name="return_to" value={returnTo}/><input type="hidden" name="locale" value={locale==="es-VE"?"es":"pt"}/><label class="grid gap-2 text-sm font-semibold">{tr("Nova senha")}<input class="rounded-xl border border-white/15 bg-black/20 px-4 py-3" type="password" name="password" minlength="8" required autocomplete="new-password"/></label><label class="grid gap-2 text-sm font-semibold">{tr("Confirmar nova senha")}<input class="rounded-xl border border-white/15 bg-black/20 px-4 py-3" type="password" name="password_confirmation" minlength="8" required autocomplete="new-password"/></label><button class="rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">{tr("Atualizar senha")}</button></form>:<><p class="mt-4 text-sm text-[var(--ink-muted)]">{tr("O link de recuperação precisa ser aberto no mesmo navegador em que a solicitação foi iniciada.")}</p><a class="mt-6 inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-semibold" href={`${recovery}?return_to=${encodeURIComponent(returnTo)}`}>{tr("Solicitar novo link")}</a></>}</div></section></StudioLayout>

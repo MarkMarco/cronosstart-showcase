@@ -86,12 +86,13 @@ export function localizeDeep<T>(value: T, locale: Locale, key = ""): T {
 
 export function localizedPath(pathname: string, locale: Locale): string {
   if (!pathname.startsWith("/")) return pathname;
-  const clean = pathname.replace(/^\/es(?=\/|$)/, "") || "/";
+  const clean = pathname.replace(/\/$/, "").replace(/^\/es(?=\/|$)/, "") || "/";
+  const namedRoute = clean === "/criar-site" || clean === "/crear-sitio";
+  if (namedRoute) return locale === "es" ? "/es/crear-sitio" : "/criar-site";
   return locale === "es" ? `/es${clean === "/" ? "/" : clean}` : clean;
 }
 
 export function alternateLocalePath(pathname: string): string {
-  return pathname === "/es" || pathname.startsWith("/es/")
-    ? pathname.replace(/^\/es/, "") || "/"
-    : `/es${pathname === "/" ? "/" : pathname}`;
+  const locale = getLocale(pathname);
+  return localizedPath(pathname, locale === "es" ? "pt-BR" : "es");
 }

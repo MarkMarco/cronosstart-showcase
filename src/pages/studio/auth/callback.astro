@@ -1,0 +1,15 @@
+---
+import { safeStudioReturnTo, withQuery } from "../../../lib/launch/auth";
+import { studioLocale, studioPath } from "../../../lib/launch/i18n";
+import { isSupabaseConfigured, supabaseServer } from "../../../lib/launch/supabase";
+export const prerender = false;
+const locale=studioLocale(Astro.url.toString());
+const returnTo=safeStudioReturnTo(Astro.url.searchParams.get("return_to"),locale);
+const flow=Astro.url.searchParams.get("flow"); const code=Astro.url.searchParams.get("code");
+const failure=flow==="recovery"?studioPath(locale,"/studio/nova-senha"):studioPath(locale,"/studio/login");
+if(!isSupabaseConfigured()||!code||(flow!=="recovery"&&flow!=="signup")) return Astro.redirect(withQuery(failure,{error:"invalid_token",return_to:returnTo}));
+const db=supabaseServer(Astro.cookies); const {error}=await db.auth.exchangeCodeForSession(code);
+if(error)return Astro.redirect(withQuery(failure,{error:"invalid_token",return_to:returnTo}));
+if(flow==="recovery")return Astro.redirect(withQuery(studioPath(locale,"/studio/nova-senha"),{return_to:returnTo}));
+return Astro.redirect(returnTo);
+---

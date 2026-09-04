@@ -1,0 +1,10 @@
+---
+import "../styles/global.css";
+const es = Astro.url.pathname.startsWith("/es/");
+---
+<html lang={es ? "es-VE" : "pt-BR"}>
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="robots" content="noindex"/><title>Erro · CronosStart</title></head>
+  <body class="grid min-h-screen place-items-center bg-[#080c17] px-5 text-white">
+    <main class="max-w-lg text-center"><p class="text-sm font-bold uppercase tracking-[.2em] text-cyan-300">500</p><h1 class="mt-4 text-4xl font-semibold">{es ? "Algo salió mal" : "Algo deu errado"}</h1><p class="mt-4 text-white/60">{es ? "Inténtalo nuevamente en unos instantes." : "Tente novamente em alguns instantes."}</p><a class="mt-8 inline-flex rounded-full bg-blue-600 px-6 py-3 font-semibold" href={es ? "/es/" : "/"}>{es ? "Volver al inicio" : "Voltar ao início"}</a></main>
+  </body>
+</html>

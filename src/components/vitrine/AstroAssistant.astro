@@ -7,6 +7,7 @@ import Icon from "../ui/Icon.astro";
 import { buildWhatsappLink } from "../../config/company";
 
 const locale = getLocale(Astro.url);
+const launchHref = locale === "es" ? "/es/crear-sitio" : "/criar-site";
 const whatsappHref = buildWhatsappLink(
   "Olá! Conheci a CronosStart pelo site e gostaria de conversar sobre a criação do meu site."
 );
@@ -59,16 +60,14 @@ const whatsappHref = buildWhatsappLink(
       {t(locale, "Como posso ajudar?")}
     </p>
     <div role="menu" aria-label={t(locale, "Ações do assistente Astro")} class="flex flex-col gap-0.5">
-    <button
-      type="button"
+    <a
+      href={launchHref}
       role="menuitem"
-      data-open-contact-form
-      data-contact-origin="astro-assistant"
       class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
     >
       <Icon name="sparkle" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
-      {t(locale, "Quero criar meu site")}
-    </button>
+      {locale === "es" ? "Crear mi sitio gratis" : "Criar meu site grátis"}
+    </a>
     <a
       href={localizedPath("/#modelos", locale)}
       role="menuitem"
@@ -77,6 +76,16 @@ const whatsappHref = buildWhatsappLink(
       <Icon name="layers" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
       {t(locale, "Ver modelos")}
     </a>
+    <button
+      type="button"
+      role="menuitem"
+      data-open-contact-form
+      data-contact-origin="astro-assistant-project"
+      class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
+    >
+      <Icon name="settings" class="h-4 w-4 shrink-0 text-[var(--accent)] transition-transform duration-200 group-hover/item:translate-x-0.5" />
+      {locale === "es" ? "Quiero un proyecto personalizado" : "Quero um projeto personalizado"}
+    </button>
     <a
       href={whatsappHref}
       target="_blank"
@@ -86,7 +95,7 @@ const whatsappHref = buildWhatsappLink(
       class="astro-panel-item group/item flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/85 transition-all duration-200"
     >
       <Icon name="whatsapp" class="h-4 w-4 shrink-0 text-[#25D366] transition-transform duration-200 group-hover/item:translate-x-0.5" />
-      {t(locale, "Falar no WhatsApp")}
+      {locale === "es" ? "Hablar con CronosStart" : "Falar com a CronosStart"}
     </a>
     </div>
   </div>

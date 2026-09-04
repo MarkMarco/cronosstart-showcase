@@ -1,0 +1,60 @@
+---
+import StudioLayout from "../../layouts/StudioLayout.astro";
+import { st, studioLocale, studioPath } from "../../lib/launch/i18n";
+import { isSupabaseConfigured, supabaseServer } from "../../lib/launch/supabase";
+
+export const prerender = false;
+const locale = studioLocale(Astro.url.toString());
+const tr = (value: string) => st(locale, value);
+const base = studioPath(locale, "/studio");
+const login = `${base}/login?return_to=${encodeURIComponent(base)}`;
+if (!isSupabaseConfigured()) return Astro.redirect(login);
+const db = supabaseServer(Astro.cookies);
+const { data: { user } } = await db.auth.getUser();
+if (!user) return Astro.redirect(login);
+const { data: sites } = await db.from("sites").select("id,name,slug,status,updated_at,draft_revision,published_revision").order("updated_at", { ascending: false });
+const error = Astro.url.searchParams.get("error");
+const notice = Astro.url.searchParams.get("notice");
+const errorMessage = error === "site_not_found" ? tr("Não foi possível acessar esse site.")
+  : error === "site_limit" ? tr("Limite de 3 sites Free atingido.")
+    : tr("Não foi possível concluir esta ação.");
+const noticeMessage = notice === "duplicated" ? tr("Site duplicado com sucesso.")
+  : notice === "deleted" ? tr("Site excluído com sucesso.")
+    : notice === "renamed" ? tr("Nome atualizado com sucesso.") : "";
+---
+
+<StudioLayout title={tr("Meus sites")}>
+  <div class="mx-auto max-w-7xl px-5 py-12">
+    {error && <p role="alert" class="mb-6 rounded-xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-100">{errorMessage}</p>}
+    {noticeMessage && <p role="status" class="mb-6 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-4 text-sm text-emerald-100">{noticeMessage}</p>}
+    <div class="flex flex-wrap items-end justify-between gap-5">
+      <div><p class="text-sm text-[var(--accent)]">{user.email}</p><h1 class="mt-2 text-4xl font-semibold tracking-tight">{tr("Meus sites")}</h1><p class="mt-2 text-sm text-[var(--ink-muted)]">{tr("3 projetos Free · 1 publicado por vez")}</p></div>
+      {(sites?.length ?? 0) < 3 && <a href={`${base}/novo`} class="rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">+ {tr("Criar novo site")}</a>}
+    </div>
+    {!sites?.length ? <div class="mt-10 rounded-3xl border border-dashed border-white/15 p-12 text-center">
+      <h2 class="text-2xl font-semibold">{tr("Seu primeiro site começa aqui")}</h2>
+      <p class="mx-auto mt-3 max-w-md text-[var(--ink-muted)]">{tr("Em poucos passos você terá uma base profissional pronta para personalizar.")}</p>
+      <a href={`${base}/novo`} class="mt-6 inline-flex rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">{tr("Criar site grátis")}</a>
+    </div> : <div class="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">{sites.map((site) => {
+      const editor = `${base}/sites/${site.id}/editar`;
+      const preview = `${base}/sites/${site.id}/preview`;
+      return <article class="rounded-2xl border border-white/10 bg-white/[.035] p-5">
+        <div class="flex items-center justify-between"><span class={`rounded-full px-3 py-1 text-xs ${site.status === "published" ? "bg-emerald-400/15 text-emerald-200" : "bg-white/10"}`}>{tr(site.status === "published" ? "Publicado" : "Rascunho")}</span><span class="text-xs text-white/40">Free</span></div>
+        <h2 class="mt-6 text-xl font-semibold">{site.name}</h2>
+        <p class="mt-1 text-sm text-[var(--ink-muted)]">{site.slug}.sites.cronosstart.com.br</p>
+        {site.draft_revision > site.published_revision && <p class="mt-3 text-xs text-amber-300">{tr("Alterações não publicadas")}</p>}
+        <div class="mt-6 flex flex-wrap gap-2"><a class="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold" href={editor}>{tr("Editar")}</a><a class="rounded-full border border-white/15 px-4 py-2 text-sm" href={preview} target="_blank" rel="noopener">{tr("Visualizar")}</a><a class="rounded-full border border-white/15 px-4 py-2 text-sm" href={`${base}/sites/${site.id}/leads`}>{tr("Leads")}</a></div>
+        <div class="mt-5 border-t border-white/10 pt-4">
+          <details><summary class="cursor-pointer text-sm text-white/70">{tr("Gerenciar site")}</summary>
+            <div class="mt-4 grid gap-4">
+              <form method="post" action={`/api/launch/sites/${site.id}`} class="grid grid-cols-[1fr_auto] gap-2"><input type="hidden" name="intent" value="rename" /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={base} /><label class="sr-only" for={`rename-${site.id}`}>{tr("Nome do site")}</label><input id={`rename-${site.id}`} name="site_name" value={site.name} maxlength="100" required class="min-w-0 rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-sm" /><button class="rounded-xl border border-white/15 px-3 text-sm">{tr("Salvar nome")}</button></form>
+              <form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="intent" value="duplicate" /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={base} /><button class="text-sm text-[var(--accent)] disabled:opacity-40" disabled={(sites?.length ?? 0) >= 3}>{tr("Duplicar")}</button></form>
+              <details class="rounded-xl border border-red-400/20 bg-red-400/5 p-3"><summary class="cursor-pointer text-sm text-red-200">{tr("Excluir")}</summary><p class="mt-3 text-xs leading-relaxed text-white/55">{tr("A exclusão remove o site, conteúdo, leads e imagens e não pode ser desfeita.")}</p><form method="post" action={`/api/launch/sites/${site.id}`} class="mt-3 grid gap-2"><input type="hidden" name="intent" value="delete" /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={base} /><label class="text-xs">{tr("Digite o nome do site para confirmar")}<input name="confirm_name" required autocomplete="off" class="mt-1 w-full rounded-lg border border-red-400/20 bg-black/20 px-3 py-2" /></label><button class="justify-self-start text-sm font-semibold text-red-200">{tr("Excluir definitivamente")}</button></form></details>
+            </div>
+          </details>
+        </div>
+      </article>;
+    })}</div>}
+    {(sites?.length ?? 0) >= 3 && <p class="mt-6 text-sm text-amber-200">{tr("Você pode criar até 3 sites no plano Free.")}</p>}
+  </div>
+</StudioLayout>

@@ -1,0 +1,30 @@
+---
+import StudioLayout from "../../../../layouts/StudioLayout.astro";
+import { supabaseServer } from "../../../../lib/launch/supabase";
+import { st, studioLocale, studioPath } from "../../../../lib/launch/i18n";
+export const prerender = false;
+const locale = studioLocale(Astro.url.toString());
+const tr = (value: string) => st(locale, value);
+const base = studioPath(locale, "/studio");
+const current = `${base}/sites/${Astro.params.id}/leads`;
+const db = supabaseServer(Astro.cookies);
+const { data: { user } } = await db.auth.getUser();
+if (!user) return Astro.redirect(`${base}/login?return_to=${encodeURIComponent(current)}`);
+const { data: site } = await db.from("sites").select("id,name").eq("id", Astro.params.id).single();
+if (!site) return Astro.redirect(`${base}?error=site_not_found`);
+const { data: leads } = await db.from("site_leads").select("*").eq("site_id", site.id).order("created_at", { ascending: false });
+---
+<StudioLayout title={`${tr("Leads")} · ${site.name}`}>
+  <div class="mx-auto max-w-6xl px-5 py-12">
+    <a href={`${base}/sites/${site.id}/editar`} class="text-sm text-white/50">← {tr("Voltar ao editor")}</a>
+    <h1 class="mt-4 text-4xl font-semibold">{tr("Leads")}</h1>
+    <p class="mt-2 text-[var(--ink-muted)]">{tr("Contatos recebidos pelo site")} {site.name}.</p>
+    <div class="mt-8 overflow-x-auto rounded-2xl border border-white/10">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-white/[.05] text-white/55"><tr><th class="p-4">{tr("Nome")}</th><th class="p-4">{tr("Contato")}</th><th class="p-4">{tr("Mensagem")}</th><th class="p-4">{tr("Data")}</th></tr></thead>
+        <tbody>{leads?.map((lead) => <tr class="border-t border-white/10"><td class="p-4 font-medium">{lead.name}</td><td class="p-4"><div>{lead.email}</div><div class="text-white/45">{lead.phone}</div></td><td class="max-w-md p-4 text-white/70">{lead.message}</td><td class="p-4 text-white/45">{new Date(lead.created_at).toLocaleDateString(locale)}</td></tr>)}</tbody>
+      </table>
+      {!leads?.length && <p class="p-10 text-center text-white/45">{tr("Nenhum contato recebido ainda.")}</p>}
+    </div>
+  </div>
+</StudioLayout>

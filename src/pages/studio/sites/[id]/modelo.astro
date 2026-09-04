@@ -1,0 +1,39 @@
+---
+import SiteRenderer from "../../../../components/launch/SiteRenderer.astro";
+import StudioLayout from "../../../../layouts/StudioLayout.astro";
+import { st, studioLocale, studioPath } from "../../../../lib/launch/i18n";
+import { supabaseServer } from "../../../../lib/launch/supabase";
+import { applyTemplateToSections, isLaunchTemplate, launchTemplates } from "../../../../lib/launch/templates";
+
+export const prerender = false;
+const locale = studioLocale(Astro.url.toString());
+const tr = (value: string) => st(locale, value);
+const base = studioPath(locale, "/studio");
+const editor = `${base}/sites/${Astro.params.id}/editar`;
+const db = supabaseServer(Astro.cookies);
+const { data: { user } } = await db.auth.getUser();
+if (!user) return Astro.redirect(`${base}/login?return_to=${encodeURIComponent(editor)}`);
+const { data: site } = await db.from("sites").select("*,site_sections(*)").eq("id", Astro.params.id).single();
+if (!site) return Astro.redirect(`${base}?error=site_not_found`);
+const requestedTemplate = Astro.url.searchParams.get("template");
+const templateId = isLaunchTemplate(requestedTemplate) ? requestedTemplate : site.template_id;
+const template = launchTemplates.find((entry) => entry.id === templateId) ?? launchTemplates[0];
+const previewSite = {
+  ...site,
+  template_id: template.id,
+  site_sections: applyTemplateToSections(
+    site.site_sections ?? [],
+    template.id,
+    site.name,
+    String(site.settings?.seo?.description ?? ""),
+    site.language,
+  ),
+};
+---
+
+<StudioLayout title={tr("Prévia do modelo")}>
+  <div class="border-b border-white/10 bg-[#0d1422] px-5 py-4">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4"><div><a href={editor} class="text-sm text-white/55">← {tr("Voltar para o editor")}</a><h1 class="mt-1 text-xl font-semibold">{tr(template.name)}</h1><p class="mt-1 text-sm text-white/50">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p></div><form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="intent" value="switch_template" /><input type="hidden" name="template_id" value={template.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={editor} /><button class="rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">{tr("Aplicar modelo")}</button></form></div>
+  </div>
+  <SiteRenderer site={previewSite} preview />
+</StudioLayout>

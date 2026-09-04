@@ -1,0 +1,10 @@
+---
+import "../styles/global.css";
+const es = Astro.url.pathname.startsWith("/es/");
+---
+<html lang={es ? "es-VE" : "pt-BR"}>
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="robots" content="noindex"/><title>404 · CronosStart</title></head>
+  <body class="grid min-h-screen place-items-center bg-[#080c17] px-5 text-white">
+    <main class="max-w-lg text-center"><p class="text-sm font-bold uppercase tracking-[.2em] text-cyan-300">404</p><h1 class="mt-4 text-4xl font-semibold">{es ? "Página no encontrada" : "Página não encontrada"}</h1><p class="mt-4 text-white/60">{es ? "La dirección puede estar incorrecta o la página ya no existe." : "O endereço pode estar incorreto ou a página não existe mais."}</p><a class="mt-8 inline-flex rounded-full bg-blue-600 px-6 py-3 font-semibold" href={es ? "/es/" : "/"}>{es ? "Volver al inicio" : "Voltar ao início"}</a></main>
+  </body>
+</html>

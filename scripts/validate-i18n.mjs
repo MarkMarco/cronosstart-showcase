@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-const esRoot = path.resolve("dist/es");
+const esRoot = path.resolve("dist/client/es");
 async function list(dir) {
   const result = [];
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
@@ -13,6 +13,12 @@ async function list(dir) {
 }
 
 const failures = [];
+const distRoot = path.resolve("dist/client");
+for (const file of await list(distRoot)) {
+  const html = await fs.readFile(file, "utf8");
+  if (/\/es\/criar-site(?:[\/#?"'])/i.test(html))
+    failures.push(`${path.relative(distRoot, file)}: URL inválida /es/criar-site`);
+}
 for (const file of await list(esRoot)) {
   const html = await fs.readFile(file, "utf8");
   const visibleText = html

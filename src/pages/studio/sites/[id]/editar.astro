@@ -1,0 +1,161 @@
+---
+import SiteRenderer from "../../../../components/launch/SiteRenderer.astro";
+import StudioLayout from "../../../../layouts/StudioLayout.astro";
+import { brandPalettes, buttonOptions, heroVariants, launchThemes, normalizeBrandColor, typographyOptions, validButtonStyle, validTheme, validTypography } from "../../../../lib/launch/design";
+import { st, studioLocale, studioPath } from "../../../../lib/launch/i18n";
+import { supabaseServer } from "../../../../lib/launch/supabase";
+import { launchTemplates } from "../../../../lib/launch/templates";
+
+export const prerender = false;
+const locale = studioLocale(Astro.url.toString());
+const tr = (value: string) => st(locale, value);
+const base = studioPath(locale, "/studio");
+const requested = `${base}/sites/${Astro.params.id}/editar`;
+const db = supabaseServer(Astro.cookies);
+const { data: { user } } = await db.auth.getUser();
+if (!user) return Astro.redirect(`${base}/login?return_to=${encodeURIComponent(requested)}`);
+const { data: site } = await db.from("sites").select("*,site_sections(*)").eq("id", Astro.params.id).single();
+if (!site) return Astro.redirect(`${base}?error=site_not_found`);
+const { data: snapshots } = await db.from("site_snapshots").select("id,created_at,snapshot").eq("site_id", site.id).order("created_at", { ascending: false }).limit(5);
+const sections = [...(site.site_sections ?? [])].sort((first, second) => first.position - second.position);
+const settings = site.settings ?? {};
+const unpublished = site.draft_revision > site.published_revision;
+const itemTypes = new Set(["services", "differences", "gallery", "testimonials", "faq"]);
+const returnTo = `${base}/sites/${site.id}/editar`;
+const previewUrl = `${base}/sites/${site.id}/preview`;
+const theme = validTheme(settings.style);
+const typography = validTypography(settings.typography);
+const buttonStyle = validButtonStyle(settings.buttonStyle);
+const brandColor = normalizeBrandColor(settings.brandColor);
+const error = Astro.url.searchParams.get("error");
+const notice = Astro.url.searchParams.get("notice");
+const errorMessage = error === "published_limit" ? tr("Para publicar este site, despublique primeiro o site Free que já está no ar.")
+  : error === "invalid_slug" ? tr("Use apenas letras minúsculas, números e hífens no endereço.")
+    : error === "slug_taken" ? tr("Este endereço já está em uso.")
+      : error === "delete_confirmation" ? tr("Digite o nome exato do site para confirmar a exclusão.")
+        : error === "delete_assets_failed" ? tr("Não foi possível excluir todos os assets. Tente novamente.")
+          : error ? tr("Não foi possível concluir esta ação.") : "";
+const noticeMessage = notice === "template_changed" ? tr("Modelo alterado. O conteúdo compatível foi preservado.")
+  : notice === "snapshot_restored" ? tr("Snapshot restaurado com sucesso.")
+    : notice === "published" ? tr("Site publicado com sucesso.")
+      : notice === "unpublished" ? tr("Site despublicado com sucesso.") : "";
+const themeLabel = (id: string) => id === "modern" ? "Moderno" : id === "elegant" ? "Elegante" : id === "minimal" ? "Minimalista" : "Vibrante";
+const themeDescription = (id: string) => id === "modern" ? "Limpo, tecnológico e com profundidade suave." : id === "elegant" ? "Editorial, sofisticado e com detalhes refinados." : id === "minimal" ? "Direto, arejado e com poucos efeitos visuais." : "Expressivo, energético e com cores em destaque.";
+const paletteLabel = (id: string) => id === "ocean" ? "Oceano" : id === "forest" ? "Floresta" : id === "wine" ? "Vinho" : id === "violet" ? "Violeta" : id === "terracotta" ? "Terracota" : "Grafite";
+const heroLabel = (id: string) => id === "centered" ? "Centralizado" : id === "image-right" ? "Texto à esquerda" : id === "image-left" ? "Texto à direita" : "Imagem de fundo";
+const typographyLabel = (id: string) => id === "theme" ? "Recomendada pelo tema" : id === "sans" ? "Sans contemporânea" : id === "serif" ? "Serif editorial" : "Display marcante";
+const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded" ? "Arredondado" : "Reto";
+---
+
+<StudioLayout title={`${tr("Editar")} ${site.name}`}>
+  <div class="grid min-h-[calc(100vh-4rem)] xl:grid-cols-[430px_1fr]">
+    <aside class="border-r border-white/10 xl:max-h-[calc(100vh-4rem)] xl:overflow-auto">
+      <div class="p-5">
+        <a href={base} class="text-sm text-white/50">← {tr("Meus sites")}</a>
+        <div class="mt-5 flex items-start justify-between gap-3">
+          <div><h1 class="text-xl font-semibold">{site.name}</h1><p class={`mt-1 text-xs ${unpublished ? "text-amber-300" : "text-emerald-300"}`}>{unpublished ? tr("Alterações não publicadas") : site.status === "published" ? tr("Tudo publicado") : tr("Rascunho")}</p></div>
+          <form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /><button name="intent" value={site.status === "published" ? "unpublish" : "publish"} class="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold">{tr(site.status === "published" ? "Despublicar" : "Publicar")}</button></form>
+        </div>
+        {errorMessage && <p role="alert" class="mt-4 rounded-xl border border-red-400/30 bg-red-400/10 p-3 text-sm text-red-100">{errorMessage}</p>}
+        {noticeMessage && <p role="status" class="mt-4 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 text-sm text-emerald-100">{noticeMessage}</p>}
+        <div class="mt-6 grid grid-cols-3 rounded-xl bg-white/[.05] p-1" role="tablist" aria-label={tr("Editor")}>
+          <button type="button" data-editor-tab="content" class="editor-tab rounded-lg bg-white px-2 py-2 text-xs font-semibold text-slate-950">{tr("Conteúdo")}</button>
+          <button type="button" data-editor-tab="design" class="editor-tab rounded-lg px-2 py-2 text-xs font-semibold text-white/65">{tr("Design")}</button>
+          <button type="button" data-editor-tab="settings" class="editor-tab rounded-lg px-2 py-2 text-xs font-semibold text-white/65">{tr("Configurações")}</button>
+        </div>
+        <div class="mt-3 flex items-center justify-between gap-3"><p class="text-xs text-white/40">{tr("Desfaz e refaz alterações locais ainda não salvas.")}</p><div class="flex gap-1"><button type="button" id="undo-button" disabled class="rounded-lg border border-white/10 px-2 py-1 text-xs disabled:opacity-30">↶ {tr("Desfazer")}</button><button type="button" id="redo-button" disabled class="rounded-lg border border-white/10 px-2 py-1 text-xs disabled:opacity-30">↷ {tr("Refazer")}</button></div></div>
+
+        <form id="editor-form" method="post" action={`/api/launch/sites/${site.id}`} class="mt-5 grid gap-5">
+          <input type="hidden" name="intent" value="update" /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /><input type="hidden" name="section_id" /><input type="hidden" name="direction" /><input type="hidden" name="item_index" />
+
+          <section data-editor-panel="content" class="grid gap-3">
+            <h2 class="text-sm font-semibold">{tr("Conteúdo")}</h2>
+            {sections.map((section, sectionIndex) => {
+              const cards = Array.isArray(section.content?.items) ? section.content.items : [];
+              const sectionName = section.type === "about" ? "Sobre" : section.type === "services" ? "Serviços" : section.type === "differences" ? "Diferenciais" : section.type === "gallery" ? "Galeria" : section.type === "testimonials" ? "Depoimentos" : section.type === "faq" ? "Perguntas frequentes" : section.type === "contact" ? "Contato" : "Hero";
+              return <details class="rounded-xl border border-white/10 bg-white/[.035] p-3" open={section.type === "hero"}>
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-2"><label class="text-sm font-semibold" onclick="event.stopPropagation()"><input type="checkbox" name={`visible_${section.id}`} checked={section.visible} class="mr-2" />{tr(sectionName)}</label><span><button name="intent" value="move" class="px-2 disabled:opacity-20" disabled={sectionIndex === 0} aria-label={tr("Mover para cima")} onclick={`this.form.section_id.value='${section.id}';this.form.direction.value='up'`}>↑</button><button name="intent" value="move" class="px-2 disabled:opacity-20" disabled={sectionIndex === sections.length - 1} aria-label={tr("Mover para baixo")} onclick={`this.form.section_id.value='${section.id}';this.form.direction.value='down'`}>↓</button></span></summary>
+                <div class="mt-4 grid gap-3">
+                  {section.type === "hero" && <>
+                    <label class="grid gap-1 text-xs text-white/55">{tr("Layout do Hero")}<select name={`variant_${section.id}`} data-hero-variant class="rounded-lg border border-white/10 bg-[#111827] px-3 py-2 text-sm text-white">{heroVariants.map((variant) => <option value={variant} selected={section.variant === variant}>{tr(heroLabel(variant))}</option>)}</select></label>
+                    <label class="grid gap-1 text-xs text-white/55">{tr("Texto de destaque")}<input name={`eyebrow_${section.id}`} value={section.content?.eyebrow ?? ""} class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label>
+                  </>}
+                  <label class="grid gap-1 text-xs text-white/55">{tr("Título")}<input name={`title_${section.id}`} value={section.content?.title ?? ""} class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label>
+                  {!itemTypes.has(section.type) && <label class="grid gap-1 text-xs text-white/55">{tr("Texto")}<textarea name={`text_${section.id}`} class="min-h-24 rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white">{section.content?.description ?? section.content?.text ?? ""}</textarea></label>}
+                  {section.type === "hero" && <label class="grid gap-1 text-xs text-white/55">{tr("Texto do botão")}<input name={`button_${section.id}`} value={section.content?.buttonLabel ?? ""} class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label>}
+                  {cards.map((item: any, itemIndex: number) => <div class="rounded-lg border border-white/10 p-2"><input name={`item_title_${section.id}`} value={item.title ?? ""} aria-label={tr("Título")} class="w-full rounded-md bg-black/20 px-2 py-1.5 text-sm" /><textarea name={`item_description_${section.id}`} aria-label={tr("Texto")} class="mt-1 w-full rounded-md bg-black/20 px-2 py-1.5 text-xs">{item.description ?? ""}</textarea><input type="hidden" name={`item_image_${section.id}`} value={item.image ?? ""} /><div class="mt-2 flex items-center justify-between gap-2"><span class="flex gap-3"><button type="button" data-upload-form={`upload-${section.id}-${itemIndex}`} class="text-xs text-[var(--accent)]">{tr("Enviar imagem")}</button>{item.image && <button type="button" data-remove-form={`remove-${section.id}-${itemIndex}`} class="text-xs text-amber-300">{tr("Remover imagem")}</button>}</span><span><button name="intent" value="move_item" disabled={itemIndex === 0} class="px-1 text-xs disabled:opacity-20" aria-label={tr("Mover para cima")} onclick={`this.form.section_id.value='${section.id}';this.form.item_index.value='${itemIndex}';this.form.direction.value='up'`}>↑</button><button name="intent" value="move_item" disabled={itemIndex === cards.length - 1} class="px-1 text-xs disabled:opacity-20" aria-label={tr("Mover para baixo")} onclick={`this.form.section_id.value='${section.id}';this.form.item_index.value='${itemIndex}';this.form.direction.value='down'`}>↓</button><button name="intent" value="delete_item" class="ml-2 text-xs text-red-300" onclick={`this.form.section_id.value='${section.id}';this.form.item_index.value='${itemIndex}'`}>{tr("Remover")}</button></span></div></div>)}
+                  {itemTypes.has(section.type) && <button name="intent" value="add_item" class="rounded-lg border border-white/10 px-3 py-2 text-xs" onclick={`this.form.section_id.value='${section.id}'`}>+ {tr("Adicionar item")}</button>}
+                  <div class="flex items-start justify-between gap-3"><span>{!itemTypes.has(section.type) && <span class="flex flex-wrap gap-3"><button type="button" data-upload-form={`upload-${section.id}`} class="text-xs text-[var(--accent)]">{tr("Enviar imagem")}</button>{section.content?.image && <button type="button" data-remove-form={`remove-${section.id}`} class="text-xs text-amber-300">{tr("Remover imagem")}</button>}</span>}{section.type === "hero" && <small class="mt-2 block text-[11px] leading-relaxed text-white/40">{tr("Recomendado: 1600 × 900 px ou superior, JPG/PNG/WebP, máximo 5 MB.")}</small>}</span><button name="intent" value="delete_section" class="text-xs text-red-300" onclick={`this.form.section_id.value='${section.id}'`}>{tr("Remover")}</button></div>
+                </div>
+              </details>;
+            })}
+            <div class="grid grid-cols-[1fr_auto] gap-2"><select name="section_type" class="rounded-xl border border-white/15 bg-[#111827] px-3 py-2 text-sm"><option value="about">{tr("Sobre")}</option><option value="services">{tr("Serviços")}</option><option value="differences">{tr("Diferenciais")}</option><option value="gallery">{tr("Galeria")}</option><option value="testimonials">{tr("Depoimentos")}</option><option value="faq">{tr("Perguntas frequentes")}</option><option value="contact">{tr("Contato")}</option></select><button name="intent" value="add_section" class="rounded-xl border border-white/15 px-3 text-sm">+ {tr("Adicionar seção")}</button></div>
+          </section>
+
+          <section data-editor-panel="design" class="hidden grid gap-5">
+            <div><h2 class="text-sm font-semibold">{tr("Modelo")}</h2><p class="mt-1 text-xs text-white/45">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p><div class="mt-3 grid gap-2">{launchTemplates.map((template) => <div class={`flex items-center gap-3 rounded-xl border p-2 ${site.template_id === template.id ? "border-[var(--accent)] bg-white/[.05]" : "border-white/10"}`}><img src={template.image} alt="" class="h-14 w-20 rounded-lg object-cover" /><div class="min-w-0 flex-1"><strong class="block text-sm">{tr(template.name)}</strong><small class="text-white/40">{site.template_id === template.id ? tr("Modelo atual") : tr(template.segment)}</small></div><a href={`${base}/sites/${site.id}/modelo?template=${template.id}`} class="rounded-lg border border-white/15 px-2 py-1 text-xs">{tr("Pré-visualizar modelo")}</a></div>)}</div></div>
+            <fieldset><legend class="text-sm font-semibold">{tr("Tema")}</legend><div class="mt-3 grid gap-2 sm:grid-cols-2">{launchThemes.map((themeId) => <label class="cursor-pointer rounded-xl border border-white/10 bg-white/[.03] p-3 has-[:checked]:border-[var(--accent)]"><input type="radio" name="style" value={themeId} checked={theme === themeId} class="mr-2" /><strong class="text-sm">{tr(themeLabel(themeId))}</strong><small class="mt-1 block text-white/40">{tr(themeDescription(themeId))}</small></label>)}</div></fieldset>
+            <fieldset><legend class="text-sm font-semibold">{tr("Cor principal")}</legend><div class="mt-3 grid grid-cols-3 gap-2">{brandPalettes.map((palette) => <label class="cursor-pointer rounded-xl border border-white/10 p-2 text-center text-xs has-[:checked]:border-[var(--accent)]"><span class="mx-auto mb-1 block h-7 w-7 rounded-full border border-white/20" style={`background:${palette.color}`}></span><input type="radio" name="brand_palette" value={palette.color} checked={brandColor === palette.color} class="sr-only" />{tr(paletteLabel(palette.id))}</label>)}</div><label class="mt-3 flex items-center justify-between rounded-xl border border-white/10 p-3 text-xs">{tr("Cor personalizada")}<input type="color" name="brand_color" value={brandColor} class="h-9 w-14 cursor-pointer rounded border-0 bg-transparent" /></label></fieldset>
+            <label class="grid gap-2 text-sm font-semibold">{tr("Tipografia")}<select name="typography" class="rounded-xl border border-white/15 bg-[#111827] px-3 py-2">{typographyOptions.map((option) => <option value={option} selected={typography === option}>{tr(typographyLabel(option))}</option>)}</select></label>
+            <fieldset><legend class="text-sm font-semibold">{tr("Botões")}</legend><div class="mt-2 grid grid-cols-3 gap-2">{buttonOptions.map((option) => <label class="cursor-pointer rounded-xl border border-white/10 p-2 text-center text-xs has-[:checked]:border-[var(--accent)]"><input type="radio" name="button_style" value={option} checked={buttonStyle === option} class="mr-1" />{tr(buttonLabel(option))}</label>)}</div></fieldset>
+            {snapshots?.length ? <div><h2 class="text-sm font-semibold">{tr("Recuperação de modelo")}</h2><div class="mt-2 grid gap-2">{snapshots.map((snapshot) => <div class="flex items-center justify-between rounded-xl border border-white/10 p-3"><span class="text-xs text-white/55">{new Date(snapshot.created_at).toLocaleString(locale)}</span><button type="submit" form={`restore-${snapshot.id}`} class="text-xs text-[var(--accent)]">{tr("Restaurar snapshot")}</button></div>)}</div></div> : null}
+          </section>
+
+          <section data-editor-panel="settings" class="hidden grid gap-5">
+            <fieldset class="grid gap-3"><legend class="text-sm font-semibold">{tr("Configurações")}</legend><label class="grid gap-1 text-xs text-white/55">{tr("Nome do site")}<input name="site_name" value={site.name} maxlength="100" required class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label><label class="grid gap-1 text-xs text-white/55">{tr("Endereço gratuito")}<div class="flex items-center rounded-lg border border-white/10 bg-black/20"><input name="slug" value={site.slug} maxlength="48" required class="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white" /><span class="pr-3 text-[10px] text-white/35">.sites.cronosstart.com.br</span></div></label></fieldset>
+            <fieldset class="grid gap-2"><legend class="text-sm font-semibold">WhatsApp</legend><label class="text-xs"><input type="checkbox" name="whatsapp_enabled" checked={settings.whatsapp?.enabled} /> {tr("Ativar botão")}</label><div class="grid grid-cols-[80px_1fr] gap-2"><input name="country_code" value={settings.whatsapp?.countryCode ?? (locale === "es-VE" ? "58" : "55")} class="rounded-lg bg-black/20 px-3 py-2" aria-label={tr("Código do país")} /><input name="phone" value={settings.whatsapp?.phone ?? ""} class="rounded-lg bg-black/20 px-3 py-2" aria-label={tr("Telefone")} /></div></fieldset>
+            <fieldset class="grid gap-2"><legend class="text-sm font-semibold">SEO</legend><label class="grid gap-1 text-xs text-white/55">{tr("Título SEO")}<input name="seo_title" value={settings.seo?.title ?? site.name} class="rounded-lg bg-black/20 px-3 py-2 text-sm" /></label><label class="grid gap-1 text-xs text-white/55">{tr("Descrição SEO")}<textarea name="seo_description" class="rounded-lg bg-black/20 px-3 py-2 text-sm">{settings.seo?.description ?? ""}</textarea></label></fieldset>
+            <div class="rounded-xl border border-white/10 p-3"><h2 class="text-sm font-semibold">{tr("Publicação")}</h2><p class="mt-2 text-xs leading-relaxed text-white/45">{tr("O plano Free permite três projetos e somente um site publicado simultaneamente.")}</p></div>
+          </section>
+
+          <button id="save-button" class="sticky bottom-3 rounded-full bg-white px-5 py-3 font-semibold text-slate-950">{tr("Salvar alterações")}</button>
+          <p id="save-state" class="text-center text-xs text-white/40" aria-live="polite">{Astro.url.searchParams.has("saved") ? tr("Alterações salvas") : ""}</p>
+        </form>
+      </div>
+    </aside>
+
+    <section class="bg-[#202636] p-4 sm:p-8">
+      <div class="mb-3 flex flex-wrap items-center justify-center gap-2"><button type="button" data-device="desktop" class="device-button rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900">{tr("Desktop")}</button><button type="button" data-device="tablet" class="device-button rounded-full border border-white/20 px-4 py-2 text-xs">{tr("Tablet")}</button><button type="button" data-device="mobile" class="device-button rounded-full border border-white/20 px-4 py-2 text-xs">{tr("Mobile")}</button><a href={previewUrl} target="_blank" rel="noopener" class="ml-2 rounded-full border border-white/20 px-4 py-2 text-xs">↗ {tr("Abrir preview em nova aba")}</a></div>
+      <div id="preview-frame" class="mx-auto overflow-hidden rounded-xl bg-white shadow-2xl transition-[max-width]" style="max-width:1200px"><div class="flex h-10 items-center gap-2 bg-slate-100 px-4"><i class="h-2.5 w-2.5 rounded-full bg-red-400"></i><i class="h-2.5 w-2.5 rounded-full bg-amber-400"></i><i class="h-2.5 w-2.5 rounded-full bg-green-400"></i><span class="ml-3 text-xs text-slate-400">{tr("Preview")}</span></div><div class="max-h-[calc(100vh-10rem)] overflow-auto"><SiteRenderer site={site} preview /></div></div>
+    </section>
+  </div>
+
+  {snapshots?.map((snapshot) => <form id={`restore-${snapshot.id}`} method="post" action={`/api/launch/sites/${site.id}`} class="hidden"><input type="hidden" name="intent" value="restore_snapshot" /><input type="hidden" name="snapshot_id" value={snapshot.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /></form>)}
+  {sections.flatMap((section) => {
+    const cards = Array.isArray(section.content?.items) ? section.content.items : [];
+    return [<form id={`upload-${section.id}`} method="post" action="/api/launch/assets" enctype="multipart/form-data" class="hidden"><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input type="file" name="image" accept="image/jpeg,image/png,image/webp" /></form>, <form id={`remove-${section.id}`} method="post" action="/api/launch/assets" class="hidden"><input name="intent" value="remove" /><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /></form>, ...cards.flatMap((_: any, index: number) => [<form id={`upload-${section.id}-${index}`} method="post" action="/api/launch/assets" enctype="multipart/form-data" class="hidden"><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input name="item_index" value={index} /><input type="file" name="image" accept="image/jpeg,image/png,image/webp" /></form>, <form id={`remove-${section.id}-${index}`} method="post" action="/api/launch/assets" class="hidden"><input name="intent" value="remove" /><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input name="item_index" value={index} /></form>])];
+  })}
+
+  <script define:vars={{ dirtyText: tr("Alterações não salvas") }} is:inline>
+    const form = document.querySelector('#editor-form');
+    const state = document.querySelector('#save-state');
+    const undo = document.querySelector('#undo-button');
+    const redo = document.querySelector('#redo-button');
+    const previewSite = document.querySelector('#preview-frame .launch-site');
+    const controls = form ? [...form.elements].filter((field) => field.name && !['intent', 'section_id', 'direction', 'item_index'].includes(field.name)) : [];
+    const capture = () => controls.map((field) => ({ name: field.name, type: field.type, value: field.value, checked: field.checked }));
+    const history = [capture()];
+    let cursor = 0;
+    let restoring = false;
+    let timer;
+    const updateHistoryButtons = () => { undo.disabled = cursor <= 0; redo.disabled = cursor >= history.length - 1; };
+    const markDirty = () => { state.textContent = dirtyText; state.className = 'text-center text-xs text-amber-300'; window.onbeforeunload = () => dirtyText; };
+    const restore = (snapshot) => { restoring = true; snapshot.forEach((saved, index) => { const field = controls[index]; if (!field || field.name !== saved.name) return; if (field.type === 'checkbox' || field.type === 'radio') field.checked = saved.checked; else field.value = saved.value; field.dispatchEvent(new Event('change', { bubbles: true })); }); restoring = false; markDirty(); updateHistoryButtons(); };
+    form?.addEventListener('input', () => { if (restoring) return; markDirty(); clearTimeout(timer); timer = setTimeout(() => { history.splice(cursor + 1); history.push(capture()); cursor = history.length - 1; updateHistoryButtons(); }, 250); });
+    form?.addEventListener('submit', () => { window.onbeforeunload = null; });
+    undo?.addEventListener('click', () => { if (cursor > 0) restore(history[--cursor]); });
+    redo?.addEventListener('click', () => { if (cursor < history.length - 1) restore(history[++cursor]); });
+    document.querySelectorAll('[data-editor-tab]').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('[data-editor-panel]').forEach((panel) => panel.classList.toggle('hidden', panel.dataset.editorPanel !== button.dataset.editorTab)); document.querySelectorAll('[data-editor-tab]').forEach((tab) => { const active = tab === button; tab.classList.toggle('bg-white', active); tab.classList.toggle('text-slate-950', active); tab.classList.toggle('text-white/65', !active); }); }));
+    document.querySelectorAll('[data-device]').forEach((button) => button.addEventListener('click', () => { const widths = { desktop: '1200px', tablet: '768px', mobile: '390px' }; document.querySelector('#preview-frame').style.maxWidth = widths[button.dataset.device]; document.querySelectorAll('.device-button').forEach((item) => { const active = item === button; item.classList.toggle('bg-white', active); item.classList.toggle('text-slate-900', active); }); }));
+    document.querySelectorAll('[data-upload-form]').forEach((button) => button.addEventListener('click', () => { const upload = document.getElementById(button.dataset.uploadForm); const input = upload?.querySelector('input[type=file]'); input?.click(); input?.addEventListener('change', () => upload.submit(), { once: true }); }));
+    document.querySelectorAll('[data-remove-form]').forEach((button) => button.addEventListener('click', () => document.getElementById(button.dataset.removeForm)?.submit()));
+    const applyBrand = (color) => { if (!previewSite || !/^#[0-9a-f]{6}$/i.test(color)) return; const rgb = [1, 3, 5].map((index) => parseInt(color.slice(index, index + 2), 16)); const luminance = rgb.map((channel) => { const value = channel / 255; return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4; }).reduce((total, value, index) => total + value * [.2126, .7152, .0722][index], 0); const contrast = luminance > .38 ? '#111827' : '#FFFFFF'; const mix = (target, amount) => '#' + rgb.map((value, index) => Math.round(value + (target[index] - value) * amount).toString(16).padStart(2, '0')).join(''); previewSite.style.setProperty('--ls-primary', color); previewSite.style.setProperty('--ls-primary-hover', mix(contrast === '#FFFFFF' ? [0,0,0] : [255,255,255], .18)); previewSite.style.setProperty('--ls-primary-soft', mix([255,255,255], .86)); previewSite.style.setProperty('--ls-primary-bg', mix([255,255,255], .95)); previewSite.style.setProperty('--ls-primary-border', mix([255,255,255], .68)); previewSite.style.setProperty('--ls-primary-contrast', contrast); };
+    form?.querySelectorAll('[name=style]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { [...previewSite.classList].filter((name) => name.startsWith('theme-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`theme-${input.value}`); } }));
+    form?.querySelector('[name=typography]')?.addEventListener('change', (event) => { [...previewSite.classList].filter((name) => name.startsWith('typography-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`typography-${event.target.value}`); });
+    form?.querySelectorAll('[name=button_style]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { [...previewSite.classList].filter((name) => name.startsWith('buttons-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`buttons-${input.value}`); } }));
+    form?.querySelectorAll('[name=brand_palette]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { const picker = form.querySelector('[name=brand_color]'); picker.value = input.value; applyBrand(input.value); } }));
+    form?.querySelector('[name=brand_color]')?.addEventListener('input', (event) => applyBrand(event.target.value));
+    form?.querySelector('[data-hero-variant]')?.addEventListener('change', (event) => { const hero = previewSite?.querySelector('.section-hero'); if (!hero) return; [...hero.classList].filter((name) => name.startsWith('hero-')).forEach((name) => hero.classList.remove(name)); hero.classList.add(`hero-${event.target.value}`); });
+    updateHistoryButtons();
+  </script>
+</StudioLayout>

@@ -1,0 +1,100 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/space-grotesk";
+import type { LaunchSite, SiteSection } from "../../lib/launch/types";
+import { brandTokenStyle, validButtonStyle, validHeroVariant, validTheme, validTypography } from "../../lib/launch/design";
+import { launchText, type StudioLocale } from "../../lib/launch/i18n";
+import "../../styles/launch-site.css";
+
+interface Props { site: LaunchSite; preview?: boolean }
+const { site, preview = false } = Astro.props;
+const sections = [...(site.site_sections ?? [])].filter((section) => section.visible).sort((a, b) => a.position - b.position);
+const settings = site.settings ?? {};
+const theme = validTheme(settings.style);
+const typography = validTypography(settings.typography);
+const buttonStyle = validButtonStyle(settings.buttonStyle);
+const locale: StudioLocale = site.language === "es-VE" ? "es-VE" : "pt-BR";
+const tr = (value: string) => launchText(locale, value);
+const text = (section: SiteSection, key: string, fallback = "") => String(section.content?.[key] ?? fallback);
+const items = (section: SiteSection) => Array.isArray(section.content?.items) ? section.content.items as Array<Record<string, string>> : [];
+const whatsapp = String(settings.whatsapp?.countryCode ?? "") + String(settings.whatsapp?.phone ?? "").replace(/\D/g, "");
+const leadStatus = preview ? null : Astro.url.searchParams.get("lead");
+const brandStyle = brandTokenStyle(settings.brandColor);
+---
+
+<div
+  class={`launch-site theme-${theme} template-${site.template_id} typography-${typography} buttons-${buttonStyle}`}
+  style={brandStyle}
+  data-preview={preview ? "true" : undefined}
+>
+  <header class="launch-header">
+    <a href="#inicio" class="launch-brand">{site.name}</a>
+    <nav aria-label={tr("Contato")}>
+      <a href="#services">{tr("Serviços")}</a>
+      <a href="#contact">{tr("Contato")}</a>
+    </nav>
+  </header>
+  <main>
+    {sections.map((section) => {
+      const sectionImage = text(section, "image");
+      const heroVariant = section.type === "hero" ? validHeroVariant(section.variant) : null;
+      return <section
+        id={section.type === "hero" ? "inicio" : section.type}
+        class={`launch-section section-${section.type} variant-${section.variant}${heroVariant ? ` hero-${heroVariant}` : ""}${sectionImage ? " has-image" : ""}`}
+      >
+        {section.type === "hero" && heroVariant === "background" && sectionImage && <img class="launch-hero-background" src={sectionImage} alt="" />}
+        {section.type === "hero" && heroVariant === "background" && <div class="launch-hero-overlay"></div>}
+        <div class="launch-container">
+          {section.type === "hero" && <div class="launch-hero-layout">
+            {sectionImage && heroVariant !== "background" && heroVariant !== "centered" && <figure class="launch-hero-media"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} /></figure>}
+            <div class="launch-hero-copy">
+              <p class="launch-eyebrow">{text(section, "eyebrow")}</p>
+              <h1>{text(section, "title", site.name)}</h1>
+              <p class="launch-lead">{text(section, "description")}</p>
+              <a class="launch-button" href="#contact">{text(section, "buttonLabel", tr("Fale conosco"))}</a>
+            </div>
+            {sectionImage && heroVariant === "centered" && <figure class="launch-hero-media launch-hero-media-wide"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} /></figure>}
+          </div>}
+          {section.type === "about" && <div class="launch-split">
+            {sectionImage && <img src={sectionImage} alt="" />}
+            <div><p class="launch-eyebrow">{tr("Nossa história")}</p><h2>{text(section, "title")}</h2><p>{text(section, "text")}</p></div>
+          </div>}
+          {["services", "differences"].includes(section.type) && <>
+            <p class="launch-eyebrow">{tr(section.type === "services" ? "O que fazemos" : "Diferenciais")}</p>
+            <h2>{text(section, "title")}</h2>
+            <div class="launch-grid">{items(section).map((item) => <article>{item.image && <img src={item.image} alt="" />}<h3>{item.title}</h3><p>{item.description}</p></article>)}</div>
+          </>}
+          {section.type === "gallery" && <>
+            <p class="launch-eyebrow">{tr("Nosso trabalho")}</p><h2>{text(section, "title")}</h2>
+            <div class="launch-gallery">{items(section).map((item) => <figure>{item.image ? <img src={item.image} alt={item.title} /> : <div class="launch-placeholder">{tr("Imagem")}</div>}<figcaption>{item.title}</figcaption></figure>)}</div>
+          </>}
+          {section.type === "testimonials" && <>
+            <p class="launch-eyebrow">{tr("Depoimentos")}</p><h2>{text(section, "title")}</h2>
+            <div class="launch-grid">{items(section).map((item) => <blockquote><p>“{item.description}”</p><cite>{item.title}</cite></blockquote>)}</div>
+          </>}
+          {section.type === "faq" && <>
+            <p class="launch-eyebrow">{tr("Dúvidas")}</p><h2>{text(section, "title")}</h2>
+            <div class="launch-faq">{items(section).map((item) => <details><summary>{item.title}</summary><p>{item.description}</p></details>)}</div>
+          </>}
+          {section.type === "contact" && <div id="contato" class="launch-contact">
+            <div><p class="launch-eyebrow">{tr("Contato")}</p><h2>{text(section, "title")}</h2><p>{text(section, "description")}</p>{settings.whatsapp?.enabled && whatsapp && <a class="launch-button" href={`https://wa.me/${whatsapp}`} rel="noopener">WhatsApp</a>}</div>
+            <form method="post" action="/api/launch/leads">
+              {leadStatus === "sent" && <p role="status">{tr("Mensagem enviada com sucesso.")}</p>}
+              {leadStatus === "error" && <p role="alert">{tr("Não foi possível enviar. Revise os dados e tente novamente.")}</p>}
+              <input type="hidden" name="site_id" value={site.id} />
+              <label>{tr("Nome")}<input name="name" required maxlength="100" /></label>
+              <label>Email<input name="email" type="email" maxlength="160" /></label>
+              <label>{tr("Telefone")}<input name="phone" maxlength="30" /></label>
+              <label>{tr("Mensagem")}<textarea name="message" required maxlength="2000"></textarea></label>
+              <label class="launch-honeypot">Empresa<input name="company" tabindex="-1" /></label>
+              <button class="launch-button">{tr("Enviar mensagem")}</button>
+            </form>
+          </div>}
+        </div>
+      </section>;
+    })}
+  </main>
+  <footer class="launch-footer"><span>© {new Date().getFullYear()} {site.name}</span>{site.plan === "free" && <a href="https://cronosstart.com.br">{tr("Criado com CronosStart")}</a>}</footer>
+</div>

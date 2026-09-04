@@ -1,0 +1,27 @@
+---
+import SiteRenderer from "../../../../components/launch/SiteRenderer.astro";
+import { st, studioLocale, studioPath } from "../../../../lib/launch/i18n";
+import { supabaseServer } from "../../../../lib/launch/supabase";
+
+export const prerender = false;
+const locale = studioLocale(Astro.url.toString());
+const tr = (value: string) => st(locale, value);
+const base = studioPath(locale, "/studio");
+const requested = `${base}/sites/${Astro.params.id}/preview`;
+const db = supabaseServer(Astro.cookies);
+const { data: { user } } = await db.auth.getUser();
+if (!user) return Astro.redirect(`${base}/login?return_to=${encodeURIComponent(requested)}`);
+const { data: site } = await db.from("sites").select("*,site_sections(*)").eq("id", Astro.params.id).single();
+if (!site) return Astro.redirect(`${base}?error=site_not_found`);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex,nofollow" /><title>{tr("Preview")} · {site.name}</title></head>
+  <body style="margin:0">
+    <a href={`${base}/sites/${site.id}/editar`} class="preview-back">← {tr("Voltar para o editor")}</a>
+    <SiteRenderer site={site} preview />
+  </body>
+</html>
+
+<style>.preview-back{position:fixed;z-index:100;right:1rem;bottom:1rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:#0f172a;color:#fff;padding:.75rem 1rem;box-shadow:0 12px 30px rgba(15,23,42,.3);font:600 .82rem Inter,system-ui,sans-serif;text-decoration:none}</style>

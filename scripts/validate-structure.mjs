@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-const distRoot = path.resolve("dist");
+const distRoot = path.resolve("dist/client");
 const esRoot = path.join(distRoot, "es");
 
 async function listHtml(dir) {
@@ -28,7 +28,10 @@ const failures = [];
 const esFiles = await listHtml(esRoot);
 for (const esFile of esFiles) {
   const relative = path.relative(esRoot, esFile);
-  const ptFile = path.join(distRoot, relative);
+  const ptRelative = relative === path.join("crear-sitio", "index.html")
+    ? path.join("criar-site", "index.html")
+    : relative;
+  const ptFile = path.join(distRoot, ptRelative);
   try {
     const [ptHtml, esHtml] = await Promise.all([
       fs.readFile(ptFile, "utf8"),

@@ -4,9 +4,12 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
+  adapter: vercel(),
   site: 'https://cronosstart.com.br',
   compressHTML: true,
 
@@ -34,6 +37,8 @@ export default defineConfig({
           path === '/politica-de-privacidade/' ||
           path === '/termos-de-uso/' ||
           path === '/criacao-de-sites-blumenau/' ||
+          path === '/criar-site/' ||
+          path === '/es/crear-sitio/' ||
           path === '/sites-para-pequenas-empresas/' ||
           path === '/sites-com-painel-administrativo/' ||
           path === '/sites-para-imobiliarias/' ||

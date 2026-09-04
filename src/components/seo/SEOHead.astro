@@ -1,5 +1,5 @@
 ---
-import { alternateLocalePath, getLocale, localizeDeep, t } from "../../i18n/index";
+import { alternateLocalePath, getLocale, localizedPath, localizeDeep, t } from "../../i18n/index";
 const locale = getLocale(Astro.url);
 interface Props {
   title: string;
@@ -29,7 +29,7 @@ const localizedStructuredData = structuredData
       }
       if (locale === "es" && typeof value === "string" && value.startsWith(Astro.site?.origin ?? "https://cronosstart.com.br")) {
         const parsed = new URL(value);
-        if (!parsed.pathname.startsWith("/es/")) parsed.pathname = `/es${parsed.pathname}`;
+        parsed.pathname = localizedPath(parsed.pathname, locale);
         return parsed.toString();
       }
       return value;
