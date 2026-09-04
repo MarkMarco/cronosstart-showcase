@@ -1,4 +1,4 @@
-import type { HeroFocalPoint, HeroVariant, LaunchButtonStyle, LaunchTheme, LaunchTypography, SectionType, SiteLanguage, SiteSection } from "./types";
+import type { HeroFocalPoint, HeroOverlayStrength, HeroVariant, LaunchButtonStyle, LaunchTheme, LaunchTypography, SectionType, SiteLanguage, SiteSection } from "./types";
 
 export const launchTemplates = [
   { id: "services", name: "Empresa & Serviços", segment: "Serviços", image: "/images/showcases/contabilidade/screenshot.webp" },
@@ -15,10 +15,11 @@ export const launchTemplateAppearance: Record<LaunchTemplateId, {
   buttonStyle: LaunchButtonStyle;
   heroVariant: HeroVariant;
   heroFocalPoint: HeroFocalPoint;
+  heroOverlayStrength: HeroOverlayStrength;
 }> = {
-  services: { theme: "modern", brandColor: "#315BE8", typography: "theme", buttonStyle: "pill", heroVariant: "centered", heroFocalPoint: "center" },
-  legal: { theme: "elegant", brandColor: "#8A2846", typography: "theme", buttonStyle: "square", heroVariant: "image-right", heroFocalPoint: "center" },
-  beauty: { theme: "vibrant", brandColor: "#B4492E", typography: "theme", buttonStyle: "pill", heroVariant: "background", heroFocalPoint: "center" },
+  services: { theme: "modern", brandColor: "#315BE8", typography: "theme", buttonStyle: "pill", heroVariant: "centered", heroFocalPoint: "center", heroOverlayStrength: "medium" },
+  legal: { theme: "elegant", brandColor: "#8A2846", typography: "theme", buttonStyle: "square", heroVariant: "image-right", heroFocalPoint: "center", heroOverlayStrength: "medium" },
+  beauty: { theme: "vibrant", brandColor: "#B4492E", typography: "theme", buttonStyle: "pill", heroVariant: "background", heroFocalPoint: "center", heroOverlayStrength: "medium" },
 };
 
 export const isLaunchTemplate = (value: unknown): value is LaunchTemplateId =>
@@ -80,6 +81,7 @@ export function sectionsForTemplate(
         description,
         buttonLabel: text.contact,
         focalPoint: launchTemplateAppearance[templateId].heroFocalPoint,
+        overlayStrength: launchTemplateAppearance[templateId].heroOverlayStrength,
       },
       settings: {},
     },

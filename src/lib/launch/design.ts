@@ -1,6 +1,7 @@
 import type {
   HeroVariant,
   HeroFocalPoint,
+  HeroOverlayStrength,
   LaunchButtonStyle,
   LaunchTheme,
   LaunchTypography,
@@ -30,6 +31,8 @@ export const heroFocalPoints: Array<{ id: HeroFocalPoint; position: string }> = 
   { id: "bottom", position: "50% 100%" },
   { id: "bottom-right", position: "100% 100%" },
 ];
+
+export const heroOverlayStrengths: HeroOverlayStrength[] = ["soft", "medium", "strong"];
 
 export const typographyOptions: LaunchTypography[] = ["theme", "sans", "serif", "display"];
 
@@ -116,6 +119,10 @@ export function validHeroVariant(value: unknown): HeroVariant {
 
 export function validHeroFocalPoint(value: unknown): HeroFocalPoint {
   return heroFocalPoints.some((point) => point.id === value) ? value as HeroFocalPoint : "center";
+}
+
+export function validHeroOverlayStrength(value: unknown): HeroOverlayStrength {
+  return heroOverlayStrengths.includes(value as HeroOverlayStrength) ? value as HeroOverlayStrength : "medium";
 }
 
 export function heroObjectPosition(value: unknown) {

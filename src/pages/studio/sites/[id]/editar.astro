@@ -1,7 +1,7 @@
 ---
 import SiteRenderer from "../../../../components/launch/SiteRenderer.astro";
 import StudioLayout from "../../../../layouts/StudioLayout.astro";
-import { brandPalettes, buttonOptions, heroFocalPoints, heroVariants, launchThemes, normalizeBrandColor, typographyOptions, validButtonStyle, validHeroFocalPoint, validTheme, validTypography } from "../../../../lib/launch/design";
+import { brandPalettes, buttonOptions, heroFocalPoints, heroOverlayStrengths, heroVariants, launchThemes, normalizeBrandColor, typographyOptions, validButtonStyle, validHeroFocalPoint, validHeroOverlayStrength, validTheme, validTypography } from "../../../../lib/launch/design";
 import { st, studioLocale, studioPath } from "../../../../lib/launch/i18n";
 import { supabaseServer } from "../../../../lib/launch/supabase";
 import { isLaunchTemplate, launchTemplateAppearance, launchTemplates } from "../../../../lib/launch/templates";
@@ -20,8 +20,11 @@ const { data: snapshots } = await db.from("site_snapshots").select("id,created_a
 const sections = [...(site.site_sections ?? [])].sort((first, second) => first.position - second.position);
 const settings = site.settings ?? {};
 const unpublished = site.draft_revision > site.published_revision;
-const persistedEditorState = unpublished ? "unpublished" : "saved";
-const persistedEditorText = unpublished ? tr("Alterações não publicadas") : tr("Alterações salvas");
+const publishedSynced = site.status === "published" && !unpublished;
+const persistedEditorState = publishedSynced ? "published" : unpublished ? "unpublished" : "saved";
+const persistedEditorText = publishedSynced ? tr("Publicado") : unpublished ? tr("Alterações não publicadas") : tr("Alterações salvas");
+const canPublish = site.status !== "published" || unpublished;
+const publishLabel = site.status === "published" && unpublished ? tr("Publicar alterações") : tr("Publicar site");
 const itemTypes = new Set(["services", "differences", "gallery", "testimonials", "faq"]);
 const returnTo = `${base}/sites/${site.id}/editar`;
 const previewUrl = `${base}/sites/${site.id}/preview`;
@@ -50,6 +53,8 @@ const heroLabel = (id: string) => id === "centered" ? "Centralizado" : id === "i
 const focalLabel = (id: string) => id === "top-left" ? "Superior esquerda" : id === "top" ? "Superior centro" : id === "top-right" ? "Superior direita" : id === "left" ? "Centro esquerda" : id === "right" ? "Centro direita" : id === "bottom-left" ? "Inferior esquerda" : id === "bottom" ? "Inferior centro" : id === "bottom-right" ? "Inferior direita" : "Centro";
 const typographyLabel = (id: string) => id === "theme" ? "Recomendada pelo tema" : id === "sans" ? "Sans contemporânea" : id === "serif" ? "Serif editorial" : "Display marcante";
 const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded" ? "Arredondado" : "Reto";
+const overlayLabel = (id: string) => id === "soft" ? "Suave" : id === "strong" ? "Forte" : "Médio";
+const templateEditorLabel = (id: string) => id === "services" ? "Serviços" : id === "legal" ? "Advocacia" : "Beleza";
 ---
 
 <StudioLayout title={`${tr("Editar")} ${site.name}`}>
@@ -61,11 +66,14 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
           <div>
             <h1 class="text-xl font-semibold">{site.name}</h1>
             <p id="editor-status" class="editor-status-pill mt-2 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold" data-state={persistedEditorState} role="status" aria-live="polite">
-              <span id="editor-status-icon" aria-hidden="true">{unpublished ? "●" : "✓"}</span>
+              <span id="editor-status-icon" aria-hidden="true">{persistedEditorState === "saved" || persistedEditorState === "published" ? "✓" : "●"}</span>
               <span id="editor-status-label">{persistedEditorText}</span>
             </p>
           </div>
-          <form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /><button name="intent" value={site.status === "published" ? "unpublish" : "publish"} class="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold">{tr(site.status === "published" ? "Despublicar" : "Publicar")}</button></form>
+          <div class="flex shrink-0 flex-col items-end gap-2">
+            {canPublish && <form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /><button name="intent" value="publish" class="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold">{publishLabel}</button></form>}
+            {site.status === "published" && <form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /><button name="intent" value="unpublish" class="rounded-full border border-white/15 px-3 py-1.5 text-xs text-white/70">{tr("Despublicar")}</button></form>}
+          </div>
         </div>
         {errorMessage && <p role="alert" class="mt-4 rounded-xl border border-red-400/30 bg-red-400/10 p-3 text-sm text-red-100">{errorMessage}</p>}
         {noticeMessage && <p role="status" class="mt-4 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 text-sm text-emerald-100">{noticeMessage}</p>}
@@ -94,6 +102,7 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
                   {section.type === "hero" && <>
                     <label class="grid gap-1 text-xs text-white/55">{tr("Layout do Hero")}<select name={`variant_${section.id}`} data-hero-variant class="rounded-lg border border-white/10 bg-[#111827] px-3 py-2 text-sm text-white">{heroVariants.map((variant) => <option value={variant} selected={section.variant === variant}>{tr(heroLabel(variant))}</option>)}</select></label>
                     <label class="grid gap-1 text-xs text-white/55">{tr("Posição focal da imagem")}<select name={`focal_${section.id}`} data-hero-focal class="rounded-lg border border-white/10 bg-[#111827] px-3 py-2 text-sm text-white">{heroFocalPoints.map((point) => <option value={point.id} selected={validHeroFocalPoint(section.content?.focalPoint) === point.id}>{tr(focalLabel(point.id))}</option>)}</select><small class="text-[11px] leading-relaxed text-white/40">{tr("Escolha onde o assunto principal deve permanecer durante o recorte responsivo.")}</small></label>
+                    <label data-hero-overlay-control class={`grid gap-1 text-xs text-white/55 ${section.variant === "background" ? "" : "hidden"}`}>{tr("Intensidade do overlay")}<select name={`overlay_${section.id}`} data-hero-overlay class="rounded-lg border border-white/10 bg-[#111827] px-3 py-2 text-sm text-white">{heroOverlayStrengths.map((strength) => <option value={strength} selected={validHeroOverlayStrength(section.content?.overlayStrength) === strength}>{tr(overlayLabel(strength))}</option>)}</select><small class="text-[11px] leading-relaxed text-white/40">{tr("Ajuste o contraste da imagem de fundo para manter o texto legível.")}</small></label>
                     <label class="grid gap-1 text-xs text-white/55">{tr("Texto de destaque")}<input name={`eyebrow_${section.id}`} value={section.content?.eyebrow ?? ""} class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label>
                   </>}
                   <label class="grid gap-1 text-xs text-white/55">{tr("Título")}<input name={`title_${section.id}`} value={section.content?.title ?? ""} class="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-white" /></label>
@@ -110,12 +119,12 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
           </section>
 
           <section data-editor-panel="design" class="hidden grid gap-5">
-            <div><h2 class="text-sm font-semibold">{tr("Modelo")}</h2><p class="mt-1 text-xs text-white/45">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p><div class="mt-3 grid gap-2">{launchTemplates.map((template) => <div class={`flex items-center gap-3 rounded-xl border p-2 ${site.template_id === template.id ? "border-[var(--accent)] bg-white/[.05]" : "border-white/10"}`}><img src={template.image} alt="" class="h-14 w-20 rounded-lg object-cover" /><div class="min-w-0 flex-1"><strong class="block text-sm">{tr(template.name)}</strong><small class="text-white/40">{site.template_id === template.id ? tr("Modelo atual") : tr(template.segment)}</small></div><a href={`${base}/sites/${site.id}/modelo?template=${template.id}`} class="rounded-lg border border-white/15 px-2 py-1 text-xs">{tr("Pré-visualizar modelo")}</a></div>)}</div></div>
+            <div><h2 class="text-sm font-semibold">{tr("Modelo")}</h2><p class="mt-1 text-xs text-white/45">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p><div class="mt-3 grid gap-2">{launchTemplates.map((template) => <div class={`grid gap-3 rounded-xl border p-3 ${site.template_id === template.id ? "border-[var(--accent)] bg-white/[.05]" : "border-white/10"}`}><div class="flex items-center gap-3"><img src={template.image} alt="" class="h-14 w-20 rounded-lg object-cover" /><div class="min-w-0 flex-1"><strong class="block text-sm">{tr(templateEditorLabel(template.id))}</strong><small class="text-white/40">{site.template_id === template.id ? tr("Modelo atual") : tr(template.segment)}</small></div></div><div class="flex flex-wrap justify-end gap-2"><a href={`${base}/sites/${site.id}/modelo?template=${template.id}`} class="rounded-lg border border-white/15 px-2.5 py-1.5 text-xs">{tr("Pré-visualizar modelo")}</a>{site.template_id !== template.id && <button type="submit" form={`switch-template-${template.id}`} data-template-switch class="rounded-lg bg-[var(--primary)] px-2.5 py-1.5 text-xs font-semibold">{tr("Aplicar este modelo")}</button>}</div></div>)}</div></div>
             <fieldset><legend class="text-sm font-semibold">{tr("Tema")}</legend><div class="mt-3 grid gap-2 sm:grid-cols-2">{launchThemes.map((themeId) => <label class="cursor-pointer rounded-xl border border-white/10 bg-white/[.03] p-3 has-[:checked]:border-[var(--accent)]"><input type="radio" name="style" value={themeId} checked={theme === themeId} class="mr-2" /><strong class="text-sm">{tr(themeLabel(themeId))}</strong><small class="mt-1 block text-white/40">{tr(themeDescription(themeId))}</small></label>)}</div></fieldset>
             <fieldset><legend class="text-sm font-semibold">{tr("Cor principal")}</legend><div class="mt-3 grid grid-cols-3 gap-2">{brandPalettes.map((palette) => <label class="cursor-pointer rounded-xl border border-white/10 p-2 text-center text-xs has-[:checked]:border-[var(--accent)]"><span class="mx-auto mb-1 block h-7 w-7 rounded-full border border-white/20" style={`background:${palette.color}`}></span><input type="radio" name="brand_palette" value={palette.color} checked={brandColor === palette.color} class="sr-only" />{tr(paletteLabel(palette.id))}</label>)}</div><label class="mt-3 flex items-center justify-between rounded-xl border border-white/10 p-3 text-xs">{tr("Cor personalizada")}<input type="color" name="brand_color" value={brandColor} class="h-9 w-14 cursor-pointer rounded border-0 bg-transparent" /></label></fieldset>
             <label class="grid gap-2 text-sm font-semibold">{tr("Tipografia")}<select name="typography" class="rounded-xl border border-white/15 bg-[#111827] px-3 py-2">{typographyOptions.map((option) => <option value={option} selected={typography === option}>{tr(typographyLabel(option))}</option>)}</select></label>
             <fieldset><legend class="text-sm font-semibold">{tr("Botões")}</legend><div class="mt-2 grid grid-cols-3 gap-2">{buttonOptions.map((option) => <label class="cursor-pointer rounded-xl border border-white/10 p-2 text-center text-xs has-[:checked]:border-[var(--accent)]"><input type="radio" name="button_style" value={option} checked={buttonStyle === option} class="mr-1" />{tr(buttonLabel(option))}</label>)}</div></fieldset>
-            <div class="rounded-xl border border-white/10 bg-white/[.025] p-3"><h2 class="text-sm font-semibold">{tr("Aparência original do modelo")}</h2><p class="mt-1 text-xs leading-relaxed text-white/45">{tr("Restaura tema, cor, tipografia, botões, layout e foco do Hero. Conteúdo e imagens são preservados.")}</p><button type="button" id="reset-appearance" class="mt-3 rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold">{tr("Restaurar aparência original")}</button><p id="appearance-status" class="mt-2 text-[11px] text-amber-200" aria-live="polite"></p></div>
+            <div class="rounded-xl border border-white/10 bg-white/[.025] p-3"><h2 class="text-sm font-semibold">{tr("Aparência original do modelo")}</h2><p class="mt-1 text-xs leading-relaxed text-white/45">{tr("Restaura tema, cor, tipografia, botões, layout, foco e overlay do Hero. Conteúdo e imagens são preservados.")}</p><button type="button" id="reset-appearance" class="mt-3 rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold">{tr("Restaurar aparência original")}</button><p id="appearance-status" class="mt-2 text-[11px] text-amber-200" aria-live="polite"></p></div>
             {snapshots?.length ? <div><h2 class="text-sm font-semibold">{tr("Recuperação de modelo")}</h2><div class="mt-2 grid gap-2">{snapshots.map((snapshot) => <div class="flex items-center justify-between rounded-xl border border-white/10 p-3"><span class="text-xs text-white/55">{new Date(snapshot.created_at).toLocaleString(locale)}</span><button type="submit" form={`restore-${snapshot.id}`} class="text-xs text-[var(--accent)]">{tr("Restaurar snapshot")}</button></div>)}</div></div> : null}
           </section>
 
@@ -138,6 +147,7 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
   </div>
 
   {snapshots?.map((snapshot) => <form id={`restore-${snapshot.id}`} method="post" action={`/api/launch/sites/${site.id}`} class="hidden"><input type="hidden" name="intent" value="restore_snapshot" /><input type="hidden" name="snapshot_id" value={snapshot.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /></form>)}
+  {launchTemplates.filter((template) => template.id !== site.template_id).map((template) => <form id={`switch-template-${template.id}`} method="post" action={`/api/launch/sites/${site.id}`} class="hidden"><input type="hidden" name="intent" value="switch_template" /><input type="hidden" name="template_id" value={template.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={returnTo} /></form>)}
   {sections.flatMap((section) => {
     const cards = Array.isArray(section.content?.items) ? section.content.items : [];
     return [<form id={`upload-${section.id}`} method="post" action="/api/launch/assets" enctype="multipart/form-data" class="hidden"><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input type="file" name="image" accept="image/jpeg,image/png,image/webp" /></form>, <form id={`remove-${section.id}`} method="post" action="/api/launch/assets" class="hidden"><input name="intent" value="remove" /><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /></form>, ...cards.flatMap((_: any, index: number) => [<form id={`upload-${section.id}-${index}`} method="post" action="/api/launch/assets" enctype="multipart/form-data" class="hidden"><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input name="item_index" value={index} /><input type="file" name="image" accept="image/jpeg,image/png,image/webp" /></form>, <form id={`remove-${section.id}-${index}`} method="post" action="/api/launch/assets" class="hidden"><input name="intent" value="remove" /><input name="site_id" value={site.id} /><input name="section_id" value={section.id} /><input name="item_index" value={index} /></form>])];
@@ -149,6 +159,8 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
     persistedText: persistedEditorText,
     saveText: tr("Salvar alterações"),
     savePendingText: tr("Salvar alterações pendentes"),
+    switchConfirmText: tr("Aplicar este modelo? Um snapshot de recuperação será criado e o conteúdo compatível será preservado. O site público não será alterado até você publicar."),
+    switchSaveFirstText: tr("Salve as alterações pendentes antes de trocar o modelo."),
     resetConfirmText: tr("Restaurar a aparência original deste modelo? O conteúdo e as imagens serão preservados, e você poderá desfazer antes de salvar."),
     appearanceRestoredText: tr("Aparência original aplicada ao preview. Salve para confirmar ou desfaça a alteração."),
     templateAppearance,
@@ -171,7 +183,7 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
     let restoring = false;
     let timer;
     const updateHistoryButtons = () => { undo.disabled = cursor <= 0; redo.disabled = cursor >= history.length - 1; };
-    const setEditorStatus = (kind, text) => { if (editorStatus) editorStatus.dataset.state = kind; if (editorStatusIcon) editorStatusIcon.textContent = kind === 'saved' ? '✓' : '●'; if (editorStatusLabel) editorStatusLabel.textContent = text; };
+    const setEditorStatus = (kind, text) => { if (editorStatus) editorStatus.dataset.state = kind; if (editorStatusIcon) editorStatusIcon.textContent = kind === 'saved' || kind === 'published' ? '✓' : '●'; if (editorStatusLabel) editorStatusLabel.textContent = text; };
     const markDirty = () => { setEditorStatus('unsaved', dirtyText); dirtyBanner?.classList.remove('hidden'); dirtyBanner?.classList.add('flex'); saveButton?.classList.remove('bg-white'); saveButton?.classList.add('bg-amber-300', 'ring-4', 'ring-amber-300/15'); if (saveButtonLabel) saveButtonLabel.textContent = savePendingText; window.onbeforeunload = () => dirtyText; };
     const markClean = () => { setEditorStatus(persistedState, persistedText); dirtyBanner?.classList.add('hidden'); dirtyBanner?.classList.remove('flex'); saveButton?.classList.add('bg-white'); saveButton?.classList.remove('bg-amber-300', 'ring-4', 'ring-amber-300/15'); if (saveButtonLabel) saveButtonLabel.textContent = saveText; window.onbeforeunload = null; };
     const syncDirty = () => JSON.stringify(capture()) === JSON.stringify(history[0]) ? markClean() : markDirty();
@@ -197,14 +209,16 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
     document.querySelectorAll('[data-device]').forEach((button) => button.addEventListener('click', () => { const widths = { desktop: '1200px', tablet: '768px', mobile: '390px' }; document.querySelector('#preview-frame').style.maxWidth = widths[button.dataset.device]; document.querySelectorAll('.device-button').forEach((item) => { const active = item === button; item.classList.toggle('bg-white', active); item.classList.toggle('text-slate-900', active); }); }));
     document.querySelectorAll('[data-upload-form]').forEach((button) => button.addEventListener('click', () => { const upload = document.getElementById(button.dataset.uploadForm); const input = upload?.querySelector('input[type=file]'); input?.click(); input?.addEventListener('change', () => upload.submit(), { once: true }); }));
     document.querySelectorAll('[data-remove-form]').forEach((button) => button.addEventListener('click', () => document.getElementById(button.dataset.removeForm)?.submit()));
+    document.querySelectorAll('[data-template-switch]').forEach((button) => button.addEventListener('click', (event) => { if (JSON.stringify(capture()) !== JSON.stringify(history[0])) { event.preventDefault(); window.alert(switchSaveFirstText); return; } if (!window.confirm(switchConfirmText)) event.preventDefault(); }));
     const applyBrand = (color) => { if (!previewSite || !/^#[0-9a-f]{6}$/i.test(color)) return; const rgb = [1, 3, 5].map((index) => parseInt(color.slice(index, index + 2), 16)); const luminance = rgb.map((channel) => { const value = channel / 255; return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4; }).reduce((total, value, index) => total + value * [.2126, .7152, .0722][index], 0); const contrast = luminance > .38 ? '#111827' : '#FFFFFF'; const mix = (target, amount) => '#' + rgb.map((value, index) => Math.round(value + (target[index] - value) * amount).toString(16).padStart(2, '0')).join(''); previewSite.style.setProperty('--ls-primary', color); previewSite.style.setProperty('--ls-primary-hover', mix(contrast === '#FFFFFF' ? [0,0,0] : [255,255,255], .18)); previewSite.style.setProperty('--ls-primary-soft', mix([255,255,255], .86)); previewSite.style.setProperty('--ls-primary-bg', mix([255,255,255], .95)); previewSite.style.setProperty('--ls-primary-border', mix([255,255,255], .68)); previewSite.style.setProperty('--ls-primary-contrast', contrast); };
     form?.querySelectorAll('[name=style]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { [...previewSite.classList].filter((name) => name.startsWith('theme-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`theme-${input.value}`); } }));
     form?.querySelector('[name=typography]')?.addEventListener('change', (event) => { [...previewSite.classList].filter((name) => name.startsWith('typography-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`typography-${event.target.value}`); });
     form?.querySelectorAll('[name=button_style]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { [...previewSite.classList].filter((name) => name.startsWith('buttons-')).forEach((name) => previewSite.classList.remove(name)); previewSite.classList.add(`buttons-${input.value}`); } }));
     form?.querySelectorAll('[name=brand_palette]').forEach((input) => input.addEventListener('change', () => { if (input.checked) { const picker = form.querySelector('[name=brand_color]'); picker.value = input.value; applyBrand(input.value); } }));
     form?.querySelector('[name=brand_color]')?.addEventListener('input', (event) => applyBrand(event.target.value));
-    form?.querySelector('[data-hero-variant]')?.addEventListener('change', (event) => { const hero = previewSite?.querySelector('.section-hero'); if (!hero) return; [...hero.classList].filter((name) => name.startsWith('hero-')).forEach((name) => hero.classList.remove(name)); hero.classList.add(`hero-${event.target.value}`); });
+    form?.querySelector('[data-hero-variant]')?.addEventListener('change', (event) => { const hero = previewSite?.querySelector('.section-hero'); if (!hero) return; [...hero.classList].filter((name) => name.startsWith('hero-')).forEach((name) => hero.classList.remove(name)); hero.classList.add(`hero-${event.target.value}`); form.querySelector('[data-hero-overlay-control]')?.classList.toggle('hidden', event.target.value !== 'background'); });
     form?.querySelector('[data-hero-focal]')?.addEventListener('change', (event) => { const position = focalPositions[event.target.value] || '50% 50%'; previewSite?.querySelectorAll('.section-hero img').forEach((image) => { image.style.objectPosition = position; }); });
+    form?.querySelector('[data-hero-overlay]')?.addEventListener('change', (event) => { const hero = previewSite?.querySelector('.section-hero'); if (!hero) return; [...hero.classList].filter((name) => name.startsWith('overlay-')).forEach((name) => hero.classList.remove(name)); hero.classList.add(`overlay-${event.target.value}`); });
     document.querySelector('#reset-appearance')?.addEventListener('click', () => {
       if (!window.confirm(resetConfirmText)) return;
       clearTimeout(timer);
@@ -222,6 +236,8 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
       if (heroVariantInput) { heroVariantInput.value = templateAppearance.heroVariant; heroVariantInput.dispatchEvent(new Event('change', { bubbles: true })); }
       const heroFocalInput = form?.querySelector('[data-hero-focal]');
       if (heroFocalInput) { heroFocalInput.value = templateAppearance.heroFocalPoint; heroFocalInput.dispatchEvent(new Event('change', { bubbles: true })); }
+      const heroOverlayInput = form?.querySelector('[data-hero-overlay]');
+      if (heroOverlayInput) { heroOverlayInput.value = templateAppearance.heroOverlayStrength; heroOverlayInput.dispatchEvent(new Event('change', { bubbles: true })); }
       restoring = false;
       syncDirty();
       pushHistory();
@@ -233,6 +249,7 @@ const buttonLabel = (id: string) => id === "pill" ? "Cápsula" : id === "rounded
   <style>
     .editor-status-pill { transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease; }
     .editor-status-pill[data-state="saved"] { border-color: rgb(52 211 153 / 30%); background: rgb(52 211 153 / 10%); color: rgb(167 243 208); }
+    .editor-status-pill[data-state="published"] { border-color: rgb(52 211 153 / 42%); background: rgb(52 211 153 / 14%); color: rgb(167 243 208); }
     .editor-status-pill[data-state="unpublished"] { border-color: rgb(251 191 36 / 35%); background: rgb(251 191 36 / 10%); color: rgb(253 230 138); }
     .editor-status-pill[data-state="unsaved"] { border-color: rgb(251 146 60 / 42%); background: rgb(251 146 60 / 12%); color: rgb(254 215 170); }
   </style>

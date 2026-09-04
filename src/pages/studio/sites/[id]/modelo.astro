@@ -18,6 +18,7 @@ if (!site) return Astro.redirect(`${base}?error=site_not_found`);
 const requestedTemplate = Astro.url.searchParams.get("template");
 const templateId = isLaunchTemplate(requestedTemplate) ? requestedTemplate : site.template_id;
 const template = launchTemplates.find((entry) => entry.id === templateId) ?? launchTemplates[0];
+const templateIsCurrent = template.id === site.template_id;
 const previewSite = {
   ...site,
   template_id: template.id,
@@ -33,7 +34,10 @@ const previewSite = {
 
 <StudioLayout title={tr("Prévia do modelo")}>
   <div class="border-b border-white/10 bg-[#0d1422] px-5 py-4">
-    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4"><div><a href={editor} class="text-sm text-white/55">← {tr("Voltar para o editor")}</a><h1 class="mt-1 text-xl font-semibold">{tr(template.name)}</h1><p class="mt-1 text-sm text-white/50">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p></div><form method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="intent" value="switch_template" /><input type="hidden" name="template_id" value={template.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={editor} /><button class="rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">{tr("Aplicar modelo")}</button></form></div>
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4"><div><a href={editor} class="text-sm text-white/55">← {tr("Voltar para o editor")}</a><h1 class="mt-1 text-xl font-semibold">{tr(template.name)}</h1><p class="mt-1 text-sm text-white/50">{tr("Seu conteúdo compatível será preservado. Um snapshot será criado antes da troca.")}</p></div>{templateIsCurrent ? <span class="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm font-semibold text-emerald-100">✓ {tr("Modelo atual")}</span> : <form data-template-switch method="post" action={`/api/launch/sites/${site.id}`}><input type="hidden" name="intent" value="switch_template" /><input type="hidden" name="template_id" value={template.id} /><input type="hidden" name="locale" value={locale === "es-VE" ? "es" : "pt"} /><input type="hidden" name="return_to" value={editor} /><button class="rounded-full bg-[var(--primary)] px-5 py-3 font-semibold">{tr("Aplicar este modelo")}</button></form>}</div>
   </div>
   <SiteRenderer site={previewSite} preview />
+  <script define:vars={{ switchConfirmText: tr("Aplicar este modelo? Um snapshot de recuperação será criado e o conteúdo compatível será preservado. O site público não será alterado até você publicar.") }} is:inline>
+    document.querySelector('[data-template-switch]')?.addEventListener('submit', (event) => { if (!window.confirm(switchConfirmText)) event.preventDefault(); });
+  </script>
 </StudioLayout>

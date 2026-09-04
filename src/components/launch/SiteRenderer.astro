@@ -4,7 +4,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/space-grotesk";
 import type { LaunchSite, SiteSection } from "../../lib/launch/types";
-import { brandTokenStyle, heroObjectPosition, validButtonStyle, validHeroVariant, validTheme, validTypography } from "../../lib/launch/design";
+import { brandTokenStyle, heroObjectPosition, validButtonStyle, validHeroOverlayStrength, validHeroVariant, validTheme, validTypography } from "../../lib/launch/design";
 import { launchText, type StudioLocale } from "../../lib/launch/i18n";
 import "../../styles/launch-site.css";
 
@@ -40,10 +40,11 @@ const brandStyle = brandTokenStyle(settings.brandColor);
     {sections.map((section) => {
       const sectionImage = text(section, "image");
       const heroVariant = section.type === "hero" ? validHeroVariant(section.variant) : null;
+      const heroOverlayStrength = section.type === "hero" ? validHeroOverlayStrength(section.content?.overlayStrength) : null;
       const heroImageStyle = section.type === "hero" ? `object-position:${heroObjectPosition(section.content?.focalPoint)}` : undefined;
       return <section
         id={section.type === "hero" ? "inicio" : section.type}
-        class={`launch-section section-${section.type} variant-${section.variant}${heroVariant ? ` hero-${heroVariant}` : ""}${sectionImage ? " has-image" : ""}`}
+        class={`launch-section section-${section.type} variant-${section.variant}${heroVariant ? ` hero-${heroVariant}` : ""}${heroOverlayStrength ? ` overlay-${heroOverlayStrength}` : ""}${sectionImage ? " has-image" : ""}`}
       >
         {section.type === "hero" && heroVariant === "background" && sectionImage && <img class="launch-hero-background" src={sectionImage} alt="" style={heroImageStyle} />}
         {section.type === "hero" && heroVariant === "background" && <div class="launch-hero-overlay"></div>}

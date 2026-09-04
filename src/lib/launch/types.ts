@@ -7,6 +7,7 @@ export type LaunchTypography = "theme" | "sans" | "serif" | "display";
 export type LaunchButtonStyle = "pill" | "rounded" | "square";
 export type HeroVariant = "centered" | "image-right" | "image-left" | "background";
 export type HeroFocalPoint = "top-left" | "top" | "top-right" | "left" | "center" | "right" | "bottom-left" | "bottom" | "bottom-right";
+export type HeroOverlayStrength = "soft" | "medium" | "strong";
 
 export interface SiteSection {
   id?: string;
