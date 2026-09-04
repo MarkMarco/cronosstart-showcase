@@ -4,7 +4,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/newsreader";
 import "@fontsource-variable/space-grotesk";
 import type { LaunchSite, SiteSection } from "../../lib/launch/types";
-import { brandTokenStyle, validButtonStyle, validHeroVariant, validTheme, validTypography } from "../../lib/launch/design";
+import { brandTokenStyle, heroObjectPosition, validButtonStyle, validHeroVariant, validTheme, validTypography } from "../../lib/launch/design";
 import { launchText, type StudioLocale } from "../../lib/launch/i18n";
 import "../../styles/launch-site.css";
 
@@ -40,22 +40,23 @@ const brandStyle = brandTokenStyle(settings.brandColor);
     {sections.map((section) => {
       const sectionImage = text(section, "image");
       const heroVariant = section.type === "hero" ? validHeroVariant(section.variant) : null;
+      const heroImageStyle = section.type === "hero" ? `object-position:${heroObjectPosition(section.content?.focalPoint)}` : undefined;
       return <section
         id={section.type === "hero" ? "inicio" : section.type}
         class={`launch-section section-${section.type} variant-${section.variant}${heroVariant ? ` hero-${heroVariant}` : ""}${sectionImage ? " has-image" : ""}`}
       >
-        {section.type === "hero" && heroVariant === "background" && sectionImage && <img class="launch-hero-background" src={sectionImage} alt="" />}
+        {section.type === "hero" && heroVariant === "background" && sectionImage && <img class="launch-hero-background" src={sectionImage} alt="" style={heroImageStyle} />}
         {section.type === "hero" && heroVariant === "background" && <div class="launch-hero-overlay"></div>}
         <div class="launch-container">
           {section.type === "hero" && <div class="launch-hero-layout">
-            {sectionImage && heroVariant !== "background" && heroVariant !== "centered" && <figure class="launch-hero-media"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} /></figure>}
+            {sectionImage && heroVariant !== "background" && heroVariant !== "centered" && <figure class="launch-hero-media"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} style={heroImageStyle} /></figure>}
             <div class="launch-hero-copy">
               <p class="launch-eyebrow">{text(section, "eyebrow")}</p>
               <h1>{text(section, "title", site.name)}</h1>
               <p class="launch-lead">{text(section, "description")}</p>
               <a class="launch-button" href="#contact">{text(section, "buttonLabel", tr("Fale conosco"))}</a>
             </div>
-            {sectionImage && heroVariant === "centered" && <figure class="launch-hero-media launch-hero-media-wide"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} /></figure>}
+            {sectionImage && heroVariant === "centered" && <figure class="launch-hero-media launch-hero-media-wide"><img src={sectionImage} alt={text(section, "imageAlt", site.name)} style={heroImageStyle} /></figure>}
           </div>}
           {section.type === "about" && <div class="launch-split">
             {sectionImage && <img src={sectionImage} alt="" />}

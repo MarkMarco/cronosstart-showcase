@@ -1,4 +1,4 @@
-import type { SectionType, SiteLanguage, SiteSection } from "./types";
+import type { HeroFocalPoint, HeroVariant, LaunchButtonStyle, LaunchTheme, LaunchTypography, SectionType, SiteLanguage, SiteSection } from "./types";
 
 export const launchTemplates = [
   { id: "services", name: "Empresa & Serviços", segment: "Serviços", image: "/images/showcases/contabilidade/screenshot.webp" },
@@ -7,6 +7,19 @@ export const launchTemplates = [
 ] as const;
 
 export type LaunchTemplateId = typeof launchTemplates[number]["id"];
+
+export const launchTemplateAppearance: Record<LaunchTemplateId, {
+  theme: LaunchTheme;
+  brandColor: string;
+  typography: LaunchTypography;
+  buttonStyle: LaunchButtonStyle;
+  heroVariant: HeroVariant;
+  heroFocalPoint: HeroFocalPoint;
+}> = {
+  services: { theme: "modern", brandColor: "#315BE8", typography: "theme", buttonStyle: "pill", heroVariant: "centered", heroFocalPoint: "center" },
+  legal: { theme: "elegant", brandColor: "#8A2846", typography: "theme", buttonStyle: "square", heroVariant: "image-right", heroFocalPoint: "center" },
+  beauty: { theme: "vibrant", brandColor: "#B4492E", typography: "theme", buttonStyle: "pill", heroVariant: "background", heroFocalPoint: "center" },
+};
 
 export const isLaunchTemplate = (value: unknown): value is LaunchTemplateId =>
   launchTemplates.some((template) => template.id === value);
@@ -66,6 +79,7 @@ export function sectionsForTemplate(
         title: business,
         description,
         buttonLabel: text.contact,
+        focalPoint: launchTemplateAppearance[templateId].heroFocalPoint,
       },
       settings: {},
     },

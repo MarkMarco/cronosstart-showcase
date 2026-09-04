@@ -1,5 +1,6 @@
 import type {
   HeroVariant,
+  HeroFocalPoint,
   LaunchButtonStyle,
   LaunchTheme,
   LaunchTypography,
@@ -17,6 +18,18 @@ export const brandPalettes = [
 ] as const;
 
 export const heroVariants: HeroVariant[] = ["centered", "image-right", "image-left", "background"];
+
+export const heroFocalPoints: Array<{ id: HeroFocalPoint; position: string }> = [
+  { id: "top-left", position: "0% 0%" },
+  { id: "top", position: "50% 0%" },
+  { id: "top-right", position: "100% 0%" },
+  { id: "left", position: "0% 50%" },
+  { id: "center", position: "50% 50%" },
+  { id: "right", position: "100% 50%" },
+  { id: "bottom-left", position: "0% 100%" },
+  { id: "bottom", position: "50% 100%" },
+  { id: "bottom-right", position: "100% 100%" },
+];
 
 export const typographyOptions: LaunchTypography[] = ["theme", "sans", "serif", "display"];
 
@@ -99,4 +112,13 @@ export function validButtonStyle(value: unknown): LaunchButtonStyle {
 
 export function validHeroVariant(value: unknown): HeroVariant {
   return heroVariants.includes(value as HeroVariant) ? value as HeroVariant : "centered";
+}
+
+export function validHeroFocalPoint(value: unknown): HeroFocalPoint {
+  return heroFocalPoints.some((point) => point.id === value) ? value as HeroFocalPoint : "center";
+}
+
+export function heroObjectPosition(value: unknown) {
+  const focalPoint = validHeroFocalPoint(value);
+  return heroFocalPoints.find((point) => point.id === focalPoint)?.position ?? "50% 50%";
 }

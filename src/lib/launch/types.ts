@@ -6,6 +6,7 @@ export type LaunchTheme = "modern" | "elegant" | "minimal" | "vibrant";
 export type LaunchTypography = "theme" | "sans" | "serif" | "display";
 export type LaunchButtonStyle = "pill" | "rounded" | "square";
 export type HeroVariant = "centered" | "image-right" | "image-left" | "background";
+export type HeroFocalPoint = "top-left" | "top" | "top-right" | "left" | "center" | "right" | "bottom-left" | "bottom" | "bottom-right";
 
 export interface SiteSection {
   id?: string;

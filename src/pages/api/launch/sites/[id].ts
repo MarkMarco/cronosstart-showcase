@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { authLocale, safeStudioReturnTo, withQuery } from "../../../../lib/launch/auth";
-import { normalizeBrandColor, validButtonStyle, validHeroVariant, validTheme, validTypography } from "../../../../lib/launch/design";
+import { normalizeBrandColor, validButtonStyle, validHeroFocalPoint, validHeroVariant, validTheme, validTypography } from "../../../../lib/launch/design";
 import { studioPath } from "../../../../lib/launch/i18n";
 import { validateSlug } from "../../../../lib/launch/slug";
 import { supabaseServer } from "../../../../lib/launch/supabase";
@@ -220,6 +220,7 @@ export const POST: APIRoute = async ({ request, cookies, params, redirect }) => 
     if (section.type === "hero") {
       content.eyebrow = String(form.get(`eyebrow_${section.id}`) ?? section.content.eyebrow ?? "").slice(0, 80);
       content.buttonLabel = String(form.get(`button_${section.id}`) ?? section.content.buttonLabel ?? "").slice(0, 60);
+      content.focalPoint = validHeroFocalPoint(form.get(`focal_${section.id}`));
       variant = validHeroVariant(form.get(`variant_${section.id}`));
     }
     if (itemTypes.has(section.type)) {
